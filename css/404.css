@@ -1,0 +1,92 @@
+body {
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-evenly;
+    background-color: rgba(32, 32, 32);
+}
+
+.main-container {
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center; /* Center the text */
+}
+
+.display-text {
+    font: 1.5rem 'Roboto', sans-serif;
+    text-align: center;
+    color: white;
+}
+
+.red-text {
+    color: red;
+    font-weight: bold;
+}
+
+.link-404 {
+    text-decoration: none; /* Remove underline from hyperlink */
+}
+
+.home-button {
+    position: relative;
+    background-color: #2f2f2f;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 0px 2px;
+    cursor: pointer;
+    border-radius: 2px;
+    overflow: hidden; /* To hide elements sliding out */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    min-width: 90px; /* Adjust the minimum width for the button */
+    min-height: 25px; /* Adjust the minimum height for the button */
+}
+
+.home-button:hover {
+    background-color: #ff0000; /* Red */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
+}
+
+.home-button .button-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease;
+    opacity: 1; /* Ensure it starts visible */
+}
+
+.home-button .home-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 24px; /* Explicitly set the width */
+    height: 24px; /* Explicitly set the height */
+    opacity: 0; /* Start hidden */
+    transition: opacity 0.3s ease; /* Fade in transition */
+}
+
+.home-button:hover .button-text {
+    opacity: 0;
+}
+
+.home-button:hover .home-icon {
+    opacity: 1;
+}
+
+.home-button:not(:hover) .button-text {
+    opacity: 1;
+    transition: opacity 0.3s ease; /* Fade in the text */
+}
+
+.home-button:not(:hover) .home-icon {
+    opacity: 0;
+    transition: none;
+}

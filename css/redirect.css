@@ -1,0 +1,20 @@
+body{
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-evenly;
+    background-color: rgba(32, 32, 32);
+}
+
+.redirect-container{
+    padding: 30px;
+    border-radius: 10px;
+}
+
+.display-text{
+    font: 1.5rem 'Roboto', sans-serif;
+    text-align: center;
+    color: white;
+}

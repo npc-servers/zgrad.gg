@@ -1,0 +1,251 @@
+/* CSS for Card Content and Fancy Card Buttons */
+
+/* Card Content Styling */
+.card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding-top: 20px;
+    position: relative;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.card-content:hover {
+    filter: none;
+}
+
+.img-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 5px;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 0, 0, 0.5);
+    transition: box-shadow 0.5s ease;
+}
+
+.card-img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    transition: filter 0.3s ease;
+    filter: grayscale(100%);
+    z-index: 1;
+}
+
+.card-content:hover .card-img {
+    filter: grayscale(0%);
+}
+
+.img-wrapper::before,
+.img-wrapper::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 5px;
+    border: 2px solid transparent;
+    transition: all 0.5s ease;
+    box-sizing: border-box;
+    z-index: 3;
+    filter: grayscale(100%);
+}
+
+.card-content:hover .img-wrapper::before,
+.card-content:hover .img-wrapper::after {
+    filter: grayscale(0%);
+}
+
+.img-wrapper::before {
+    border-top: 2px solid rgba(255, 255, 255, 0.8);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.8);
+    transform: scaleX(0);
+    transition: transform 0.5s ease;
+}
+
+.img-wrapper::after {
+    border-left: 2px solid rgba(255, 255, 255, 0.8);
+    border-right: 2px solid rgba(255, 255, 255, 0.8);
+    transform: scaleY(0);
+    transition: transform 0.5s ease;
+}
+
+.card-content:hover .img-wrapper::before {
+    transform: scaleX(1);
+}
+
+.card-content:hover .img-wrapper::after {
+    transform: scaleY(1);
+}
+
+.card-title {
+    text-align: center;
+    color: #FFFFFF;
+    text-decoration: none;
+    z-index: 4;
+    position: absolute;
+    top: 20%;
+    width: 90%;
+    margin: 0;
+    padding: 10px 0;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+.card-description {
+    text-align: center;
+    color: #FFFFFF;
+    text-decoration: none;
+    z-index: 4;
+    position: absolute;
+    top: 35%;
+    width: 90%;
+    margin: 0;
+    padding: 10px 0;
+    transition: opacity 0.3s ease;
+}
+
+.card-content .server-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    pointer-events: none;
+    width: 80%;
+    z-index: 5;
+    text-align: center;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.card-content:hover .server-button {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) translateY(-10px);
+}
+
+.card-content:hover .card-description {
+    opacity: 0;
+}
+
+/* Fancy Neon Button Styling */
+.server-button {
+    font-size: 16px;
+    padding: 10px 20px;
+    border: none;
+    color: #fff;
+    background: #111;
+    text-transform: uppercase;
+    text-decoration: none;
+    letter-spacing: 2px;
+    border-radius: 5px;
+    position: relative;
+    transition: 0.3s;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+}
+
+.server-button:hover {
+    color: #111;
+    background: #fff;
+    box-shadow: 0 0 10px #000000, 0 0 20px #000000, 0 0 40px #000000, 0 0 80px #000000;
+}
+
+.server-button::before,
+.server-button::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff);
+    background-size: 400%;
+    z-index: -1;
+    filter: blur(5px);
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.server-button:hover::before,
+.server-button:hover::after {
+    opacity: 1;
+    animation: neon-glow 6s linear infinite;
+}
+
+@keyframes neon-glow {
+    0% {
+        background-position: 0%;
+    }
+    100% {
+        background-position: 400%;
+    }
+}
+
+.server-button::after {
+    filter: blur(10px);
+}
+
+@media (max-width: 768px) {
+    .server-button {
+        width: 90%;
+        font-size: 16px;
+        padding: 10px 20px;
+    }
+}
+
+/* Card Status and Player Info Styling */
+.card-status {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    z-index: 15; /* Ensure it draws above all other elements */
+    pointer-events: none; /* Prevent it from being affected by interactions with card-content */
+}
+
+.card-status.online {
+    background-color: #00ff00;
+}
+
+.card-status.offline {
+    background-color: #ff0000;
+}
+
+.card-players {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.9em;
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.cannot-connect {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1em;
+    color: #ff0000;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 5px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.card-content:hover .cannot-connect {
+    opacity: 1;
+    pointer-events: auto;
+}
