@@ -1,0 +1,118 @@
+:root{
+    --roundness: 5px;
+}
+
+html{
+    overflow-y: scroll;
+}
+
+body {
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    display: table;
+    text-align: center;
+    background-color: #2b2b2b;
+}
+
+.rules-header {
+    background-color: rgb(38,38,38);
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.server-name {
+    font-family: "Arial Black";
+    color: white;
+}
+
+.description {
+    font-family: "Segoe UI";
+    color: white;
+    font-weight: 400;
+}
+
+.rules {
+    display: table-cell;
+    vertical-align: middle;
+    padding-bottom: 30px;
+}
+
+.collapsible {
+    padding: 20px;
+    width: 100%;
+    margin-top: 10px;
+    max-width: 80%;
+    background-color: #3d3d3d;
+    color: white;
+    font-size: 20px;
+    font-family: "Arial Black";
+    border: none;
+    text-align: center;
+    outline: none;
+    cursor: pointer;
+
+    border-radius: 5px;
+}
+
+.active,
+.collapsible:hover {
+    background-color: #222222;
+}
+
+.collapsible:after {
+    content: '\002B';
+    color: white;
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+}
+
+.collapsible.active {
+    transition: max-height 0.2s ease-out;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.active:after {
+    content: "\2212";
+}
+
+.content {
+    font-family: "Segoe UI";
+    text-align: left;
+    color: white;
+    margin: auto;
+    max-width: 80%;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    background-color: #3d3d3d;
+
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.content>p{
+    padding: 0px 10px 0px 10px;
+}
+
+li {
+    margin-bottom: 3px;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #2b2b2b;
+}
+::-webkit-scrollbar-thumb {
+    background: #3d3d3d;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #222222;
+}

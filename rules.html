@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>ZGRAD Guidelines</title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="NPC redirect page">
+    <meta content="ZGRAD Guidelines" property="og:title" />
+    <meta content="The ruleset for ZGRAD." property="og:description" />
+    <meta content="https://npcz.gg/assets/logos/logo.png" property="og:image" />
+    <meta content="#FF0000" data-react-helmet="true" name="theme-color" />
+    <meta name="viewport" content="width=device-width">
+
+    <link href="/css/zgrad/rules.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="rules">
+        <header class="rules-header">
+            <h1 class="server-name">ZGRAD.US</h1>
+            <h2 class="description">SERVER GUIDELINES</h2>
+        </header>
+
+        <button class="collapsible">USE COMMON SENSE</button>
+        <div class="content">
+            <ol>
+                <li>Do not harass/intentionally annoy other players.</li>
+                <li>Mic Spamming/earraping is not allowed.</li>
+                <li>We are an english speaking server, so keep all-chat in english.</li>
+                <li>Modifying your game to provide an unfair advantage (cheating/exploiting) is against the rules.</li>
+                <li>Threatening or attempting to dox/DDoS other players will result in a permanent ban.</li>
+                <li>NSFW Content is not allowed.</li>
+                <li>Do not engage in/use offensive behavior or language.</li>
+                <li>Do not break rules because someone else is breaking them; you will also be punished.</li>
+            </ol>
+        </div>
+        </div>
+    </div>
+
+    <script>
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+
+        for (i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
