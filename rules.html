@@ -1,28 +1,33 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>ZGRAD Guidelines</title>
-    <meta name="viewport" content="width=device-width">
+    <title>Guidelines</title>
     <meta name="description" content="NPC redirect page">
     <meta content="ZGRAD Guidelines" property="og:title" />
     <meta content="The ruleset for ZGRAD." property="og:description" />
     <meta content="https://npcz.gg/assets/logos/logo.png" property="og:image" />
-    <meta content="#FF0000" data-react-helmet="true" name="theme-color" />
-    <meta name="viewport" content="width=device-width">
-
+    <meta content="#FF0000" name="theme-color" />
     <link href="/css/zgrad/rules.css" rel="stylesheet">
 </head>
-
 <body>
-    <div class="rules">
-        <header class="rules-header">
-            <h1 class="server-name">ZGRAD.US</h1>
-            <h2 class="description">SERVER GUIDELINES</h2>
-        </header>
+    <div class="rules-header">
+        <div class="header-row">
+            <div class="button-container-left">
+                <button class="action-button discord-button">JOIN THE DISCORD</button>
+            </div>
+            <div class="header-content">
+                <h1 class="server-name">ZGRAD.US</h1>
+                <h2 class="description">SERVER GUIDELINES</h2>
+            </div>
+            <div class="button-container-right">
+                <button class="action-button donate-button">DONATE HERE</button>
+            </div>
+        </div>
+    </div>
 
-        <button class="collapsible">USE COMMON SENSE</button>
-        <div class="content">
+    <div class="rules-box">
+        <div class="rules-title">USE COMMON SENSE</div>
+        <div class="rules-content">
             <ol>
                 <li>Do not harass/intentionally annoy other players.</li>
                 <li>Mic Spamming/earraping is not allowed.</li>
@@ -34,25 +39,10 @@
                 <li>Do not break rules because someone else is breaking them; you will also be punished.</li>
             </ol>
         </div>
-        </div>
     </div>
 
-    <script>
-        var coll = document.getElementsByClassName("collapsible");
-        var i;
-
-        for (i = 0; i < coll.length; i++) {
-            coll[i].addEventListener("click", function () {
-                this.classList.toggle("active");
-                var content = this.nextElementSibling;
-                if (content.style.maxHeight) {
-                    content.style.maxHeight = null;
-                } else {
-                    content.style.maxHeight = content.scrollHeight + "px";
-                }
-            });
-        }
-    </script>
+    <div class="network-links">
+        VISIT OUR NETWORK: <a href="http://www.npcz.gg" class="network-link">WWW.NPCZ.GG</a> <span>//</span> <a href="http://www.zgrad.us" class="network-link">WWW.ZGRAD.US</a>
+    </div>
 </body>
-
 </html>
