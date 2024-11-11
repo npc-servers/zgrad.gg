@@ -159,23 +159,6 @@ body, html {
     min-height: 500px;
 }
 
-/* Scrollbar Styles */
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: #2b2b2b;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #3d3d3d;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #222222;
-}
-
 /* Enhanced Responsive Styles */
 @media (max-width: 768px) {
     .banner-buttons {
