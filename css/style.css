@@ -45,7 +45,7 @@ body, html {
  /* Banner Buttons */
  .banner-buttons {
     position: absolute;
-    top: 65%;
+    top: 70%; /* Changed from 60% to be farther from logo on desktop */
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
@@ -55,7 +55,7 @@ body, html {
     justify-content: center;
     width: 90%;
     max-width: 500px;
- }
+}
  
  .banner-button {
     padding: 12px 32px;
@@ -297,14 +297,17 @@ body, html {
  /* Media Queries */
  @media (max-width: 768px) {
     .banner-buttons {
-        top: 70%;
+        top: 65%; /* Closer on mobile */
         gap: 15px;
+        flex-direction: column;
+        width: 80%;
     }
     
     .banner-button {
         padding: 10px 20px;
         min-width: 120px;
         font-size: 16px;
+        width: 100%; /* Full width when stacked */
     }
  
     .store-promo {
@@ -341,7 +344,8 @@ body, html {
  
  @media (max-width: 480px) {
     .banner-buttons {
-        top: 70%;
+        top: 62%; /* Even closer on smaller screens */
+        width: 75%;
         gap: 10px;
     }
     
@@ -383,6 +387,11 @@ body, html {
  }
  
  @media (max-width: 320px) {
+    .banner-buttons {
+        width: 90%;
+        gap: 8px;
+    }
+
     .banner-button {
         padding: 6px 12px;
         font-size: 13px;
