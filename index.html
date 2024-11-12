@@ -76,6 +76,19 @@
             </div>
         </div>
     </div>
+    <div class="store-promo">
+        <div class="promo-message-container">
+            <h2 class="promo-message"></h2>
+        </div>
+        <p class="promo-description"></p>
+        <div class="promo-actions">
+            <a href="https://store.npcz.gg/zgrad" class="banner-button store-button">Visit Store</a>
+            <div class="coupon-code">
+                <span>Use Code:</span>
+                <code class="clickable-code"></code>
+            </div>
+        </div>
+    </div>
 
     <div class="footer-gradient">
         <div id="text-footer">
@@ -93,117 +106,9 @@
             </div>
         </div>
     </div>
-
-    <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var cards = document.querySelectorAll('.card');
-    const servers = [
-        {
-            id: 'zgrad1',
-            ip: '193.243.190.18',
-            port: 27066
-        },
-        {
-            id: 'zgrad2',
-            ip: '193.243.190.18',
-            port: ''
-        }
-    ];
-
-    cards.forEach(function(card) {
-        var img = card.querySelector('.card-img');
-        var title = card.querySelector('.card-title');
-        var description = card.querySelector('.card-description');
-        var button = card.querySelector('.server-button');
-        var status = card.querySelector('.card-status');
-        var players = card.querySelector('.card-players');
-        var cannotConnect = card.querySelector('.cannot-connect');
-
-        img.src = card.dataset.imgSrc;
-        title.textContent = card.dataset.title;
-        description.textContent = card.dataset.description;
-        button.href = card.dataset.link;
-
-        const server = servers.find(s => s.id === card.dataset.id);
-
-        if (server) {
-            fetch(`https://gameserveranalytics.com/api/v2/query?game=source&ip=${server.ip}&port=${server.port}&type=info`)
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.json();
-                })
-                .then(serverInfo => {
-                    if (
-                        (serverInfo && serverInfo.status && serverInfo.status.toLowerCase() === 'online') ||
-                        (serverInfo && (serverInfo.players !== undefined || serverInfo.map))
-                    ) {
-                        status.classList.add('online');
-                        status.classList.remove('offline');
-                        status.style.filter = 'none';
-
-                        const currentPlayers = serverInfo.players || serverInfo.num_players || serverInfo.playercount || 0;
-                        const maxPlayers = serverInfo.maxplayers || serverInfo.max_players || serverInfo.maxclients || "Unknown";
-
-                        players.textContent = `${currentPlayers}/${maxPlayers} players online`;
-
-                        button.classList.remove('disabled');
-                        button.style.display = 'inline-block';
-                        cannotConnect.style.display = 'none';
-                    } else {
-                        status.classList.add('offline');
-                        status.classList.remove('online');
-                        status.style.filter = 'none';
-                        players.textContent = 'Server Offline';
-                        button.classList.add('disabled');
-                        button.style.display = 'none';
-                        cannotConnect.style.display = 'block';
-                    }
-                })
-                .catch(error => {
-                    console.error(`Error fetching data for ${server.id}:`, error);
-                    status.classList.add('offline');
-                    status.classList.remove('online');
-                    status.style.filter = 'none';
-                    players.textContent = 'Server Offline';
-                    button.classList.add('disabled');
-                    button.style.display = 'none';
-                    cannotConnect.style.display = 'block';
-                });
-        }
-    });
-
-    var navbar = document.getElementById('navbar');
-    var downArrow = document.getElementById('downArrow');
-
-    window.addEventListener('scroll', function() {
-        if (window.pageYOffset > 0) {
-            navbar.classList.add('blur');
-            downArrow.classList.add('hide-arrow');
-        } else {
-            navbar.classList.remove('blur');
-            downArrow.classList.remove('hide-arrow');
-        }
-    });
-
-    downArrow.addEventListener('click', function() {
-        var banner = document.querySelector('.banner');
-        var bannerBottom = banner.offsetTop + banner.offsetHeight;
-
-        window.scrollTo({
-            top: bannerBottom,
-            behavior: 'smooth'
-        });
-    });
-
-    const hamburger = document.getElementById('hamburger');
-    const navMenu = document.getElementById('nav-menu');
-
-    hamburger.addEventListener('click', () => {
-        navMenu.classList.toggle('active');
-        hamburger.classList.toggle('active');
-    });
-});
-
-    </script>
+    <script src="/js/elements/nav.js"></script>
+    <script src="/js/elements/arrow.js"></script>
+    <script src="/js/elements/serverstats.js"></script>
+    <script src="/js/elements/storepromo.js"></script>
 </body>
 </html>

@@ -194,3 +194,136 @@ body, html {
         height: 150px;
     }
 }
+.store-promo {
+    width: 100%;
+    max-width: 1200px;
+    margin: 2rem auto 4rem;
+    padding: 2rem;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+
+.promo-message-container {
+    height: 3rem; /* Fixed height to prevent layout shifts */
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.promo-message {
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.promo-message.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.promo-description {
+    color: #dedede;
+    max-width: 600px;
+    margin: 0 auto 1.5rem;
+    line-height: 1.6;
+}
+
+.promo-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.coupon-code {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.coupon-code span {
+    color: #999;
+}
+
+.clickable-code {
+    color: white;
+    font-family: monospace;
+    font-size: 1.1em;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.clickable-code:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.clickable-code::after {
+    content: 'Click to copy';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    margin-bottom: 5px;
+    white-space: nowrap;
+}
+
+.clickable-code:hover::after {
+    opacity: 1;
+}
+
+.clickable-code.copied {
+    background: #4CAF50;
+}
+
+.clickable-code.copied::after {
+    content: 'Copied!';
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .store-promo {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .promo-message {
+        font-size: 1.5rem;
+    }
+    
+    .promo-actions {
+        flex-direction: column;
+    }
+    
+    .banner-button {
+        width: 100%;
+    }
+    
+    .coupon-code {
+        width: 100%;
+        justify-content: center;
+    }
+}
