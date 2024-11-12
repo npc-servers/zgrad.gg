@@ -8,7 +8,7 @@ body {
 }
 
 .rules-header {
-    background-color: #262626;
+    background-color: #101010;
     padding: 20px 0;
     margin: 0;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -66,7 +66,7 @@ body {
 }
 
 .rules-box {
-    background-color: #3d3d3d;
+    background-color: #101010;
     color: white;
     width: 80%;
     margin: 30px auto;
@@ -115,7 +115,7 @@ body {
     padding: 10px 15px;
     position: relative;
     font-size: 17px;
-    border-radius: 5px;
+    border-radius: 0px;
     transition: all 0.2s ease;
     counter-increment: item;
     list-style: none;
@@ -134,7 +134,7 @@ body {
 }
 
 .rules-content li:hover {
-    background-color: #4a4a4a;
+    background-color: rgb(26, 26, 26);
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
     transform: translateX(5px);
     padding-left: 20px;
