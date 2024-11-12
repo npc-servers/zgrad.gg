@@ -1,4 +1,13 @@
 /* Shared Navbar and Footer CSS */
+@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200;300;400;500;600;700;800&display=swap');
+
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    font-family: 'Oxanium', sans-serif;
+    background-color: rgb(26, 26, 26);
+}
 
 #navbar {
     display: flex;
