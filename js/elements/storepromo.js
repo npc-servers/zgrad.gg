@@ -2,13 +2,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Configuration object
     const promoConfig = {
         messages: [
-            "Don't miss out!",
+            "Don't miss out! Get 25% off on any rank.",
             "Make the most of your experience!",
             "Support us!",
-            "Level up your game!",
-            "Join the elite!"
+            "Always join when the server is full!"
         ],
-        description: "Upgrade your gaming experience with exclusive in-game items, custom skins, and special perks. Use code \"LAUNCH\" for a special discount!",
+        description: "Get the most out of your experience on ZGRAD and our other servers: never miss a chance to play with a reserved slot, gain exclusive in-game items, custom skins, and special perks. Use code \"LAUNCH\" for a 25% discount!",
         couponCode: "LAUNCH"
     };
 
