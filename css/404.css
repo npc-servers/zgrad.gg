@@ -1,92 +1,92 @@
-body {
-    height: 100vh;
+* {
     margin: 0;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: space-evenly;
-    background-color: rgba(32, 32, 32);
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.main-container {
-    padding: 30px;
-    border-radius: 10px;
-    text-align: center; /* Center the text */
-}
-
-.display-text {
-    font: 1.5rem 'Roboto', sans-serif;
-    text-align: center;
+body {
+    background-color: rgb(26, 26, 26);
     color: white;
+    /* Added similar-looking fallback fonts */
+    font-family: 'Oxanium';
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    gap: 2rem;
 }
 
-.red-text {
-    color: red;
-    font-weight: bold;
+/* Rest of the CSS stays exactly the same */
+.title-container {
+    text-align: center;
 }
 
-.link-404 {
-    text-decoration: none; /* Remove underline from hyperlink */
+h1 {
+    font-size: 2.5rem;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+    letter-spacing: 2px;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.error-code {
+    color: #ff3333;
+    margin-left: 0.5rem;
+}
+
+.random-message {
+    color: white;
+    font-size: 1.2rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    font-weight: 400;
+    margin-top: 1rem;
+}
+
+.random-message.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .home-button {
-    position: relative;
-    background-color: #2f2f2f;
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
+    background-color: #101010;
+    color: #999;
+    border: 1px solid #4a4a4a;
+    padding: 0.75rem 1.25rem;
     font-size: 16px;
-    margin: 0px 2px;
+    border-radius: 8px;
     cursor: pointer;
-    border-radius: 2px;
-    overflow: hidden; /* To hide elements sliding out */
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    min-width: 90px; /* Adjust the minimum width for the button */
-    min-height: 25px; /* Adjust the minimum height for the button */
+    transition: all 0.3s ease;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 1px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    display: inline-block;
+    text-align: center;
 }
 
 .home-button:hover {
-    background-color: #ff0000; /* Red */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
+    box-shadow: 0 8px 25px rgba(255, 0, 0, 0.15),
+                0 10px 30px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+    border-color: #ff3333;
+    color: white;
 }
 
-.home-button .button-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    transition: opacity 0.3s ease;
-    opacity: 1; /* Ensure it starts visible */
-}
+@media (min-width: 768px) {
+    h1 {
+        font-size: 3.5rem;
+    }
+    
+    .home-button {
+        font-size: 18px;
+    }
 
-.home-button .home-icon {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 24px; /* Explicitly set the width */
-    height: 24px; /* Explicitly set the height */
-    opacity: 0; /* Start hidden */
-    transition: opacity 0.3s ease; /* Fade in transition */
-}
-
-.home-button:hover .button-text {
-    opacity: 0;
-}
-
-.home-button:hover .home-icon {
-    opacity: 1;
-}
-
-.home-button:not(:hover) .button-text {
-    opacity: 1;
-    transition: opacity 0.3s ease; /* Fade in the text */
-}
-
-.home-button:not(:hover) .home-icon {
-    opacity: 0;
-    transition: none;
+    .random-message {
+        font-size: 1.5rem;
+    }
 }
