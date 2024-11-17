@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Status</title>
+    <link rel="stylesheet" href="/css/serverdisplay.css">
+    <link rel="stylesheet" href="/css/shared.css">
+    <script src="/js/elements/serverdisplay.js" defer></script>
+    <script src="/js/elements/nav.js" defer></script>
+
+</head>
+<nav id="navbar">
+    <div class="logo-container">
+        <a href="/index.html"><img src="assets/logos/logo-whiteout.png" alt="Logo" class="navbar-logo"></a>
+    </div>
+    <button class="hamburger" id="hamburger">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </button>
+    <div class="menu-items right-menu" id="nav-menu">
+        <a href="https://discord.gg/npc">Discord</a>
+        <a href="/rules.html">Guidelines</a>
+        <a href="https://store.npcz.gg/zgrad">Store</a>
+        <a href="/index.html">Home</a>
+
+
+    </div>
+</nav>
+<body>
+    <div class="sd-server-list">
+        <!-- Server 1 -->
+        <div class="sd-server" data-id="zgrad1" data-title="ZGRAD US1" data-link="steam://connect/193.243.190.18:27066">
+            <img src="/assets/icons/us-flag.png" alt="US" class="sd-flag">
+            <div class="sd-info">
+                <div class="sd-server-name"></div>
+                <div class="sd-player-count"></div>
+                <div class="sd-offline-message">Cannot connect to server</div>
+            </div>
+            <a href="#" class="sd-connect-btn">Connect</a>
+            <div class="sd-status"></div>
+        </div>
+
+        <!-- Server 2 -->
+        <div class="sd-server" data-id="zgrad2" data-title="ZGRAD US2" data-link="steam://connect/193.243.190.18:27067">
+            <img src="/assets/icons/us-flag.png" alt="US" class="sd-flag">
+            <div class="sd-info">
+                <div class="sd-server-name"></div>
+                <div class="sd-player-count"></div>
+                <div class="sd-offline-message">Cannot connect to server</div>
+            </div>
+            <a href="#" class="sd-connect-btn">Connect</a>
+            <div class="sd-status"></div>
+        </div>
+    </div>
+</body>
+</html>
