@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
             "Make the most of your experience!",
             "Support us!",
             "Always join when the server is full!",
-            "Buy on one server, get it on all!"
+            "Buy on one server, you get it on all!"
         ],
         description: "Get the most out of your experience on ZGRAD and our other servers: never miss a chance to play with a reserved slot, gain exclusive in-game items, custom skins, and special perks. Use code \"LAUNCH\" for a 25% discount!",
         couponCode: "LAUNCH"
