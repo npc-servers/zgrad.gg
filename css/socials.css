@@ -1,0 +1,119 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #121212;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+}
+
+.sm-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+}
+
+.sm-platform {
+    display: flex;
+    align-items: center;
+    padding: 20px 24px;
+    height: 80px;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    gap: 16px;
+}
+
+.sm-platform:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.sm-platform.tiktok:hover {
+    border-color: #ff0050;
+}
+
+.sm-platform.instagram:hover {
+    border-color: #E1306C;
+}
+
+.sm-platform::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.sm-platform:hover::before {
+    left: 100%;
+}
+
+.sm-icon {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    z-index: 1;
+}
+
+.sm-info {
+    flex: 1;
+    z-index: 1;
+}
+
+.sm-name {
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sm-handle {
+    color: #ff3333;
+    font-weight: normal;
+    font-size: 16px; /* Smaller than the platform name */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.sm-handle:hover {
+    color: #ff6666;
+}
+
+.sm-visit-btn {
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.sm-visit-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}

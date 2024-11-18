@@ -6,10 +6,13 @@
     <title>Server Status</title>
     <link rel="stylesheet" href="/css/serverdisplay.css">
     <link rel="stylesheet" href="/css/shared.css">
+    <link rel="stylesheet" href="/css/loading.css">
     <script src="/js/elements/serverdisplay.js" defer></script>
     <script src="/js/elements/nav.js" defer></script>
+    <script src="/js/elements/loading.js" defer></script>
 
 </head>
+
 <nav id="navbar">
     <div class="logo-container">
         <a href="/index.html"><img src="assets/logos/logo-whiteout.png" alt="Logo" class="navbar-logo"></a>
@@ -23,12 +26,20 @@
         <a href="https://discord.gg/npc">Discord</a>
         <a href="/rules.html">Guidelines</a>
         <a href="https://store.npcz.gg/zgrad">Store</a>
+        <a href="/socials.html">Socials</a>
+
         <a href="/index.html">Home</a>
 
 
     </div>
 </nav>
 <body>
+    <div class="loader-wrapper">
+        <div class="loader-container">
+            <div class="spinner"></div>
+            <div class="loading-text">Loading...</div>
+        </div>
+    </div>
     <div class="sd-server-list">
         <!-- Server 1 -->
         <div class="sd-server" data-id="zgrad1" data-title="ZGRAD US1" data-link="steam://connect/193.243.190.18:27066">
