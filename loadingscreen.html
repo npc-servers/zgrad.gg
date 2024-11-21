@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Loading...</title>
+    <script type="text/javascript">
+var CONFIG = {
+    // Theme settings
+    theme: {
+        mainBackground: 'rgb(26, 26, 26)',
+        panelBackground: 'rgba(0, 0, 0, 0.3)',
+        progressBarColor: '#ff3333',
+        textPrimary: '#ffffff',
+        textSecondary: '#888888',
+        borderColor: 'rgba(255, 255, 255, 0.1)',
+        shadowColor: 'rgba(0, 0, 0, 0.3)',
+        panelDarkBg: 'rgba(0, 0, 0, 0.2)'
+    },
+    
+    // Timing settings (in milliseconds)
+    timing: {
+        faqRotation: 5000,
+        tipRotation: 4000,
+        simulationSpeed: 100,
+        fadeSpeed: 500,
+        statusFadeSpeed: 300
+    },
+
+    // Panel positions and transitions
+    layout: {
+        infoPanelWidth: '300px',
+        infoPanelLeft: '40px',
+        headerHeight: '60px',
+        bottomSpacing: '120px'
+    },
+
+    transitions: {
+        enabled: true,
+        duration: '0.3s',
+        faqFade: true,
+        tipFade: true
+    },
+
+    // Content arrays
+    faq: [
+        {
+            header: "Welcome!",
+            icon: "",
+            text: "Welcome to our server! Here are some tips to get you started..."
+        },
+        {
+            header: "Commands",
+            icon: "",
+            text: "You can access the server rules by typing !rules in chat"
+        },
+        {
+            header: "Community",
+            icon: "",
+            text: "Join our Discord to stay updated with server news"
+        },
+        {
+            header: "Help & Support",
+            icon: "",
+            text: "Need help? Ask in chat and our community will assist you"
+        },
+        {
+            header: "Getting Started",
+            icon: "",
+            text: "Don't forget to read the rules before playing"
+        }
+    ],
+
+    tips: [
+        "Press F1 to open the help menu",
+        "Join our Discord server for updates",
+        "Check the rules before playing",
+        "Report bugs on our forums"
+    ],
+
+    loadingStates: [
+        "Workshop Complete",
+        "Client info sent",
+        "Starting Lua...",
+        "Client precache",
+        "Ready!"
+    ],
+
+    // Simulation settings for browser testing
+    simulation: {
+        enabled: true,
+        totalFiles: 50,
+        serverName: "Test Server",
+        mapName: "gm_construct",
+        maxPlayers: 32
+    }
+};
+
+var currentFaq = 0;
+var currentTip = 0;
+
+function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
+    if (!document.body) return;
+    document.getElementById('map').innerHTML = mapname || 'unknown';
+    document.getElementById('playercount').innerHTML = '0 / ' + (maxplayers || '0');
+}
+
+function SetStatusChanged(status) {
+    if (!document.body) return;
+    var statusElem = document.getElementById('status');
+    statusElem.classList.add('fade-out');
+    
+    setTimeout(function() {
+        statusElem.innerHTML = status || '';
+        statusElem.classList.remove('fade-out');
+    }, CONFIG.timing.statusFadeSpeed);
+}
+
+function SetFilesTotal(total) {
+    if (!document.body) return;
+    document.getElementById('filestotal').innerHTML = total || '0';
+}
+
+function SetFilesNeeded(needed) {
+    if (!document.body) return;
+    var total = parseInt(document.getElementById('filestotal').innerHTML) || 0;
+    var downloaded = total - needed;
+    document.getElementById('filesloaded').innerHTML = downloaded || '0';
+}
+
+function DownloadingFile(filename) {
+    if (!document.body) return;
+    var fileInfo = document.getElementById('download-info');
+    fileInfo.classList.add('fade-out');
+    
+    setTimeout(function() {
+        document.getElementById('current-file').innerHTML = filename || '';
+        fileInfo.classList.remove('fade-out');
+    }, CONFIG.timing.statusFadeSpeed);
+}
+
+function SetProgressChanged(progress) {
+    if (!document.body) return;
+    var bar = document.getElementById('progressbar');
+    if (bar) bar.style.width = (progress || 0) + '%';
+}
+
+function rotateFaq() {
+    var faqText = document.getElementById('faq-text');
+    var faqHeader = document.getElementById('faq-header');
+    
+    faqText.classList.add('fade-out');
+    
+    setTimeout(function() {
+        var faq = CONFIG.faq[currentFaq];
+        faqHeader.innerHTML = faq.header;
+        faqText.innerHTML = faq.text;
+        
+        if (faq.icon) {
+            document.getElementById('faq-icon').src = faq.icon;
+            document.getElementById('faq-icon').style.display = 'block';
+        } else {
+            document.getElementById('faq-icon').style.display = 'none';
+        }
+        
+        faqText.classList.remove('fade-out');
+        currentFaq = (currentFaq + 1) % CONFIG.faq.length;
+    }, CONFIG.timing.fadeSpeed);
+    
+    setTimeout(rotateFaq, CONFIG.timing.faqRotation);
+}
+
+function rotateTip() {
+    var tipText = document.getElementById('tip-text');
+    
+    tipText.classList.add('fade-out');
+    
+    setTimeout(function() {
+        tipText.innerHTML = CONFIG.tips[currentTip];
+        tipText.classList.remove('fade-out');
+        currentTip = (currentTip + 1) % CONFIG.tips.length;
+    }, CONFIG.timing.fadeSpeed);
+    
+    setTimeout(rotateTip, CONFIG.timing.tipRotation);
+}
+
+function detectBrowser() {
+    return !window.game && !window.steam;
+}
+
+function startSimulation() {
+    if (!CONFIG.simulation.enabled || !detectBrowser()) return;
+    
+    document.getElementById('browser-notice').style.display = 'block';
+    
+    GameDetails(
+        CONFIG.simulation.serverName,
+        "",
+        CONFIG.simulation.mapName,
+        CONFIG.simulation.maxPlayers
+    );
+    
+    var progress = 0;
+    var total = CONFIG.simulation.totalFiles;
+    SetFilesTotal(total);
+    
+    var testInterval = setInterval(function() {
+        progress += 2;
+        if (progress <= 100) {
+            SetProgressChanged(progress);
+            SetFilesNeeded(total - Math.floor((progress / 100) * total));
+            SetStatusChanged(CONFIG.loadingStates[Math.floor((progress / 100) * (CONFIG.loadingStates.length - 1))]);
+            DownloadingFile("file_" + progress + ".dat");
+        } else {
+            clearInterval(testInterval);
+        }
+    }, CONFIG.timing.simulationSpeed);
+}
+
+window.onload = function() {
+    rotateFaq();
+    rotateTip();
+    startSimulation();
+};
+    </script>
+    <style type="text/css">
+body {
+    padding: 0;
+    margin: 0;
+    background-color: rgb(26, 26, 26);
+    font-family: Arial, sans-serif;
+    text-align: center;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.loading-header {
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 10px 0 0 0;
+    margin: 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    height: 60px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+#status {
+    color: white;
+    font-family: "Arial Black", Arial, sans-serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    letter-spacing: 1px;
+    height: 20px;
+    line-height: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#download-info {
+    color: #888888;
+    font-size: 12px;
+    margin: 5px 0;
+    width: 100%;
+    text-align: center;
+    font-family: Arial;
+    height: 15px;
+    line-height: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+}
+
+#progress {
+    width: 100%;
+    margin: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    height: 4px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+#progressbar {
+    width: 0%;
+    height: 100%;
+    background-color: #ff3333;
+}
+
+#info-panel {
+    position: absolute;
+    left: 40px;
+    top: 120px;
+    bottom: 120px;
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 0;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    text-align: left;
+    width: 300px;
+}
+
+.faq-header {
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-family: "Arial Black", Arial, sans-serif;
+    color: white;
+    font-size: 18px;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+}
+
+#faq-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+    display: none;
+}
+
+#faq-container {
+    padding: 20px;
+    height: calc(100% - 180px);
+    overflow: hidden;
+}
+
+#faq-text {
+    color: white;
+    font-size: 16px;
+    line-height: 1.6;
+    opacity: 1;
+}
+
+.server-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.info-row {
+    margin: 10px 0;
+    color: white;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.label {
+    color: #888888;
+    display: inline-block;
+    width: 80px;
+    font-family: "Arial Black", Arial, sans-serif;
+    letter-spacing: 1px;
+}
+
+#tip-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 15px 0;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.3);
+}
+
+#tip-header {
+    font-family: "Arial Black", Arial, sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: #888888;
+    margin-bottom: 10px;
+}
+
+#tip-text {
+    color: white;
+    font-size: 16px;
+    letter-spacing: 1px;
+    padding: 0 20px;
+    opacity: 1;
+}
+
+#current-file {
+    color: #888888;
+    margin-left: 10px;
+    font-style: italic;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+}
+
+#browser-notice {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #333;
+    color: white;
+    text-align: center;
+    padding: 4px;
+    font-size: 11px;
+    z-index: 1000;
+    font-family: "Arial Black", Arial, sans-serif;
+    letter-spacing: 1px;
+}
+
+@media screen and (min-width: 1024px) {
+    .faq-header {
+        transition: background-color 0.3s ease;
+    }
+
+    #faq-text {
+        transition: opacity 0.5s ease;
+    }
+
+    #tip-text {
+        transition: opacity 0.5s ease;
+    }
+
+    #progressbar {
+        transition: width 0.2s ease-out;
+    }
+
+    #status {
+        transition: opacity 0.3s ease;
+    }
+
+    #download-info {
+        transition: opacity 0.3s ease;
+    }
+
+    .info-row:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        transition: background-color 0.2s ease;
+    }
+
+    #info-panel:hover {
+        transform: translateX(5px);
+        transition: transform 0.3s ease;
+    }
+
+    .faq-header:hover {
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    #tip-container:hover {
+        background-color: rgba(0, 0, 0, 0.4);
+        transition: background-color 0.3s ease;
+    }
+}
+
+.fade-out {
+    opacity: 0 !important;
+}
+
+.fade-in {
+    opacity: 1 !important;
+}
+    </style>
+</head>
+<body>
+    <div id="browser-notice">Running in browser simulation mode</div>
+
+    <div class="loading-header">
+        <div id="status">Initializing...</div>
+        <div id="download-info">
+            <span id="filesloaded">0</span> / <span id="filestotal">0</span>
+            <span id="current-file"></span>
+        </div>
+        <div id="progress">
+            <div id="progressbar"></div>
+        </div>
+    </div>
+
+    <div id="info-panel">
+        <div class="faq-header">
+            <img id="faq-icon" src="" alt="">
+            <span id="faq-header">Welcome!</span>
+        </div>
+        <div id="faq-container">
+            <div id="faq-text">Welcome to our server! Here are some tips to get you started...</div>
+        </div>
+        <div class="server-info">
+            <div class="info-row">
+                <span class="label">MAP</span>
+                <span id="map">Unknown</span>
+            </div>
+            <div class="info-row">
+                <span class="label">PLAYERS</span>
+                <span id="playercount">0 / 0</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="tip-container">
+        <div id="tip-header">TIP</div>
+        <div id="tip-text">Press F1 to open the help menu</div>
+    </div>
+</body>
+</html>
