@@ -1,405 +1,223 @@
- /* Banner Styles */
- .banner {
-    position: relative;
-    height: 100vh;
-    overflow: hidden;
-    background-size: cover;
-    background-position: center;
-    background-image: url('../assets/cards-banners/index-banner.jpg');
- }
- 
- .banner::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(26,26,26,1) 100%);
-    z-index: 1;
- }
- 
- .large-logo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    transition: transform 0.3s ease;
-    height: 225px;
-    z-index: 2;
- }
- 
- .large-logo:hover {
-    transform: translate(-50%, -50%) scale(1.1);
- }
- 
- /* Banner Buttons */
- .banner-buttons {
-    position: absolute;
-    top: 70%; /* Changed from 60% to be farther from logo on desktop */
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: flex;
-    gap: 20px;
-    z-index: 2;
-    align-items: center;
-    justify-content: center;
-    width: 90%;
-    max-width: 500px;
+/* Card Styles */
+.card {
+   width: 300px;
+   height: 420px;
+   margin: 10px;
+   margin-bottom: 30px;
 }
- 
- .banner-button {
-    padding: 12px 32px;
-    min-width: 140px;
-    font-size: 18px;
-    font-family: oxanium, sans-serif;
-    text-decoration: none;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    background: rgba(0, 0, 0, 0.3);
-    color: white;
-    backdrop-filter: blur(5px);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    flex: 1;
- }
- 
- .banner-button:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.2),
-        transparent
-    );
-    transition: 0.5s;
- }
- 
- .banner-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: scale(1.05);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
- }
- 
- .banner-button:hover:before {
-    left: 100%;
- }
- 
- .store-button {
-    border-color: #ff0000;
-    border-radius: 2px;
- }
- 
- .discord-button {
-    border-color: #7289DA;
-    border-radius: 2px;
- }
- 
- /* Down Arrow */
- .down-arrow {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    cursor: pointer;
-    animation: bounce 2s infinite;
-    z-index: 1000;
-    width: 40px;
-    height: 40px;
- }
- 
- @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
-        transform: translateX(-50%) translateY(0);
-    }
-    40% {
-        transform: translateX(-50%) translateY(-10px);
-    }
-    60% {
-        transform: translateX(-50%) translateY(-5px);
-    }
- }
- 
- .hide-arrow {
-    display: none;
- }
- 
- /* Card Styles */
- .card {
-    width: 300px;
-    height: 420px;
-    margin: 10px;
-    margin-bottom: 30px;
- }
- 
- .card-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    background-color: rgb(26, 26, 26);
-    overflow: visible;
-    min-height: 500px;
- }
- 
- /* Store Promo Styles */
- .store-promo {
-    width: 90%;
-    max-width: 1200px;
-    margin: 2rem auto 4rem;
-    padding: 2rem;
-    text-align: center;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
- }
- 
- .promo-message-container {
-    height: 3rem;
-    margin-bottom: 0.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
- }
- 
- .promo-message {
-    color: white;
-    font-size: 2rem;
-    font-weight: bold;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
- }
- 
- .promo-message.visible {
-    opacity: 1;
-    transform: translateY(0);
- }
- 
- .promo-description {
-    color: #dedede;
-    max-width: 600px;
-    margin: 0 auto 1.5rem;
-    line-height: 1.6;
-    font-size: 1rem;
- }
- 
- .promo-actions {
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
-    max-width: 600px;
-    width: 100%;
- }
- 
- .promo-actions .banner-button.store-button {
-    padding: 12px 32px;
-    min-width: 140px;
-    font-size: 18px;
-    width: 100%;
-    max-width: 250px;
- }
- 
- .coupon-code {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-    width: 100%;
-    max-width: 250px;
- }
- 
- .coupon-code span {
-    color: #999;
- }
- 
- .clickable-code {
-    color: white;
-    font-family: monospace;
-    font-size: 1.1em;
-    cursor: pointer;
-    padding: 0.25rem 0.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    transition: all 0.3s ease;
-    position: relative;
- }
- 
- .clickable-code:hover {
-    background: rgba(255, 255, 255, 0.2);
- }
- 
- .clickable-code::after {
-    content: 'Click to copy';
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-    margin-bottom: 5px;
-    white-space: nowrap;
- }
- 
- .clickable-code:hover::after {
-    opacity: 1;
- }
- 
- .clickable-code.copied {
-    background: #4CAF50;
- }
- 
- .clickable-code.copied::after {
-    content: 'Copied!';
-    opacity: 1;
- }
- 
- /* Animations */
- @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.8; }
- }
- 
- /* Media Queries */
- @media (max-width: 768px) {
-    .banner-buttons {
-        top: 65%; /* Closer on mobile */
-        gap: 15px;
-        flex-direction: column;
-        width: 80%;
-    }
-    
-    .banner-button {
-        padding: 10px 20px;
-        min-width: 120px;
-        font-size: 16px;
-        width: 100%; /* Full width when stacked */
-    }
- 
-    .store-promo {
-        width: 80%;
-        margin: 1rem auto;
-        padding: 1.5rem;
-    }
-    
-    .promo-message {
-        font-size: 1.75rem;
-    }
-    
-    .promo-description {
-        font-size: 0.9rem;
-        padding: 0;
-        margin-bottom: 1rem;
-    }
- 
-    .promo-actions {
-        flex-direction: column;
-        padding: 0;
-    }
-    
-    .promo-actions .banner-button.store-button,
-    .coupon-code {
-        width: 90%;
-        max-width: none;
-    }
- 
-    .large-logo {
-        height: 175px;
-    }
- }
- 
- @media (max-width: 480px) {
-    .banner-buttons {
-        top: 62%; /* Even closer on smaller screens */
-        width: 75%;
-        gap: 10px;
-    }
-    
-    .banner-button {
-        padding: 8px 16px;
-        min-width: 100px;
-        font-size: 14px;
-    }
- 
-    .store-promo {
-        width: 75%;
-        padding: 1.25rem;
-        margin: 1rem auto;
-    }
-    
-    .promo-message {
-        font-size: 1.5rem;
-    }
-    
-    .promo-description {
-        font-size: 0.85rem;
-        margin-bottom: 0.75rem;
-    }
-    
-    .coupon-code {
-        padding: 0.5rem;
-        font-size: 0.9rem;
-    }
- 
-    .promo-actions .banner-button.store-button {
-        padding: 8px 16px;
-        min-width: 100px;
-        font-size: 14px;
-    }
- 
-    .large-logo {
-        height: 150px;
-    }
- }
- 
- @media (max-width: 320px) {
-    .banner-buttons {
-        width: 90%;
-        gap: 8px;
-    }
 
-    .banner-button {
-        padding: 6px 12px;
-        font-size: 13px;
-        min-width: 90px;
-    }
- 
-    .store-promo {
-        padding: 1rem;
-    }
-    
-    .promo-message {
-        font-size: 1.1rem;
-    }
- 
-    .promo-actions .banner-button.store-button {
-        padding: 6px 12px;
-        min-width: 90px;
-        font-size: 13px;
-    }
- }
+.card-container {
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
+   align-items: center;
+   background-color: rgb(26, 26, 26);
+   overflow: visible;
+   min-height: 500px;
+}
+
+/* Store Promo Styles */
+.store-promo {
+   width: 90%;
+   max-width: 1200px;
+   margin: 2rem auto 4rem;
+   padding: 2rem;
+   text-align: center;
+   background: rgba(0, 0, 0, 0.3);
+   backdrop-filter: blur(8px);
+   border: 1px solid rgba(255, 255, 255, 0.1);
+   border-radius: 8px;
+}
+
+.promo-message-container {
+   height: 3rem;
+   margin-bottom: 0.5rem;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.promo-message {
+   color: white;
+   font-size: 2rem;
+   font-weight: bold;
+   opacity: 0;
+   transform: translateY(20px);
+   transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.promo-message.visible {
+   opacity: 1;
+   transform: translateY(0);
+}
+
+.promo-description {
+   color: #dedede;
+   max-width: 600px;
+   margin: 0 auto 1.5rem;
+   line-height: 1.6;
+   font-size: 1rem;
+}
+
+.promo-actions {
+   display: flex;
+   flex-direction: row;
+   gap: 1rem;
+   align-items: center;
+   justify-content: center;
+   margin: 0 auto;
+   max-width: 600px;
+   width: 100%;
+}
+
+.promo-actions .banner-button.store-button {
+   padding: 12px 32px;
+   min-width: 140px;
+   font-size: 18px;
+   width: 100%;
+   max-width: 250px;
+}
+
+.coupon-code {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: 0.5rem;
+   padding: 0.75rem 1rem;
+   background: rgba(0, 0, 0, 0.4);
+   border: 1px solid rgba(255, 255, 255, 0.2);
+   border-radius: 4px;
+   width: 100%;
+   max-width: 250px;
+}
+
+.coupon-code span {
+   color: #999;
+}
+
+.clickable-code {
+   color: white;
+   font-family: monospace;
+   font-size: 1.1em;
+   cursor: pointer;
+   padding: 0.25rem 0.5rem;
+   background: rgba(255, 255, 255, 0.1);
+   border-radius: 4px;
+   transition: all 0.3s ease;
+   position: relative;
+}
+
+.clickable-code:hover {
+   background: rgba(255, 255, 255, 0.2);
+}
+
+.clickable-code::after {
+   content: 'Click to copy';
+   position: absolute;
+   bottom: 100%;
+   left: 50%;
+   transform: translateX(-50%);
+   background: rgba(0, 0, 0, 0.8);
+   color: white;
+   padding: 0.25rem 0.5rem;
+   border-radius: 4px;
+   font-size: 0.75rem;
+   opacity: 0;
+   transition: opacity 0.3s ease;
+   pointer-events: none;
+   margin-bottom: 5px;
+   white-space: nowrap;
+}
+
+.clickable-code:hover::after {
+   opacity: 1;
+}
+
+.clickable-code.copied {
+   background: #4CAF50;
+}
+
+.clickable-code.copied::after {
+   content: 'Copied!';
+   opacity: 1;
+}
+
+/* Animations */
+@keyframes pulse {
+   0%, 100% { opacity: 1; }
+   50% { opacity: 0.8; }
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+   .store-promo {
+       width: 80%;
+       margin: 1rem auto;
+       padding: 1.5rem;
+   }
+   
+   .promo-message {
+       font-size: 1.75rem;
+   }
+   
+   .promo-description {
+       font-size: 0.9rem;
+       padding: 0;
+       margin-bottom: 1rem;
+   }
+
+   .promo-actions {
+       flex-direction: column;
+       padding: 0;
+   }
+   
+   .promo-actions .banner-button.store-button,
+   .coupon-code {
+       width: 90%;
+       max-width: none;
+   }
+}
+
+@media (max-width: 480px) {
+   .store-promo {
+       width: 75%;
+       padding: 1.25rem;
+       margin: 1rem auto;
+   }
+   
+   .promo-message {
+       font-size: 1.5rem;
+   }
+   
+   .promo-description {
+       font-size: 0.85rem;
+       margin-bottom: 0.75rem;
+   }
+   
+   .coupon-code {
+       padding: 0.5rem;
+       font-size: 0.9rem;
+   }
+
+   .promo-actions .banner-button.store-button {
+       padding: 8px 16px;
+       min-width: 100px;
+       font-size: 14px;
+   }
+}
+
+@media (max-width: 320px) {
+   .store-promo {
+       padding: 1rem;
+   }
+   
+   .promo-message {
+       font-size: 1.1rem;
+   }
+
+   .promo-actions .banner-button.store-button {
+       padding: 6px 12px;
+       min-width: 90px;
+       font-size: 13px;
+   }
+}
