@@ -12,7 +12,24 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     ];
 
+    const cardContainer = document.querySelector('.card-container');
     const cards = document.querySelectorAll('.card');
+    const serverData = new Map();
+
+    // Function to sort and reorder cards
+    function sortAndReorderCards() {
+        const cardsArray = Array.from(cards);
+        cardsArray.sort((a, b) => {
+            const aPlayers = serverData.get(a.dataset.id)?.players || 0;
+            const bPlayers = serverData.get(b.dataset.id)?.players || 0;
+            return bPlayers - aPlayers; // Sort in descending order
+        });
+
+        // Reorder cards in the DOM
+        cardsArray.forEach(card => {
+            cardContainer.appendChild(card);
+        });
+    }
 
     cards.forEach(function(card) {
         var img = card.querySelector('.card-img');
@@ -49,6 +66,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         const maxPlayers = serverInfo.maxplayers || serverInfo.max_players || serverInfo.maxclients || "Unknown";
 
                         players.textContent = `${currentPlayers}/${maxPlayers} players online`;
+                        
+                        // Store server data for sorting
+                        serverData.set(card.dataset.id, {
+                            players: currentPlayers,
+                            maxPlayers: maxPlayers
+                        });
 
                         button.classList.remove('disabled');
                         button.style.display = 'inline-block';
@@ -58,10 +81,20 @@ document.addEventListener('DOMContentLoaded', function() {
                         status.classList.remove('online');
                         status.style.filter = 'none';
                         players.textContent = 'Server Offline';
+                        
+                        // Store offline status
+                        serverData.set(card.dataset.id, {
+                            players: 0,
+                            maxPlayers: 0
+                        });
+
                         button.classList.add('disabled');
                         button.style.display = 'none';
                         cannotConnect.style.display = 'block';
                     }
+                    
+                    // Sort cards after updating server data
+                    sortAndReorderCards();
                 })
                 .catch(error => {
                     console.error(`Error fetching data for ${server.id}:`, error);
@@ -69,10 +102,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     status.classList.remove('online');
                     status.style.filter = 'none';
                     players.textContent = 'Server Offline';
+                    
+                    // Store error status
+                    serverData.set(card.dataset.id, {
+                        players: 0,
+                        maxPlayers: 0
+                    });
+
                     button.classList.add('disabled');
                     button.style.display = 'none';
                     cannotConnect.style.display = 'block';
+                    
+                    // Sort cards after error
+                    sortAndReorderCards();
                 });
         }
     });
+
+    // Optional: Periodically resort cards (every 30 seconds)
+    setInterval(sortAndReorderCards, 30000);
 });
