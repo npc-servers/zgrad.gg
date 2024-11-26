@@ -1,0 +1,128 @@
+.indesc-description-section {
+    padding: 4rem 2rem;
+    position: relative;
+    background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 50%, rgb(26, 26, 26) 100%);
+    overflow: hidden;
+}
+
+.gradient-section {
+    margin-top: -1px; /* Prevent any potential gap */
+}
+
+.indesc-description-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    position: relative;
+    gap: 2rem;
+}
+
+.indesc-description-content {
+    flex: 1;
+    color: white;
+    position: relative;
+    z-index: 2;
+}
+
+.indesc-description-text h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    background: linear-gradient(45deg, #ffffff, #a8a8a8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.indesc-description-text p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    color: #e0e0e0;
+}
+
+.indesc-description-stats {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.indesc-stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.indesc-stat-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(255,255,255,0.3);
+}
+
+.indesc-stat-label {
+    font-size: 1rem;
+    color: #a8a8a8;
+    margin-top: 0.5rem;
+}
+
+/* Animation classes */
+.indesc-fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: indescFadeIn 0.8s ease-out forwards;
+}
+
+@keyframes indescFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+    .indesc-description-container {
+        flex-direction: column;
+    }
+    
+    .indesc-description-image {
+        width: 100%;
+        height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .indesc-description-section {
+        padding: 3rem 1rem;
+    }
+    
+    .indesc-description-text h2 {
+        font-size: 2rem;
+    }
+    
+    .indesc-description-text p {
+        font-size: 1rem;
+    }
+    
+    .indesc-stat-number {
+        font-size: 2rem;
+    }
+    
+    .indesc-description-stats {
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .indesc-description-stats {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .indesc-stat-item {
+        margin-bottom: 1rem;
+    }
+}
