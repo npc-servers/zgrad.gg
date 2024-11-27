@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="./css/main.css">
+  </head>
+  <body>
+    <div class="background"></div>
+    <div class="overhaul"></div>
+
+    <nav>
+      <div id="announcement"></div>
+      <div id="mapinfo">
+        <div class="mapline"></div>
+        <div class="player-count"></div>
+      </div>
+      <span id="steamid"></span>
+    </nav>
+
+    <main>
+      <div class="title">
+        <h2></h2>
+        <h1></h1>
+        <div id="history"></div>
+      </div>
+      <div id="side-panel">
+        <h3 class="side-header"></h3>
+        <p class="side-content"></p>
+      </div>
+      
+      <div id="tips-panel">
+        <h3>TIP</h3>
+        <div id="tip-content"></div>
+      </div>
+    </main>
+
+    <script src="./js/config.js"></script>
+    <script src="./js/main.js"></script>
+    <script>
+        const possibleBackgrounds = [
+            "./images/zgrad1.jpg",
+            "./images/zgrad2.jpg",
+            "./images/zgrad3.jpg",
+            "./images/zgrad4.jpg",
+        ]
+        let currentBackground = 0;
+
+        function changeBackground() {
+            const div = document.querySelector('.background');
+
+            currentBackground = ++currentBackground;
+            if (currentBackground >= possibleBackgrounds.length) {
+                currentBackground = 0;
+            }
+
+            div.style.backgroundImage = `url('${possibleBackgrounds[currentBackground]}')`;
+        }
+
+        setInterval(changeBackground, 10000);
+    </script>
+  </body>
+</html>

@@ -1,6 +1,5 @@
-/* CSS for Card Content and Fancy Card Buttons */
+/*DEPRECATED STYLINGS NO LONGER USED IN FAVOR OF SIMPLICITY*/
 
-/* Card Content Styling */
 .card-content {
     display: flex;
     flex-direction: column;

@@ -19,10 +19,17 @@
 }
 
 .indesc-description-content {
-    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
     color: white;
     position: relative;
     z-index: 2;
+    align-items: center;
+}
+
+.indesc-description-text {
+    flex: 1;
 }
 
 .indesc-description-text h2 {
@@ -67,6 +74,123 @@
     margin-top: 0.5rem;
 }
 
+/* Server Display Styles */
+.indesc-servers-container {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 1rem;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.indesc-servers-header {
+    color: white;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.indesc-servers-list {
+    margin-bottom: 1rem;
+}
+
+.indesc-server {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    transition: background 0.2s;
+}
+
+.indesc-server:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.indesc-server:last-child {
+    margin-bottom: 0;
+}
+
+.indesc-server-flag {
+    width: 24px;
+    height: 24px;
+    margin-right: 1rem;
+}
+
+.indesc-server-info {
+    flex: 1;
+    margin-right: 1rem;
+}
+
+.indesc-server-name {
+    color: white;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.indesc-server-players {
+    color: #a0a0a0;
+    font-size: 0.9rem;
+}
+
+.indesc-server-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-left: 1rem;
+}
+
+.indesc-server-status.online {
+    background: #4CAF50;
+}
+
+.indesc-server-status.offline {
+    background: #f44336;
+}
+
+.indesc-server-connect {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.indesc-server-connect:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.indesc-servers-footer {
+    margin-top: auto;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.indesc-view-servers {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.indesc-view-servers:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.indesc-no-servers {
+    color: #a0a0a0;
+    text-align: center;
+    padding: 1rem;
+}
+
 /* Animation classes */
 .indesc-fade-in {
     opacity: 0;
@@ -87,9 +211,14 @@
         flex-direction: column;
     }
     
-    .indesc-description-image {
+    .indesc-description-content {
+        flex-direction: column;
         width: 100%;
-        height: 300px;
+    }
+    
+    .indesc-servers-container {
+        width: 100%;
+        margin-top: 0;
     }
 }
 
@@ -124,5 +253,9 @@
     
     .indesc-stat-item {
         margin-bottom: 1rem;
+    }
+    
+    .indesc-stat-item:last-child {
+        margin-bottom: 0;
     }
 }
