@@ -141,11 +141,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }).sort((a, b) => b.status.players - a.status.players);
     }
 
-    function getActiveServers(results) {
+    function getActiveServers(results, excludeServers = []) {
         return results.map((status, index) => ({
             server: servers[index],
             status
         })).filter(result => {
+            // Skip if server is in exclude list
+            if (excludeServers.some(excluded => excluded.server.id === result.server.id)) {
+                return false;
+            }
             return result.status.online && result.status.players > 0;
         }).sort((a, b) => b.status.players - a.status.players);
     }
@@ -280,9 +284,16 @@ document.addEventListener('DOMContentLoaded', function() {
         function updateIndexServers(mode = 'popular') {
             updateTotalPlayers(false).then(results => {
                 const popularServers = getPopularServers(results);
-                const activeServers = getActiveServers(results);
                 
-                // Use popular servers if available, otherwise use active servers
+                // If no popular servers available and mode is 'popular', switch to active
+                if (popularServers.length === 0 && mode === 'popular') {
+                    mode = 'active';
+                }
+
+                // Get active servers, excluding popular ones if in active mode
+                const activeServers = getActiveServers(results, mode === 'active' ? popularServers : []);
+                
+                // Use popular servers if in popular mode and available, otherwise use active servers
                 let displayServers = mode === 'popular' ? popularServers : activeServers;
                 
                 // Update header

@@ -1,20 +1,25 @@
+/* Main container with fixed dimensions */
 .indesc-description-section {
-    padding: 4rem 2rem 8rem 2rem; /* Increased bottom padding to 8rem */
     position: relative;
     background: rgb(26, 26, 26);
     overflow: hidden;
-}
-.gradient-section {
-    position: relative; /* Add this if not already present */
+    min-height: 600px;
 }
 
-.indesc-description-container {
+/* Container for padding and margin - reduced bottom padding */
+.indesc-outer-container {
+    padding: 4rem 2rem 4rem 2rem;
     max-width: 1200px;
     margin: 0 auto;
+}
+
+/* Content layout container */
+.indesc-description-container {
     display: flex;
     align-items: center;
     position: relative;
     gap: 2rem;
+    min-height: 500px;
 }
 
 .indesc-description-content {
@@ -25,12 +30,15 @@
     position: relative;
     z-index: 2;
     align-items: center;
+    width: 100%;
 }
 
 .indesc-description-text {
     flex: 1;
-    min-width: 0; /* Allows text to shrink if needed */
+    min-width: 0;
     will-change: transform, opacity;
+    position: relative;
+    align-self: center;
 }
 
 .indesc-description-text h2 {
@@ -83,7 +91,9 @@
 /* Server Display Styles */
 .indesc-servers-container {
     flex: 1;
-    min-width: 300px; /* Minimum width to prevent too much squishing */
+    min-width: 300px;
+    max-height: 500px;
+    overflow-y: auto;
     background: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -207,11 +217,22 @@
 /* Responsive design */
 @media (max-width: 1024px) {
     .indesc-description-container {
-        flex-direction: column;
+        min-height: auto;
     }
     
     .indesc-description-content {
         flex-direction: column;
+        width: 100%;
+    }
+    
+    .indesc-description-text {
+        text-align: center;
+        margin-bottom: 2rem;
+        width: 100%;
+    }
+    
+    .indesc-description-stats {
+        justify-content: center;
         width: 100%;
     }
     
@@ -222,7 +243,7 @@
 }
 
 @media (max-width: 768px) {
-    .indesc-description-section {
+    .indesc-outer-container {
         padding: 3rem 1rem;
     }
     
@@ -240,6 +261,7 @@
     
     .indesc-description-stats {
         gap: 1rem;
+        justify-content: center;
     }
 }
 
@@ -248,15 +270,18 @@
         flex-direction: column;
         align-items: center;
         text-align: center;
+        width: 100%;
     }
     
     .indesc-stat-item {
         margin-bottom: 1rem;
+        width: 100%;
     }
     
     .indesc-stat-item:last-child {
         margin-bottom: 0;
     }
+
     .indesc-server-connect {
         padding: 6px 12px;
         font-size: 13px;
