@@ -1,22 +1,3 @@
-/* Card Styles */
-.card {
-   width: 300px;
-   height: 420px;
-   margin: 10px;
-   margin-bottom: 30px;
-}
-
-.card-container {
-   display: flex;
-   flex-wrap: wrap;
-   justify-content: center;
-   align-items: center;
-   background-color: rgb(26, 26, 26);
-   overflow: visible;
-   min-height: 500px;
-}
-
-/* Store Promo Styles */
 .store-promo {
    width: 90%;
    max-width: 1200px;
