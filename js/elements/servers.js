@@ -86,6 +86,19 @@ document.addEventListener('DOMContentLoaded', function() {
         requestAnimationFrame(update);
     }
 
+    // Update total servers count
+    function updateTotalServers(animate = false) {
+        const totalServersElement = document.getElementById('totalServers');
+        if (totalServersElement) {
+            const serverCount = servers.length;
+            if (animate) {
+                animateCount(totalServersElement, 0, serverCount, 2000);
+            } else {
+                totalServersElement.textContent = serverCount;
+            }
+        }
+    }
+
     // Server status functions
     function updateServerStatus(server) {
         return fetch(`https://gameserveranalytics.com/api/v2/query?game=source&ip=${server.ip}&port=${server.port}&type=info`)
@@ -146,7 +159,6 @@ document.addEventListener('DOMContentLoaded', function() {
             server: servers[index],
             status
         })).filter(result => {
-            // Skip if server is in exclude list
             if (excludeServers.some(excluded => excluded.server.id === result.server.id)) {
                 return false;
             }
@@ -196,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const descSection = document.querySelector('.indesc-description-section');
     if (descSection) {
         const text = descSection.querySelector('.indesc-description-text');
-        const servers = descSection.querySelector('.indesc-servers-container');
+        const serversContainer = descSection.querySelector('.indesc-servers-container');
         
         if (text) {
             text.style.opacity = '0';
@@ -204,14 +216,15 @@ document.addEventListener('DOMContentLoaded', function() {
             text.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
         }
         
-        if (servers) {
-            servers.style.opacity = '0';
-            servers.style.transform = 'translateY(40px)';
-            servers.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+        if (serversContainer) {
+            serversContainer.style.opacity = '0';
+            serversContainer.style.transform = 'translateY(40px)';
+            serversContainer.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
         }
 
-        // Set initial player count without animation
+        // Set initial counts without animation
         updateTotalPlayers(false);
+        updateTotalServers(false);
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -223,18 +236,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
                     }
                     
-                    if (servers) {
+                    if (serversContainer) {
                         setTimeout(() => {
                             requestAnimationFrame(() => {
-                                servers.style.opacity = '1';
-                                servers.style.transform = 'translateY(0)';
+                                serversContainer.style.opacity = '1';
+                                serversContainer.style.transform = 'translateY(0)';
                             });
                         }, 200);
                     }
 
-                    // Animate the count when section becomes visible
                     if (!hasInitializedCount) {
                         updateTotalPlayers(true);
+                        updateTotalServers(true);
                         hasInitializedCount = true;
                     }
                 }
@@ -247,29 +260,79 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(descSection);
     }
 
-    // Initialize servers list
+    // Initialize servers list with sorting
     const serverList = document.querySelector('.sd-server-list');
     if (serverList) {
-        servers.forEach(server => {
-            const serverElement = document.createElement('div');
-            serverElement.className = 'sd-server';
-            serverElement.dataset.id = server.id;
-            serverElement.innerHTML = `
-                <img src="/assets/icons/${server.region.toLowerCase()}-flag.png" alt="${server.region}" class="sd-flag">
-                <div class="sd-info">
-                    <div class="sd-server-name">${server.title}</div>
-                    <div class="sd-player-count"></div>
-                    <div class="sd-offline-message">Cannot connect to server</div>
-                </div>
-                <a href="${server.link}" class="sd-connect-btn">Connect</a>
-                <div class="sd-status"></div>
-            `;
-            serverList.appendChild(serverElement);
+        // First fetch all server statuses
+        Promise.all(servers.map(server => updateServerStatus(server)))
+            .then(statuses => {
+                // Create array of servers with their status
+                const serverStatusPairs = servers.map((server, index) => ({
+                    server,
+                    status: statuses[index]
+                }));
 
-            updateServerStatus(server).then(status => {
-                updateServerCard(serverElement, status);
+                // Sort by online status and player count
+                serverStatusPairs.sort((a, b) => {
+                    if (a.status.online && !b.status.online) return -1;
+                    if (!a.status.online && b.status.online) return 1;
+                    return b.status.players - a.status.players;
+                });
+
+                // Clear and populate server list
+                serverList.innerHTML = '';
+                serverStatusPairs.forEach(({ server, status }) => {
+                    const serverElement = document.createElement('div');
+                    serverElement.className = 'sd-server';
+                    serverElement.dataset.id = server.id;
+                    serverElement.innerHTML = `
+                        <img src="/assets/icons/${server.region.toLowerCase()}-flag.png" alt="${server.region}" class="sd-flag">
+                        <div class="sd-info">
+                            <div class="sd-server-name">${server.title}</div>
+                            <div class="sd-player-count"></div>
+                            <div class="sd-offline-message">Cannot connect to server</div>
+                        </div>
+                        <a href="${server.link}" class="sd-connect-btn">Connect</a>
+                        <div class="sd-status"></div>
+                    `;
+                    serverList.appendChild(serverElement);
+                    updateServerCard(serverElement, status);
+                });
             });
-        });
+
+        // Update and resort servers periodically
+        setInterval(() => {
+            Promise.all(servers.map(server => updateServerStatus(server)))
+                .then(statuses => {
+                    const serverStatusPairs = servers.map((server, index) => ({
+                        server,
+                        status: statuses[index]
+                    }));
+
+                    // Sort by online status and player count
+                    serverStatusPairs.sort((a, b) => {
+                        if (a.status.online && !b.status.online) return -1;
+                        if (!a.status.online && b.status.online) return 1;
+                        return b.status.players - a.status.players;
+                    });
+
+                    // Update server positions and status
+                    serverStatusPairs.forEach(({ server, status }, index) => {
+                        const serverElement = serverList.querySelector(`[data-id="${server.id}"]`);
+                        if (serverElement) {
+                            updateServerCard(serverElement, status);
+                            const currentIndex = Array.from(serverList.children).indexOf(serverElement);
+                            if (currentIndex !== index) {
+                                if (index === 0) {
+                                    serverList.prepend(serverElement);
+                                } else {
+                                    serverList.children[index - 1].after(serverElement);
+                                }
+                            }
+                        }
+                    });
+                });
+        }, 30000);
     }
 
     // Initialize index servers list
@@ -278,33 +341,25 @@ document.addEventListener('DOMContentLoaded', function() {
         const container = indexServersList.parentElement;
         const serversHeader = container.querySelector('.indesc-servers-header');
 
-        // Add transition style
         indexServersList.style.transition = 'opacity 0.3s ease-in-out';
         
         function updateIndexServers(mode = 'popular') {
             updateTotalPlayers(false).then(results => {
                 const popularServers = getPopularServers(results);
                 
-                // If no popular servers available and mode is 'popular', switch to active
                 if (popularServers.length === 0 && mode === 'popular') {
                     mode = 'active';
                 }
 
-                // Get active servers, excluding popular ones if in active mode
                 const activeServers = getActiveServers(results, mode === 'active' ? popularServers : []);
-                
-                // Use popular servers if in popular mode and available, otherwise use active servers
                 let displayServers = mode === 'popular' ? popularServers : activeServers;
                 
-                // Update header
                 if (serversHeader) {
                     serversHeader.textContent = mode === 'popular' ? 'Popular Servers' : 'Active Servers';
                 }
 
-                // Fade out current servers
                 indexServersList.style.opacity = '0';
                 setTimeout(() => {
-                    // Display servers
                     indexServersList.innerHTML = '';
                     displayServers.slice(0, 3).forEach(({ server, status }) => {
                         const serverElement = createIndexServerElement(server, status);
@@ -315,28 +370,23 @@ document.addEventListener('DOMContentLoaded', function() {
                         indexServersList.innerHTML = '<div class="indesc-no-servers">No active servers currently available</div>';
                     }
 
-                    // Fade in new servers
                     indexServersList.style.opacity = '1';
-                }, 300); // Wait for fade out before updating
+                }, 300);
             });
         }
 
-        // Initial update showing popular servers
         updateIndexServers('popular');
 
-        // Set up rotation between popular and active servers
         let currentMode = 'popular';
-        let rotationInterval = setInterval(() => {
+        setInterval(() => {
             currentMode = currentMode === 'popular' ? 'active' : 'popular';
             updateIndexServers(currentMode);
         }, 10000);
 
-        // Update server data every 30 seconds, maintaining current display mode
         setInterval(() => {
             updateIndexServers(currentMode);
         }, 30000);
 
-        // Add footer if needed
         if (!container.querySelector('.indesc-servers-footer')) {
             const footer = document.createElement('div');
             footer.className = 'indesc-servers-footer';

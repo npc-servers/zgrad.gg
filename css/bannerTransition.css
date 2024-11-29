@@ -21,7 +21,7 @@
  
 .large-logo {
     position: absolute;
-    top: 50%;
+    top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
     transition: transform 0.3s ease;
@@ -36,7 +36,7 @@
 /* Banner Buttons */
 .banner-buttons {
     position: absolute;
-    top: 70%;
+    top: 65%;
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
@@ -196,7 +196,7 @@
 /* Media Queries */
 @media (max-width: 768px) {
     .banner-buttons {
-        top: 65%;
+        top: 60%;
         gap: 15px;
         flex-direction: column;
         width: 80%;
@@ -221,7 +221,7 @@
  
 @media (max-width: 480px) {
     .banner-buttons {
-        top: 62%;
+        top: 57%;
         width: 75%;
         max-width: 250px;
         gap: 10px;
