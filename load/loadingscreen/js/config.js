@@ -131,8 +131,8 @@ Config.sidePanelMessages = [
         content: "Hiders have to hide from Seekers until the cops arrive. Seekers have to kill all the hiders"
     },
     {
-        header: "DEATMATCH OVERVIEW",
-        content: "Free for all."
+        header: "DEATHMATCH OVERVIEW",
+        content: "Free for all. Kill everyone."
     },
     {
         header: "WW2 OVERVIEW",
