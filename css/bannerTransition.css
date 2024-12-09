@@ -5,7 +5,7 @@
     overflow: hidden;
     background-size: cover;
     background-position: center;
-    background-image: url('../assets/cards-banners/index-banner.jpg');
+    background-image: url('../assets/load/load-1.png');
 }
  
 .banner::after {
