@@ -221,3 +221,84 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: #222222;
 }
+
+.rule-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+}
+
+.rule-text {
+    flex: 1;
+}
+
+.copy-button {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    color: inherit;
+}
+
+.copy-button:hover {
+    opacity: 1;
+}
+
+.copy-button.copied {
+    color: #4CAF50;
+}
+
+/* Ensure the button doesn't affect the list numbering */
+.rules-content ol {
+    list-style-position: outside;
+    padding-left: 2em;
+}
+
+.rules-content li {
+    padding: 4px 0;
+}
+
+/* Add these new styles */
+.link-button {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s, color 0.2s;
+    color: inherit;
+}
+
+.link-button:hover {
+    opacity: 1;
+}
+
+.link-button.copied {
+    color: #4CAF50;
+}
+
+/* Highlight animation for linked rules */
+@keyframes highlight {
+    0% { background-color: transparent; }
+    30% { background-color: rgba(255, 255, 255, 0.1); }
+    100% { background-color: transparent; }
+}
+
+.highlighted {
+    animation: highlight 2s ease-out;
+}
+
+/* Update existing rule-container styles */
+.rule-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+}
+
+.rule-text {
+    flex: 1;
+}
