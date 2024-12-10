@@ -6,7 +6,13 @@ function highlightLinkedRule() {
         if (rule) {
             rule.classList.add('highlighted');
             rule.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Extract rule number from hash (e.g., #rule1 -> 1)
+            const ruleNumber = hash.replace('#rule', '');
+            updateMetaTags(ruleNumber);
         }
+    } else {
+        // No hash, reset to default meta tags
+        updateMetaTags(null);
     }
 }
 
@@ -46,4 +52,24 @@ function fallbackCopyLink(text) {
         console.error('Failed to copy link');
     }
     document.body.removeChild(textarea);
+}
+
+// Function to update meta tags based on rule number
+function updateMetaTags(ruleNumber) {
+    if (!ruleNumber) {
+        // Reset to default meta tags
+        document.querySelector('meta[property="og:title"]').content = "ZGRAD - Server Guidelines";
+        document.querySelector('meta[property="og:description"]').content = "Learn about ZGRAD's server rules and guidelines. Understand our community standards to ensure a fair and enjoyable gaming experience for everyone.";
+        return;
+    }
+
+    // Get rule-specific meta tags
+    const ruleTitle = document.querySelector(`meta[property="og:rule${ruleNumber}:title"]`);
+    const ruleDescription = document.querySelector(`meta[property="og:rule${ruleNumber}:description"]`);
+
+    if (ruleTitle && ruleDescription) {
+        // Update the general meta tags with rule-specific content
+        document.querySelector('meta[property="og:title"]').content = ruleTitle.content;
+        document.querySelector('meta[property="og:description"]').content = ruleDescription.content;
+    }
 } 
