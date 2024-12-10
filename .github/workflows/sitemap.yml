@@ -1,0 +1,70 @@
+name: Generate Sitemap
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sitemap:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Generate Sitemap
+      run: |
+        echo '<?xml version="1.0" encoding="UTF-8"?>' > sitemap.xml
+        echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' >> sitemap.xml
+        
+        # Homepage
+        echo "  <url>" >> sitemap.xml
+        echo "    <loc>https://zgrad.us/</loc>" >> sitemap.xml
+        echo "    <lastmod>$(date +%Y-%m-%d)</lastmod>" >> sitemap.xml
+        echo "    <changefreq>daily</changefreq>" >> sitemap.xml
+        echo "    <priority>1.0</priority>" >> sitemap.xml
+        echo "  </url>" >> sitemap.xml
+        
+        # Servers
+        echo "  <url>" >> sitemap.xml
+        echo "    <loc>https://zgrad.us/servers</loc>" >> sitemap.xml
+        echo "    <lastmod>$(date +%Y-%m-%d)</lastmod>" >> sitemap.xml
+        echo "    <changefreq>hourly</changefreq>" >> sitemap.xml
+        echo "    <priority>0.9</priority>" >> sitemap.xml
+        echo "  </url>" >> sitemap.xml
+        
+        # Socials
+        echo "  <url>" >> sitemap.xml
+        echo "    <loc>https://zgrad.us/socials</loc>" >> sitemap.xml
+        echo "    <lastmod>$(date +%Y-%m-%d)</lastmod>" >> sitemap.xml
+        echo "    <changefreq>weekly</changefreq>" >> sitemap.xml
+        echo "    <priority>0.8</priority>" >> sitemap.xml
+        echo "  </url>" >> sitemap.xml
+        
+        # Rules
+        echo "  <url>" >> sitemap.xml
+        echo "    <loc>https://zgrad.us/rules</loc>" >> sitemap.xml
+        echo "    <lastmod>$(date +%Y-%m-%d)</lastmod>" >> sitemap.xml
+        echo "    <changefreq>monthly</changefreq>" >> sitemap.xml
+        echo "    <priority>0.7</priority>" >> sitemap.xml
+        echo "  </url>" >> sitemap.xml
+        
+        # Store (External but important)
+        echo "  <url>" >> sitemap.xml
+        echo "    <loc>https://store.zgrad.us</loc>" >> sitemap.xml
+        echo "    <lastmod>$(date +%Y-%m-%d)</lastmod>" >> sitemap.xml
+        echo "    <changefreq>daily</changefreq>" >> sitemap.xml
+        echo "    <priority>0.9</priority>" >> sitemap.xml
+        echo "  </url>" >> sitemap.xml
+        
+        echo '</urlset>' >> sitemap.xml
+
+    - name: Commit and Push
+      run: |
+        git config --global user.name 'GitHub Action'
+        git config --global user.email 'action@github.com'
+        git add sitemap.xml
+        git commit -m "Update sitemap" || exit 0
+        git push 
