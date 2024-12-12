@@ -196,26 +196,31 @@
 /* Media Queries */
 @media (max-width: 768px) {
     .banner-buttons {
-        top: 60%;
-        gap: 15px;
         flex-direction: column;
-        width: 80%;
+        align-items: center;
+        width: 90%;
         max-width: 250px;
+        gap: 20px;
+        margin-top: 2rem;
     }
     
-    .banner-button {
-        padding: 10px 20px;
-        min-width: 120px;
-        font-size: 16px;
-        width: 100%;
+    .banner-button,
+    .banner-buttons .banner-button,
+    .banner-text .banner-button {
+        width: 250px !important;
+        min-width: 140px;
+        padding: 12px 32px;
+        font-size: 18px;
+        box-sizing: border-box;
     }
- 
+
     .large-logo {
-        height: 175px;
+        height: 150px;
+        margin-bottom: 1rem;
     }
 
     .banner-heading {
-        font-size: 3rem;
+        font-size: 2rem;
     }
 }
  
@@ -246,10 +251,13 @@
     .banner-buttons {
         width: 90%;
         max-width: 250px;
-        gap: 8px;
+        gap: 15px;
     }
 
-    .banner-button {
+    .banner-button,
+    .banner-buttons .banner-button,
+    .banner-text .banner-button {
+        width: 200px !important;
         padding: 6px 12px;
         font-size: 13px;
         min-width: 90px;
