@@ -202,3 +202,36 @@
        font-size: 13px;
    }
 }
+
+.site-footer {
+    background-color: #1a1a1a;
+    padding: 2rem 0;
+    margin-top: auto;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    text-align: center;
+}
+
+.footer-links {
+    margin-bottom: 1rem;
+}
+
+.footer-links a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 1rem;
+    font-size: 0.9rem;
+}
+
+.footer-links a:hover {
+    color: #ff0000;
+}
+
+.footer-info {
+    color: #666;
+    font-size: 0.8rem;
+}
