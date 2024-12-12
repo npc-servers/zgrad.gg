@@ -18,6 +18,15 @@ document.addEventListener('DOMContentLoaded', function() {
             description: 'TDM',
             link: '/us2/connect.html'
         },
+        {
+            id: 'zgrad3',
+            title: 'ZGRAD US3',
+            ip: '193.243.190.18',
+            port: 27026,
+            region: 'US',
+            description: 'All Gamemodes',
+            link: '/us3/connect.html'
+        },
     ];
 
     let hasInitializedCount = false;
