@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
         },
     ];
 
+
     let hasInitializedCount = false;
 
     // Animation helper functions
@@ -104,11 +105,24 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 0);
         
         const totalPlayersElement = document.getElementById('totalPlayers');
+        const labelElement = totalPlayersElement?.parentElement?.querySelector('.indesc-stat-label');
+        
         if (totalPlayersElement) {
-            if (animate) {
-                animateCount(totalPlayersElement, 0, newTotal, 2000);
+            if (newTotal === 0) {
+                totalPlayersElement.textContent = ":( no players online";
+                totalPlayersElement.classList.remove('counting');
+                if (labelElement) {
+                    labelElement.style.display = 'none';
+                }
             } else {
-                totalPlayersElement.textContent = newTotal;
+                if (labelElement) {
+                    labelElement.style.display = '';
+                }
+                if (animate) {
+                    animateCount(totalPlayersElement, 0, newTotal, 2000);
+                } else {
+                    totalPlayersElement.textContent = newTotal;
+                }
             }
         }
         
@@ -328,9 +342,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
                 let displayServers = mode === 'popular' ? popularServers : activeServers;
                 
-                // If both modes are empty, don't show anything and skip transitions
+                // If both modes are empty, show "No servers online" message
                 if (popularServers.length === 0 && activeServers.length === 0) {
-                    indexServersList.innerHTML = '';
+                    indexServersList.innerHTML = `
+                        <div class="indesc-no-servers">
+                            No servers online
+                        </div>
+                    `;
                     if (serversHeader) {
                         serversHeader.style.opacity = '0';
                     }
