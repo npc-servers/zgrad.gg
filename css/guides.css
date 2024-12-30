@@ -385,9 +385,15 @@
 }
 
 @media (max-width: 1024px) {
+    .guides-preview-section {
+        position: relative;
+        padding-bottom: 60px;
+    }
+
     .guides-preview-section .swiper-container {
         padding: 20px 30px;
         overflow: hidden;
+        position: relative;
     }
 
     .guides-preview-section .swiper-slide {
@@ -415,6 +421,29 @@
         visibility: visible;
         transform: scale(0.95);
         transition: all 0.3s ease;
+    }
+
+    .guides-preview-section .swiper-pagination {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 20;
+    }
+
+    .guides-preview-section .swiper-pagination-bullet {
+        background: #fff;
+        opacity: 0.5;
+        margin: 0 6px;
+        width: 8px;
+        height: 8px;
+    }
+
+    .guides-preview-section .swiper-pagination-bullet-active {
+        opacity: 1;
     }
 }
 
