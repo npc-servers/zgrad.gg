@@ -234,70 +234,92 @@ function initializeGuidesPreview() {
         swiperWrapper.appendChild(slide);
     });
 
-    // Initialize Swiper with improved configuration
-    const swiper = new Swiper('.guides-swiper', {
-        slidesPerView: 3,
-        spaceBetween: 30,
-        loop: false,
-        watchSlidesProgress: true,
-        watchSlidesVisibility: true,
-        slidesPerGroup: 1,
-        speed: 600,
-        resistance: true,
-        resistanceRatio: 0.8,
-        touchRatio: 0.8,
-        threshold: 10,
-        
-        // Hide navigation arrows when at the end
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-            hideOnClick: false,
-            disabledClass: 'swiper-button-disabled',
-            hiddenClass: 'swiper-button-hidden'
-        },
-        
-        pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
-            type: 'bullets'
-        },
+    let swiper = null;
 
-        // Updated breakpoints for better mobile responsiveness
-        breakpoints: {
-            320: {
-                slidesPerView: 1,
-                spaceBetween: 15,
-                slidesPerGroup: 1
-            },
-            480: {
-                slidesPerView: 1,
-                spaceBetween: 20,
-                slidesPerGroup: 1
-            },
-            768: {
-                slidesPerView: 2,
-                spaceBetween: 20,
-                slidesPerGroup: 1
-            },
-            1024: {
-                slidesPerView: 3,
-                spaceBetween: 30,
-                slidesPerGroup: 1
-            }
-        },
-
-        on: {
-            init: function () {
-                updateNavigationVisibility(this);
-            },
-            slideChange: function () {
-                updateNavigationVisibility(this);
-            },
-            resize: function () {
-                updateNavigationVisibility(this);
-            }
+    // Function to initialize or reinitialize Swiper
+    function initSwiper() {
+        // Destroy existing swiper instance if it exists
+        if (swiper !== null) {
+            swiper.destroy(true, true);
         }
+
+        // Initialize Swiper with improved configuration
+        swiper = new Swiper('.guides-swiper', {
+            slidesPerView: 3,
+            spaceBetween: 30,
+            loop: false,
+            watchSlidesProgress: true,
+            watchSlidesVisibility: true,
+            slidesPerGroup: 1,
+            speed: 600,
+            resistance: true,
+            resistanceRatio: 0.8,
+            touchRatio: 0.8,
+            threshold: 10,
+            
+            // Hide navigation arrows when at the end
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+                hideOnClick: false,
+                disabledClass: 'swiper-button-disabled',
+                hiddenClass: 'swiper-button-hidden'
+            },
+            
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+                type: 'bullets'
+            },
+
+            // Updated breakpoints for better mobile responsiveness
+            breakpoints: {
+                320: {
+                    slidesPerView: 1,
+                    spaceBetween: 15,
+                    slidesPerGroup: 1
+                },
+                480: {
+                    slidesPerView: 1,
+                    spaceBetween: 20,
+                    slidesPerGroup: 1
+                },
+                768: {
+                    slidesPerView: 2,
+                    spaceBetween: 20,
+                    slidesPerGroup: 1
+                },
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 30,
+                    slidesPerGroup: 1
+                }
+            },
+
+            on: {
+                init: function () {
+                    updateNavigationVisibility(this);
+                },
+                slideChange: function () {
+                    updateNavigationVisibility(this);
+                },
+                resize: function () {
+                    updateNavigationVisibility(this);
+                }
+            }
+        });
+    }
+
+    // Initialize Swiper for the first time
+    initSwiper();
+
+    // Add resize event listener with debounce
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            initSwiper();
+        }, 250); // Debounce resize events for better performance
     });
 
     // Function to update navigation visibility
