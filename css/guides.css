@@ -384,6 +384,40 @@
     display: none;
 }
 
+@media (max-width: 1024px) {
+    .guides-preview-section .swiper-container {
+        padding: 20px 30px;
+        overflow: hidden;
+    }
+
+    .guides-preview-section .swiper-slide {
+        width: calc((100% - 20px) / 2) !important;
+        margin-right: 20px;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+    }
+
+    .guides-preview-section .swiper-wrapper {
+        display: flex;
+        align-items: stretch;
+    }
+
+    .guides-preview-section .swiper-slide-visible {
+        opacity: 1;
+        visibility: visible;
+        transform: scale(1);
+        pointer-events: auto;
+    }
+
+    .guides-preview-section .swiper-slide:not(.swiper-slide-visible) {
+        opacity: 0.4;
+        visibility: visible;
+        transform: scale(0.95);
+        transition: all 0.3s ease;
+    }
+}
+
 @media (max-width: 768px) {
     .guides-preview-section .swiper-container {
         padding: 20px 30px;
