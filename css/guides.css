@@ -1,0 +1,385 @@
+/* Guides Styling */
+.guide-container {
+    max-width: 1200px;
+    margin: 120px auto 40px;
+    padding: 0 20px;
+}
+
+.guide-banner {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    margin-bottom: 40px;
+}
+
+.guide-banner-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(5px) brightness(0.3);
+}
+
+.guide-banner-content {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.guide-header {
+    text-align: center;
+}
+
+.guide-title {
+    font-size: 2.5rem;
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+.guide-meta {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.guide-meta span {
+    margin: 0 10px;
+}
+
+.guide-content {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 30px;
+    border-radius: 8px;
+    color: #fff;
+    line-height: 1.6;
+}
+
+.guide-navigation {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.back-to-guides {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #2c2c2c;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+.back-to-guides:hover {
+    background: #3a3a3a;
+}
+
+/* Guides Preview Section (for index page) */
+.guides-preview-section {
+    padding: 60px 0;
+    background: rgba(0, 0, 0, 0.2);
+    width: 100%;
+}
+
+.guides-preview-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0;
+    position: relative;
+}
+
+.guides-preview-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 0 20px;
+}
+
+.guides-preview-header h2 {
+    font-size: 2rem;
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+/* Swiper Styling */
+.guides-preview-section .swiper-container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px 50px;
+    box-sizing: border-box;
+    margin: 0 auto 50px;
+    position: relative;
+}
+
+.guides-preview-section .swiper-wrapper {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.guides-preview-section .swiper-slide {
+    width: calc((100% - 60px) / 3) !important;
+    margin-right: 30px;
+}
+
+/* Guide Card Base Styles */
+.guide-card {
+    background: rgba(44, 44, 44, 0.8);
+    border-radius: 8px;
+    padding: 20px;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    will-change: transform, opacity;
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Directory Page Guide Card Animations */
+.guides-directory .guide-card {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease-out;
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+.guides-directory .guide-card.guide-reveal {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.guides-directory .guide-card.guide-initial {
+    opacity: 0;
+    animation: guideRevealInitial 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    animation-delay: calc(var(--animation-order) * 100ms);
+}
+
+@keyframes guideRevealInitial {
+    0% {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+    }
+    60% {
+        opacity: 1;
+        transform: translateY(-10px) scale(1.02);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Swiper Guide Card Styles */
+.guides-preview-section .guide-card {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+}
+
+.guides-preview-section .guide-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Hide inactive swiper slides */
+.guides-preview-section .swiper-slide {
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.8) translateY(20px);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    will-change: transform, opacity;
+    height: auto;
+}
+
+.guides-preview-section .swiper-slide-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1) translateY(0);
+    pointer-events: auto;
+}
+
+.guide-card-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.guide-card-title {
+    font-size: 1.2rem;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.guide-card-excerpt {
+    color: #888;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.guide-card-meta {
+    color: #666;
+    font-size: 0.8rem;
+    margin-top: 10px;
+}
+
+/* Swiper Navigation */
+.guides-preview-section .swiper-button-next,
+.guides-preview-section .swiper-button-prev {
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    z-index: 10;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    transition: all 0.3s;
+    opacity: 1;
+    visibility: visible;
+}
+
+.guides-preview-section .swiper-button-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.guides-preview-section .swiper-button-next:hover,
+.guides-preview-section .swiper-button-prev:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.guides-preview-section .swiper-button-next:after,
+.guides-preview-section .swiper-button-prev:after {
+    font-size: 16px;
+}
+
+.guides-preview-section .swiper-button-prev {
+    left: 15px;
+}
+
+.guides-preview-section .swiper-button-next {
+    right: 15px;
+}
+
+.guides-preview-section .swiper-pagination {
+    position: absolute;
+    bottom: -40px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.guides-preview-section .swiper-pagination-bullet {
+    background: #fff;
+    opacity: 0.5;
+    margin: 0 6px;
+    width: 8px;
+    height: 8px;
+}
+
+.guides-preview-section .swiper-pagination-bullet-active {
+    background: #fff;
+    opacity: 1;
+}
+
+/* Remove any other visibility classes */
+.guides-preview-section .swiper-slide-duplicate {
+    display: none;
+}
+
+/* Guides Directory Page */
+.guides-directory {
+    max-width: 1200px;
+    margin: 120px auto 40px;
+    padding: 0 20px;
+}
+
+.guides-directory-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.guides-directory-header h1 {
+    font-size: 2.5rem;
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+.guides-directory-header p {
+    color: #888;
+    font-size: 1.1rem;
+}
+
+.guides-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.guides-grid .guide-card {
+    height: 350px;
+    margin: 0;
+}
+
+.guides-categories {
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.category-filter {
+    display: inline-block;
+    padding: 8px 16px;
+    margin: 0 8px 8px 0;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.category-filter:hover,
+.category-filter.active {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.no-guides {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+}
+
+.no-guides p {
+    color: #888;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* Remove old scroll reveal animation */
+.scroll-reveal {
+    display: none;
+}
+
+.scroll-reveal.revealed {
+    display: none;
+} 

@@ -37,6 +37,10 @@
     <link rel="stylesheet" href="/css/bannerTransition.css">
     <link rel="stylesheet" href="/css/indexDescription.css">
     <link rel="stylesheet" href="/css/storePopup.css">
+    <link rel="stylesheet" href="/css/animations.css">
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css">
+    <link rel="stylesheet" href="/css/guides.css">
 </head>
 
 <body>
@@ -123,6 +127,25 @@
         </div>
     </div>
 
+    <!-- Guides Preview Section -->
+    <div class="guides-preview-section">
+        <div class="guides-preview-container">
+            <div class="guides-preview-header">
+                <h2>Latest Guides</h2>
+            </div>
+            <div class="swiper-container guides-swiper">
+                <div class="swiper-wrapper">
+                    <!-- Guide cards will be dynamically populated here -->
+                </div>
+                <!-- Add Navigation -->
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+                <!-- Add Pagination -->
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+    </div>
+
     <script src="/js/elements/nav.js"></script>
     <script src="/js/elements/loading.js"></script>
     <script src="/js/elements/arrow.js"></script>
@@ -130,6 +153,7 @@
     <script src="/js/elements/servers.js"></script>
     <script src="/js/elements/storepromo.js"></script>
     <script src="/js/elements/storePopup.js"></script>
+    <script src="/js/elements/scrollAnimations.js"></script>
 
     <footer class="site-footer">
         <div class="footer-content">
@@ -140,10 +164,14 @@
                 <a href="/socials.html">Socials</a>
             </div>
             <div class="footer-info">
-                <p>&copy; 2024 ZGRAD. All rights reserved.</p>
+                <p>&copy; 2024 NPCZ, LLC DBA ZGRAD. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
+    <!-- Scripts -->
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+    <script src="/js/guides.js"></script>
 </body>
 </html>
