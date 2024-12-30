@@ -387,10 +387,25 @@
 @media (max-width: 768px) {
     .guides-preview-section .swiper-container {
         padding: 20px 30px;
+        overflow: visible;
+    }
+
+    .guides-preview-section .swiper-wrapper {
+        display: flex;
+        align-items: stretch;
     }
 
     .guides-preview-section .swiper-slide {
         width: 100% !important;
+        opacity: 0.4;
+        transform: scale(0.9);
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+    }
+
+    .guides-preview-section .swiper-slide-active {
+        opacity: 1;
+        transform: scale(1);
     }
 
     .guide-card {
