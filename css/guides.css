@@ -108,7 +108,7 @@
 .guides-preview-section .swiper-container {
     width: 100%;
     max-width: 1200px;
-    padding: 20px 50px;
+    padding: 20px 40px;
     box-sizing: border-box;
     margin: 0 auto 50px;
     position: relative;
@@ -382,4 +382,50 @@
 
 .scroll-reveal.revealed {
     display: none;
+}
+
+@media (max-width: 768px) {
+    .guides-preview-section .swiper-container {
+        padding: 20px 30px;
+    }
+
+    .guides-preview-section .swiper-slide {
+        width: 100% !important;
+    }
+
+    .guide-card {
+        height: 320px;  /* Slightly taller on mobile for better readability */
+    }
+
+    .guides-preview-section .swiper-button-next,
+    .guides-preview-section .swiper-button-prev {
+        width: 25px;
+        height: 25px;
+    }
+
+    .guides-preview-section .swiper-button-prev {
+        left: 5px;
+    }
+
+    .guides-preview-section .swiper-button-next {
+        right: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .guides-preview-section .swiper-container {
+        padding: 20px 25px;
+    }
+
+    .guide-card-image {
+        height: 130px;
+    }
+
+    .guide-card-title {
+        font-size: 1.1rem;
+    }
+
+    .guide-card-excerpt {
+        font-size: 0.85rem;
+    }
 } 

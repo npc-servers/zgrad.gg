@@ -263,19 +263,24 @@ function initializeGuidesPreview() {
             type: 'bullets'
         },
 
-        // Improved breakpoints with auto sizing
+        // Updated breakpoints for better mobile responsiveness
         breakpoints: {
             320: {
+                slidesPerView: 1,
+                spaceBetween: 15,
+                slidesPerGroup: 1
+            },
+            480: {
                 slidesPerView: 1,
                 spaceBetween: 20,
                 slidesPerGroup: 1
             },
-            640: {
+            768: {
                 slidesPerView: 2,
                 spaceBetween: 20,
                 slidesPerGroup: 1
             },
-            968: {
+            1024: {
                 slidesPerView: 3,
                 spaceBetween: 30,
                 slidesPerGroup: 1
