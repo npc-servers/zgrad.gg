@@ -66,16 +66,20 @@
 
 .back-to-guides {
     display: inline-block;
-    padding: 10px 20px;
-    background: #2c2c2c;
+    padding: 12px 32px;
+    background: rgba(255, 255, 255, 0.1);
     color: #fff;
     text-decoration: none;
-    border-radius: 4px;
-    transition: background 0.3s;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .back-to-guides:hover {
-    background: #3a3a3a;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Guides Preview Section (for index page) */
@@ -83,6 +87,8 @@
     padding: 60px 0;
     background: rgba(0, 0, 0, 0.2);
     width: 100%;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .guides-preview-container {
@@ -102,6 +108,30 @@
     font-size: 2rem;
     color: #fff;
     margin-bottom: 15px;
+}
+
+.guides-preview-actions {
+    text-align: center;
+    margin-top: 20px;
+    padding: 0 20px;
+}
+
+.view-guides-button {
+    display: inline-block;
+    padding: 12px 32px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.view-guides-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Swiper Styling */
@@ -136,14 +166,15 @@
     flex-direction: column;
     cursor: pointer;
     will-change: transform, opacity;
-    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    border: 1px solid transparent;
 }
 
 /* Directory Page Guide Card Animations */
 .guides-directory .guide-card {
     opacity: 0;
     transform: translateY(40px);
-    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease-out;
+    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
     backface-visibility: hidden;
     perspective: 1000px;
 }
@@ -181,8 +212,15 @@
     transform: none;
 }
 
+.guides-preview-section .swiper-slide-visible .guide-card {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
 .guides-preview-section .guide-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(44, 44, 44, 0.9);
 }
 
 /* Hide inactive swiper slides */
@@ -495,6 +533,12 @@
 }
 
 @media (max-width: 768px) {
+    .guides-preview-section {
+        border: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
     .guides-preview-section .swiper-container {
         padding: 20px 30px;
         overflow: visible;
