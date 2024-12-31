@@ -117,6 +117,25 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Function to populate guide metadata
+function populateGuideMetadata() {
+    const metaContainer = document.querySelector('.guide-meta[data-guide-id]');
+    if (!metaContainer) return;
+
+    const guideId = metaContainer.getAttribute('data-guide-id');
+    const guide = guides.find(g => g.id === guideId);
+    
+    if (guide) {
+        const authorSpan = metaContainer.querySelector('.guide-author');
+        const dateSpan = metaContainer.querySelector('.guide-date');
+        const categorySpan = metaContainer.querySelector('.guide-category');
+
+        if (authorSpan) authorSpan.textContent = `By ${guide.author}`;
+        if (dateSpan) dateSpan.textContent = new Date(guide.date).toLocaleDateString();
+        if (categorySpan) categorySpan.textContent = guide.category;
+    }
+}
+
 // Initialize guides directory
 function initializeGuidesDirectory() {
     const guidesGrid = document.getElementById('guides-grid');
@@ -165,7 +184,11 @@ function initializeGuidesDirectory() {
                 <h3 class="guide-card-title">${guide.title}</h3>
                 <p class="guide-card-excerpt">${guide.excerpt}</p>
                 <div class="guide-card-meta">
-                    <span>${guide.author}</span> • <span>${new Date(guide.date).toLocaleDateString()}</span>
+                    <span class="guide-card-author">${guide.author}</span>
+                    <span class="guide-card-separator">•</span>
+                    <span class="guide-card-date">${new Date(guide.date).toLocaleDateString()}</span>
+                    <span class="guide-card-separator">•</span>
+                    <span class="guide-card-category">${guide.category}</span>
                 </div>
             `;
             
@@ -226,7 +249,11 @@ function initializeGuidesPreview() {
                 <h3 class="guide-card-title">${guide.title}</h3>
                 <p class="guide-card-excerpt">${guide.excerpt}</p>
                 <div class="guide-card-meta">
-                    <span>${guide.author}</span> • <span>${new Date(guide.date).toLocaleDateString()}</span>
+                    <span class="guide-card-author">${guide.author}</span>
+                    <span class="guide-card-separator">•</span>
+                    <span class="guide-card-date">${new Date(guide.date).toLocaleDateString()}</span>
+                    <span class="guide-card-separator">•</span>
+                    <span class="guide-card-category">${guide.category}</span>
                 </div>
             </div>
         `;

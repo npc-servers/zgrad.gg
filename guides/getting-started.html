@@ -39,47 +39,72 @@
     </nav>
 
     <div class="guide-container">
-        <header class="guide-header">
-            <h1 class="guide-title">Getting Started with ZGRAD</h1>
-            <div class="guide-meta">
-                <span class="guide-author">By ZGRAD Team</span>
-                <span class="guide-date">January 1, 2024</span>
+        <div class="guide-banner">
+            <img src="/assets/load/load-1.png" alt="Getting Started Guide Banner" class="guide-banner-image">
+            <div class="guide-banner-content">
+                <header class="guide-header">
+                    <h1 class="guide-title">Getting Started with ZGRAD</h1>
+                    <div class="guide-meta" data-guide-id="getting-started">
+                        <span class="guide-author"></span>
+                        <span class="guide-date"></span>
+                        <span class="guide-category"></span>
+                    </div>
+                </header>
             </div>
-        </header>
+        </div>
 
         <article class="guide-content">
-            <h2>Welcome to ZGRAD!</h2>
-            <p>This guide will help you get started with playing on ZGRAD servers. We'll cover the basics of connecting, understanding game modes, and getting involved in the community.</p>
+            <section class="guide-section">
+                <h2 class="section-title">Welcome to ZGRAD!</h2>
+                <p class="section-intro">Ready to jump into the action? This comprehensive guide will walk you through everything you need to know about getting started with ZGRAD servers. From connecting to your first game to becoming an active community member, we've got you covered.</p>
+            </section>
 
-            <h3>1. Connecting to ZGRAD</h3>
-            <p>To join our servers:</p>
-            <ul>
-                <li>Open Garry's Mod</li>
-                <li>Click on 'Find Multiplayer Game'</li>
-                <li>Search for 'ZGRAD' in the server browser</li>
-                <li>Join any of our servers!</li>
-            </ul>
+            <section class="guide-section">
+                <h3 class="section-subtitle">1. Connecting to ZGRAD</h3>
+                <p>Getting into the game is quick and easy. Follow these simple steps to join our servers:</p>
+                <ul class="guide-list">
+                    <li><strong>Launch:</strong> Open Garry's Mod on your computer</li>
+                    <li><strong>Navigate:</strong> Click on 'Find Multiplayer Game' in the main menu</li>
+                    <li><strong>Search:</strong> Look for 'ZGRAD' in the server browser</li>
+                    <li><strong>Join:</strong> Select any of our servers and click connect!</li>
+                </ul>
+            </section>
 
-            <h3>2. Understanding Game Modes</h3>
-            <p>ZGRAD offers several unique game modes:</p>
-            <ul>
-                <li><strong>HOMIGRAD:</strong> Our flagship game mode featuring intense team-based combat</li>
-                <li><strong>Sandbox:</strong> Creative mode where you can build and experiment</li>
-                <li><strong>Custom Events:</strong> Special events hosted regularly by our staff team</li>
-            </ul>
+            <section class="guide-section">
+                <h3 class="section-subtitle">2. Game Modes Overview</h3>
+                <p>ZGRAD offers a variety of exciting game modes to suit different playstyles:</p>
+                <ul class="guide-list feature-list">
+                    <li><strong>HOMIGRAD:</strong> Our flagship game mode featuring intense team-based combat, strategic objectives, and dynamic gameplay</li>
+                    <li><strong>Sandbox:</strong> A creative playground where you can build, experiment, and test your ideas without limitations</li>
+                    <li><strong>Custom Events:</strong> Special community events hosted by our staff team, featuring unique game modes and challenges</li>
+                </ul>
+            </section>
 
-            <h3>3. Getting Involved</h3>
-            <p>Join our community:</p>
-            <ul>
-                <li>Connect to our Discord server</li>
-                <li>Follow us on social media</li>
-                <li>Participate in community events</li>
-                <li>Share your feedback and suggestions</li>
-            </ul>
+            <section class="guide-section">
+                <h3 class="section-subtitle">3. Community Integration</h3>
+                <p>Become an active member of our thriving community:</p>
+                <ul class="guide-list">
+                    <li><strong>Discord:</strong> Join our Discord server to chat with other players and stay updated</li>
+                    <li><strong>Social Media:</strong> Follow us on various platforms for news and announcements</li>
+                    <li><strong>Events:</strong> Participate in regular community events and competitions</li>
+                    <li><strong>Feedback:</strong> Share your ideas and suggestions to help improve the server</li>
+                </ul>
+            </section>
+
+            <section class="guide-section">
+                <h3 class="section-subtitle">Next Steps</h3>
+                <p>Now that you're ready to start your journey:</p>
+                <ul class="guide-list">
+                    <li>Check out our other guides for specific game modes</li>
+                    <li>Review the server rules to ensure a great experience for everyone</li>
+                    <li>Consider joining our Discord for real-time community interaction</li>
+                    <li>Don't hesitate to ask questions - our community is here to help!</li>
+                </ul>
+            </section>
         </article>
 
         <div class="guide-navigation">
-            <a href="/guides" class="back-to-guides">Back to Guides</a>
+            <a href="/guides" class="back-to-guides">← Back to Guides</a>
         </div>
     </div>
 
@@ -98,5 +123,11 @@
     </footer>
 
     <script src="/js/elements/nav.js"></script>
+    <script src="/js/guides.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            populateGuideMetadata();
+        });
+    </script>
 </body>
 </html> 
