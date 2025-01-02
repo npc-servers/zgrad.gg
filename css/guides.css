@@ -294,18 +294,18 @@
 .guides-preview-section .swiper-button-prev {
     color: #fff;
     position: absolute;
-    top: 50%;
+    top: calc(50%);
     transform: translateY(-50%);
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     z-index: 10;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.5);
+    background: none;
     border-radius: 50%;
-    transition: all 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 1;
     visibility: visible;
 }
@@ -318,20 +318,26 @@
 
 .guides-preview-section .swiper-button-next:hover,
 .guides-preview-section .swiper-button-prev:hover {
-    background: rgba(0, 0, 0, 0.8);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.guides-preview-section .swiper-button-next:active,
+.guides-preview-section .swiper-button-prev:active {
+    transform: translateY(-50%) scale(0.9);
+    transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .guides-preview-section .swiper-button-next:after,
 .guides-preview-section .swiper-button-prev:after {
-    font-size: 16px;
+    font-size: 24px;
 }
 
 .guides-preview-section .swiper-button-prev {
-    left: 15px;
+    left: -10px;
 }
 
 .guides-preview-section .swiper-button-next {
-    right: 15px;
+    right: -10px;
 }
 
 .guides-preview-section .swiper-pagination {
@@ -342,7 +348,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1;
+    z-index: 20;
 }
 
 .guides-preview-section .swiper-pagination-bullet {
@@ -477,7 +483,7 @@
 
     .guides-preview-section .swiper-container {
         padding: 20px 30px;
-        overflow: hidden;
+        overflow: visible;
         position: relative;
     }
 
@@ -510,7 +516,7 @@
 
     .guides-preview-section .swiper-pagination {
         position: absolute;
-        bottom: 0;
+        bottom: -20px;
         left: 0;
         right: 0;
         display: flex;
@@ -529,6 +535,40 @@
 
     .guides-preview-section .swiper-pagination-bullet-active {
         opacity: 1;
+    }
+
+    .guides-preview-section .swiper-button-next,
+    .guides-preview-section .swiper-button-prev {
+        top: auto;
+        bottom: -16px;
+        transform: translateY(50%);
+        width: 25px;
+        height: 25px;
+        z-index: 30;
+        pointer-events: auto;
+    }
+
+    .guides-preview-section .swiper-button-next:hover,
+    .guides-preview-section .swiper-button-prev:hover {
+        transform: translateY(50%) scale(1.1);
+    }
+
+    .guides-preview-section .swiper-button-next:active,
+    .guides-preview-section .swiper-button-prev:active {
+        transform: translateY(50%) scale(0.9);
+    }
+
+    .guides-preview-section .swiper-button-prev {
+        left: calc(50% - 120px);
+    }
+
+    .guides-preview-section .swiper-button-next {
+        right: calc(50% - 120px);
+    }
+
+    .guides-preview-section .swiper-pagination {
+        bottom: -20px;
+        z-index: 20;
     }
 }
 
@@ -568,16 +608,43 @@
 
     .guides-preview-section .swiper-button-next,
     .guides-preview-section .swiper-button-prev {
+        top: auto;
+        bottom: -16px;
+        transform: translateY(50%);
         width: 25px;
         height: 25px;
+        z-index: 30;
+        pointer-events: auto;
+    }
+
+    .guides-preview-section .swiper-button-next:hover,
+    .guides-preview-section .swiper-button-prev:hover {
+        transform: translateY(50%) scale(1.1);
+    }
+
+    .guides-preview-section .swiper-button-next:active,
+    .guides-preview-section .swiper-button-prev:active {
+        transform: translateY(50%) scale(0.9);
     }
 
     .guides-preview-section .swiper-button-prev {
-        left: 5px;
+        left: calc(50% - 120px);
     }
 
     .guides-preview-section .swiper-button-next {
-        right: 5px;
+        right: calc(50% - 120px);
+    }
+
+    .guides-preview-section .swiper-pagination {
+        bottom: -20px;
+        z-index: 20;
+    }
+
+    /* Remove duplicate styles */
+    .guides-preview-section .swiper-button-next,
+    .guides-preview-section .swiper-button-prev {
+        width: 25px;
+        height: 25px;
     }
 }
 
