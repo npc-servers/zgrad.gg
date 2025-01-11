@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /
-Sitemap: https://zgrad.us/sitemap.xml 
+Sitemap: https://zgrad.gg/sitemap.xml 
 
 # Allow all bots to index the site
 User-agent: Googlebot

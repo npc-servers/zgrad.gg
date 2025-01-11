@@ -21,7 +21,7 @@ jobs:
         
         # Homepage
         echo "  <url>" >> sitemap.xml
-        echo "    <loc>https://zgrad.us/</loc>" >> sitemap.xml
+        echo "    <loc>https://zgrad.gg/</loc>" >> sitemap.xml
         echo "    <lastmod>$(date +%Y-%m-%d)</lastmod>" >> sitemap.xml
         echo "    <changefreq>daily</changefreq>" >> sitemap.xml
         echo "    <priority>1.0</priority>" >> sitemap.xml
@@ -29,7 +29,7 @@ jobs:
         
         # Servers
         echo "  <url>" >> sitemap.xml
-        echo "    <loc>https://zgrad.us/servers</loc>" >> sitemap.xml
+        echo "    <loc>https://zgrad.gg/servers</loc>" >> sitemap.xml
         echo "    <lastmod>$(date +%Y-%m-%d)</lastmod>" >> sitemap.xml
         echo "    <changefreq>hourly</changefreq>" >> sitemap.xml
         echo "    <priority>0.9</priority>" >> sitemap.xml
@@ -37,7 +37,7 @@ jobs:
         
         # Socials
         echo "  <url>" >> sitemap.xml
-        echo "    <loc>https://zgrad.us/socials</loc>" >> sitemap.xml
+        echo "    <loc>https://zgrad.gg/socials</loc>" >> sitemap.xml
         echo "    <lastmod>$(date +%Y-%m-%d)</lastmod>" >> sitemap.xml
         echo "    <changefreq>weekly</changefreq>" >> sitemap.xml
         echo "    <priority>0.8</priority>" >> sitemap.xml
@@ -45,7 +45,7 @@ jobs:
         
         # Rules
         echo "  <url>" >> sitemap.xml
-        echo "    <loc>https://zgrad.us/rules</loc>" >> sitemap.xml
+        echo "    <loc>https://zgrad.gg/rules</loc>" >> sitemap.xml
         echo "    <lastmod>$(date +%Y-%m-%d)</lastmod>" >> sitemap.xml
         echo "    <changefreq>monthly</changefreq>" >> sitemap.xml
         echo "    <priority>0.7</priority>" >> sitemap.xml
@@ -53,7 +53,7 @@ jobs:
         
         # Store (External but important)
         echo "  <url>" >> sitemap.xml
-        echo "    <loc>https://zgrad.us/store/connect</loc>" >> sitemap.xml
+        echo "    <loc>https://zgrad.gg/store/connect</loc>" >> sitemap.xml
         echo "    <lastmod>$(date +%Y-%m-%d)</lastmod>" >> sitemap.xml
         echo "    <changefreq>monthly</changefreq>" >> sitemap.xml
         echo "    <priority>0.6</priority>" >> sitemap.xml
@@ -61,7 +61,7 @@ jobs:
 
         # Store (External but important)
         echo "  <url>" >> sitemap.xml
-        echo "    <loc>https://zgrad.us/discord/connect</loc>" >> sitemap.xml
+        echo "    <loc>https://zgrad.gg/discord/connect</loc>" >> sitemap.xml
         echo "    <lastmod>$(date +%Y-%m-%d)</lastmod>" >> sitemap.xml
         echo "    <changefreq>monthly</changefreq>" >> sitemap.xml
         echo "    <priority>0.5</priority>" >> sitemap.xml

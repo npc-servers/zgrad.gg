@@ -46,7 +46,7 @@ Config.enableRotatingTitles = true;
 Config.titleMessages = [
     {
         heading: "VISIT US",
-        subheading: "ZGRAD.US/DISCORD"
+        subheading: "zgrad.gg/DISCORD"
     },
     {
         heading: "THE BEST HOMIGRAD EXPERIENCE?",
@@ -54,7 +54,7 @@ Config.titleMessages = [
     },
     {
         heading: "FOLLOW OUR SOCIALS",
-        subheading: "ZGRAD.US/SOCIALS"
+        subheading: "zgrad.gg/SOCIALS"
     },
 ];
 
@@ -70,7 +70,7 @@ Config.rotationLength = 5000;
  */
 Config.announceMessages = [
     "Get help or report players in the #support channel on our Discord.",
-    "Be sure to join our Discord: zgrad.us/discord",
+    "Be sure to join our Discord: zgrad.gg/discord",
     "Press F2 to open our settings menu!",
     "We bind all necessary game functions by default!",
     "Found a bug or have a suggestion? Post about it on our Discord!"
