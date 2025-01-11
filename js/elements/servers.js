@@ -10,22 +10,31 @@ document.addEventListener('DOMContentLoaded', function() {
             link: '/us1/connect.html'
         },
         {
-            id: 'zgrad2',
-            title: 'ZGRAD US2',
+            id: 'hh1',
+            title: 'Harrisons Homigrad US1',
             ip: '193.243.190.18',
-            port: 27067,
-            region: 'US',
-            description: 'TDM',
-            link: '/us2/connect.html'
-        },
-        {
-            id: 'zgrad3',
-            title: 'ZGRAD US3',
-            ip: '193.243.190.18',
-            port: 27026,
+            port: 27051,
             region: 'US',
             description: 'All Gamemodes',
-            link: '/us3/connect.html'
+            link: '/hh1/connect.html'
+        },
+        {
+            id: 'hh2',
+            title: 'Harrisons Homigrad US2',
+            ip: '193.243.190.18',
+            port: 27052,
+            region: 'US',
+            description: 'All Gamemodes',
+            link: '/hh2/connect.html'
+        },
+        {
+            id: 'hh3',
+            title: 'Harrisons Homigrad US3',
+            ip: '193.243.190.18',
+            port: 27053,
+            region: 'US',
+            description: 'Homicide Only',
+            link: '/hh3/connect.html'
         },
     ];
 
