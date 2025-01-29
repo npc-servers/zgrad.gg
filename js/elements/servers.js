@@ -450,7 +450,7 @@ if (!container.querySelector('.indesc-servers-footer')) {
 const footer = document.createElement('div');
 footer.className = 'indesc-servers-footer';
 footer.innerHTML = `
-<a href="/servers.html" class="indesc-view-servers">View All Servers</a>
+<a href="/servers" class="indesc-view-servers">View All Servers</a>
 `;
 container.appendChild(footer);
 }

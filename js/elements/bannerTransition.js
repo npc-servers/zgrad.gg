@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         newTextContainer.className = 'banner-text';
         newTextContainer.innerHTML = `
             <h1 class="banner-heading">START PLAYING NOW</h1>
-            <a href="/servers.html" class="banner-button view-servers-button">
+            <a href="/servers" class="banner-button view-servers-button">
                 <span class="button-text">VIEW SERVERS</span>
             </a>
         `;
