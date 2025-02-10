@@ -90,7 +90,7 @@ Config.announcementLength = 3000;
 Config.tipMessages = [
     "Press F2 to access the settings menu.",
     "Press G to ragdoll or get up.",
-    "While unconcious, type !endit to kill yourself."
+    "While unconscious, type !endit to kill yourself."
 ];
 
 Config.sidePanelMessages = [
