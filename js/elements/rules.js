@@ -1,75 +1,87 @@
-// Highlight rule if it's linked to
-function highlightLinkedRule() {
-    const hash = window.location.hash;
-    if (hash) {
-        const rule = document.querySelector(hash);
-        if (rule) {
-            rule.classList.add('highlighted');
-            rule.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            // Extract rule number from hash (e.g., #rule1 -> 1)
-            const ruleNumber = hash.replace('#rule', '');
-            updateMetaTags(ruleNumber);
-        }
-    } else {
-        // No hash, reset to default meta tags
-        updateMetaTags(null);
-    }
+function copyLink(ruleId) {
+    const url = window.location.href.split('#')[0] + '#' + ruleId;
+    navigator.clipboard.writeText(url).then(() => {
+        showToast('Link copied to clipboard!');
+    });
 }
 
-// Run on page load and when hash changes
-window.addEventListener('load', highlightLinkedRule);
-window.addEventListener('hashchange', highlightLinkedRule);
+function copyText(button) {
+    const ruleCard = button.closest('.rule-card');
+    const title = ruleCard.querySelector('.rule-title').textContent;
+    const description = ruleCard.querySelector('.rule-description').textContent;
+    const text = `${title}\n${description}`;
+    navigator.clipboard.writeText(text).then(() => {
+        showToast('Rule copied to clipboard!');
+    });
+}
 
-function copyLink(ruleNumber) {
-    const url = `${window.location.origin}${window.location.pathname}#rule${ruleNumber}`;
-    
-    // Try modern clipboard API first
-    if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(url).catch(() => {
-            fallbackCopyLink(url);
-        });
-    } else {
-        fallbackCopyLink(url);
+function showToast(message) {
+    // Remove existing toast if any
+    const existingToast = document.querySelector('.toast');
+    if (existingToast) {
+        existingToast.remove();
     }
 
-    // Visual feedback
-    const button = document.querySelector(`#rule${ruleNumber} .link-button`);
-    button.classList.add('copied');
+    // Create and show new toast
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    // Remove toast after animation
     setTimeout(() => {
-        button.classList.remove('copied');
-    }, 1000);
+        toast.remove();
+    }, 3000);
 }
 
-function fallbackCopyLink(text) {
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    textarea.style.position = 'fixed';
-    document.body.appendChild(textarea);
-    textarea.select();
-    try {
-        document.execCommand('copy');
-    } catch (err) {
-        console.error('Failed to copy link');
-    }
-    document.body.removeChild(textarea);
+// Collapse all rules except the target
+function collapseAllExcept(targetId) {
+    document.querySelectorAll('.rule-card').forEach(card => {
+        if (card.id !== targetId) {
+            card.classList.remove('expanded');
+        }
+    });
 }
 
-// Function to update meta tags based on rule number
-function updateMetaTags(ruleNumber) {
-    if (!ruleNumber) {
-        // Reset to default meta tags
-        document.querySelector('meta[property="og:title"]').content = "ZGRAD - Server Guidelines";
-        document.querySelector('meta[property="og:description"]').content = "Learn about ZGRAD's server rules and guidelines. Understand our community standards to ensure a fair and enjoyable gaming experience for everyone.";
-        return;
+// Initialize rules functionality
+function initRules() {
+    // Set animation order for rule cards
+    document.querySelectorAll('.rule-card').forEach((card, index) => {
+        card.style.setProperty('--animation-order', index);
+    });
+
+    // Handle rule card clicks
+    document.querySelectorAll('.rule-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+            // Don't toggle if clicking on action buttons
+            if (!e.target.closest('.rule-actions')) {
+                card.classList.toggle('expanded');
+                collapseAllExcept(card.id);
+            }
+        });
+    });
+
+    // Handle hash changes and initial load
+    function handleHashChange() {
+        const hash = window.location.hash;
+        if (hash) {
+            const targetRule = document.querySelector(hash);
+            if (targetRule) {
+                // Collapse all rules first
+                collapseAllExcept(targetRule.id);
+                // Expand the target rule
+                targetRule.classList.add('expanded');
+                // Scroll into view with some delay to ensure smooth transition
+                setTimeout(() => {
+                    targetRule.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            }
+        }
     }
 
-    // Get rule-specific meta tags
-    const ruleTitle = document.querySelector(`meta[property="og:rule${ruleNumber}:title"]`);
-    const ruleDescription = document.querySelector(`meta[property="og:rule${ruleNumber}:description"]`);
+    window.addEventListener('hashchange', handleHashChange);
+    window.addEventListener('load', handleHashChange);
+}
 
-    if (ruleTitle && ruleDescription) {
-        // Update the general meta tags with rule-specific content
-        document.querySelector('meta[property="og:title"]').content = ruleTitle.content;
-        document.querySelector('meta[property="og:description"]').content = ruleDescription.content;
-    }
-} 
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', initRules); 
