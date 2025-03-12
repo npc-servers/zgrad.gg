@@ -34,15 +34,6 @@ function showToast(message) {
     }, 3000);
 }
 
-// Collapse all rules except the target
-function collapseAllExcept(targetId) {
-    document.querySelectorAll('.rule-card').forEach(card => {
-        if (card.id !== targetId) {
-            card.classList.remove('expanded');
-        }
-    });
-}
-
 // Initialize rules functionality
 function initRules() {
     // Set animation order for rule cards
@@ -56,7 +47,6 @@ function initRules() {
             // Don't toggle if clicking on action buttons
             if (!e.target.closest('.rule-actions')) {
                 card.classList.toggle('expanded');
-                collapseAllExcept(card.id);
             }
         });
     });
@@ -67,8 +57,6 @@ function initRules() {
         if (hash) {
             const targetRule = document.querySelector(hash);
             if (targetRule) {
-                // Collapse all rules first
-                collapseAllExcept(targetRule.id);
                 // Expand the target rule
                 targetRule.classList.add('expanded');
                 // Scroll into view with some delay to ensure smooth transition
