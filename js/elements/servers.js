@@ -10,6 +10,24 @@ document.addEventListener('DOMContentLoaded', function() {
             link: '/us1/connect.html'
         },
         {
+            id: 'zgrad2',
+            title: 'ZGRAD US2',
+            ip: '193.243.190.18',
+            port: 27054,
+            region: 'US',
+            description: 'Homicide only',
+            link: '/us2/connect.html'
+        },
+        {
+            id: 'zgrad3',
+            title: 'ZGRAD US3',
+            ip: '193.243.190.18',
+            port: 27053,
+            region: 'US',
+            description: 'Low loot',
+            link: '/us3/connect.html'
+        },
+        {
             id: 'hh1',
             title: 'Harrisons Homigrad US1',
             ip: '193.243.190.18',

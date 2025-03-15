@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="NPC redirect page">
+    <meta content="ZGRAD US1" property="og:title" />
+    <meta content="Connect and play on US1." property="og:description" />
+    <meta content="https://zgrad.gg/assets/icons/us1.png" property="og:image" />
+    <meta content="#000000" data-react-helmet="true" name="theme-color" />
+    
+    <title>Connecting</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/zgrad/connectRedirect.css">
+    <script src="/js/elements/connectRedirect.js" defer></script>
+</head>
+<body>
+    <!-- For game redirects (with background images): -->
+    <npc-redirect 
+        type="game"
+        txt="Connecting you to US1" 
+        url="steam://connect/193.243.190.18:27054">
+    </npc-redirect>
+
+    <!-- For simple redirects (just text): -->
+    <!-- <npc-redirect 
+        type="other"
+        txt="Redirecting to website..." 
+        url="https://example.com">
+    </npc-redirect> -->
+</body>
+</html>

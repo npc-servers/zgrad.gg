@@ -2,32 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZGRAD US3 - Connect to Server</title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="NPC redirect page">
+    <meta content="ZGRAD US1" property="og:title" />
+    <meta content="Connect and play on US1." property="og:description" />
+    <meta content="https://zgrad.gg/assets/icons/us1.png" property="og:image" />
+    <meta content="#000000" data-react-helmet="true" name="theme-color" />
     
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="Connect to ZGRAD US3 server. Join our active community for intense battles and varied gamemodes in Garry's Mod.">
-    <meta name="keywords" content="ZGRAD US3, GMOD server, gaming community, multiplayer, TDM, HOMIGRAD">
-    <meta name="author" content="ZGRAD Network">
-    <meta name="robots" content="index, follow">
+    <title>Connecting</title>
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/assets/logos/favicon.ico">
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://zgrad.gg/us3/connect">
-    <meta property="og:title" content="ZGRAD US3 - Connect to Server">
-    <meta property="og:description" content="Connect to ZGRAD US3 server. Join our active community for intense battles and varied gamemodes in Garry's Mod.">
-    <meta property="og:image" content="https://zgrad.gg/assets/logos/large-logo.png">
-
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="ZGRAD US3 - Connect to Server">
-    <meta name="twitter:description" content="Connect to ZGRAD US3 server. Join our active community for intense battles and varied gamemodes in Garry's Mod.">
-    <meta name="twitter:image" content="https://zgrad.gg/assets/logos/large-logo.png">
-    
-    <!-- Stylesheets -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -35,10 +18,18 @@
     <script src="/js/elements/connectRedirect.js" defer></script>
 </head>
 <body>
+    <!-- For game redirects (with background images): -->
     <npc-redirect 
         type="game"
-        txt="Connecting you to US3" 
-        url="steam://connect/193.243.190.18:27026">
+        txt="Connecting you to US1" 
+        url="steam://connect/193.243.190.18:27053">
     </npc-redirect>
+
+    <!-- For simple redirects (just text): -->
+    <!-- <npc-redirect 
+        type="other"
+        txt="Redirecting to website..." 
+        url="https://example.com">
+    </npc-redirect> -->
 </body>
 </html>
