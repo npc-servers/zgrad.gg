@@ -13,9 +13,9 @@ document.addEventListener('DOMContentLoaded', function() {
             id: 'zgrad2',
             title: 'ZGRAD US2',
             ip: '193.243.190.18',
-            port: 27054,
+            port: 27051,
             region: 'US',
-            description: 'Homicide only',
+            description: 'All Gamemodes',
             link: '/us2/connect.html'
         },
         {
@@ -24,35 +24,17 @@ document.addEventListener('DOMContentLoaded', function() {
             ip: '193.243.190.18',
             port: 27053,
             region: 'US',
-            description: 'Low loot',
+            description: 'Low Loot Rate',
             link: '/us3/connect.html'
         },
         {
-            id: 'hh1',
-            title: 'Harrisons Homigrad US1',
-            ip: '193.243.190.18',
-            port: 27051,
-            region: 'US',
-            description: 'All Gamemodes',
-            link: '/hh1/connect.html'
-        },
-        {
-            id: 'hh2',
-            title: 'Harrisons Homigrad US2',
+            id: 'zgrad4',
+            title: 'ZGRAD US4',
             ip: '193.243.190.18',
             port: 27052,
             region: 'US',
-            description: 'All Gamemodes',
-            link: '/hh2/connect.html'
-        },
-        {
-            id: 'hh3',
-            title: 'Harrisons Homigrad US3',
-            ip: '193.243.190.18',
-            port: 27053,
-            region: 'US',
             description: 'Homicide Only',
-            link: '/hh3/connect.html'
+            link: '/us4/connect.html'
         },
     ];
 
