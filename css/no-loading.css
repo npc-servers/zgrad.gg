@@ -1,0 +1,5 @@
+/* Override loading behavior to make content immediately visible */
+body > * {
+    opacity: 1 !important;
+    transition: none !important;
+} 
