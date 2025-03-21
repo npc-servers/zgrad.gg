@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
         serverElement.innerHTML = `
             <img src="/assets/icons/${server.region.toLowerCase()}-flag.png" alt="${server.region}" class="indesc-server-flag">
             <div class="indesc-server-info">
-                <div class="indesc-server-name">${server.title}</div>
+                <div class="indesc-server-name">${server.title} • ${server.description}</div>
                 <div class="indesc-server-players">${status.players}/${status.maxPlayers} players</div>
             </div>
             <a href="${server.link}" class="indesc-server-connect">Connect</a>
@@ -284,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     serverElement.innerHTML = `
                         <img src="/assets/icons/${server.region.toLowerCase()}-flag.png" alt="${server.region}" class="sd-flag">
                         <div class="sd-info">
-                            <div class="sd-server-name">${server.title}</div>
+                            <div class="sd-server-name">${server.title} • ${server.description}</div>
                             <div class="sd-player-count"></div>
                             <div class="sd-offline-message">Cannot connect to server</div>
                         </div>
