@@ -37,6 +37,27 @@ document.addEventListener('DOMContentLoaded', function() {
             link: '/us4/connect.html'
         },
     ];
+    
+    // Export servers data globally for other scripts
+    window.zgrad_servers = servers;
+    
+    // Function to get server info by page path
+    window.getServerByPath = function(path) {
+        let serverId = '';
+        
+        // Extract server ID from URL path
+        if (path.includes('/us1/')) {
+            serverId = 'zgrad1';
+        } else if (path.includes('/us2/')) {
+            serverId = 'zgrad2';
+        } else if (path.includes('/us3/')) {
+            serverId = 'zgrad3';
+        } else if (path.includes('/us4/')) {
+            serverId = 'zgrad4';
+        }
+        
+        return servers.find(s => s.id === serverId);
+    };
 
 
     let hasInitializedCount = false;
