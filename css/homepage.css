@@ -4,7 +4,7 @@
 .landing {
     position: relative;
     min-height: 100vh; /* Full viewport height to display the entire image */
-    background-image: url('../images/homigrad-render.png');
+    background-image: url('../images/homigrad-render2.png');
     background-size: cover; /* Changed from 100% to cover to fill the viewport */
     background-position: center;
     background-repeat: no-repeat;
