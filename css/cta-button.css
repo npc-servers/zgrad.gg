@@ -240,4 +240,106 @@
         margin-right: 6px;
         height: 0.85em;
     }
+}
+
+/* Keep Scrolling indicator styles */
+.scroll-indicator {
+    position: absolute;
+    left: 5%;
+    bottom: 5%;
+    z-index: 4;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.4); /* More faded text (0.6 → 0.4) */
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.scroll-text {
+    margin-right: 10px;
+}
+
+/* Mouse styling */
+.mouse-icon {
+    width: 20px;
+    height: 30px;
+    border: 2px solid rgba(255, 255, 255, 0.4); /* More faded border (0.6 → 0.4) */
+    border-radius: 12px;
+    position: relative;
+}
+
+.mouse-wheel {
+    width: 4px;
+    height: 8px;
+    background-color: rgba(255, 255, 255, 0.4); /* More faded wheel (0.6 → 0.4) */
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    margin-left: -2px;
+    border-radius: 2px;
+    animation: scrollWheel 2s infinite;
+}
+
+@keyframes scrollWheel {
+    0%, 100% {
+        transform: translateY(0);
+        opacity: 0.4; /* More faded wheel at rest (0.6 → 0.4) */
+    }
+    50% {
+        transform: translateY(8px);
+        opacity: 0.2; /* More faded wheel when moving (0.3 → 0.2) */
+    }
+}
+
+/* Responsive adjustments for scroll indicator */
+@media (max-width: 992px) {
+    .scroll-indicator {
+        font-size: 1.3rem;
+    }
+    
+    .mouse-icon {
+        width: 18px;
+        height: 28px;
+    }
+}
+
+@media (max-width: 768px) {
+    .scroll-indicator {
+        bottom: 4%;
+        font-size: 1.2rem;
+    }
+    
+    .mouse-icon {
+        width: 16px;
+        height: 26px;
+    }
+    
+    .mouse-wheel {
+        width: 3px;
+        height: 7px;
+    }
+}
+
+@media (max-width: 480px) {
+    .scroll-indicator {
+        bottom: 2%;
+        font-size: 1.1rem;
+    }
+    
+    .mouse-icon {
+        width: 14px;
+        height: 22px;
+    }
+    
+    .mouse-wheel {
+        width: 3px;
+        height: 6px;
+        top: 5px;
+    }
 } 

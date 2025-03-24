@@ -100,4 +100,25 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }, 800);
     }
+    
+    // Animate the scroll indicator
+    const scrollIndicator = document.querySelector('.scroll-indicator');
+    if (scrollIndicator) {
+        // Show the scroll indicator last
+        setTimeout(() => {
+            scrollIndicator.style.opacity = '1';
+            scrollIndicator.style.transform = 'translateY(0)';
+        }, 1500);
+        
+        // Add scroll event listener to hide the indicator when user scrolls down
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 100) {
+                scrollIndicator.style.opacity = '0';
+                scrollIndicator.style.transform = 'translateY(20px)';
+            } else {
+                scrollIndicator.style.opacity = '1';
+                scrollIndicator.style.transform = 'translateY(0)';
+            }
+        });
+    }
 }); 
