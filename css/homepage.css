@@ -1,0 +1,284 @@
+/* Homepage Styles */
+
+/* Landing Section */
+.landing {
+    position: relative;
+    min-height: 100vh; /* Full viewport height to display the entire image */
+    background-image: url('../images/homigrad-render.png');
+    background-size: cover; /* Changed from 100% to cover to fill the viewport */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: scroll; /* Ensure no parallax effect */
+    background-color: var(--dark-bg); /* Background color to fill any empty space */
+    display: flex;
+    align-items: center;
+    padding: 0 5%;
+    overflow: hidden;
+}
+
+/* Animation for gradient */
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.landing::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, 
+        rgba(10, 10, 10, 0.98),
+        rgba(18, 18, 18, 0.8) 40%,
+        rgba(30, 30, 30, 0.6) 70%,
+        rgba(231, 76, 60, 0.3) 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 15s ease infinite;
+    z-index: 1;
+}
+
+.landing::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background: linear-gradient(to bottom, transparent, rgba(18, 18, 18, 0.9) 80%, var(--dark-bg));
+    z-index: 2;
+}
+
+.landing-content {
+    display: flex;
+    flex-direction: column;
+    max-width: 1200px;
+    width: 100%;
+    color: var(--text-color);
+    z-index: 3;
+}
+
+.logo-container {
+    margin-bottom: 30px;
+}
+
+.main-logo {
+    max-width: 300px;
+    height: auto;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
+}
+
+.landing-text h1 {
+    font-size: 2.8rem;
+    margin-bottom: 15px;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Highlight styling */
+.landing-text h1 .highlight,
+.landing-text p .highlight {
+    display: inline-block;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 0 7px;
+    margin-left: 0;
+    border-radius: 0;
+    position: relative;
+    box-shadow: none;
+    line-height: 0.75;
+    vertical-align: middle;
+}
+
+/* Specific adjustments for paragraph highlight */
+.landing-text p .highlight {
+    padding: 0 5px;
+    line-height: 0.85;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.landing-text p {
+    font-size: 1.3rem;
+    opacity: 0.9;
+    max-width: 600px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    letter-spacing: 0.5px;
+}
+
+/* Main Content Section */
+.main-content {
+    padding: 60px 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: var(--dark-bg);
+}
+
+/* Call to Action Section */
+.cta-container {
+    position: absolute;
+    right: 0;
+    bottom: 20%;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    max-width: none; /* Remove any max-width constraints */
+}
+
+.cta-box {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px 30px;
+    text-align: right;
+    transition: all 0.3s ease;
+    border-radius: 0;
+    margin-bottom: -1px;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+}
+
+.cta-text {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: none;
+    letter-spacing: 1px;
+    margin: 0;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+/* cta-button styles moved to cta-button.css */
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .landing-text h1 {
+        font-size: 2.4rem;
+    }
+    
+    .landing-text p {
+        font-size: 1.2rem;
+    }
+    
+    .main-logo {
+        max-width: 250px;
+    }
+    
+    .cta-container {
+        bottom: 20%;
+    }
+    
+    .cta-box {
+        padding: 8px 25px; /* Increased padding for larger text */
+    }
+    
+    .cta-text {
+        font-size: 2.4rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .landing {
+        background-size: cover;
+        background-position: center;
+        padding: 80px 5% 80px;
+        align-items: flex-start;
+    }
+    
+    .landing-content {
+        padding-top: 20px;
+    }
+    
+    .landing-text h1 {
+        font-size: 2rem;
+    }
+    
+    .landing-text p {
+        font-size: 1.1rem;
+    }
+    
+    .main-logo {
+        max-width: 200px;
+    }
+    
+    .landing-text h1 .highlight,
+    .landing-text p .highlight {
+        padding: 0 6px;
+        margin-left: 0;
+        line-height: 0.75;
+        border-radius: 0;
+    }
+    
+    .landing-text p .highlight {
+        padding: 0 4px;
+        line-height: 0.85;
+    }
+    
+    .cta-container {
+        bottom: 15%;
+        right: 0;
+        max-width: none; /* Remove max-width */
+    }
+    
+    .cta-box {
+        padding: 7px 20px; /* Increased padding for larger text */
+    }
+    
+    .cta-text {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .landing {
+        padding: 60px 5% 70px;
+        background-size: cover;
+    }
+    
+    .landing-text h1 {
+        font-size: 1.6rem;
+    }
+    
+    .landing-text p {
+        font-size: 1rem;
+    }
+    
+    .main-logo {
+        max-width: 180px;
+    }
+    
+    .landing-text h1 .highlight,
+    .landing-text p .highlight {
+        padding: 0 5px;
+        margin-left: 0;
+        line-height: 0.75;
+        border-radius: 0;
+    }
+    
+    .landing-text p .highlight {
+        padding: 0 3px;
+        line-height: 0.85;
+    }
+    
+    .cta-container {
+        bottom: 10%;
+        right: 0;
+        max-width: none; /* Remove max-width */
+    }
+    
+    .cta-box {
+        padding: 6px 15px; /* Increased padding for larger text */
+    }
+    
+    .cta-text {
+        font-size: 1.6rem;
+    }
+} 
