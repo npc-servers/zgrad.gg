@@ -70,4 +70,34 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, 800);
     }
+    
+    // Add animation to the side buttons (Discord and Store)
+    const sideButtonsContainer = document.querySelector('.side-buttons-container');
+    if (sideButtonsContainer) {
+        // Hide the container initially
+        sideButtonsContainer.style.opacity = '0';
+        
+        // Get the buttons
+        const buttons = sideButtonsContainer.querySelectorAll('.side-button');
+        
+        // Set initial states for each button
+        buttons.forEach(button => {
+            button.style.transform = 'translateX(-50px)';
+            button.style.transition = 'transform 0.8s ease, opacity 0.8s ease';
+            button.style.opacity = '0';
+        });
+        
+        // Show the container with a delay similar to CTA
+        setTimeout(() => {
+            sideButtonsContainer.style.opacity = '1';
+            
+            // Animate each button with a slight delay between them
+            buttons.forEach((button, index) => {
+                setTimeout(() => {
+                    button.style.opacity = '1';
+                    button.style.transform = 'translateX(0)';
+                }, 100 + (index * 200)); // 100ms base delay + 200ms per button
+            });
+        }, 800);
+    }
 }); 

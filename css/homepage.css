@@ -40,7 +40,7 @@
         rgba(10, 10, 10, 0.98),
         rgba(18, 18, 18, 0.8) 40%,
         rgba(30, 30, 30, 0.6) 70%,
-        rgba(231, 76, 60, 0.3) 100%);
+        rgba(255, 107, 0, 0.3) 100%);
     background-size: 200% 200%;
     animation: gradientShift 15s ease infinite;
     z-index: 1;
