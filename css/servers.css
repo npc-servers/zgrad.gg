@@ -16,12 +16,21 @@ body::before {
     pointer-events: none;
     z-index: 1;
 }
-.title-container {
-    max-width: 800px;
+.servers-wrapper {
+    max-width: 900px;
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: 0;
     position: relative;
     z-index: 2;
+    width: fit-content;
+}
+.title-container {
+    max-width: 100%;
+    margin: 0;
+    padding: 2rem 0;
+    position: relative;
+    z-index: 2;
+    text-align: left;
 }
 .page-title {
     text-align: left;
@@ -42,50 +51,101 @@ body::before {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    padding: 0 1rem;
-    max-width: 800px;
-    margin: 0 auto;
+    padding: 0;
+    max-width: 100%;
+    margin: 0;
     position: relative;
     z-index: 2;
 }
 .server-card {
-    display: block;
-    background: var(--light-bg);
+    display: flex;
+    justify-content: flex-start;
+    background: transparent;
     border-radius: 4px;
-    padding: 1.25rem;
+    padding: 1.25rem 0;
     transition: var(--transition);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: none;
     text-decoration: none;
     cursor: pointer;
-    width: 100%;
+    width: fit-content;
 }
 .server-card:hover {
-    transform: translateX(5px);
-    border-color: rgba(255, 255, 255, 0.2);
-    background: #2a2a2a;
+    transform: translateX(0);
+    background: transparent;
+    border: none;
+}
+.server-card-content {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: auto;
+    min-width: 0;
+    max-width: fit-content;
+    gap: 1rem;
+    flex-wrap: nowrap;
+    overflow: visible;
+    padding-bottom: 4px;
+    margin-right: 10px;
+    position: relative;
+}
+.server-card-content::-webkit-scrollbar {
+    display: none;
 }
 .server-title {
     font-size: 1.25rem;
     color: var(--text-color);
-    margin-bottom: 0.25rem;
-    font-weight: 600;
+    margin: 0;
+    font-weight: 700;
+    white-space: nowrap;
+    min-width: 120px;
+    transition: color 0.2s ease;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    background-color: rgba(40, 40, 40, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    text-align: left;
+}
+.server-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    flex-wrap: nowrap;
+    min-width: 0;
+    overflow: visible;
 }
 .server-gamemode {
     font-size: 0.9rem;
     color: var(--text-color);
-    opacity: 0.8;
-    margin-bottom: 0.75rem;
-}
-.server-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
+    opacity: 0.9;
+    width: auto;
+    min-width: 100px;
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    background-color: rgba(40, 40, 40, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    padding: 0.35rem 0.6rem;
+    border-radius: 4px;
 }
 .server-status {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-size: 0.9rem;
+    width: auto;
+    white-space: nowrap;
+    background-color: rgba(40, 40, 40, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    padding: 0.35rem 0.6rem;
+    border-radius: 4px;
 }
 .status-indicator {
     width: 8px;
@@ -98,20 +158,198 @@ body::before {
 .status-offline {
     background: #808080;
 }
-.server-map, .server-players {
+.server-players, .server-map {
     color: var(--text-color);
-    opacity: 0.9;
+    opacity: 0.95;
     font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    white-space: nowrap;
+    background-color: rgba(40, 40, 40, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    padding: 0.35rem 0.6rem;
+    border-radius: 4px;
+}
+.player-icon, .map-icon {
+    margin-right: 5px;
+    stroke: currentColor;
+    vertical-align: middle;
+    opacity: 0.9;
+}
+.server-status span {
+    color: var(--text-color);
+    opacity: 0.95;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+.server-players {
+    width: auto;
+}
+.server-map {
+    width: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 0.6rem;
+    max-width: 200px;
+}
+.server-card:hover .server-title {
+    color: var(--accent-color, #31aac9);
+    text-shadow: 0 0 8px rgba(49, 170, 201, 0.3);
+    background-color: rgba(200, 200, 200, 0.15);
+}
+.server-card:hover .server-info > * {
+    opacity: 1;
+    background-color: rgba(50, 50, 50, 0.5);
+}
+.connect-button {
+    width: auto;
+    height: 32px;
+    border-radius: 16px;
+    background-color: rgba(40, 40, 40, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-left: 0.25rem;
+    padding: 0 12px;
+    position: relative;
+    z-index: 5;
+}
+.connect-button span {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    opacity: 0.95;
+    margin-right: 6px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+.connect-icon {
+    color: var(--text-color);
+    opacity: 0.95;
+    transition: all 0.2s ease;
+}
+.server-card:hover .connect-button {
+    background-color: rgba(46, 204, 113, 0.2);
+    transform: scale(1.05);
+    transform-origin: center;
+}
+.server-card:hover .connect-button span,
+.server-card:hover .connect-icon {
+    color: #2ecc71;
+}
+@media (max-width: 992px) {
+    .servers-wrapper {
+        max-width: fit-content;
+    }
+    .server-card-content {
+        flex-wrap: nowrap;
+        overflow: visible;
+        justify-content: flex-start;
+        max-width: 100%;
+        width: auto;
+    }
+    .server-info {
+        flex-wrap: nowrap;
+        width: auto;
+        margin-top: 0;
+        justify-content: flex-start;
+    }
 }
 @media (max-width: 768px) {
     .page-title {
         font-size: 2rem;
     }
+    .servers-wrapper {
+        max-width: fit-content;
+        padding: 0 1rem;
+    }
     .title-container,
     .servers-grid {
-        padding: 1rem 0.5rem;
+        padding: 1rem 0;
     }
     .server-card {
-        padding: 1rem;
+        padding: 1rem 0;
+    }
+    .server-card-content {
+        gap: 0.75rem;
+        justify-content: flex-start;
+        max-width: 100%;
+        width: auto;
+    }
+    .server-info {
+        gap: 0.5rem;
+        width: auto;
+        justify-content: flex-start;
+    }
+    .server-title {
+        min-width: 120px;
+        padding: 0.4rem 0.6rem;
+    }
+    .server-gamemode {
+        min-width: 100px;
+        max-width: 130px;
+    }
+    .server-gamemode, .server-status, .server-players, .server-map {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.85rem;
+    }
+    .connect-button {
+        height: 28px;
+        padding: 0 10px;
+    }
+    .connect-button span {
+        font-size: 0.85rem;
+        margin-right: 5px;
+    }
+    .connect-icon {
+        width: 14px;
+        height: 14px;
+    }
+}
+@media (max-width: 480px) {
+    .servers-wrapper {
+        max-width: 100%;
+        padding: 0 0.5rem;
+    }
+    .server-card-content {
+        max-width: 100%;
+    }
+    .server-info {
+        gap: 0.4rem;
+        width: 100%;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow: visible;
+    }
+    .server-map, .server-players, .server-status, .server-gamemode {
+        font-size: 0.8rem;
+        margin-right: 0;
+        padding: 0.25rem 0.4rem;
+    }
+    .server-gamemode {
+        width: auto;
+        min-width: auto;
+        max-width: 100%;
+    }
+    .server-map {
+        max-width: none;
+    }
+    .connect-button {
+        height: 26px;
+        padding: 0 8px;
+    }
+    .connect-button span {
+        font-size: 0.8rem;
+        margin-right: 4px;
+    }
+    .connect-icon {
+        width: 12px;
+        height: 12px;
     }
 } 
