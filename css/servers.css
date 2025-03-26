@@ -19,7 +19,7 @@ body::before {
 .servers-wrapper {
     max-width: 900px;
     margin: 0 auto;
-    padding: 2rem 0 0;
+    padding: 2rem 0 2rem;
     position: relative;
     z-index: 2;
     width: 100%;
@@ -471,7 +471,7 @@ body::before {
 .join-help-container {
     display: flex;
     justify-content: center;
-    margin: 2rem 0;
+    margin: 2rem 0 2rem;
     width: 100%;
 }
 
