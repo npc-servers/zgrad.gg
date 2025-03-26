@@ -216,8 +216,8 @@ body::before {
 }
 .connect-button {
     width: 100px;
-    height: 32px;
-    border-radius: 16px;
+    height: 36px;
+    border-radius: 18px;
     background-color: rgba(40, 40, 40, 0.4);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
@@ -233,6 +233,11 @@ body::before {
     transform: translateY(-50%);
     z-index: 5;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+.connect-button:active {
+    transform: translateY(-50%) scale(0.95);
 }
 .connect-button span {
     font-size: 0.9rem;
@@ -240,15 +245,18 @@ body::before {
     opacity: 0.95;
     margin-right: 6px;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    user-select: none;
 }
 .connect-icon {
     color: var(--text-color);
     opacity: 0.95;
     transition: all 0.2s ease;
+    width: 16px;
+    height: 16px;
 }
 .server-card:hover .connect-button {
     background-color: rgba(46, 204, 113, 0.2);
-    transform: scale(1.05);
+    transform: translateY(-50%) scale(1.05);
     transform-origin: center;
 }
 .server-card:hover .connect-button span,
@@ -258,105 +266,197 @@ body::before {
 @media (max-width: 992px) {
     .servers-wrapper {
         max-width: 100%;
-        padding: 0 1rem;
+        padding: 0 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .title-container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        text-align: center;
+    }
+    .servers-grid {
+        align-items: center;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .server-card {
+        width: auto;
+        display: inline-block;
+        margin: 0 auto;
+        text-align: center;
     }
     .server-card-content {
-        padding-right: 110px;
+        padding-right: 0;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        width: auto;
+        display: inline-flex;
+        justify-content: center;
+        text-align: left;
+    }
+    .server-info {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        width: auto;
+        display: flex;
+        justify-content: center;
     }
     .server-gamemode {
         max-width: 180px;
     }
     .server-map {
-        max-width: 250px;
+        display: none;
     }
     .connect-button {
-        right: 1rem;
+        display: none;
+    }
+    .server-card:hover {
+        transform: none;
     }
 }
 @media (max-width: 768px) {
     .page-title {
         font-size: 2rem;
+        padding: 8px 12px;
     }
     .servers-wrapper {
-        max-width: fit-content;
         padding: 0 1rem;
+        text-align: center;
     }
-    .title-container,
+    .title-container {
+        padding: 0.75rem 0;
+        text-align: center;
+    }
     .servers-grid {
-        padding: 1rem 0;
+        padding: 0.75rem 0;
+        align-items: center;
+    }
+    .page-title {
+        display: inline-block;
+        text-align: center;
     }
     .server-card {
-        padding: 1rem;
-        gap: 0.75rem;
+        padding: 0.875rem;
+        width: auto;
+        display: inline-block;
+        margin: 0 auto;
     }
     .server-card-content {
-        padding-right: 100px;
+        padding-right: 0;
+        width: auto;
+        display: inline-flex;
+        text-align: left;
     }
     .server-info {
         gap: 0.5rem;
         width: auto;
-        justify-content: flex-start;
+        justify-content: center;
+        flex-wrap: wrap;
+        display: flex;
     }
     .server-title {
-        min-width: 120px;
+        min-width: 100px;
         padding: 0.4rem 0.6rem;
+        font-size: 1.1rem;
     }
     .server-gamemode {
         max-width: 150px;
     }
-    .server-gamemode, .server-status, .server-players, .server-map {
+    .server-gamemode, .server-status, .server-players {
         padding: 0.3rem 0.5rem;
         font-size: 0.85rem;
     }
-    .connect-button {
-        right: 1rem;
-        width: 90px;
-        height: 28px;
-    }
-    .connect-button span {
-        font-size: 0.85rem;
-        margin-right: 5px;
-    }
-    .connect-icon {
-        width: 14px;
-        height: 14px;
-    }
-    .server-map {
-        max-width: 200px;
-    }
 }
-@media (max-width: 480px) {
+@media (max-width: 576px) {
     .servers-wrapper {
-        padding: 0 0.5rem;
+        padding: 0 0.75rem;
+        text-align: center;
+    }
+    .page-title {
+        font-size: 1.75rem;
+        padding: 6px 10px;
+        text-align: center;
+    }
+    .server-card {
+        padding: 0.75rem;
+        width: auto;
+        display: inline-block;
+        margin: 0 auto;
     }
     .server-card-content {
-        padding-right: 90px;
+        padding-right: 0;
+        width: auto;
+        display: inline-flex;
+        justify-content: center;
+        text-align: left;
     }
     .server-info {
         gap: 0.4rem;
-        width: 100%;
-        flex-wrap: nowrap;
-        justify-content: flex-start;
-        overflow: visible;
+        width: auto;
+        flex-wrap: wrap;
+        justify-content: center;
+        display: flex;
+    }
+    .server-title {
+        min-width: 90px;
+        font-size: 1rem;
+        padding: 0.35rem 0.5rem;
     }
     .server-gamemode {
         max-width: 120px;
     }
-    .server-map {
-        max-width: 150px;
-    }
-    .connect-button {
-        right: 0.75rem;
-        width: 80px;
-        height: 26px;
-        padding: 0 8px;
-    }
-    .connect-button span {
+    .server-gamemode, .server-status, .server-players {
+        padding: 0.25rem 0.4rem;
         font-size: 0.8rem;
-        margin-right: 4px;
     }
-    .connect-icon {
-        width: 12px;
-        height: 12px;
+}
+@media (max-width: 375px) {
+    .servers-wrapper {
+        padding: 0 0.5rem;
+        text-align: center;
+    }
+    .page-title {
+        font-size: 1.5rem;
+        padding: 5px 8px;
+        text-align: center;
+    }
+    .server-card {
+        padding: 0.625rem;
+        margin: 0 auto;
+    }
+    .server-card-content {
+        padding-right: 0;
+        justify-content: center;
+    }
+    .server-title {
+        min-width: 80px;
+        font-size: 0.9rem;
+    }
+    .server-gamemode {
+        max-width: 100px;
+    }
+    .server-gamemode, .server-status, .server-players {
+        padding: 0.2rem 0.35rem;
+        font-size: 0.75rem;
+    }
+}
+/* Add touch device specific styles */
+@media (hover: none) and (pointer: coarse) {
+    .connect-button {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .server-card:hover .connect-button {
+        transform: translateY(-50%) scale(1);
+    }
+    
+    .connect-button:active {
+        background-color: rgba(46, 204, 113, 0.3);
     }
 } 
