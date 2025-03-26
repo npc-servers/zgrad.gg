@@ -360,6 +360,51 @@ async function updateServers() {
                     50% { transform: scale(1.02); opacity: 1; }
                     100% { transform: scale(1); opacity: 1; }
                 }
+                /* Onload animation styles */
+                .onload-animation {
+                    opacity: 0;
+                    transform: translateY(20px);
+                    animation: fadeInUp 0.6s forwards;
+                }
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(20px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+                /* Shimmer effect for loading */
+                .shimmer {
+                    position: relative;
+                    overflow: hidden;
+                    background: rgba(40, 40, 40, 0.2);
+                }
+                .shimmer::after {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    left: 0;
+                    transform: translateX(-100%);
+                    background-image: linear-gradient(
+                        90deg,
+                        rgba(255, 255, 255, 0) 0,
+                        rgba(255, 255, 255, 0.08) 20%,
+                        rgba(255, 255, 255, 0.1) 60%,
+                        rgba(255, 255, 255, 0)
+                    );
+                    animation: shimmer 2s infinite;
+                    content: '';
+                }
+                @keyframes shimmer {
+                    100% {
+                        transform: translateX(100%);
+                    }
+                }
+                /* Media queries */
                 @media (max-width: 768px) {
                     .server-offline-message {
                         font-size: 0.9rem;
@@ -380,6 +425,19 @@ async function updateServers() {
             document.head.appendChild(style);
         }
         
+        // Show loading state
+        serversContainer.innerHTML = '';
+        for (let i = 0; i < servers.length; i++) {
+            const loadingCard = document.createElement('div');
+            loadingCard.className = 'server-card shimmer';
+            loadingCard.innerHTML = `
+                <div class="server-card-content">
+                    <div style="height: 30px; width: 120px; border-radius: 4px;"></div>
+                </div>
+            `;
+            serversContainer.appendChild(loadingCard);
+        }
+        
         // Create initial cards for all servers
         const promises = servers.map(async server => {
             const status = await updateServerStatus(server);
@@ -391,8 +449,12 @@ async function updateServers() {
         
         // Clear container and add all server cards
         serversContainer.innerHTML = '';
-        results.forEach(({ server, status }) => {
+        
+        // Add each server card with staggered animation delay
+        results.forEach(({ server, status }, index) => {
             const serverCard = createServerCard(server, status);
+            serverCard.classList.add('onload-animation');
+            serverCard.style.animationDelay = `${index * 0.1}s`;
             serversContainer.appendChild(serverCard);
         });
         
@@ -409,7 +471,9 @@ async function updateServers() {
             if (serverCard) {
                 updateServerCard(serverCard, status);
             } else {
-                serversContainer.appendChild(createServerCard(server, status));
+                const newCard = createServerCard(server, status);
+                newCard.classList.add('onload-animation');
+                serversContainer.appendChild(newCard);
             }
             
             return status;
@@ -424,6 +488,86 @@ async function updateServers() {
 
 // Update servers every 30 seconds
 document.addEventListener('DOMContentLoaded', () => {
+    // Animate the page title
+    const pageTitle = document.querySelector('.page-title');
+    if (pageTitle) {
+        // Add styles for title animation if not already present
+        if (!document.getElementById('title-animation-style')) {
+            const titleStyle = document.createElement('style');
+            titleStyle.id = 'title-animation-style';
+            titleStyle.textContent = `
+                @keyframes titleFadeIn {
+                    from {
+                        opacity: 0;
+                        transform: translateY(-20px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+                .title-animation {
+                    animation: titleFadeIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+                }
+            `;
+            document.head.appendChild(titleStyle);
+        }
+        
+        // Initial state
+        pageTitle.style.opacity = '0';
+        
+        // Apply animation with a slight delay to make it appear after loading starts
+        setTimeout(() => {
+            pageTitle.classList.add('title-animation');
+            pageTitle.style.opacity = '';  // Remove inline opacity
+        }, 100);
+    }
+    
+    // Initialize "How do I join?" modal
+    const joinHelpBtn = document.getElementById('joinHelpBtn');
+    const joinModal = document.getElementById('joinModal');
+    const closeModal = document.querySelector('.close-modal');
+    
+    if (joinHelpBtn && joinModal) {
+        // Open modal when button is clicked
+        joinHelpBtn.addEventListener('click', () => {
+            joinModal.classList.add('show');
+            
+            // Animate each step with a staggered delay
+            const steps = document.querySelectorAll('.join-step');
+            steps.forEach((step, index) => {
+                step.style.animationDelay = `${0.1 + (index * 0.1)}s`;
+            });
+            
+            // Prevent scrolling on the body
+            document.body.style.overflow = 'hidden';
+        });
+        
+        // Close modal when close button is clicked
+        if (closeModal) {
+            closeModal.addEventListener('click', () => {
+                joinModal.classList.remove('show');
+                document.body.style.overflow = '';
+            });
+        }
+        
+        // Close modal when clicking outside of it
+        joinModal.addEventListener('click', (e) => {
+            if (e.target === joinModal) {
+                joinModal.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        });
+        
+        // Close modal with escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && joinModal.classList.contains('show')) {
+                joinModal.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        });
+    }
+    
     updateServers();
     setInterval(updateServers, 30000);
 }); 
