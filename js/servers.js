@@ -526,47 +526,60 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize "How do I join?" modal
     const joinHelpBtn = document.getElementById('joinHelpBtn');
     const joinModal = document.getElementById('joinModal');
-    const closeModal = document.querySelector('.close-modal');
+    const donateHelpBtn = document.getElementById('donateHelpBtn');
+    const donateModal = document.getElementById('donateModal');
+    const closeModals = document.querySelectorAll('.close-modal');
+    
+    function openModal(modal) {
+        modal.classList.add('show');
+        
+        // Animate each step with a staggered delay
+        const steps = modal.querySelectorAll('.join-step');
+        steps.forEach((step, index) => {
+            step.style.animationDelay = `${0.1 + (index * 0.1)}s`;
+        });
+        
+        // Prevent scrolling on the body
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeModal(modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
     
     if (joinHelpBtn && joinModal) {
-        // Open modal when button is clicked
-        joinHelpBtn.addEventListener('click', () => {
-            joinModal.classList.add('show');
-            
-            // Animate each step with a staggered delay
-            const steps = document.querySelectorAll('.join-step');
-            steps.forEach((step, index) => {
-                step.style.animationDelay = `${0.1 + (index * 0.1)}s`;
-            });
-            
-            // Prevent scrolling on the body
-            document.body.style.overflow = 'hidden';
-        });
-        
-        // Close modal when close button is clicked
-        if (closeModal) {
-            closeModal.addEventListener('click', () => {
-                joinModal.classList.remove('show');
-                document.body.style.overflow = '';
-            });
-        }
-        
-        // Close modal when clicking outside of it
-        joinModal.addEventListener('click', (e) => {
-            if (e.target === joinModal) {
-                joinModal.classList.remove('show');
-                document.body.style.overflow = '';
-            }
-        });
-        
-        // Close modal with escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && joinModal.classList.contains('show')) {
-                joinModal.classList.remove('show');
-                document.body.style.overflow = '';
-            }
-        });
+        // Open join modal when button is clicked
+        joinHelpBtn.addEventListener('click', () => openModal(joinModal));
     }
+    
+    if (donateHelpBtn && donateModal) {
+        // Open donate modal when button is clicked
+        donateHelpBtn.addEventListener('click', () => openModal(donateModal));
+    }
+    
+    // Close modals when close button is clicked
+    closeModals.forEach(closeBtn => {
+        closeBtn.addEventListener('click', () => {
+            const modal = closeBtn.closest('.join-modal');
+            if (modal) closeModal(modal);
+        });
+    });
+    
+    // Close modals when clicking outside
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('join-modal')) {
+            closeModal(e.target);
+        }
+    });
+    
+    // Close modals with escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const openModal = document.querySelector('.join-modal.show');
+            if (openModal) closeModal(openModal);
+        }
+    });
     
     updateServers();
     setInterval(updateServers, 30000);
