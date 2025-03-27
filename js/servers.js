@@ -526,8 +526,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize "How do I join?" modal
     const joinHelpBtn = document.getElementById('joinHelpBtn');
     const joinModal = document.getElementById('joinModal');
-    const donateHelpBtn = document.getElementById('donateHelpBtn');
-    const donateModal = document.getElementById('donateModal');
     const closeModals = document.querySelectorAll('.close-modal');
     
     function openModal(modal) {
@@ -551,11 +549,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (joinHelpBtn && joinModal) {
         // Open join modal when button is clicked
         joinHelpBtn.addEventListener('click', () => openModal(joinModal));
-    }
-    
-    if (donateHelpBtn && donateModal) {
-        // Open donate modal when button is clicked
-        donateHelpBtn.addEventListener('click', () => openModal(donateModal));
     }
     
     // Close modals when close button is clicked

@@ -489,10 +489,10 @@ body::before {
     }
 }
 
-.join-help-button, .donate-help-button {
+.join-help-button, .store-help-button {
     background-color: rgba(30, 30, 30, 0.95);
     color: var(--text-color);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.15);
     border-radius: 25px;
     padding: 0.7rem 1.8rem;
     font-size: 1rem;
@@ -510,20 +510,38 @@ body::before {
     white-space: nowrap;
     text-overflow: ellipsis;
     min-width: fit-content;
+    text-decoration: none;
+    display: inline-block;
 }
 
-.join-help-button:hover, .donate-help-button:hover {
+.store-help-button {
+    background-color: rgba(255, 107, 0, 0.2);
+    border: 2px solid rgba(255, 107, 0, 0.4);
+    box-shadow: 0 4px 15px rgba(255, 107, 0, 0.15),
+                inset 0 0 10px rgba(255, 107, 0, 0.1);
+}
+
+.join-help-button:hover, .store-help-button:hover {
     background-color: rgba(40, 40, 40, 0.98);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
-.join-help-button:active, .donate-help-button:active {
+.store-help-button:hover {
+    background-color: rgba(255, 107, 0, 0.3);
+    border-color: rgba(255, 107, 0, 0.6);
+    box-shadow: 0 6px 20px rgba(255, 107, 0, 0.2),
+                inset 0 0 15px rgba(255, 107, 0, 0.2);
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255, 107, 0, 0.5);
+}
+
+.join-help-button:active, .store-help-button:active {
     transform: translateY(0);
 }
 
-.join-help-button::after, .donate-help-button::after {
+.join-help-button::after, .store-help-button::after {
     content: '';
     position: absolute;
     width: 100%;
@@ -539,7 +557,37 @@ body::before {
     transition: transform 0.3s, opacity 0.5s;
 }
 
-.join-help-button:active::after, .donate-help-button:active::after {
+.store-help-button::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 27px;
+    background: linear-gradient(90deg, 
+        transparent 0%,
+        rgba(255, 107, 0, 0.2) 25%,
+        rgba(255, 107, 0, 0.3) 50%,
+        rgba(255, 107, 0, 0.2) 75%,
+        transparent 100%
+    );
+    z-index: -1;
+    animation: borderShimmer 3s ease-in-out infinite;
+    background-size: 200% 100%;
+    background-position: 100% 0;
+}
+
+@keyframes borderShimmer {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.join-help-button:active::after, .store-help-button:active::after {
     transform: scale(0, 0);
     opacity: 0.3;
     transition: 0s;
@@ -705,7 +753,7 @@ body::before {
         gap: 1rem;
     }
     
-    .join-help-button, .donate-help-button {
+    .join-help-button, .store-help-button {
         padding: 0.6rem 1.4rem;
         font-size: 0.9rem;
         width: 80%;
