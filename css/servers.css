@@ -1,7 +1,5 @@
 body {
-    background: var(--dark-bg) url('/images/icon-bg.png') repeat;
-    background-size: 64px 64px;
-    background-attachment: fixed;
+    background: var(--dark-bg);
     min-height: 100vh;
     position: relative;
 }
@@ -23,6 +21,7 @@ body::before {
     position: relative;
     z-index: 2;
     width: 100%;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
 }
 .title-container {
     max-width: 100%;
