@@ -583,4 +583,15 @@ document.addEventListener('DOMContentLoaded', () => {
     
     updateServers();
     setInterval(updateServers, 30000);
+});
+
+// Initialize help buttons animation
+document.addEventListener('DOMContentLoaded', function() {
+    const helpButtons = document.querySelector('.join-help-container');
+    if (helpButtons) {
+        // Reset animation if needed
+        helpButtons.style.animation = 'none';
+        helpButtons.offsetHeight; // Trigger reflow
+        helpButtons.style.animation = null;
+    }
 }); 
