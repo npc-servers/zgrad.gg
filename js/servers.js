@@ -41,6 +41,22 @@ const servers = [
 // Track current server statuses
 let currentServerStatuses = {};
 
+function updateTotalPlayerCount() {
+    const totalPlayers = Object.values(currentServerStatuses)
+        .reduce((total, status) => total + (status.players || 0), 0);
+    
+    const totalPlayersElement = document.getElementById('totalPlayers');
+    if (totalPlayersElement) {
+        totalPlayersElement.textContent = totalPlayers;
+        
+        // Add animation for number change
+        totalPlayersElement.classList.add('update-animation');
+        setTimeout(() => {
+            totalPlayersElement.classList.remove('update-animation');
+        }, 1000);
+    }
+}
+
 function updateServerStatus(server) {
     return fetch(`https://gameserveranalytics.com/api/v2/query?game=source&ip=${server.ip}&port=${server.port}&type=info`)
         .then(response => response.json())
@@ -460,6 +476,9 @@ async function updateServers() {
         
         // Sort by player count
         sortServersByPlayers(serversContainer);
+        
+        // Update total player count
+        updateTotalPlayerCount();
     } else {
         // Update existing cards
         const promises = servers.map(async server => {
@@ -483,6 +502,9 @@ async function updateServers() {
         
         // Sort by updated player counts
         sortServersByPlayers(serversContainer);
+        
+        // Update total player count
+        updateTotalPlayerCount();
     }
 }
 

@@ -1,6 +1,23 @@
 // Homepage specific JavaScript
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize any global functionality here
+    console.log('ZGrad.gg website loaded');
+    
+    // Add smooth scrolling for all anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
     // Add animation to the landing text
     const landingText = document.querySelector('.landing-text');
     if (landingText) {
@@ -121,4 +138,93 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Server data
+    const servers = [
+        {
+            id: 'zgrad1',
+            ip: '193.243.190.18',
+            port: 27066
+        },
+        {
+            id: 'zgrad2',
+            ip: '193.243.190.18',
+            port: 27051
+        },
+        {
+            id: 'zgrad3',
+            ip: '193.243.190.18',
+            port: 27053
+        },
+        {
+            id: 'zgrad4',
+            ip: '193.243.190.18',
+            port: 27052
+        }
+    ];
+
+    async function updateTotalPlayers() {
+        const totalPlayersElement = document.getElementById('totalPlayers');
+        if (!totalPlayersElement) return;
+
+        try {
+            // Fetch all server statuses in parallel
+            const promises = servers.map(server => 
+                fetch(`https://gameserveranalytics.com/api/v2/query?game=source&ip=${server.ip}&port=${server.port}&type=info`)
+                    .then(response => response.json())
+                    .catch(() => ({ players: 0, maxplayers: 0 })) // Handle failed requests gracefully
+            );
+
+            const results = await Promise.all(promises);
+            
+            // Calculate total players and max players
+            const totals = results.reduce((acc, result) => {
+                const players = result.players || result.num_players || result.playercount || 0;
+                const maxPlayers = result.maxplayers || result.max_players || result.maxclients || 0;
+                return {
+                    current: acc.current + players,
+                    max: acc.max + maxPlayers
+                };
+            }, { current: 0, max: 0 });
+
+            // Get current displayed value
+            const currentDisplay = totalPlayersElement.textContent;
+            const [oldCurrent] = currentDisplay.split('/').map(n => parseInt(n) || 0);
+            
+            // Immediately show max players
+            totalPlayersElement.textContent = `${oldCurrent}/${totals.max}`;
+            
+            // Animate current players count
+            if (oldCurrent !== totals.current) {
+                const duration = 1000; // 1 second animation
+                const startTime = performance.now();
+                const startValue = oldCurrent;
+                const endValue = totals.current;
+                
+                function animate(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    // Easing function for smooth counting
+                    const easeOutQuad = t => t * (2 - t);
+                    const easedProgress = easeOutQuad(progress);
+                    
+                    const currentValue = Math.round(startValue + (endValue - startValue) * easedProgress);
+                    totalPlayersElement.textContent = `${currentValue}/${totals.max}`;
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    }
+                }
+                
+                requestAnimationFrame(animate);
+            }
+        } catch (error) {
+            console.error('Error updating player count:', error);
+        }
+    }
+
+    // Update immediately and then every 30 seconds
+    updateTotalPlayers();
+    setInterval(updateTotalPlayers, 30000);
 }); 
