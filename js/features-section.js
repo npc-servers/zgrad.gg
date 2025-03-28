@@ -1,6 +1,22 @@
 document.addEventListener('DOMContentLoaded', () => {
     const featuresContent = document.querySelector('.features-content');
+    const featuresList = document.querySelector('.features-list');
     const featureItems = document.querySelectorAll('.feature-item');
+    
+    // Clone feature items for continuous scrolling
+    featureItems.forEach(item => {
+        const clone = item.cloneNode(true);
+        featuresList.appendChild(clone);
+    });
+    
+    // Adjust animation duration based on number of items
+    const totalItems = document.querySelectorAll('.feature-item').length;
+    const avgItemWidth = 320; // Average feature item width in pixels
+    const scrollSpeed = 40; // Lower number = slower scroll, higher = faster
+    
+    // Calculate animation duration based on total width and desired speed
+    const calculatedDuration = (avgItemWidth * totalItems) / scrollSpeed;
+    featuresList.style.animationDuration = `${calculatedDuration}s`;
     
     // Function to check if element is in viewport
     const isInViewport = (element) => {
@@ -15,19 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isInViewport(featuresContent)) {
             featuresContent.classList.add('visible');
             
-            // Apply animation to each feature item
-            featureItems.forEach((item, index) => {
-                // Reset animation for proper trigger
-                item.style.animationDelay = `${0.1 * (index + 1)}s`;
-                item.style.animationName = 'none';
-                
-                // Force reflow
-                void item.offsetWidth;
-                
-                // Re-add animation
-                item.style.animationName = 'featureItemFadeIn';
-            });
-            
             // Remove scroll listener once animation is triggered
             window.removeEventListener('scroll', handleScroll);
         }
@@ -38,4 +41,21 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Check on initial load
     handleScroll();
+    
+    // Adjust animation for window resize
+    window.addEventListener('resize', () => {
+        const viewportWidth = window.innerWidth;
+        let itemWidth = 320;
+        
+        if (viewportWidth <= 480) {
+            itemWidth = 260;
+        } else if (viewportWidth <= 768) {
+            itemWidth = 280;
+        } else if (viewportWidth <= 992) {
+            itemWidth = 300;
+        }
+        
+        const newDuration = (itemWidth * totalItems) / scrollSpeed;
+        featuresList.style.animationDuration = `${newDuration}s`;
+    });
 }); 
