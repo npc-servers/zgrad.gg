@@ -50,12 +50,6 @@
     animation: numberUpdate 1s ease;
 }
 
-.homigrad-description {
-    text-align: left;
-    margin-top: 60px;
-    padding: 0 40px;
-}
-
 .description-title {
     font-size: 2rem;
     color: var(--text-color);
@@ -69,7 +63,7 @@
     color: var(--text-color);
     opacity: 0.9;
     line-height: 1.6;
-    max-width: 800px;
+    max-width: 100%;
 }
 
 @keyframes numberUpdate {
@@ -101,7 +95,7 @@
 
 @media (max-width: 768px) {
     .homigrad-section {
-        padding: 60px 5%;
+        padding: 60px 0;
     }
     
     .homigrad-small {
@@ -128,7 +122,7 @@
 
 @media (max-width: 480px) {
     .homigrad-section {
-        padding: 50px 5%;
+        padding: 50px 0;
     }
     
     .homigrad-small {
