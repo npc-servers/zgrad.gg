@@ -1,14 +1,14 @@
 .homigrad-section {
     padding: 80px 0;
     position: relative;
-    max-width: 1600px;
+    max-width: 1800px;
     margin: 0 auto;
 }
 
 .homigrad-text {
     margin-bottom: 20px;
     text-align: center;
-    padding: 0 5%;
+    padding: 0 2%;
 }
 
 .homigrad-small {
@@ -36,7 +36,7 @@
     margin-top: 20px;
     margin-bottom: 60px;
     opacity: 0.9;
-    padding: 0 5%;
+    padding: 0 2%;
 }
 
 .player-count span {
@@ -56,6 +56,7 @@
     font-weight: 700;
     text-transform: uppercase;
     margin-bottom: 20px;
+    padding-left: 20px;
 }
 
 .description-text {
@@ -64,6 +65,7 @@
     opacity: 0.9;
     line-height: 1.6;
     max-width: 100%;
+    padding-left: 20px;
 }
 
 @keyframes numberUpdate {
@@ -140,5 +142,24 @@
     
     .description-title {
         font-size: 1.4rem;
+    }
+}
+
+/* Media query for large screens */
+@media (min-width: 1600px) {
+    .homigrad-section {
+        max-width: 100%;
+        padding: 80px 0;
+    }
+    
+    .description-title {
+        font-size: 2.2rem;
+        padding-left: 30px;
+    }
+    
+    .description-text {
+        font-size: 1.3rem;
+        max-width: 98%;
+        padding-left: 30px;
     }
 } 
