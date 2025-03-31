@@ -31,6 +31,7 @@
     position: relative;
     z-index: 2;
     border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .gamemodes-label-text {
@@ -48,6 +49,7 @@
     overflow: hidden;
     position: relative;
     height: 240px; /* Match the height of the gamemodes label */
+    align-self: flex-start;
 }
 
 .gamemodes-scroll-content {
@@ -110,6 +112,8 @@
 @media (max-width: 992px) {
     .homigrad-content {
         flex-direction: column;
+        align-items: flex-start;
+        padding: 0;
     }
     
     .homigrad-description, 
@@ -118,22 +122,50 @@
         width: 100%;
     }
     
+    .homigrad-description {
+        margin-bottom: 40px;
+        padding-right: 20px;
+        padding-left: 20px;
+    }
+    
+    .gamemodes-container {
+        margin-top: 0;
+        margin-left: 0;
+        padding-left: 20px;
+        padding-right: 20px;
+        flex-direction: row;
+        align-items: flex-start;
+    }
+    
     .gamemode-item {
         font-size: 2rem;
     }
     
     .gamemodes-label {
         height: 220px;
+        align-self: flex-start;
+        margin-left: 0;
     }
     
     .gamemodes-scroll {
         height: 220px;
+        align-self: flex-start;
     }
 }
 
 @media (max-width: 768px) {
     .homigrad-content {
         padding: 0 5%;
+    }
+    
+    .homigrad-description {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    
+    .gamemodes-container {
+        padding-left: 0;
+        padding-right: 0;
     }
     
     .gamemodes-label {

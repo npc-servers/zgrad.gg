@@ -88,10 +88,12 @@
     
     .description-title {
         font-size: 1.8rem;
+        padding-left: 0;
     }
     
     .description-text {
         font-size: 1.1rem;
+        padding-left: 0;
     }
 }
 
@@ -115,10 +117,12 @@
     
     .description-title {
         font-size: 1.6rem;
+        padding-left: 0;
     }
     
     .description-text {
         font-size: 1rem;
+        padding-left: 0;
     }
 }
 
