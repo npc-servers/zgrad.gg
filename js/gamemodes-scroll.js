@@ -3,10 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
         'Homicide',
         'Wild West',
         'Zombie Survival',
-        'TDM',
+        'Team Deathmatch',
         'Cops and Robbers',
-        'Emergency',
-        'War on Terror'
+        'State of Emergency',
+        'War on Terror',
+        'The Hidden',
+        'Hide and Seek',
+        'Juggernaut',
+        'Capture the Flag'
     ];
     
     const scrollContent = document.getElementById('gamemodes-scroll-content');
