@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
     
     const scrollContent = document.getElementById('gamemodes-scroll-content');
+    let isPaused = false;
     
     // Create initial gamemode elements - we'll create 4 sets for more reliability
     function createGamemodeElements() {
@@ -22,6 +23,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 const gamemodeElement = document.createElement('div');
                 gamemodeElement.classList.add('gamemode-item');
                 gamemodeElement.textContent = gamemode;
+                
+                // Add hover event listeners
+                gamemodeElement.addEventListener('mouseenter', () => {
+                    isPaused = true;
+                    scrollContent.classList.add('paused');
+                });
+                
+                gamemodeElement.addEventListener('mouseleave', () => {
+                    isPaused = false;
+                    scrollContent.classList.remove('paused');
+                });
+                
                 scrollContent.appendChild(gamemodeElement);
             });
         }
@@ -40,15 +53,17 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Animation function
     function animateScroll() {
-        currentPosition -= scrollSpeed;
-        
-        // When we've scrolled past a complete set, reset position precisely
-        if (Math.abs(currentPosition) >= singleSetHeight) {
-            // Add exactly one set height to reset position to create seamless loop
-            currentPosition += singleSetHeight;
+        if (!isPaused) {
+            currentPosition -= scrollSpeed;
+            
+            // When we've scrolled past a complete set, reset position precisely
+            if (Math.abs(currentPosition) >= singleSetHeight) {
+                // Add exactly one set height to reset position to create seamless loop
+                currentPosition += singleSetHeight;
+            }
+            
+            scrollContent.style.transform = `translateY(${currentPosition}px)`;
         }
-        
-        scrollContent.style.transform = `translateY(${currentPosition}px)`;
         requestAnimationFrame(animateScroll);
     }
     

@@ -74,7 +74,37 @@
     white-space: nowrap;
     margin-bottom: 12px;
     opacity: 1;
-    transition: opacity 0.5s ease;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    padding: 0 5px;
+    z-index: 1;
+    display: inline-block;
+}
+
+.gamemode-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: rgba(var(--highlight-color-rgb), 0.15);
+    transition: width 0.3s ease;
+    z-index: -1;
+    border-radius: 4px;
+}
+
+.gamemode-item:hover {
+    color: var(--highlight-color);
+}
+
+.gamemode-item:hover::after {
+    width: 100%;
+}
+
+.gamemodes-scroll-content.paused {
+    animation-play-state: paused;
 }
 
 /* Mask for fading effect */
