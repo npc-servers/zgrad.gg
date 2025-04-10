@@ -77,13 +77,11 @@
 
 .slider-container {
     width: 100%;
-    max-width: 800px;
-    overflow: hidden;
+    max-width: 1000px;
+    overflow: visible;
     position: relative;
-    border-radius: 0.5rem;
-    aspect-ratio: 16/9;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0 15%;
+    box-sizing: border-box;
 }
 
 .slider-track {
@@ -97,6 +95,18 @@
     min-width: 100%;
     position: relative;
     overflow: hidden;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    transform: scale(0.8);
+    opacity: 0.6;
+}
+
+.map-slide.active {
+    transform: scale(1);
+    opacity: 1;
+    z-index: 2;
 }
 
 .map-image {
@@ -128,12 +138,12 @@
 .map-description-container {
     position: absolute;
     bottom: 0;
-    right: 0;
+    left: 0;
     max-width: 70%;
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(3px);
     padding: 0.75rem 1.25rem;
-    border-radius: 10px 0 0 0;
+    border-radius: 0 10px 0 0;
 }
 
 .map-description {
@@ -146,7 +156,8 @@
 /* Responsive adjustments */
 @media (max-width: 880px) {
     .slider-container {
-        max-width: 90%;
+        max-width: 100%;
+        padding: 0 10%;
     }
     
     .slider-controls {
@@ -176,7 +187,7 @@
     
     .map-description-container {
         bottom: 0;
-        right: 0;
+        left: 0;
         max-width: 85%;
         padding: 0.5rem 1rem;
     }
@@ -202,5 +213,9 @@
     
     .slider-controls {
         width: 110%;
+    }
+    
+    .slider-container {
+        padding: 0 5%;
     }
 } 

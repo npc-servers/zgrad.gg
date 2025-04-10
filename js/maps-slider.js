@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const sliderNext = document.querySelector('.slider-next');
     
     let currentIndex = 0;
+    let slides = [];
 
     // Initialize slider
     function initSlider() {
@@ -41,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
         maps.forEach((map, index) => {
             const slide = document.createElement('div');
             slide.className = 'map-slide';
+            if (index === currentIndex) slide.classList.add('active');
             
             slide.innerHTML = `
                 <img src="${map.image}" alt="${map.title}" class="map-image">
@@ -53,14 +55,40 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             
             sliderTrack.appendChild(slide);
+            slides.push(slide);
         });
         
         updateSliderPosition();
+        setupSlideClicks();
+    }
+    
+    // Setup click events for slides
+    function setupSlideClicks() {
+        slides.forEach((slide, index) => {
+            slide.addEventListener('click', () => {
+                if (index !== currentIndex) {
+                    goToSlide(index);
+                }
+            });
+        });
     }
     
     // Update the slider position
     function updateSliderPosition() {
-        sliderTrack.style.transform = `translateX(-${currentIndex * 100}%)`;
+        // Calculate the center position
+        const slideWidth = 100; // percentage
+        const offset = slideWidth * currentIndex;
+        
+        // Update active class
+        slides.forEach((slide, index) => {
+            slide.classList.remove('active');
+            if (index === currentIndex) {
+                slide.classList.add('active');
+            }
+        });
+        
+        // Apply transform with a smooth transition
+        sliderTrack.style.transform = `translateX(${-offset}%)`;
     }
     
     // Go to specific slide
@@ -111,6 +139,28 @@ document.addEventListener('DOMContentLoaded', function() {
     sliderContainer.addEventListener('mouseleave', startAutoSlide);
     sliderContainer.addEventListener('touchstart', stopAutoSlide, {passive: true});
     sliderContainer.addEventListener('touchend', startAutoSlide, {passive: true});
+    
+    // Touch swipe functionality
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    sliderContainer.addEventListener('touchstart', function(e) {
+        touchStartX = e.changedTouches[0].screenX;
+    }, {passive: true});
+    
+    sliderContainer.addEventListener('touchend', function(e) {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, {passive: true});
+    
+    function handleSwipe() {
+        const swipeThreshold = 50;
+        if (touchEndX + swipeThreshold < touchStartX) {
+            goToNextSlide();
+        } else if (touchEndX > touchStartX + swipeThreshold) {
+            goToPrevSlide();
+        }
+    }
     
     // Initialize
     initSlider();
