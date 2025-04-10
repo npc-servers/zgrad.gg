@@ -2,19 +2,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Sample map data - in a real implementation, this could come from an API or server
     const maps = [
         {
-            title: "Abandoned Factory",
-            description: "Navigate through dark corridors and machinery in this industrial setting.",
+            title: "zgr_mineral",
+            description: "A map set dead center of the desert.",
             image: "images/maps/zgr_mineral.png"
         },
         {
-            title: "Downtown",
-            description: "Urban warfare in the heart of the city with multiple levels and hiding spots.",
-            image: "images/maps/map-downtown.jpg"
+            title: "zgr_trap_heaven",
+            description: "A gorey map with a lot of traps.",
+            image: "images/maps/zgr_trap_heaven.png"
         },
         {
-            title: "Lakeside Resort",
-            description: "A luxury vacation spot turned deadly - perfect for long-range encounters.",
-            image: "images/maps/map-lakeside.jpg"
+            title: "zgr_harbor",
+            description: "A map set in a harbor.",
+            image: "images/maps/zgr_harbor.png"
         },
         {
             title: "Underground Bunker",

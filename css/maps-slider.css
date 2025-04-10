@@ -1,7 +1,10 @@
 .maps-section {
     width: 100%;
     padding: 4rem 1rem;
-    background-color: #0f1014;
+    background-color: #161616;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .maps-container {
@@ -36,8 +39,8 @@
 
 .slider-controls {
     position: absolute;
-    width: 100%;
-    max-width: 800px;
+    width: 120%;
+    max-width: 960px;
     height: 100%;
     top: 0;
     left: 50%;
@@ -50,24 +53,22 @@
 }
 
 .slider-prev, .slider-next {
-    background: rgba(30, 34, 45, 0.8);
+    background: transparent;
     border: none;
     width: 3rem;
     height: 3rem;
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     color: white;
-    transition: background 0.3s ease, transform 0.3s ease;
+    transition: transform 0.3s ease;
     pointer-events: auto;
     margin: 0 1rem;
 }
 
 .slider-prev:hover, .slider-next:hover {
-    background: rgba(49, 56, 73, 0.9);
-    transform: scale(1.05);
+    transform: scale(1.2);
 }
 
 .slider-indicators {
@@ -82,6 +83,7 @@
     border-radius: 0.5rem;
     aspect-ratio: 16/9;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .slider-track {
@@ -106,14 +108,13 @@
 
 .map-title-container {
     position: absolute;
-    top: 1.5rem;
-    left: 1.5rem;
+    top: 0;
+    left: 0;
     max-width: 70%;
-    background: rgba(15, 20, 33, 0.7);
-    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(3px);
     padding: 0.75rem 1.25rem;
-    border-radius: 0.3rem;
-    border-left: 3px solid rgba(66, 135, 245, 0.8);
+    border-radius: 0 0 10px 0;
 }
 
 .map-title {
@@ -121,24 +122,25 @@
     font-size: 1.5rem;
     font-weight: 600;
     margin: 0;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .map-description-container {
     position: absolute;
-    bottom: 1.5rem;
-    right: 1.5rem;
+    bottom: 0;
+    right: 0;
     max-width: 70%;
-    background: rgba(15, 20, 33, 0.7);
-    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(3px);
     padding: 0.75rem 1.25rem;
-    border-radius: 0.3rem;
-    border-right: 3px solid rgba(66, 135, 245, 0.8);
+    border-radius: 10px 0 0 0;
 }
 
 .map-description {
     color: rgba(255, 255, 255, 0.9);
     font-size: 1rem;
     margin: 0;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 /* Responsive adjustments */
@@ -148,7 +150,7 @@
     }
     
     .slider-controls {
-        max-width: 90%;
+        max-width: 110%;
     }
 }
 
@@ -162,8 +164,8 @@
     }
     
     .map-title-container {
-        top: 1rem;
-        left: 1rem;
+        top: 0;
+        left: 0;
         max-width: 85%;
         padding: 0.5rem 1rem;
     }
@@ -173,8 +175,8 @@
     }
     
     .map-description-container {
-        bottom: 1rem;
-        right: 1rem;
+        bottom: 0;
+        right: 0;
         max-width: 85%;
         padding: 0.5rem 1rem;
     }
@@ -196,5 +198,9 @@
     .slider-prev, .slider-next {
         width: 2.5rem;
         height: 2.5rem;
+    }
+    
+    .slider-controls {
+        width: 110%;
     }
 } 
