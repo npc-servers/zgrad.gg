@@ -23,11 +23,16 @@
 
 .homigrad-large {
     font-size: 5rem;
-    color: var(--text-color);
     font-weight: 800;
     text-transform: uppercase;
     line-height: 1.1;
     margin: 0;
+    background: linear-gradient(45deg, #ffffff, #a8a8a8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
 }
 
 .player-count {
@@ -53,11 +58,15 @@
 
 .description-title {
     font-size: 2rem;
-    color: var(--text-color);
     font-weight: 700;
     text-transform: uppercase;
     margin-bottom: 20px;
     padding-left: 0;
+    background: linear-gradient(45deg, #ffffff, #a8a8a8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
 }
 
 .description-text {
