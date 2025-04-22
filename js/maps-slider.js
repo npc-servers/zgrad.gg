@@ -58,6 +58,12 @@ function createSliderHTML(maps) {
     
     if (!sliderWrapper) return;
     
+    // Add second-to-last slide clone at the beginning (for better looping)
+    if (maps.length > 1) {
+        const secondToLastMap = maps[maps.length - 2];
+        sliderWrapper.appendChild(createMapSlide(secondToLastMap, maps.length - 2, true));
+    }
+    
     // Add last slide clone at the beginning
     const lastMap = maps[maps.length - 1];
     sliderWrapper.appendChild(createMapSlide(lastMap, maps.length - 1, true));
@@ -70,6 +76,12 @@ function createSliderHTML(maps) {
     // Add first slide clone at the end
     const firstMap = maps[0];
     sliderWrapper.appendChild(createMapSlide(firstMap, 0, true));
+    
+    // Add second slide clone at the end (for better looping)
+    if (maps.length > 1) {
+        const secondMap = maps[1];
+        sliderWrapper.appendChild(createMapSlide(secondMap, 1, true));
+    }
     
     // Create pagination dots
     const paginationContainer = document.querySelector('.maps-slider-pagination');
@@ -94,7 +106,10 @@ function setupSliderFunctionality(maps) {
     
     if (!slider || !sliderWrapper || slides.length === 0) return;
     
-    let currentIndex = 1; // Start at index 1 (first real slide, after the clone)
+    // Add extra clones if we have very few slides (to ensure proper looping)
+    const cloneOffset = maps.length > 1 ? 2 : 1;
+    
+    let currentIndex = cloneOffset; // Start at first real slide (after clone slides)
     const slideCount = maps.length;
     let isTransitioning = false;
     let isLooping = false;
@@ -144,8 +159,8 @@ function setupSliderFunctionality(maps) {
         if (!slide.dataset.clone) {
             slide.addEventListener('click', () => {
                 if (index !== currentIndex) {
-                    // Account for the first clone slide
-                    goToSlide(index);
+                    // Account for the clone slides
+                    goToSlide(index + cloneOffset - slideCount * Math.floor((index + cloneOffset) / slideCount));
                 }
             });
         }
@@ -154,8 +169,8 @@ function setupSliderFunctionality(maps) {
     // Pagination dots click event
     paginationDots.forEach((dot, index) => {
         dot.addEventListener('click', () => {
-            // Add 1 to account for the first clone slide
-            goToSlide(index + 1);
+            // Add offset to account for the clone slides
+            goToSlide(index + cloneOffset);
         });
     });
     
@@ -172,10 +187,13 @@ function setupSliderFunctionality(maps) {
         if (isLooping) {
             isLooping = false;
             
-            if (currentIndex === 0) {
-                // At the first clone (which is the last slide), jump to the real last slide
+            const lastRealIndex = cloneOffset + slideCount - 1;
+            
+            // Handle loop back to the beginning
+            if (currentIndex < cloneOffset) {
+                // We've gone before the first real slide, jump to the corresponding real slide from the end
                 sliderWrapper.style.transition = 'none';
-                currentIndex = slideCount;
+                currentIndex = lastRealIndex - (cloneOffset - currentIndex - 1);
                 
                 // Keep both clone and original slide in "active" state during the transition
                 updateSlideActiveStates();
@@ -184,10 +202,12 @@ function setupSliderFunctionality(maps) {
                 // Force reflow to apply the change instantly
                 void sliderWrapper.offsetWidth;
                 sliderWrapper.style.transition = 'transform 0.5s ease';
-            } else if (currentIndex === slideCount + 1) {
-                // At the last clone (which is the first slide), jump to the real first slide
+            } 
+            // Handle loop to the end
+            else if (currentIndex > lastRealIndex) {
+                // We've gone past the last real slide, jump to the corresponding real slide from the beginning
                 sliderWrapper.style.transition = 'none';
-                currentIndex = 1;
+                currentIndex = cloneOffset + (currentIndex - lastRealIndex - 1);
                 
                 // Keep both clone and original slide in "active" state during the transition
                 updateSlideActiveStates();
@@ -205,8 +225,10 @@ function setupSliderFunctionality(maps) {
         
         isTransitioning = true;
         
+        const lastRealIndex = cloneOffset + slideCount - 1;
+        
         // Check if we're going to a clone slide
-        if (index === 0 || index === slideCount + 1) {
+        if (index < cloneOffset || index > lastRealIndex) {
             isLooping = true;
         }
         
@@ -239,12 +261,20 @@ function setupSliderFunctionality(maps) {
         
         // If we're at a clone slide, keep the corresponding real slide in a semi-active state
         if (isLooping) {
-            if (currentIndex === 0) {
-                // First clone (last slide) - set active-clone on the real last slide
-                slides[slideCount].classList.add('clone-active');
-            } else if (currentIndex === slideCount + 1) {
-                // Last clone (first slide) - set active-clone on the real first slide
-                slides[1].classList.add('clone-active');
+            const lastRealIndex = cloneOffset + slideCount - 1;
+            
+            if (currentIndex < cloneOffset) {
+                // Before the first real slide - set clone-active on the corresponding real slide from the end
+                const realSlideIndex = lastRealIndex - (cloneOffset - currentIndex - 1);
+                if (slides[realSlideIndex]) {
+                    slides[realSlideIndex].classList.add('clone-active');
+                }
+            } else if (currentIndex > lastRealIndex) {
+                // After the last real slide - set clone-active on the corresponding real slide from the beginning
+                const realSlideIndex = cloneOffset + (currentIndex - lastRealIndex - 1);
+                if (slides[realSlideIndex]) {
+                    slides[realSlideIndex].classList.add('clone-active');
+                }
             }
         }
         
@@ -293,13 +323,13 @@ function setupSliderFunctionality(maps) {
         // Calculate the initial offset based on screen size
         let initialOffset;
         if (windowWidth <= 480) {
-            initialOffset = 2.5;
-        } else if (windowWidth <= 768) {
-            initialOffset = 5;
-        } else if (windowWidth <= 992) {
-            initialOffset = 7.5;
-        } else {
             initialOffset = 10;
+        } else if (windowWidth <= 768) {
+            initialOffset = 15;
+        } else if (windowWidth <= 992) {
+            initialOffset = 17.5;
+        } else {
+            initialOffset = 20;
         }
         
         // Calculate offset for centering the active slide
@@ -325,13 +355,18 @@ function setupSliderFunctionality(maps) {
     
     // Get the real index (accounting for the clone slides)
     function getRealIndex() {
-        // Handle edge cases for the clone slides
-        if (currentIndex === 0) {
-            return slideCount - 1; // Last slide
-        } else if (currentIndex === slideCount + 1) {
-            return 0; // First slide
+        // Handle edge cases with the clone slides
+        const lastRealIndex = cloneOffset + slideCount - 1;
+        
+        if (currentIndex < cloneOffset) {
+            // Before first real slide
+            return slideCount - (cloneOffset - currentIndex);
+        } else if (currentIndex > lastRealIndex) {
+            // After last real slide
+            return currentIndex - lastRealIndex - 1;
         } else {
-            return currentIndex - 1; // Normal case (subtract 1 for the first clone)
+            // Within the real slides range
+            return currentIndex - cloneOffset;
         }
     }
     
