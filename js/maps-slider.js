@@ -7,33 +7,21 @@ function initMapsSlider() {
     const maps = [
         {
             id: 1,
-            name: "DOWNTOWN",
+            name: "MINERAL",
             description: "A bustling urban environment with plenty of hiding spots and verticality for intense gameplay.",
-            image: "images/maps/downtown.jpg"
+            image: "images/maps/zgr_mineral.png"
         },
         {
             id: 2,
             name: "HARBOR",
             description: "Navigate through shipping containers and warehouses in this coastal industrial area.",
-            image: "images/maps/harbor.jpg"
+            image: "images/maps/zgr_harbor.png"
         },
         {
             id: 3,
-            name: "MANSION",
+            name: "TRAP HEAVEN",
             description: "A luxurious estate with multiple floors, secret passages, and expansive grounds.",
-            image: "images/maps/mansion.jpg"
-        },
-        {
-            id: 4,
-            name: "SUBWAY",
-            description: "Underground tunnels and platforms create a claustrophobic environment perfect for close-quarters combat.",
-            image: "images/maps/subway.jpg"
-        },
-        {
-            id: 5,
-            name: "CASINO",
-            description: "Glitz and glamour meets danger in this high-stakes venue with multiple game rooms and hidden areas.",
-            image: "images/maps/casino.jpg"
+            image: "images/maps/zgr_trap_heaven.png"
         }
     ];
 
