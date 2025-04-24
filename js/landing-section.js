@@ -1,14 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     const joinButton = document.getElementById('joinMostPopularServer');
+    const viewServersButton = document.getElementById('viewServers');
     
-    if (joinButton) {
+    if (joinButton && viewServersButton) {
         // Function to check if device is tablet or mobile
         const isTabletOrMobile = () => {
-            return window.innerWidth <= 992; // Breakpoint for tablet and below
+            return window.innerWidth <= 768; // Breakpoint for mobile and below
         };
         
         // Function to find the most popular server and update the JOIN button
-        const updateJoinButtonLink = () => {
+        const updateServerButtons = () => {
             // Use the same server data and status fetching as in servers.js
             const servers = [
                 {
@@ -100,6 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Update the JOIN button link
                     joinButton.href = mostPopularServer.link;
                     
+                    // Set VIEW SERVERS button link to servers page
+                    viewServersButton.href = "/servers.html";
+                    
                     // Player icon SVG
                     const playerIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="player-icon">
                                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -114,12 +118,19 @@ document.addEventListener('DOMContentLoaded', () => {
                             </svg>`;
                     
                     if (isTabletOrMobile()) {
-                        // For tablet and mobile, show VIEW SERVERS
-                        joinButton.innerHTML = 'VIEW SERVERS';
-                        // Add mobile-specific class for styling
+                        // For mobile, merge the functionality of both buttons
+                        // Hide the original join button in mobile view via CSS
+                        
+                        // Make "VIEW SERVERS" button visible on mobile
+                        viewServersButton.innerHTML = 'VIEW SERVERS';
+                        
+                        // Hide information about player count in mobile view
+                        joinButton.innerHTML = 'JOIN SERVER';
                         joinButton.classList.add('mobile-view');
                     } else {
-                        // For desktop, show normal message
+                        // For desktop, show proper information on both buttons
+                        viewServersButton.innerHTML = 'VIEW SERVERS';
+                        
                         if (onlineServers.length > 0) {
                             const playerCount = onlineServers[0].players;
                             const maxPlayers = onlineServers[0].maxPlayers;
@@ -138,14 +149,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 })
                 .catch(error => {
-                    console.error("Error updating JOIN button:", error);
+                    console.error("Error updating server buttons:", error);
                     joinButton.href = servers[0].link; // Default to first server
+                    viewServersButton.href = "/servers.html"; // Default to servers page
                     
                     // Even on error, display the right message for the device
                     if (isTabletOrMobile()) {
-                        joinButton.innerHTML = 'VIEW SERVERS';
+                        viewServersButton.innerHTML = 'VIEW SERVERS';
+                        joinButton.innerHTML = 'JOIN SERVER';
                         joinButton.classList.add('mobile-view');
                     } else {
+                        viewServersButton.innerHTML = 'VIEW SERVERS';
                         joinButton.innerHTML = 'JOIN SERVER';
                         joinButton.classList.remove('mobile-view');
                     }
@@ -153,10 +167,10 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         
         // Update immediately and then every 30 seconds
-        updateJoinButtonLink();
-        setInterval(updateJoinButtonLink, 30000);
+        updateServerButtons();
+        setInterval(updateServerButtons, 30000);
         
         // Update on window resize
-        window.addEventListener('resize', updateJoinButtonLink);
+        window.addEventListener('resize', updateServerButtons);
     }
 }); 
