@@ -4,12 +4,40 @@
     max-width: 100%;
     margin: 0 auto;
     overflow: hidden;
+    background: var(--dark-bg);
+}
+
+.homigrad-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: linear-gradient(to bottom, var(--dark-bg) 0%, rgba(0,0,0,0) 100%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.homigrad-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('../images/textures/cooltexturebetter.png') center/cover no-repeat;
+    opacity: 0.2;
+    z-index: 0;
+    pointer-events: none;
 }
 
 .homigrad-text {
     margin-bottom: 20px;
     text-align: center;
     padding: 0 2%;
+    position: relative;
+    z-index: 1;
 }
 
 .homigrad-small {
@@ -43,6 +71,8 @@
     margin-bottom: 60px;
     opacity: 0.9;
     padding: 0 2%;
+    position: relative;
+    z-index: 1;
 }
 
 .player-count span {
@@ -176,4 +206,9 @@
         max-width: 98%;
         padding-left: 0;
     }
+}
+
+.homigrad-content {
+    position: relative;
+    z-index: 1;
 } 

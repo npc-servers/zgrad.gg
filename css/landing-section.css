@@ -26,6 +26,18 @@ overflow:hidden;
 box-sizing:border-box;
 }
 
+.landing-section::after {
+content:'';
+position:absolute;
+top:0;
+left:0;
+right:0;
+bottom:0;
+background:url('../images/textures/cooltexturebetter.png') center/cover no-repeat;
+opacity:0.2;
+z-index:0;
+}
+
 .landing-section::before{
 content:'';
 position:absolute;
@@ -38,6 +50,18 @@ opacity:0.05;
 transform:scale(2);
 filter:blur(8px);
 z-index:1;
+}
+
+/* Gradient fade to next section */
+.landing-section-fade {
+position: absolute;
+bottom: 0;
+left: 0;
+width: 100%;
+height: 120px;
+background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, var(--dark-bg) 100%);
+z-index: 5;
+pointer-events: none;
 }
 
 .landing-container{
