@@ -1,11 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
     const joinButton = document.getElementById('joinMostPopularServer');
     const viewServersButton = document.getElementById('viewServers');
+    const joinPlayerCount = document.getElementById('joinPlayerCount');
     
     if (joinButton && viewServersButton) {
         // Function to check if device is tablet or mobile
         const isTabletOrMobile = () => {
-            return window.innerWidth <= 768; // Breakpoint for mobile and below
+            return window.innerWidth <= 767; // Consider both mobile and tablet for hiding elements
+        };
+        
+        // For medium screens, we need a separate check (no longer needed)
+        const isMediumScreen = () => {
+            return false; // No longer treating medium screens differently
         };
         
         // Function to find the most popular server and update the JOIN button
@@ -136,18 +142,17 @@ document.addEventListener('DOMContentLoaded', () => {
                             </svg>`;
                     
                     if (isTabletOrMobile()) {
-                        // For mobile, merge the functionality of both buttons
+                        // For mobile and tablet, merge the functionality of both buttons
                         // Hide the original join button in mobile view via CSS
                         
-                        // Make "VIEW SERVERS" button visible on mobile
+                        // Make "VIEW SERVERS" button visible on mobile/tablet
                         viewServersButton.innerHTML = 'VIEW SERVERS';
                         
-                        // Hide information about player count in mobile view
-                        joinButton.innerHTML = 'JOIN SERVER';
-                        joinButton.classList.add('mobile-view');
+                        // Set link for VIEW SERVERS button to also go to the server with most players
+                        viewServersButton.href = selectedServer.link;
                         
-                        // Make sure the "START PLAYING NOW" text is still visible on mobile
-                        document.querySelector('.start-playing-text').style.display = 'block';
+                        // No need to update hidden elements on mobile/tablet
+                        // The elements are now hidden via CSS
                     } else {
                         // For desktop, show proper information on both buttons
                         viewServersButton.innerHTML = 'VIEW SERVERS';
@@ -157,18 +162,35 @@ document.addEventListener('DOMContentLoaded', () => {
                             const maxPlayers = selectedServerStatus.maxPlayers;
                             const serverName = selectedServer.title;
                             
+                            // Update the player count pill
+                            joinPlayerCount.textContent = `${playerCount}/${maxPlayers}`;
+                            joinPlayerCount.classList.add('update-animation');
+                            
+                            // Add a class if server is nearly full or full
+                            const playerPercentage = (playerCount / maxPlayers) * 100;
+                            if (playerPercentage >= 90) {
+                                document.querySelector('.player-count-pill').classList.add('nearly-full');
+                                document.querySelector('.player-count-wrapper').classList.add('nearly-full');
+                            } else {
+                                document.querySelector('.player-count-pill').classList.remove('nearly-full');
+                                document.querySelector('.player-count-wrapper').classList.remove('nearly-full');
+                            }
+                            
+                            setTimeout(() => {
+                                joinPlayerCount.classList.remove('update-animation');
+                            }, 500);
+                            
+                            // Update join button with server name only
+                            joinButton.innerHTML = `JOIN ${serverName}`;
+                            
                             // Check if all online servers are full
                             if (onlineServers.length > 0 && onlineServers.every(s => s.players >= s.maxPlayers)) {
-                                joinButton.innerHTML = `JOIN ${serverName}<br>${playerCount}/${maxPlayers} ${playerIcon}<br><span class="server-note">All servers full!</span>`;
-                            } else {
-                                joinButton.innerHTML = `JOIN ${serverName}<br>${playerCount}/${maxPlayers} ${playerIcon}`;
-                                
-                                if (playerCount === 0) {
-                                    joinButton.innerHTML = `JOIN ${serverName}<br>0/${maxPlayers} ${playerIcon}`;
-                                }
+                                joinButton.innerHTML = `JOIN ${serverName}<br><span class="server-note">All servers full!</span>`;
                             }
                         } else {
-                            joinButton.innerHTML = `JOIN SERVER<br>0/0 ${playerIcon}`;
+                            // Update the player count pill for error case
+                            joinPlayerCount.textContent = '0/0';
+                            joinButton.innerHTML = `JOIN SERVER`;
                         }
                         // Ensure mobile class is removed when on desktop
                         joinButton.classList.remove('mobile-view');
@@ -186,12 +208,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Even on error, display the right message for the device
                     if (isTabletOrMobile()) {
                         viewServersButton.innerHTML = 'VIEW SERVERS';
-                        joinButton.innerHTML = 'JOIN SERVER';
-                        joinButton.classList.add('mobile-view');
-                        document.querySelector('.start-playing-text').style.display = 'block';
+                        viewServersButton.href = servers[0].link;
+                        // No need to update hidden elements on mobile/tablet
+                        // The elements are now hidden via CSS
                     } else {
                         viewServersButton.innerHTML = 'VIEW SERVERS';
-                        joinButton.innerHTML = `JOIN ${servers[0].title}<br>0/0 ${playerIcon}<br><span class="server-note">Server status unavailable</span>`;
+                        // Update player count pill for error case
+                        joinPlayerCount.textContent = '0/0';
+                        joinButton.innerHTML = `JOIN ${servers[0].title}<br><span class="server-note">Server status unavailable</span>`;
                         joinButton.classList.remove('mobile-view');
                         document.querySelector('.start-playing-text').style.display = 'block';
                     }
