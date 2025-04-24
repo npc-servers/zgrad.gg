@@ -93,13 +93,31 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Sort by player count (highest first)
                     onlineServers.sort((a, b) => b.players - a.players);
                     
-                    // Get the most popular server
-                    const mostPopularServer = onlineServers.length > 0 
-                        ? onlineServers[0].server 
-                        : servers[0]; // Default to first server if none are online
+                    // Find the most popular server that isn't full
+                    let selectedServer = null;
+                    let selectedServerStatus = null;
+                    
+                    for (const serverStatus of onlineServers) {
+                        // Check if server is full (players >= maxPlayers)
+                        const isFull = serverStatus.players >= serverStatus.maxPlayers;
+                        
+                        if (!isFull) {
+                            // Found a non-full server
+                            selectedServer = serverStatus.server;
+                            selectedServerStatus = serverStatus;
+                            break;
+                        }
+                    }
+                    
+                    // If all servers are full or no servers are online, default to the first server
+                    if (!selectedServer) {
+                        selectedServer = servers[0];
+                        // If there are online servers but all are full, get the first one's status
+                        selectedServerStatus = onlineServers.length > 0 ? onlineServers[0] : null;
+                    }
                     
                     // Update the JOIN button link
-                    joinButton.href = mostPopularServer.link;
+                    joinButton.href = selectedServer.link;
                     
                     // Set VIEW SERVERS button link to servers page
                     viewServersButton.href = "/servers.html";
@@ -127,41 +145,55 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Hide information about player count in mobile view
                         joinButton.innerHTML = 'JOIN SERVER';
                         joinButton.classList.add('mobile-view');
+                        
+                        // Make sure the "START PLAYING NOW" text is still visible on mobile
+                        document.querySelector('.start-playing-text').style.display = 'block';
                     } else {
                         // For desktop, show proper information on both buttons
                         viewServersButton.innerHTML = 'VIEW SERVERS';
                         
-                        if (onlineServers.length > 0) {
-                            const playerCount = onlineServers[0].players;
-                            const maxPlayers = onlineServers[0].maxPlayers;
-                            const serverName = mostPopularServer.title;
+                        if (selectedServerStatus) {
+                            const playerCount = selectedServerStatus.players;
+                            const maxPlayers = selectedServerStatus.maxPlayers;
+                            const serverName = selectedServer.title;
                             
-                            joinButton.innerHTML = `JOIN ${serverName}<br>${playerCount}/${maxPlayers} ${playerIcon}`;
-                            
-                            if (playerCount === 0) {
-                                joinButton.innerHTML = `JOIN ${serverName}<br>0/${maxPlayers} ${playerIcon}`;
+                            // Check if all online servers are full
+                            if (onlineServers.length > 0 && onlineServers.every(s => s.players >= s.maxPlayers)) {
+                                joinButton.innerHTML = `JOIN ${serverName}<br>${playerCount}/${maxPlayers} ${playerIcon}<br><span class="server-note">All servers full!</span>`;
+                            } else {
+                                joinButton.innerHTML = `JOIN ${serverName}<br>${playerCount}/${maxPlayers} ${playerIcon}`;
+                                
+                                if (playerCount === 0) {
+                                    joinButton.innerHTML = `JOIN ${serverName}<br>0/${maxPlayers} ${playerIcon}`;
+                                }
                             }
                         } else {
                             joinButton.innerHTML = `JOIN SERVER<br>0/0 ${playerIcon}`;
                         }
                         // Ensure mobile class is removed when on desktop
                         joinButton.classList.remove('mobile-view');
+                        
+                        // Make sure the "START PLAYING NOW" text is visible on desktop
+                        document.querySelector('.start-playing-text').style.display = 'block';
                     }
                 })
                 .catch(error => {
                     console.error("Error updating server buttons:", error);
-                    joinButton.href = servers[0].link; // Default to first server
-                    viewServersButton.href = "/servers.html"; // Default to servers page
+                    // Default to first server on error
+                    joinButton.href = servers[0].link;
+                    viewServersButton.href = "/servers.html";
                     
                     // Even on error, display the right message for the device
                     if (isTabletOrMobile()) {
                         viewServersButton.innerHTML = 'VIEW SERVERS';
                         joinButton.innerHTML = 'JOIN SERVER';
                         joinButton.classList.add('mobile-view');
+                        document.querySelector('.start-playing-text').style.display = 'block';
                     } else {
                         viewServersButton.innerHTML = 'VIEW SERVERS';
-                        joinButton.innerHTML = 'JOIN SERVER';
+                        joinButton.innerHTML = `JOIN ${servers[0].title}<br>0/0 ${playerIcon}<br><span class="server-note">Server status unavailable</span>`;
                         joinButton.classList.remove('mobile-view');
+                        document.querySelector('.start-playing-text').style.display = 'block';
                     }
                 });
         };
