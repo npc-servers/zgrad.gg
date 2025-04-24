@@ -24,6 +24,8 @@ position:relative;
 background:linear-gradient(135deg, var(--dark-bg) 0%, var(--secondary-color) 100%);
 overflow:hidden;
 box-sizing:border-box;
+/* Add padding for small height devices */
+padding:40px 0;
 }
 
 .landing-section::after {
@@ -72,6 +74,8 @@ max-width:90%;
 display:flex;
 flex-direction:column;
 align-items:center;
+justify-content:center;
+min-height:80vh;
 }
 
 .logo-container{
@@ -331,6 +335,7 @@ background: linear-gradient(90deg,
 .landing-section{
 height:100vh;
 min-height:100vh;
+padding:30px 0;
 }
 .landing-logo{
 max-width:45%;
@@ -356,6 +361,7 @@ letter-spacing:1.5px;
 .landing-section{
 height:100vh;
 min-height:100vh;
+padding:25px 0;
 }
 .landing-logo{
 max-width:30%;
@@ -384,6 +390,9 @@ font-size:0.7rem;
 padding:3px 10px;
 margin-bottom:0;
 border-radius:14px 14px 0 0;
+}
+.logo-container{
+margin-bottom:40px;
 }
 }
 
@@ -450,6 +459,7 @@ font-size: 0.9rem;
 .landing-section{
 height:100vh;
 min-height:100vh;
+padding:20px 0;
 }
 .landing-logo{
 max-width:40%;
@@ -486,6 +496,9 @@ margin-top:10px;
 .player-count-pill {
 display:none; /* Hide on mobile */
 }
+.logo-container{
+margin-bottom:30px;
+}
 }
 
 .join-button-container {
@@ -516,4 +529,108 @@ content: none;
 /* Override button styles to stay rounded */
 .landing-button {
 position: relative;
+}
+
+/* Height responsive styles */
+@media (max-height: 800px) {
+  .landing-section {
+    padding: 40px 0;
+  }
+  
+  .logo-container {
+    margin-bottom: 40px;
+  }
+  
+  .landing-logo {
+    max-width: 35%;
+  }
+  
+  .landing-subtitle {
+    margin-top: 15px;
+  }
+}
+
+@media (max-height: 700px) {
+  .landing-section {
+    padding: 30px 0;
+  }
+  
+  .logo-container {
+    margin-bottom: 30px;
+  }
+  
+  .landing-logo {
+    max-width: 30%;
+  }
+  
+  .landing-subtitle {
+    margin-top: 10px;
+    font-size: 1.5rem;
+  }
+  
+  .landing-buttons {
+    margin-top: 20px;
+  }
+}
+
+@media (max-height: 600px) {
+  .landing-section {
+    padding: 25px 0;
+    overflow-y: auto;
+  }
+  
+  .logo-container {
+    margin-bottom: 20px;
+  }
+  
+  .landing-logo {
+    max-width: 25%;
+  }
+  
+  .landing-subtitle {
+    margin-top: 8px;
+    font-size: 1.2rem;
+  }
+  
+  .landing-buttons {
+    margin-top: 15px;
+  }
+  
+  .landing-button {
+    padding: 0.6rem 1.2rem;
+  }
+}
+
+/* Very small height devices */
+@media (max-height: 500px) {
+  .landing-section {
+    padding: 15px 0;
+    overflow-y: auto;
+  }
+  
+  .landing-container {
+    min-height: auto;
+  }
+  
+  .logo-container {
+    margin-bottom: 15px;
+  }
+  
+  .landing-logo {
+    max-width: 20%;
+  }
+  
+  .landing-subtitle {
+    margin-top: 5px;
+    font-size: 1rem;
+  }
+  
+  .landing-buttons {
+    margin-top: 10px;
+  }
+  
+  .landing-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
 } 
