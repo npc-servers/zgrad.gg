@@ -89,6 +89,25 @@ filter:drop-shadow(0 0 20px rgba(var(--highlight-color-rgb), 0.5));
 transition:transform 0.3s ease;
 }
 
+/* Add responsive sizing for logo on larger displays */
+@media (min-width: 1200px) {
+  .landing-logo {
+    max-width: 40%;
+  }
+}
+
+@media (min-width: 1600px) {
+  .landing-logo {
+    max-width: 35%;
+  }
+}
+
+@media (min-width: 1920px) {
+  .landing-logo {
+    max-width: 30%;
+  }
+}
+
 .landing-buttons{
 display:flex;
 gap:15px;
