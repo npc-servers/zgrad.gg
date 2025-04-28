@@ -3,55 +3,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const featuresData = [
         {
             title: "Realistic Physics",
-            description: "Experience enhanced movement and object interaction with our advanced physics engine.",
-            icon: `<svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
-                    <path d="m4.93 4.93 4.24 4.24"/>
-                    <path d="m14.83 9.17 4.24-4.24"/>
-                    <path d="m14.83 14.83 4.24 4.24"/>
-                    <path d="m9.17 14.83-4.24 4.24"/>
-                    <circle cx="12" cy="12" r="4"/>
-                </svg>`
+            description: "Throw, break and pick up objects, get crushed by heavy objects, and use your body as a weapon.",
+            icon: `<svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M7 17v-2h6q-.35-.425-.562-.925T12.1 13H9v-2h3.1q.125-.575.338-1.075T13 9H3V7h14q2.075 0 3.538 1.463T22 12t-1.463 3.538T17 17zm10-2q1.25 0 2.125-.875T20 12t-.875-2.125T17 9t-2.125.875T14 12t.875 2.125T17 15M2 13v-2h6v2zm1 4v-2h3v2z"/></svg>`
         },
         {
-            title: "Advanced Damage System",
-            description: "Location-based damage with realistic effects that change how you approach combat.",
-            icon: `<svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m8.5 14.5-5-5 5-5"/>
-                    <path d="m15.5 4.5 5 5-5 5"/>
-                    <path d="M8.5 9.5h11"/>
-                    <path d="M3 19h18"/>
-                </svg>`
+            title: "Realistic Health System",
+            description: "Break and fracture bones, bleed out from wounds, and get knocked unconscious.",
+            icon: `<svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Mage Icons by MageIcons - https://github.com/Mage-Icons/mage-icons/blob/main/License.txt --><path fill="currentColor" d="M20.13 4.155a5 5 0 0 0-4.39-1.07A6 6 0 0 0 12 5.665a6 6 0 0 0-3.72-2.58a5.09 5.09 0 0 0-4.4 1c-1.58 1.38-2.45 4.44-1.46 7.54q.168.514.4 1q.06.113.11.23c2.57 5.24 8.51 8 8.77 8.13a.7.7 0 0 0 .31.07a.7.7 0 0 0 .31-.07c.25-.11 6.25-2.85 8.8-8.15l.08-.17q.237-.51.41-1.05c.94-3 .08-6.06-1.48-7.46m-.31 7.93q-.21.471-.48.91h-3.31a1 1 0 0 1-.83-.45l-1.05-1.56l-2.23 4.46a1 1 0 0 1-.73.54h-.16a1 1 0 0 1-.71-.3l-2.71-2.7H4.7q-.276-.486-.5-1a6.3 6.3 0 0 1-.38-1h4.21a1 1 0 0 1 .71.29l2 2l2.38-4.76a1 1 0 0 1 .84-.55a1 1 0 0 1 .89.44l1.7 2.56h3.7q-.164.58-.43 1.12"/></svg>`
+        },
+        {
+            title: "Ragdoll Climbing",
+            description: "Use your hands to hold on to any surface or player, and climb up anywhere you want.",
+            icon: `<svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="m13.5 22.5l-2-.4l.8-4.3l-3.6-2.7l-1.3-5.7l-2.2 1.9l.8 3.8l-2 .4l-1-4.9l4.45-3.975q.575-.5 1.363-.412t1.512.387q.8.35 1.663.5t1.737.025t1.613-.575t1.412-1L18 7.1q-.75.575-1.55 1.075t-1.725.775q-.825.225-1.662.238T11.4 9l.7 3.1l3.7-.7l5.2 3.7l-1.2 1.6l-4.3-3l-3.6.7l2.7 2zM8 5.5q-.825 0-1.412-.587T6 3.5t.588-1.412T8 1.5t1.413.588T10 3.5t-.587 1.413T8 5.5"/></svg>`
         },
         {
             title: "Custom Weapons",
             description: "Unique arsenal designed specifically for Homigrad with balanced gameplay mechanics.",
-            icon: `<svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
-                    <line x1="8" y1="2" x2="8" y2="18"/>
-                    <line x1="16" y1="6" x2="16" y2="22"/>
-                </svg>`
-        },
-        {
-            title: "Strategic Gameplay",
-            description: "Plan your moves and outsmart your opponents with tactical decision-making.",
-            icon: `<svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 2v5"/>
-                    <path d="M8 7.4 4 6"/>
-                    <path d="m16 7.4 4-1.4"/>
-                    <path d="M3 10h2a2 2 0 1 1 0 4h-2a8 8 0 0 0 14 3"/>
-                    <path d="M19 18a2 2 0 1 1 0 4h-2"/>
-                    <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-1 .05"/>
-                </svg>`
+            icon: `<svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512"><!-- Icon from Game Icons by GameIcons - https://github.com/game-icons/icons/blob/master/license.txt --><path fill="currentColor" d="M472.133 19.812L162.52 197.03l21.996 34.133L483.97 38.183zm-71.897 93.748l-117.627 75.8l16.35 10.41c45.98-32.88 82.61-61.844 100.483-82.544zm-134.283 86.535l-100.125 64.523l20.48 12.13c34.023-22.565 66.99-44.805 96.788-65.74zm-118.826 6.277l-6.227 4.012c-6.594 19.98-1.4 36.31 7.81 43.852l20.677-13.323zm-23.71 42.045c-5.512 5.532-12.928 13.198-22.288 23.64c-17.225 19.212-36.353 43.545-43.47 60.405c-18.543 43.928-15.34 97.99-18 147.736c2.41 7.08 5.408 9.92 8.197 11.137c2.96 1.292 6.896 1.194 11.74-.824c9.393-3.91 19.696-15.595 22.262-25.282c-.174-2.232-.92-12.117-1.237-25.643c-.356-15.14-.246-33.002 2.63-46.297c5.15-23.82 13.395-49.19 30.268-69.05c10.193-11.993 27.132-22.48 41.92-30.848c4.68-2.65 8.665-4.724 12.415-6.65c-19.88-12.29-36.656-17.7-44.437-38.323zm-57.75 37.793l-37.638 9.64L43.6 320.01c5.432-11.014 13.33-22.587 22.064-33.8zm125.86 8.82l-1.154.532s-6.765 3.116-16.096 8.043c-.25 10.99-5.59 19.736-12.617 25.5c-5.492 4.505-12.02 6.843-17.803 6.695c-4.355-.112-8.346-1.367-12.013-4.55c-1.8 1.62-3.36 3.18-4.606 4.644c-2.444 2.876-4.69 5.96-6.77 9.197c6.78 5.595 14.91 8.5 22.928 8.704c10.763.276 21.213-3.827 29.68-10.773c12.754-10.462 20.973-28.17 18.45-47.99z"/></svg>`
         },
         {
             title: "Regular Updates",
             description: "Constantly evolving content and mechanics keep the gameplay fresh and exciting.",
-            icon: `<svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/>
-                    <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/>
-                    <path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>
-                </svg>`
+            icon: `<svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M4.25 18.3q-.95-1.125-1.525-2.475T2 13h2.05q.15 1.075.55 2.063T5.65 16.9zM2 11q.2-1.475.75-2.825T4.25 5.7l1.4 1.4Q5 7.95 4.6 8.938T4.05 11zm8.95 10.95q-1.475-.15-2.812-.712T5.65 19.75l1.4-1.45q.875.65 1.85 1.075t2.05.575zM7.1 5.7L5.65 4.25q1.175-.925 2.525-1.488T11 2.05v2q-1.075.15-2.062.575T7.1 5.7m5.85 16.25v-2q1.1-.15 2.088-.562T16.9 18.3l1.45 1.45q-1.175.95-2.537 1.5t-2.863.7m4-16.25q-.875-.65-1.875-1.075T13 4.05v-2q1.475.15 2.838.713T18.35 4.25zm2.8 12.6l-1.4-1.4q.65-.85 1.05-1.837T19.95 13H22q-.2 1.475-.75 2.825t-1.5 2.475m.2-7.3q-.15-1.075-.55-2.062T18.35 7.1l1.4-1.4q.95 1.125 1.525 2.475T22 11zm-8.925 6v-6.175l-2.6 2.6L7.025 12l5-5l5 5l-1.425 1.4l-2.575-2.575V17z"/></svg>`
         },
         // Additional features can be easily added here
         {

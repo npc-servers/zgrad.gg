@@ -282,29 +282,29 @@ animation:countUpdate 0.5s ease-out;
 
 /* Nearly full or full server styling */
 .player-count-pill.nearly-full {
-background-color:rgba(241,196,15,0.3);
-border-color:rgba(241,196,15,0.4);
+background-color:rgba(220,53,69,0.3);
+border-color:rgba(220,53,69,0.4);
 border-bottom:0;
 }
 
 .player-count-pill.nearly-full #joinPlayerCount {
-color:#ffe066;
+color:#ff6b6b;
 text-shadow: 0 0 3px rgba(0,0,0,0.2);
 }
 
 /* Also update the join button style when pill is nearly full */
 .player-count-pill.nearly-full + .landing-button-join {
-border-color:rgba(241,196,15,0.4);
-background-color:rgba(241,196,15,0.15);
-box-shadow: 0 4px 15px rgba(241,196,15,0.15), inset 0 0 10px rgba(241,196,15,0.1);
+border-color:rgba(220,53,69,0.4);
+background-color:rgba(220,53,69,0.15);
+box-shadow: 0 4px 15px rgba(220,53,69,0.15), inset 0 0 10px rgba(220,53,69,0.1);
 }
 
 .player-count-pill.nearly-full + .landing-button-join:hover {
-border-color:rgba(241,196,15,0.6);
-background-color:rgba(241,196,15,0.3);
+border-color:rgba(220,53,69,0.6);
+background-color:rgba(220,53,69,0.3);
 color:#fff;
-box-shadow: 0 6px 20px rgba(241,196,15,0.2), inset 0 0 15px rgba(241,196,15,0.2);
-text-shadow: 0 0 10px rgba(241,196,15,0.5);
+box-shadow: 0 6px 20px rgba(220,53,69,0.2), inset 0 0 15px rgba(220,53,69,0.2);
+text-shadow: 0 0 10px rgba(220,53,69,0.5);
 }
 
 /* Add shimmer effect for the button */
@@ -342,9 +342,9 @@ background-position: 100% 0;
 .player-count-pill.nearly-full + .landing-button-join::before {
 background: linear-gradient(90deg, 
     transparent 0%,
-    rgba(241,196,15,0.2) 25%,
-    rgba(241,196,15,0.3) 50%,
-    rgba(241,196,15,0.2) 75%,
+    rgba(220, 53, 69, 0.2) 25%,
+    rgba(220, 53, 69, 0.3) 50%,
+    rgba(220, 53, 69, 0.2) 75%,
     transparent 100%
 );
 }
