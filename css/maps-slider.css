@@ -81,8 +81,16 @@
     object-fit: cover;
     transition: transform 0.3s ease;
     border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: none;
     overflow: hidden;
+}
+
+.map-slide.active .map-slide-image {
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+}
+
+.map-slide.clone-active .map-slide-image {
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
 }
 
 .map-slide-info {
@@ -157,16 +165,17 @@
 }
 
 .pagination-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.3);
+    width: 30px;
+    height: 3px;
+    border-radius: 1px;
+    background-color: rgba(120, 120, 120, 0.5);
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, width 0.3s ease;
 }
 
 .pagination-dot.active {
-    background-color: var(--highlight-color);
+    background-color: rgba(255, 255, 255, 0.9);
+    width: 40px;
 }
 
 /* Responsive styles */
