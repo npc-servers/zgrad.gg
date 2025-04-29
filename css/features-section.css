@@ -115,7 +115,6 @@
 }
 
 .feature-item:hover .feature-icon {
-    transform: scale(1.1);
     opacity: 1;
 }
 
