@@ -10,12 +10,12 @@
 .discord-section::before {
     content: '';
     position: absolute;
-    top: -50px;
+    top: -500px;
     left: 50%;
     transform: translateX(-50%);
     width: 1000px;
-    height: 250px;
-    background: radial-gradient(ellipse, rgba(114, 137, 218, 0.25) 0%, rgba(114, 137, 218, 0.1) 40%, rgba(114, 137, 218, 0) 70%);
+    height: 1000px;
+    background: radial-gradient(circle, rgba(114, 137, 218, 0.25) 0%, rgba(114, 137, 218, 0.1) 40%, rgba(114, 137, 218, 0) 70%);
     pointer-events: none;
     z-index: 1;
 }
@@ -276,8 +276,8 @@
     }
     .discord-section::before {
         width: 800px;
-        height: 200px;
-        top: -40px;
+        height: 800px;
+        top: -400px;
     }
 }
 
@@ -293,8 +293,8 @@
     }
     .discord-section::before {
         width: 600px;
-        height: 180px;
-        top: -30px;
+        height: 600px;
+        top: -300px;
     }
 }
 
@@ -316,7 +316,7 @@
     }
     .discord-section::before {
         width: 450px;
-        height: 150px;
-        top: -25px;
+        height: 450px;
+        top: -225px;
     }
 } 
