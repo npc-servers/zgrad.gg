@@ -6,6 +6,8 @@ function initWebstoreSection() {
     // Initialize rank panels slider
     const rankPanels = document.querySelectorAll('.rank-panel');
     const rankNavDots = document.querySelectorAll('.rank-nav-dot');
+    const ranksSlider = document.querySelector('.ranks-slider');
+    const ranksSliderWrapper = document.querySelector('.ranks-slider-wrapper');
     
     if (!rankPanels.length || !rankNavDots.length) return;
     
@@ -37,10 +39,11 @@ function initWebstoreSection() {
     let currentPanelIndex = defaultIndex;
     let autoSlideInterval;
     let isTransitioning = false;
+    let isInView = false;
     
     // Function to show a specific rank panel
     function showRankPanel(index, animate = true) {
-        if (isTransitioning) return;
+        if (isTransitioning || !isInView) return;
         isTransitioning = animate;
         
         // Remove active class from all panels and nav dots
@@ -91,7 +94,7 @@ function initWebstoreSection() {
     // Add click event listeners to nav dots
     rankNavDots.forEach((dot, index) => {
         dot.addEventListener('click', () => {
-            if (index !== currentPanelIndex) {
+            if (index !== currentPanelIndex && isInView) {
                 showRankPanel(index);
                 resetAutoSlide();
             }
@@ -101,12 +104,14 @@ function initWebstoreSection() {
     // Auto slide functionality
     function startAutoSlide() {
         clearInterval(autoSlideInterval);
-        autoSlideInterval = setInterval(() => {
-            if (!isTransitioning) {
-                let nextIndex = (currentPanelIndex + 1) % rankPanels.length;
-                showRankPanel(nextIndex);
-            }
-        }, 6000); // Adjust timing to match site style
+        if (isInView) {
+            autoSlideInterval = setInterval(() => {
+                if (!isTransitioning && isInView) {
+                    let nextIndex = (currentPanelIndex + 1) % rankPanels.length;
+                    showRankPanel(nextIndex);
+                }
+            }, 6000); // Adjust timing to match site style
+        }
     }
     
     function resetAutoSlide() {
@@ -114,18 +119,43 @@ function initWebstoreSection() {
         startAutoSlide();
     }
     
-    // Start auto-sliding
-    startAutoSlide();
+    // Intersection Observer for viewport detection
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.3 // 30% of the element needs to be visible
+    };
+    
+    const rankSliderObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                isInView = true;
+                ranksSlider.setAttribute('data-in-view', 'true');
+                startAutoSlide();
+            } else {
+                isInView = false;
+                ranksSlider.setAttribute('data-in-view', 'false');
+                clearInterval(autoSlideInterval);
+            }
+        });
+    }, observerOptions);
+    
+    // Observe the ranks slider
+    if (ranksSlider) {
+        rankSliderObserver.observe(ranksSlider);
+    }
     
     // Pause auto-sliding when hovering over panels
-    const ranksSlider = document.querySelector('.ranks-slider');
-    
     ranksSlider.addEventListener('mouseenter', () => {
-        clearInterval(autoSlideInterval);
+        if (isInView) {
+            clearInterval(autoSlideInterval);
+        }
     });
     
     ranksSlider.addEventListener('mouseleave', () => {
-        startAutoSlide();
+        if (isInView) {
+            startAutoSlide();
+        }
     });
     
     // Touch events support for mobile
@@ -134,17 +164,21 @@ function initWebstoreSection() {
     
     ranksSlider.addEventListener('touchstart', (e) => {
         touchStartX = e.changedTouches[0].screenX;
-        clearInterval(autoSlideInterval);
+        if (isInView) {
+            clearInterval(autoSlideInterval);
+        }
     }, { passive: true });
     
     ranksSlider.addEventListener('touchend', (e) => {
         touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-        startAutoSlide();
+        if (isInView) {
+            handleSwipe();
+            startAutoSlide();
+        }
     }, { passive: true });
     
     function handleSwipe() {
-        if (isTransitioning) return;
+        if (isTransitioning || !isInView) return;
         
         const swipeThreshold = 50;
         const swipeDistance = touchEndX - touchStartX;
