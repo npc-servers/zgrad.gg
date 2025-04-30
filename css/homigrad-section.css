@@ -107,6 +107,8 @@
     background-clip: text;
     color: transparent;
     -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 1;
 }
 
 .description-text {
@@ -116,6 +118,8 @@
     line-height: 1.6;
     max-width: 100%;
     padding-left: 0;
+    position: relative;
+    z-index: 1;
 }
 
 @keyframes numberUpdate {

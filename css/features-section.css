@@ -7,11 +7,14 @@
     margin-left: auto;
     margin-right: auto;
     overflow: hidden;
+    z-index: 1;
 }
 
 .features-content {
     max-width: 100%;
     text-align: right;
+    position: relative;
+    z-index: 1;
 }
 
 .features-title {
@@ -22,6 +25,8 @@
     text-align: right;
     padding-right: 20px;
     color: #ffffff;
+    position: relative;
+    z-index: 1;
 }
 
 .features-list {

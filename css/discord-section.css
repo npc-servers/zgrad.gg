@@ -23,12 +23,25 @@
 .discord-section::after {
     content: '';
     position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('../images/textures/cooltexturebetter.png') center/cover no-repeat;
+    opacity: 0.2;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.discord-section .fade-overlay {
+    position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
     height: 80px;
     background: linear-gradient(to top, rgba(30, 30, 30, 0.5), transparent);
     pointer-events: none;
+    z-index: 1;
 }
 
 .discord-container {
@@ -52,6 +65,8 @@
     background-clip: text;
     color: transparent;
     -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 1;
 }
 .discord-subtitle {
     text-align: center;
@@ -59,6 +74,8 @@
     font-weight: 400;
     margin-bottom: 40px;
     color: rgba(255, 255, 255, 0.8);
+    position: relative;
+    z-index: 1;
 }
 .discord-content {
     display: flex;
@@ -66,6 +83,8 @@
     gap: 40px;
     align-items: center;
     justify-content: center;
+    position: relative;
+    z-index: 1;
 }
 .discord-info {
     flex: 1;

@@ -80,6 +80,8 @@ min-height:80vh;
 
 .logo-container{
 margin-bottom:60px;
+position:relative;
+z-index:2;
 }
 
 .landing-logo{
