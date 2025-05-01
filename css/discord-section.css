@@ -187,6 +187,7 @@
     padding: 4px 10px;
     border-radius: 12px;
     text-shadow: 0 0 8px rgba(114, 137, 218, 0.4);
+    white-space: nowrap;
 }
 .members-list {
     display: flex;
@@ -344,6 +345,7 @@
     .discord-info,
     .discord-members {
         max-width: 100%;
+        width: 100%;
         margin-bottom: 30px;
     }
     .discord-members:hover {
@@ -373,14 +375,28 @@
     .discord-section {
         padding: 40px 0;
     }
+    .discord-container {
+        padding: 0 10px;
+    }
     .discord-title {
         font-size: 1.6rem;
     }
     .discord-stats {
         gap: 10px;
     }
+    .discord-members {
+        margin-left: -10px;
+        margin-right: -10px;
+        width: calc(100% + 20px);
+        border-radius: 8px;
+        padding: 20px 15px;
+    }
     .server-name {
         font-size: 20px;
+    }
+    .members-count {
+        font-size: 12px;
+        padding: 3px 8px;
     }
     .members-list {
         max-height: 150px;
@@ -388,5 +404,30 @@
     .discord-text-link {
         font-size: 12px;
         padding: 8px 12px;
+    }
+}
+
+@media (max-width: 375px) {
+    .members-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .members-count {
+        align-self: flex-start;
+    }
+    
+    .discord-members {
+        margin-left: -10px;
+        margin-right: -10px;
+        width: calc(100% + 20px);
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+    }
+    
+    .discord-container {
+        padding: 0;
     }
 } 
