@@ -56,6 +56,11 @@ function initWebstoreSection() {
             if (animate) {
                 panel.style.opacity = '0';
                 panel.style.transform = 'translateY(20px)';
+                
+                // Reset special transforms for supporter-plus - removing scale
+                if (panel.dataset.rank === 'supporter-plus') {
+                    panel.style.transform = 'translateY(20px)';
+                }
             }
         });
         
