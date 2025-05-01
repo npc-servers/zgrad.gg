@@ -338,18 +338,19 @@
 }
 
 .rank-nav-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.15);
+    width: 30px;
+    height: 3px;
+    border-radius: 1px;
+    background-color: rgba(120, 120, 120, 0.5);
     border: none;
     padding: 0;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease, width 0.3s ease;
 }
 
 .rank-nav-dot.active {
-    background-color: var(--highlight-color);
+    background-color: rgba(255, 255, 255, 0.9);
+    width: 40px;
 }
 
 /* Webstore promo styles */
