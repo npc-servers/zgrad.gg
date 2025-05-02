@@ -18,6 +18,16 @@
     background: radial-gradient(circle, rgba(114, 137, 218, 0.25) 0%, rgba(114, 137, 218, 0.1) 40%, rgba(114, 137, 218, 0) 70%);
     pointer-events: none;
     z-index: 1;
+    animation: discordGlowPulse 4s infinite alternate ease-in-out;
+}
+
+@keyframes discordGlowPulse {
+    0% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 .discord-section::after {
