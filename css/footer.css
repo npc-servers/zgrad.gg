@@ -203,6 +203,45 @@
     color: var(--text-color);
 }
 
+.powered-by-zmod {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    opacity: 0.7;
+    transition: opacity 0.3s ease, color 0.3s ease, fill 0.3s ease;
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+.powered-by-zmod:hover {
+    opacity: 1;
+    color: #ff0000;
+}
+
+.powered-by-zmod:hover .zmod-logo svg {
+    fill: #ff0000;
+}
+
+.powered-by-zmod span {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-right: 4px;
+}
+
+.powered-by-zmod .zmod-logo {
+    width: 24px;
+    height: 24px;
+}
+
+.powered-by-zmod .zmod-logo svg {
+    width: 100%;
+    height: 100%;
+    fill: var(--text-color);
+    transition: fill 0.3s ease;
+}
+
 @media (max-width: 768px) {
     .footer-container {
         flex-direction: column;
@@ -244,6 +283,10 @@
 
     .social-icons {
         justify-content: center;
+    }
+
+    .powered-by-zmod {
+        margin-top: 15px;
     }
 }
 
