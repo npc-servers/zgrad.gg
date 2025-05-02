@@ -26,6 +26,13 @@
     padding: 0 20px;
     position: relative;
     z-index: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.help-section-content {
+    width: 100%;
+    max-width: 900px;
 }
 
 .help-title {
@@ -37,29 +44,49 @@
     letter-spacing: 1px;
     position: relative;
     display: inline-block;
+    text-align: left;
+    width: 100%;
 }
 
 .help-title::after {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 0;
-    width: 40px;
-    height: 3px;
-    background-color: var(--accent-color);
+    display: none;
 }
 
 .help-box {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: linear-gradient(to top, rgba(20, 20, 20, 0.95), rgba(40, 40, 40, 0.9));
+    background-color: rgba(20, 20, 20, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 12px;
     padding: 30px 40px;
     margin-bottom: 40px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    max-width: 900px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.help-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: 100%;
+    background: radial-gradient(circle at right, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    animation: glowPulse 3s infinite alternate ease-in-out;
+}
+
+@keyframes glowPulse {
+    0% {
+        opacity: 0.7;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 .help-text {
@@ -67,6 +94,9 @@
     font-weight: 600;
     color: var(--text-color);
     flex: 1;
+    text-align: left;
+    position: relative;
+    z-index: 1;
 }
 
 .discord-help-button {
@@ -86,6 +116,8 @@
     box-shadow: 0 4px 12px rgba(114, 137, 218, 0.3);
     letter-spacing: 0.5px;
     text-decoration: none;
+    position: relative;
+    z-index: 1;
 }
 
 .discord-help-button:hover {
@@ -103,12 +135,58 @@
     fill: currentColor;
 }
 
+.guidelines-link-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+    width: 100%;
+}
+
+.guidelines-link {
+    display: inline-flex;
+    align-items: center;
+    background-color: rgba(40, 40, 40, 0.9);
+    color: var(--text-color);
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 18px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.guidelines-link:hover {
+    color: var(--text-color);
+    background-color: rgba(60, 60, 60, 0.9);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.guidelines-link .arrow-icon {
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+    transition: transform 0.3s ease;
+}
+
 /* Media Queries */
 @media (max-width: 768px) {
     .help-box {
         flex-direction: column;
-        text-align: center;
+        text-align: left;
         gap: 20px;
+    }
+    
+    .help-box::before {
+        width: 100%;
+        top: auto;
+        bottom: 0;
+        background: radial-gradient(circle at bottom, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
     }
     
     .help-text {
@@ -117,6 +195,10 @@
     
     .help-title {
         font-size: 28px;
+    }
+    
+    .guidelines-link-container {
+        margin-top: 20px;
     }
 }
 
@@ -136,5 +218,10 @@
     
     .discord-help-button {
         width: 100%;
+    }
+    
+    .guidelines-link {
+        font-size: 13px;
+        padding: 8px 15px;
     }
 } 
