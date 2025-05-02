@@ -240,7 +240,7 @@
     transform: translate(-40%, -50%);
     width: 120%;
     height: 250%;
-    background: radial-gradient(ellipse, rgba(255, 140, 0, 0.1) 0%, rgba(255, 100, 0, 0.05) 40%, transparent 70%);
+    background: radial-gradient(ellipse, rgba(255, 140, 0, 0.15) 0%, rgba(255, 100, 0, 0.08) 40%, transparent 70%);
     z-index: -1;
     pointer-events: none;
 } 

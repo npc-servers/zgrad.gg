@@ -89,14 +89,61 @@
     }
 }
 
+.help-text-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    z-index: 1;
+}
+
 .help-text {
     font-size: 20px;
     font-weight: 600;
     color: var(--text-color);
-    flex: 1;
     text-align: left;
     position: relative;
     z-index: 1;
+}
+
+.help-subtext {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--highlight-color, #31aac9);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: left;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s ease;
+    position: relative;
+    padding: 2px 4px;
+    margin-left: -4px;
+    width: fit-content;
+}
+
+.help-subtext:hover {
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(49, 170, 201, 0.5);
+}
+
+.help-subtext::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    bottom: -2px;
+    left: 0;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+}
+
+.help-subtext:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
 }
 
 .discord-help-button {
@@ -229,7 +276,7 @@
         background: radial-gradient(circle at bottom, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
     }
     
-    .help-text {
+    .help-text-container {
         margin-bottom: 15px;
     }
     
@@ -254,6 +301,14 @@
     .help-title {
         font-size: 24px;
         display: block;
+    }
+    
+    .help-text {
+        font-size: 18px;
+    }
+    
+    .help-subtext {
+        font-size: 13px;
     }
     
     .discord-help-button {
