@@ -482,13 +482,20 @@
         padding: 40px 0;
     }
     
+    .webstore-container {
+        padding: 0 20px;
+    }
+    
     .ranks-slider {
-        margin: 0 -20px;
-        width: calc(100% + 40px);
+        margin: 0;
+        width: 100%;
+        padding: 0 15px;
     }
     
     .rank-panel {
         padding: 20px;
+        max-width: 100%;
+        box-sizing: border-box;
     }
     
     .rank-buttons {
