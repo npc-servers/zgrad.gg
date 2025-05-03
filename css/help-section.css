@@ -261,6 +261,12 @@
     transform: translateX(3px);
 }
 
+.help-links {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
 /* Media Queries */
 @media (max-width: 768px) {
     .help-box {
@@ -320,5 +326,11 @@
         font-size: 0.9rem;
         width: 100%;
         justify-content: center;
+    }
+    
+    .help-links {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
     }
 } 
