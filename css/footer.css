@@ -97,6 +97,12 @@
     transform: translateX(3px);
 }
 
+.footer-links a.current {
+    color: var(--accent-color, #ff3e3e);
+    font-weight: 600;
+    transform: translateX(3px);
+}
+
 .social-links {
     display: flex;
     gap: 10px;
