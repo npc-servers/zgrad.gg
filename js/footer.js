@@ -35,6 +35,7 @@ function createFooterHTML(config = {}) {
         <div class="footer-container">
             <div class="footer-logo">
                 <img src="${company.logo}" alt="${company.logoAlt}">
+                ${createPoweredByLink(config)}
             </div>
             
             ${createNavigationColumn(config)}
@@ -56,7 +57,6 @@ function createFooterHTML(config = {}) {
                     </div>
                 </div>
             </div>
-            ${createPoweredByLink(config)}
         </div>
     `;
 }
