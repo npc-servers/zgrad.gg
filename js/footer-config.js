@@ -8,7 +8,7 @@ const footerConfig = {
     navigation: [
         { href: 'index.html', text: 'Home' },
         { href: 'servers.html', text: 'Servers' },
-        { href: 'https://store.zgrad.gg', text: 'Webstore', track: 'webstore' },
+        { href: 'https://store.npcz.gg', text: 'Webstore', track: 'webstore' },
         { href: 'https://discord.gg/npc', text: 'Discord', track: 'discord' }
     ],
     
