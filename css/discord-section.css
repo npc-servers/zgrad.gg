@@ -146,18 +146,44 @@
     font-weight: 600;
     padding: 12px 24px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
     text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
 }
-.discord-button:hover {
+
+.discord-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background-color: #5e78d5;
+    z-index: -1;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.discord-button:hover {
     color: white;
 }
+
+.discord-button:hover::before {
+    opacity: 1;
+}
+
 .discord-button svg {
     width: 20px;
     height: 20px;
     fill: currentColor;
+    transition: transform 0.3s ease;
 }
+
+.discord-button:hover svg {
+    transform: scale(1.1);
+}
+
 .discord-members {
     flex: 1;
     max-width: 500px;
