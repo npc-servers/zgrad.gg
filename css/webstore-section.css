@@ -514,8 +514,8 @@
     }
     
     .ranks-slider {
-        margin: 0;
-        width: 100%;
+        margin: 0 -15px;
+        width: calc(100% + 30px);
         padding: 0 15px;
     }
     
