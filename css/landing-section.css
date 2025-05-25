@@ -47,7 +47,7 @@ top:0;
 left:0;
 right:0;
 bottom:0;
-background:url('../images/logos/zgrad-large.png') center/cover no-repeat;
+background:url('../images/logos/zgrad-logo.png') center/cover no-repeat;
 opacity:0.05;
 transform:scale(2);
 filter:blur(8px);
@@ -87,7 +87,7 @@ z-index:2;
 .landing-logo{
 max-width:50%;
 height:auto;
-filter:drop-shadow(0 0 20px rgba(var(--highlight-color-rgb), 0.5));
+filter:drop-shadow(0 0 8px rgba(var(--highlight-color-rgb), 0.25));
 transition:transform 0.3s ease;
 }
 
