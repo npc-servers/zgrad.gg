@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const joinButton = document.getElementById('joinMostPopularServer');
     const viewServersButton = document.getElementById('viewServers');
     const joinPlayerCount = document.getElementById('joinPlayerCount');
+    const serverName = document.getElementById('serverName');
+    const currentGamemode = document.getElementById('currentGamemode');
     
     if (joinButton && viewServersButton) {
         // Function to check if device is tablet or mobile
@@ -66,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             players: 0,
                             maxPlayers: 0,
                             map: 'Unknown',
+                            gamemode: 'Unknown',
                             server: server // Store the server reference
                         };
 
@@ -74,6 +77,13 @@ document.addEventListener('DOMContentLoaded', () => {
                             status.players = serverInfo.players || serverInfo.num_players || serverInfo.playercount || 0;
                             status.maxPlayers = serverInfo.maxplayers || serverInfo.max_players || serverInfo.maxclients || "?";
                             status.map = serverInfo.map || 'Unknown';
+                            
+                            // Extract gamemode from server name if available
+                            const serverTitle = serverInfo.name || serverInfo.hostname || '';
+                            const gamemodeMatch = serverTitle.match(/Now Playing:\s*([^|]+)/i);
+                            if (gamemodeMatch) {
+                                status.gamemode = gamemodeMatch[1].trim();
+                            }
                         }
 
                         return status;
@@ -85,6 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             players: 0, 
                             maxPlayers: 0, 
                             map: 'Unknown',
+                            gamemode: 'Unknown',
                             server: server 
                         };
                     });
@@ -160,40 +171,57 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (selectedServerStatus) {
                             const playerCount = selectedServerStatus.players;
                             const maxPlayers = selectedServerStatus.maxPlayers;
-                            const serverName = selectedServer.title;
+                            const selectedServerName = selectedServer.title;
+                            const gamemode = selectedServerStatus.gamemode;
+                            const map = selectedServerStatus.map;
                             
-                            // Update the player count pill
+                            // Update the server name, player count, and gamemode
+                            serverName.textContent = selectedServerName;
                             joinPlayerCount.textContent = `${playerCount}/${maxPlayers}`;
+                            currentGamemode.innerHTML = `${gamemode} <span style="color: #a8a8a8;">on</span> ${map}`;
                             joinPlayerCount.classList.add('update-animation');
-                            
-                            // Add a class if server is nearly full or full
-                            const playerPercentage = (playerCount / maxPlayers) * 100;
-                            if (playerPercentage >= 90) {
-                                document.querySelector('.player-count-pill').classList.add('nearly-full');
-                                document.querySelector('.player-count-wrapper').classList.add('nearly-full');
-                            } else {
-                                document.querySelector('.player-count-pill').classList.remove('nearly-full');
-                                document.querySelector('.player-count-wrapper').classList.remove('nearly-full');
-                            }
                             
                             setTimeout(() => {
                                 joinPlayerCount.classList.remove('update-animation');
                             }, 500);
                             
-                            // Update join button with server name only
-                            joinButton.innerHTML = `JOIN ${serverName}`;
+                            // Update join button text
+                            joinButton.textContent = 'JOIN';
                             
-                            // Check if all online servers are full
-                            if (onlineServers.length > 0 && onlineServers.every(s => s.players >= s.maxPlayers)) {
-                                joinButton.innerHTML = `JOIN ${serverName}<br><span class="server-note">All servers full!</span>`;
+                            // Calculate server capacity and apply dynamic colors
+                            const playerPercentage = (playerCount / maxPlayers) * 100;
+                            const joinSection = document.querySelector('.join-section');
+                            
+                            // Remove any existing capacity classes
+                            joinSection?.classList.remove('nearly-full', 'getting-full');
+                            
+                            // Apply dynamic player count color based on capacity
+                            if (playerPercentage >= 90) {
+                                // 90%+ capacity: Orange
+                                joinSection?.classList.add('nearly-full');
+                                joinPlayerCount.style.color = '#ff6b00';
+                            } else if (playerPercentage >= 70) {
+                                // 70-89% capacity: Yellow-orange blend
+                                joinSection?.classList.add('getting-full');
+                                const orangeIntensity = (playerPercentage - 70) / 20; // 0 to 1 scale
+                                const red = Math.round(76 + (179 * orangeIntensity)); // 76 to 255
+                                const green = Math.round(175 - (68 * orangeIntensity)); // 175 to 107
+                                const blue = Math.round(80 - (80 * orangeIntensity)); // 80 to 0
+                                joinPlayerCount.style.color = `rgb(${red}, ${green}, ${blue})`;
+                            } else {
+                                // Under 70% capacity: Green
+                                joinPlayerCount.style.color = '#4CAF50';
                             }
                         } else {
-                            // Update the player count pill for error case
+                            // Update for error case
+                            serverName.textContent = selectedServer.title;
                             joinPlayerCount.textContent = '0/0';
-                            joinButton.innerHTML = `JOIN SERVER`;
+                            joinPlayerCount.style.color = '#4CAF50';
+                            currentGamemode.innerHTML = 'Unknown <span style="color: #a8a8a8;">on</span> Unknown';
+                            joinButton.textContent = 'JOIN';
+                            document.querySelector('.join-section')?.classList.remove('nearly-full', 'getting-full');
                         }
-                        // Ensure mobile class is removed when on desktop
-                        joinButton.classList.remove('mobile-view');
+                        // No need for mobile class on the new button design
                         
                         // Make sure the "START PLAYING NOW" text is visible on desktop
                         document.querySelector('.start-playing-text').style.display = 'block';
@@ -205,20 +233,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     joinButton.href = servers[0].link;
                     viewServersButton.href = "/servers.html";
                     
-                    // Even on error, display the right message for the device
-                    if (isTabletOrMobile()) {
-                        viewServersButton.innerHTML = 'VIEW SERVERS';
-                        viewServersButton.href = servers[0].link;
-                        // No need to update hidden elements on mobile/tablet
-                        // The elements are now hidden via CSS
-                    } else {
-                        viewServersButton.innerHTML = 'VIEW SERVERS';
-                        // Update player count pill for error case
-                        joinPlayerCount.textContent = '0/0';
-                        joinButton.innerHTML = `JOIN ${servers[0].title}<br><span class="server-note">Server status unavailable</span>`;
-                        joinButton.classList.remove('mobile-view');
-                        document.querySelector('.start-playing-text').style.display = 'block';
-                    }
+                                            // Even on error, display the right message for the device
+                        if (isTabletOrMobile()) {
+                            viewServersButton.innerHTML = 'VIEW SERVERS';
+                            viewServersButton.href = servers[0].link;
+                            // No need to update hidden elements on mobile/tablet
+                            // The elements are now hidden via CSS
+                        } else {
+                            viewServersButton.innerHTML = 'VIEW SERVERS';
+                            // Update for error case
+                            serverName.textContent = servers[0].title;
+                            joinPlayerCount.textContent = '0/0';
+                            joinPlayerCount.style.color = '#4CAF50';
+                            currentGamemode.innerHTML = 'Unknown <span style="color: #a8a8a8;">on</span> Unknown';
+                            joinButton.textContent = 'JOIN';
+                            document.querySelector('.join-section')?.classList.remove('nearly-full', 'getting-full');
+                            document.querySelector('.start-playing-text').style.display = 'block';
+                        }
                 });
         };
         
