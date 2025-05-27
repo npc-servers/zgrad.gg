@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const joinPlayerCount = document.getElementById('joinPlayerCount');
     const serverName = document.getElementById('serverName');
     const currentGamemode = document.getElementById('currentGamemode');
+    const joinSection = document.querySelector('.join-section');
     
     if (joinButton && viewServersButton) {
         // Function to check if device is tablet or mobile
@@ -191,20 +192,29 @@ document.addEventListener('DOMContentLoaded', () => {
                             // Calculate server capacity and apply dynamic colors
                             const playerPercentage = (playerCount / maxPlayers) * 100;
                             
-                            // Remove any existing capacity classes from player count and join button
+                            // Remove any existing capacity classes from player count, join button, and join section
                             joinPlayerCount.classList.remove('nearly-full', 'getting-full');
                             joinButton.classList.remove('nearly-full', 'getting-full');
+                            if (joinSection) {
+                                joinSection.classList.remove('nearly-full', 'getting-full');
+                            }
                             
                             // Apply dynamic player count color based on capacity
                             if (playerPercentage >= 90) {
                                 // 90%+ capacity: Orange
                                 joinPlayerCount.classList.add('nearly-full');
                                 joinButton.classList.add('nearly-full');
+                                if (joinSection) {
+                                    joinSection.classList.add('nearly-full');
+                                }
                                 joinPlayerCount.style.color = '#ff6b00';
                             } else if (playerPercentage >= 70) {
                                 // 70-89% capacity: Yellow (consistent with join button)
                                 joinPlayerCount.classList.add('getting-full');
                                 joinButton.classList.add('getting-full');
+                                if (joinSection) {
+                                    joinSection.classList.add('getting-full');
+                                }
                                 joinPlayerCount.style.color = '#ffc107';
                             } else {
                                 // Under 70% capacity: Green
@@ -219,6 +229,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             joinButton.textContent = 'JOIN';
                             joinPlayerCount.classList.remove('nearly-full', 'getting-full');
                             joinButton.classList.remove('nearly-full', 'getting-full');
+                            if (joinSection) {
+                                joinSection.classList.remove('nearly-full', 'getting-full');
+                            }
                         }
                         // No need for mobile class on the new button design
                         
@@ -232,24 +245,27 @@ document.addEventListener('DOMContentLoaded', () => {
                     joinButton.href = servers[0].link;
                     viewServersButton.href = "/servers.html";
                     
-                                            // Even on error, display the right message for the device
-                        if (isTabletOrMobile()) {
-                            viewServersButton.innerHTML = 'VIEW SERVERS';
-                            viewServersButton.href = servers[0].link;
-                            // No need to update hidden elements on mobile/tablet
-                            // The elements are now hidden via CSS
-                        } else {
-                            viewServersButton.innerHTML = 'VIEW SERVERS';
-                            // Update for error case
-                            serverName.textContent = servers[0].title;
-                            joinPlayerCount.textContent = '0/0';
-                            joinPlayerCount.style.color = '#4CAF50';
-                            currentGamemode.innerHTML = 'Unknown <span style="color: #a8a8a8;">on</span> Unknown';
-                            joinButton.textContent = 'JOIN';
-                            joinPlayerCount.classList.remove('nearly-full', 'getting-full');
-                            joinButton.classList.remove('nearly-full', 'getting-full');
-                            document.querySelector('.start-playing-text').style.display = 'block';
+                    // Even on error, display the right message for the device
+                    if (isTabletOrMobile()) {
+                        viewServersButton.innerHTML = 'VIEW SERVERS';
+                        viewServersButton.href = servers[0].link;
+                        // No need to update hidden elements on mobile/tablet
+                        // The elements are now hidden via CSS
+                    } else {
+                        viewServersButton.innerHTML = 'VIEW SERVERS';
+                        // Update for error case
+                        serverName.textContent = servers[0].title;
+                        joinPlayerCount.textContent = '0/0';
+                        joinPlayerCount.style.color = '#4CAF50';
+                        currentGamemode.innerHTML = 'Unknown <span style="color: #a8a8a8;">on</span> Unknown';
+                        joinButton.textContent = 'JOIN';
+                        joinPlayerCount.classList.remove('nearly-full', 'getting-full');
+                        joinButton.classList.remove('nearly-full', 'getting-full');
+                        if (joinSection) {
+                            joinSection.classList.remove('nearly-full', 'getting-full');
                         }
+                        document.querySelector('.start-playing-text').style.display = 'block';
+                    }
                 });
         };
         
