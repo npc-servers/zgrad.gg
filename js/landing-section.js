@@ -190,24 +190,22 @@ document.addEventListener('DOMContentLoaded', () => {
                             
                             // Calculate server capacity and apply dynamic colors
                             const playerPercentage = (playerCount / maxPlayers) * 100;
-                            const joinSection = document.querySelector('.join-section');
                             
-                            // Remove any existing capacity classes
-                            joinSection?.classList.remove('nearly-full', 'getting-full');
+                            // Remove any existing capacity classes from player count and join button
+                            joinPlayerCount.classList.remove('nearly-full', 'getting-full');
+                            joinButton.classList.remove('nearly-full', 'getting-full');
                             
                             // Apply dynamic player count color based on capacity
                             if (playerPercentage >= 90) {
                                 // 90%+ capacity: Orange
-                                joinSection?.classList.add('nearly-full');
+                                joinPlayerCount.classList.add('nearly-full');
+                                joinButton.classList.add('nearly-full');
                                 joinPlayerCount.style.color = '#ff6b00';
                             } else if (playerPercentage >= 70) {
-                                // 70-89% capacity: Yellow-orange blend
-                                joinSection?.classList.add('getting-full');
-                                const orangeIntensity = (playerPercentage - 70) / 20; // 0 to 1 scale
-                                const red = Math.round(76 + (179 * orangeIntensity)); // 76 to 255
-                                const green = Math.round(175 - (68 * orangeIntensity)); // 175 to 107
-                                const blue = Math.round(80 - (80 * orangeIntensity)); // 80 to 0
-                                joinPlayerCount.style.color = `rgb(${red}, ${green}, ${blue})`;
+                                // 70-89% capacity: Yellow (consistent with join button)
+                                joinPlayerCount.classList.add('getting-full');
+                                joinButton.classList.add('getting-full');
+                                joinPlayerCount.style.color = '#ffc107';
                             } else {
                                 // Under 70% capacity: Green
                                 joinPlayerCount.style.color = '#4CAF50';
@@ -219,7 +217,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             joinPlayerCount.style.color = '#4CAF50';
                             currentGamemode.innerHTML = 'Unknown <span style="color: #a8a8a8;">on</span> Unknown';
                             joinButton.textContent = 'JOIN';
-                            document.querySelector('.join-section')?.classList.remove('nearly-full', 'getting-full');
+                            joinPlayerCount.classList.remove('nearly-full', 'getting-full');
+                            joinButton.classList.remove('nearly-full', 'getting-full');
                         }
                         // No need for mobile class on the new button design
                         
@@ -247,7 +246,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             joinPlayerCount.style.color = '#4CAF50';
                             currentGamemode.innerHTML = 'Unknown <span style="color: #a8a8a8;">on</span> Unknown';
                             joinButton.textContent = 'JOIN';
-                            document.querySelector('.join-section')?.classList.remove('nearly-full', 'getting-full');
+                            joinPlayerCount.classList.remove('nearly-full', 'getting-full');
+                            joinButton.classList.remove('nearly-full', 'getting-full');
                             document.querySelector('.start-playing-text').style.display = 'block';
                         }
                 });

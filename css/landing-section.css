@@ -84,6 +84,13 @@ position:relative;
 z-index:2;
 }
 
+.logo-container .landing-buttons-inline {
+display: none; /* Hidden on large screens, shown on smaller screens */
+gap: 15px;
+justify-content: center;
+margin-top: 30px;
+}
+
 .landing-logo{
 max-width:50%;
 height:auto;
@@ -178,45 +185,58 @@ box-shadow: 0 6px 20px rgba(46,204,113,0.2), inset 0 0 15px rgba(46,204,113,0.2)
 text-shadow: 0 0 10px rgba(46,204,113,0.5);
 }
 
-.join-section.nearly-full {
-border-color: rgba(255,107,0,0.4);
-background-color: rgba(255,107,0,0.1);
-}
+/* Removed join-section.nearly-full container styling - only target specific elements */
 
-.join-section.nearly-full .server-players span {
+.server-players span.nearly-full {
 color: #ff6b00;
 }
 
-.join-section.nearly-full .join-button-large {
-background-color: rgba(255,107,0,0.2);
-border: 2px solid rgba(255,107,0,0.4);
-color: #f5f5f5;
-box-shadow: 0 4px 15px rgba(255,107,0,0.15), inset 0 0 10px rgba(255,107,0,0.1);
-}
-
-.join-section.nearly-full .join-button-large:hover {
-color: #ff6b00;
-background-color: rgba(255,107,0,0.15);
-border-color: rgba(255,107,0,0.6);
-box-shadow: 0 6px 20px rgba(255,107,0,0.2), inset 0 0 15px rgba(255,107,0,0.2);
-text-shadow: 0 0 10px rgba(255,107,0,0.5);
-}
-
-.join-section.getting-full {
-border-color: rgba(255,193,7,0.3);
-background-color: rgba(255,193,7,0.05);
-}
-
-.join-section.getting-full .join-button-large {
-background-color: rgba(255,193,7,0.15);
-border: 2px solid rgba(255,193,7,0.3);
-}
-
-.join-section.getting-full .join-button-large:hover {
+.server-players span.getting-full {
 color: #ffc107;
-background-color: rgba(255,193,7,0.1);
-border-color: rgba(255,193,7,0.5);
 }
+
+.join-button-large.nearly-full {
+background-color: rgba(255,107,0,0.3);
+border: 2px solid rgba(255,107,0,0.6);
+color: #ffffff;
+box-shadow: 0 4px 12px rgba(255,107,0,0.25), inset 0 0 8px rgba(255,107,0,0.15);
+text-shadow: 0 0 4px rgba(255,107,0,0.4);
+position: relative;
+overflow: hidden;
+}
+
+.join-button-large.nearly-full:hover {
+color: #ff6b00;
+background-color: rgba(255,107,0,0.4);
+border-color: rgba(255,107,0,0.8);
+transform: translateY(-2px);
+box-shadow: 0 6px 16px rgba(255,107,0,0.3), inset 0 0 12px rgba(255,107,0,0.2);
+text-shadow: 0 0 6px rgba(255,107,0,0.5);
+}
+
+/* Removed shimmer and pulse animations */
+
+/* Removed join-section.getting-full container styling - only target specific elements */
+
+.join-button-large.getting-full {
+background-color: rgba(255,193,7,0.2);
+border: 2px solid rgba(255,193,7,0.4);
+color: #ffffff;
+box-shadow: 0 4px 10px rgba(255,193,7,0.2), inset 0 0 6px rgba(255,193,7,0.1);
+text-shadow: 0 0 3px rgba(255,193,7,0.3);
+position: relative;
+}
+
+.join-button-large.getting-full:hover {
+color: #ffc107;
+background-color: rgba(255,193,7,0.3);
+border-color: rgba(255,193,7,0.6);
+transform: translateY(-2px);
+box-shadow: 0 6px 14px rgba(255,193,7,0.25), inset 0 0 10px rgba(255,193,7,0.15);
+text-shadow: 0 0 5px rgba(255,193,7,0.4);
+}
+
+/* Removed warning glow animation */
 
 .landing-button-discord{
 background-color:rgba(114,137,218,0.2);
@@ -450,7 +470,7 @@ min-height:100vh;
 padding:25px 0;
 }
 .landing-logo{
-max-width:30%;
+max-width:55%;
 }
 .landing-buttons{
 flex-direction:row;
@@ -490,7 +510,7 @@ max-width: 450px;
 }
 
 .landing-logo{
-max-width:35%;
+max-width:60%;
 }
 
 .landing-buttons{
@@ -548,7 +568,7 @@ min-height:100vh;
 padding:20px 0;
 }
 .landing-logo{
-max-width:40%;
+max-width:65%;
 }
 .landing-button{
 padding:0.5rem 0.8rem;
@@ -924,17 +944,20 @@ position: relative;
     }
 }
 
-/* Medium desktop screens: position buttons above text */
+/* Medium desktop screens: show buttons in logo container, hide top row buttons */
 @media (min-width: 769px) and (max-width: 1047px) {
-    .top-row {
-        flex-direction: column-reverse;
-        align-items: flex-start;
-        gap: 20px;
+    .logo-container {
+        margin-bottom: 80px;
     }
     
-    .landing-buttons-inline {
+    .logo-container .landing-buttons-inline {
+        display: flex; /* Show buttons in logo container */
         gap: 20px;
-        align-self: center;
+        margin-top: 40px;
+    }
+    
+    .top-row .landing-buttons-inline {
+        display: none; /* Hide buttons in top row, but keep START PLAYING NOW visible */
     }
     
     .landing-buttons-inline .landing-button {
@@ -956,22 +979,25 @@ position: relative;
     }
 }
 
-/* Return to original layout on mobile */
+/* Mobile: show buttons in logo container, hide top row buttons */
 @media (max-width: 768px) {
+    .logo-container {
+        margin-bottom: 60px;
+    }
+    
+    .logo-container .landing-buttons-inline {
+        display: flex; /* Show buttons in logo container */
+        gap: 12px;
+        margin-top: 25px;
+    }
+    
     .join-button-container {
         align-items: center;
         gap: 20px;
     }
     
-    .top-row {
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        gap: 15px;
-    }
-    
-    .landing-buttons-inline {
-        gap: 12px;
+    .top-row .landing-buttons-inline {
+        display: none; /* Hide buttons in top row */
     }
     
     .landing-buttons-inline .landing-button {
