@@ -1158,16 +1158,16 @@ position: absolute;
 top: 0;
 left: 0;
 bottom: 0;
-width: 60%;
-background: radial-gradient(ellipse at left center, 
-    rgba(255, 107, 0, 0.25) 0%,
-    rgba(255, 107, 0, 0.15) 30%,
-    rgba(255, 107, 0, 0.05) 60%,
+right: 0;
+background: radial-gradient(ellipse 300px 100% at -50px center, 
+    rgba(255, 107, 0, 0.08) 0%,
+    rgba(255, 107, 0, 0.04) 40%,
+    rgba(255, 107, 0, 0.01) 70%,
     transparent 100%
 );
 z-index: 1;
 pointer-events: none;
-border-radius: 16px 0 0 16px;
+border-radius: 16px;
 }
 
 .join-section.getting-full::before {
@@ -1176,16 +1176,16 @@ position: absolute;
 top: 0;
 left: 0;
 bottom: 0;
-width: 60%;
-background: radial-gradient(ellipse at left center, 
-    rgba(255, 193, 7, 0.25) 0%,
-    rgba(255, 193, 7, 0.15) 30%,
-    rgba(255, 193, 7, 0.05) 60%,
+right: 0;
+background: radial-gradient(ellipse 300px 100% at -50px center, 
+    rgba(255, 193, 7, 0.08) 0%,
+    rgba(255, 193, 7, 0.04) 40%,
+    rgba(255, 193, 7, 0.01) 70%,
     transparent 100%
 );
 z-index: 1;
 pointer-events: none;
-border-radius: 16px 0 0 16px;
+border-radius: 16px;
 }
 
 /* Ensure server info stays above the gradient */
