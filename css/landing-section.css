@@ -899,17 +899,10 @@ position: relative;
     letter-spacing: 0.5px;
 }
 
-/* Ultra-wide screens: position buttons above text */
+/* Ultra-wide screens: keep horizontal layout but adjust spacing */
 @media (min-width: 1600px) {
-    .top-row {
-        flex-direction: column-reverse;
-        align-items: flex-start;
-        gap: 20px;
-    }
-    
     .landing-buttons-inline {
         gap: 20px;
-        align-self: center;
     }
     
     .landing-buttons-inline .landing-button {
