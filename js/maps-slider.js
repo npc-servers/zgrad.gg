@@ -130,10 +130,10 @@ function setupSliderFunctionality(maps) {
     function handleSwipe() {
         if (touchEndX < touchStartX - 50) {
             // Swipe left - go to next slide
-            goToSlide(currentIndex + 1);
+            goToSlide(currentIndex + 1, true);
         } else if (touchEndX > touchStartX + 50) {
             // Swipe right - go to previous slide
-            goToSlide(currentIndex - 1);
+            goToSlide(currentIndex - 1, true);
         }
     }
     
@@ -143,13 +143,13 @@ function setupSliderFunctionality(maps) {
     // Event listeners
     if (prevButton) {
         prevButton.addEventListener('click', () => {
-            goToSlide(currentIndex - 1);
+            goToSlide(currentIndex - 1, true);
         });
     }
     
     if (nextButton) {
         nextButton.addEventListener('click', () => {
-            goToSlide(currentIndex + 1);
+            goToSlide(currentIndex + 1, true);
         });
     }
     
@@ -160,7 +160,7 @@ function setupSliderFunctionality(maps) {
             slide.addEventListener('click', () => {
                 if (index !== currentIndex) {
                     // Account for the clone slides
-                    goToSlide(index + cloneOffset - slideCount * Math.floor((index + cloneOffset) / slideCount));
+                    goToSlide(index + cloneOffset - slideCount * Math.floor((index + cloneOffset) / slideCount), true);
                 }
             });
         }
@@ -170,7 +170,7 @@ function setupSliderFunctionality(maps) {
     paginationDots.forEach((dot, index) => {
         dot.addEventListener('click', () => {
             // Add offset to account for the clone slides
-            goToSlide(index + cloneOffset);
+            goToSlide(index + cloneOffset, true);
         });
     });
     
@@ -220,7 +220,7 @@ function setupSliderFunctionality(maps) {
         }
     }
     
-    function goToSlide(index) {
+    function goToSlide(index, isManual = true) {
         if (isTransitioning) return;
         
         isTransitioning = true;
@@ -240,8 +240,12 @@ function setupSliderFunctionality(maps) {
         // Update the slider position
         updateSlider(true);
         
-        // Reset autoplay
-        resetAutoplay();
+        // Reset autoplay with appropriate timing
+        if (isManual) {
+            resetAutoplayAfterManual();
+        } else {
+            resetAutoplay();
+        }
     }
     
     // Update which slides should be active or clone-active
@@ -290,20 +294,30 @@ function setupSliderFunctionality(maps) {
     
     // Auto-play functionality
     let autoplayInterval;
+    let manualTransitionDelay;
     
     function startAutoplay() {
         autoplayInterval = setInterval(() => {
-            goToSlide(currentIndex + 1);
+            goToSlide(currentIndex + 1, false); // false = not manual
         }, 5000); // Change slide every 5 seconds
     }
     
     function stopAutoplay() {
         clearInterval(autoplayInterval);
+        clearTimeout(manualTransitionDelay);
     }
     
     function resetAutoplay() {
         stopAutoplay();
         startAutoplay();
+    }
+    
+    function resetAutoplayAfterManual() {
+        stopAutoplay();
+        // Start autoplay with 8-second delay after manual transition
+        manualTransitionDelay = setTimeout(() => {
+            startAutoplay();
+        }, 8000);
     }
     
     // Start autoplay
