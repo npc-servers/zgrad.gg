@@ -99,7 +99,6 @@
 }
 .discord-info {
     flex: 1;
-    max-width: 500px;
 }
 .discord-stats {
     display: flex;
@@ -133,6 +132,7 @@
     line-height: 1.6;
     color: rgba(255, 255, 255, 0.8);
     margin-bottom: 30px;
+    max-width: 500px;
 }
 .discord-button {
     display: inline-flex;
