@@ -239,7 +239,8 @@ document.addEventListener('DOMContentLoaded', function() {
         'The Hidden',
         'Hide and Seek',
         'Juggernaut',
-        'Capture the Flag'
+        'Capture the Flag',
+        'The Beast'
     ];
     
     const scrollContent = document.getElementById('gamemodes-scroll-content');
@@ -410,32 +411,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Function to check if element is in viewport
-    const isInViewport = (element) => {
-        const rect = element.getBoundingClientRect();
-        return (
-            rect.top <= (window.innerHeight || document.documentElement.clientHeight) * 0.8
-        );
-    };
-    
-    // Function to add visible class when element is in viewport
-    const handleScroll = () => {
-        if (featuresContent && isInViewport(featuresContent)) {
-            featuresContent.classList.add('visible');
-            
-            // Remove scroll listener once animation is triggered
-            window.removeEventListener('scroll', handleScroll);
-        }
-    };
-    
     // Initial render
     renderFeatures();
-    
-    // Add scroll event listener
-    window.addEventListener('scroll', handleScroll);
-    
-    // Check on initial load
-    handleScroll();
     
     // Adjust animation on window resize
     window.addEventListener('resize', () => {

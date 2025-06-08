@@ -133,19 +133,15 @@
 
 /* Animation for the features */
 .features-content {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
+    /* Load animation removed - features are visible by default */
 }
 
 .features-content.visible {
-    opacity: 1;
-    transform: translateY(0);
+    /* Removed visible class styles */
 }
 
 .feature-item {
-    opacity: 0;
-    animation: featureItemFadeIn 0.6s forwards;
+    /* Load animation removed - features are visible by default */
 }
 
 @keyframes scrollFeatures {
@@ -157,23 +153,16 @@
     }
 }
 
-@keyframes featureItemFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+/* Removed featureItemFadeIn keyframes */
+
+/* Removed staggered animation delays */
 
 /* Apply staggered animation delay to initial feature items */
-.feature-item:nth-child(1) { animation-delay: 0.1s; }
+/* .feature-item:nth-child(1) { animation-delay: 0.1s; }
 .feature-item:nth-child(2) { animation-delay: 0.2s; }
 .feature-item:nth-child(3) { animation-delay: 0.3s; }
 .feature-item:nth-child(4) { animation-delay: 0.4s; }
-.feature-item:nth-child(5) { animation-delay: 0.5s; }
+.feature-item:nth-child(5) { animation-delay: 0.5s; } */
 
 /* Responsive styles */
 @media (max-width: 992px) {
