@@ -679,11 +679,11 @@ position: absolute;
 top: 0;
 right: 0;
 bottom: 0;
-width: 50%;
-background: 
-    linear-gradient(to right, rgba(30,30,30,0.8) 0%, rgba(30,30,30,0.4) 40%, transparent 100%),
-    url('../images/homigrad-render2.png') center right/cover no-repeat;
-opacity: 0.15;
+width: 60%;
+background: url('../images/homigrad-render2.png') left center/cover no-repeat;
+mask: linear-gradient(to right, transparent 0%, transparent 25%, rgba(255,255,255,0.05) 30%, rgba(255,255,255,0.1) 35%, rgba(255,255,255,0.2) 40%, rgba(255,255,255,0.3) 45%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.5) 55%, rgba(255,255,255,0.6) 60%, rgba(255,255,255,0.7) 65%, rgba(255,255,255,0.8) 70%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0.95) 80%, rgba(255,255,255,1) 85%);
+-webkit-mask: linear-gradient(to right, transparent 0%, transparent 25%, rgba(255,255,255,0.05) 30%, rgba(255,255,255,0.1) 35%, rgba(255,255,255,0.2) 40%, rgba(255,255,255,0.3) 45%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.5) 55%, rgba(255,255,255,0.6) 60%, rgba(255,255,255,0.7) 65%, rgba(255,255,255,0.8) 70%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0.95) 80%, rgba(255,255,255,1) 85%);
+opacity: 0.3;
 z-index: 0;
 pointer-events: none;
 }
