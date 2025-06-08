@@ -175,7 +175,9 @@
 }
 
 .slider-nav-button {
-    background-color: rgba(60, 60, 60, 0.8);
+    background-color: rgba(45, 45, 45, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     color: var(--text-color);
     border: none;
     width: 35px;
