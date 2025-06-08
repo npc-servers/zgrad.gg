@@ -1,4 +1,25 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Trigger landing animations on page load
+    const initLandingAnimations = () => {
+        // Check if user prefers reduced motion
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        
+        if (prefersReducedMotion) {
+            // Show all elements immediately for users who prefer reduced motion
+            const animatedElements = document.querySelectorAll('.landing-logo, .landing-subtitle, .landing-buttons-inline .landing-button, .start-playing-text, .join-button-container .join-section, .join-button-large, .server-info .server-name, .server-info .server-players, .server-info .server-gamemode, .top-row .landing-buttons-inline .landing-button');
+            animatedElements.forEach(element => {
+                element.style.opacity = '1';
+                element.style.transform = 'none';
+            });
+        } else {
+            // Animations will be handled by CSS, just ensure elements are ready
+            // The CSS animations will trigger automatically due to the animation properties
+        }
+    };
+
+    // Initialize animations
+    initLandingAnimations();
+
     const joinButton = document.getElementById('joinMostPopularServer');
     const viewServersButton = document.getElementById('viewServers');
     const joinPlayerCount = document.getElementById('joinPlayerCount');
@@ -209,13 +230,13 @@ document.addEventListener('DOMContentLoaded', () => {
                                 }
                                 joinPlayerCount.style.color = '#ff6b00';
                             } else if (playerPercentage >= 70) {
-                                // 70-89% capacity: Yellow (consistent with join button)
+                                // 70-89% capacity: Green (same as normal)
                                 joinPlayerCount.classList.add('getting-full');
                                 joinButton.classList.add('getting-full');
                                 if (joinSection) {
                                     joinSection.classList.add('getting-full');
                                 }
-                                joinPlayerCount.style.color = '#ffc107';
+                                joinPlayerCount.style.color = '#4CAF50';
                             } else {
                                 // Under 70% capacity: Green
                                 joinPlayerCount.style.color = '#4CAF50';

@@ -96,6 +96,9 @@ max-width:50%;
 height:auto;
 filter:drop-shadow(0 0 8px rgba(var(--highlight-color-rgb), 0.25));
 transition:transform 0.3s ease;
+opacity: 0;
+animation: logoGlow 0.8s ease-out forwards;
+animation-delay: 0s;
 }
 
 /* Add responsive sizing for logo on larger displays */
@@ -192,7 +195,7 @@ color: #ff6b00;
 }
 
 .server-players span.getting-full {
-color: #ffc107;
+color: #4CAF50;
 }
 
 .join-button-large.nearly-full {
@@ -219,21 +222,21 @@ text-shadow: 0 0 6px rgba(255,107,0,0.5);
 /* Removed join-section.getting-full container styling - only target specific elements */
 
 .join-button-large.getting-full {
-background-color: rgba(255,193,7,0.2);
-border: 2px solid rgba(255,193,7,0.4);
+background-color: rgba(76,175,80,0.2);
+border: 2px solid rgba(76,175,80,0.4);
 color: #ffffff;
-box-shadow: 0 4px 10px rgba(255,193,7,0.2), inset 0 0 6px rgba(255,193,7,0.1);
-text-shadow: 0 0 3px rgba(255,193,7,0.3);
+box-shadow: 0 4px 10px rgba(76,175,80,0.2), inset 0 0 6px rgba(76,175,80,0.1);
+text-shadow: 0 0 3px rgba(76,175,80,0.3);
 position: relative;
 }
 
 .join-button-large.getting-full:hover {
-color: #ffc107;
-background-color: rgba(255,193,7,0.3);
-border-color: rgba(255,193,7,0.6);
+color: #4CAF50;
+background-color: rgba(76,175,80,0.3);
+border-color: rgba(76,175,80,0.6);
 transform: translateY(-2px);
-box-shadow: 0 6px 14px rgba(255,193,7,0.25), inset 0 0 10px rgba(255,193,7,0.15);
-text-shadow: 0 0 5px rgba(255,193,7,0.4);
+box-shadow: 0 6px 14px rgba(76,175,80,0.25), inset 0 0 10px rgba(76,175,80,0.15);
+text-shadow: 0 0 5px rgba(76,175,80,0.4);
 }
 
 /* Removed warning glow animation */
@@ -255,6 +258,13 @@ border-color:rgba(114,137,218,0.5);
 }
 
 .discord-icon{
+margin-left:6px;
+vertical-align:middle;
+width:20px;
+height:20px;
+}
+
+.servers-icon, .store-icon{
 margin-left:6px;
 vertical-align:middle;
 width:20px;
@@ -298,6 +308,9 @@ background-clip:text;
 color:transparent;
 -webkit-text-fill-color:transparent;
 text-shadow:0 0 5px rgba(255,255,255,0.2);
+opacity: 0;
+animation: fadeInUp 0.6s ease-out forwards;
+animation-delay: 0.1s;
 }
 
 /* Player Count Pill Styles */
@@ -484,8 +497,14 @@ min-width:0;
 width:auto;
 }
 .discord-icon{
-width:16px;
-height:16px;
+width:14px;
+height:14px;
+margin-left:2px;
+}
+.servers-icon, .store-icon{
+width:14px;
+height:14px;
+margin-left:2px;
 }
 .landing-subtitle{
 font-size:1.1rem;
@@ -590,6 +609,11 @@ transform: translateY(-3px);
 box-shadow: 0 6px 20px rgba(46,204,113,0.2), inset 0 0 15px rgba(46,204,113,0.2);
 }
 .discord-icon{
+width:14px;
+height:14px;
+margin-left:2px;
+}
+.servers-icon, .store-icon{
 width:14px;
 height:14px;
 margin-left:2px;
@@ -873,6 +897,9 @@ position: relative;
     animation: textShimmer 3s linear infinite;
     background-size: 200% auto;
     position: relative;
+    opacity: 0;
+    animation: fadeInDown 0.6s ease-out forwards;
+    animation-delay: 0.35s;
 }
 
 .start-playing-text::after {
@@ -945,7 +972,7 @@ position: relative;
 }
 
 /* Medium desktop screens: show buttons in logo container, hide top row buttons */
-@media (min-width: 769px) and (max-width: 1047px) {
+@media (min-width: 769px) and (max-width: 1200px) {
     .logo-container {
         margin-bottom: 80px;
     }
@@ -1178,9 +1205,9 @@ left: 0;
 bottom: 0;
 right: 0;
 background: radial-gradient(ellipse 300px 100% at -50px center, 
-    rgba(255, 193, 7, 0.08) 0%,
-    rgba(255, 193, 7, 0.04) 40%,
-    rgba(255, 193, 7, 0.01) 70%,
+    rgba(76,175,80, 0.08) 0%,
+    rgba(76,175,80, 0.04) 40%,
+    rgba(76,175,80, 0.01) 70%,
     transparent 100%
 );
 z-index: 1;
@@ -1192,4 +1219,239 @@ border-radius: 16px;
 .join-section .server-info {
 position: relative;
 z-index: 2;
+}
+
+/* Add animation initial states and keyframes at the top */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes logoGlow {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+        filter: drop-shadow(0 0 8px rgba(var(--highlight-color-rgb), 0.25));
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+        filter: drop-shadow(0 0 12px rgba(var(--highlight-color-rgb), 0.4));
+    }
+}
+
+/* Animation classes - initially hidden, will be triggered by JavaScript */
+.landing-buttons-inline .landing-button {
+    opacity: 0;
+    animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.landing-buttons-inline .landing-button:nth-child(1) {
+    animation-delay: 0.2s;
+}
+
+.landing-buttons-inline .landing-button:nth-child(2) {
+    animation-delay: 0.25s;
+}
+
+.landing-buttons-inline .landing-button:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.start-playing-text {
+    opacity: 0;
+    animation: fadeInDown 0.6s ease-out forwards;
+    animation-delay: 0.35s;
+}
+
+.join-button-container .join-section {
+    opacity: 0;
+    animation: fadeInLeft 0.6s ease-out forwards;
+    animation-delay: 0.4s;
+}
+
+.join-button-large {
+    opacity: 0;
+    animation: fadeInRight 0.6s ease-out forwards;
+    animation-delay: 0.4s;
+}
+
+.server-info .server-name {
+    opacity: 0;
+    animation: fadeInUp 0.5s ease-out forwards;
+    animation-delay: 0.5s;
+}
+
+.server-info .server-players {
+    opacity: 0;
+    animation: fadeInUp 0.5s ease-out forwards;
+    animation-delay: 0.55s;
+}
+
+.server-info .server-gamemode {
+    opacity: 0;
+    animation: fadeInUp 0.5s ease-out forwards;
+    animation-delay: 0.6s;
+}
+
+.top-row .landing-buttons-inline .landing-button {
+    opacity: 0;
+    animation: scaleIn 0.5s ease-out forwards;
+}
+
+.top-row .landing-buttons-inline .landing-button:nth-child(1) {
+    animation-delay: 0.65s;
+}
+
+.top-row .landing-buttons-inline .landing-button:nth-child(2) {
+    animation-delay: 0.7s;
+}
+
+.top-row .landing-buttons-inline .landing-button:nth-child(3) {
+    animation-delay: 0.75s;
+}
+
+/* Disable animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .landing-logo,
+    .landing-subtitle,
+    .landing-buttons-inline .landing-button,
+    .start-playing-text,
+    .join-button-container .join-section,
+    .join-button-large,
+    .server-info .server-name,
+    .server-info .server-players,
+    .server-info .server-gamemode,
+    .top-row .landing-buttons-inline .landing-button {
+        opacity: 1;
+        animation: none;
+        transform: none;
+    }
+}
+
+/* Reduce animation intensity on smaller screens */
+@media (max-width: 768px) {
+    .landing-logo {
+        animation-duration: 0.6s;
+        animation-delay: 0s;
+    }
+    
+    .landing-subtitle {
+        animation-duration: 0.5s;
+        animation-delay: 0.05s;
+    }
+    
+    .landing-buttons-inline .landing-button:nth-child(1) {
+        animation-delay: 0.1s;
+        animation-duration: 0.4s;
+    }
+    
+    .landing-buttons-inline .landing-button:nth-child(2) {
+        animation-delay: 0.12s;
+        animation-duration: 0.4s;
+    }
+    
+    .landing-buttons-inline .landing-button:nth-child(3) {
+        animation-delay: 0.14s;
+        animation-duration: 0.4s;
+    }
+    
+    .start-playing-text {
+        animation-delay: 0.16s;
+        animation-duration: 0.5s;
+    }
+    
+    .join-button-container .join-section {
+        animation-delay: 0.18s;
+        animation-duration: 0.5s;
+    }
+    
+    .join-button-large {
+        animation-delay: 0.18s;
+        animation-duration: 0.5s;
+    }
+    
+    .server-info .server-name,
+    .server-info .server-players,
+    .server-info .server-gamemode {
+        animation-duration: 0.4s;
+    }
+    
+    .server-info .server-name {
+        animation-delay: 0.2s;
+    }
+    
+    .server-info .server-players {
+        animation-delay: 0.22s;
+    }
+    
+    .server-info .server-gamemode {
+        animation-delay: 0.24s;
+    }
+    
+    .top-row .landing-buttons-inline .landing-button {
+        animation-duration: 0.4s;
+    }
+    
+    .top-row .landing-buttons-inline .landing-button:nth-child(1) {
+        animation-delay: 0.26s;
+    }
+    
+    .top-row .landing-buttons-inline .landing-button:nth-child(2) {
+        animation-delay: 0.28s;
+    }
+    
+    .top-row .landing-buttons-inline .landing-button:nth-child(3) {
+        animation-delay: 0.3s;
+    }
 } 
