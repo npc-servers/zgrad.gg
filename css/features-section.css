@@ -235,4 +235,237 @@
     .feature-item {
         width: 350px;
     }
+}
+
+/* Feature Showcases Styles */
+.feature-showcases {
+    margin-top: 80px;
+    padding: 0 20px;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.showcase-item {
+    margin-bottom: 100px;
+    position: relative;
+    overflow: visible;
+    padding: 20px;
+}
+
+.showcase-item:last-child {
+    margin-bottom: 0;
+}
+
+.showcase-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    min-height: 400px;
+}
+
+.showcase-item:nth-child(even) .showcase-content {
+    grid-template-columns: 1fr 1fr;
+    direction: rtl;
+}
+
+.showcase-item:nth-child(even) .showcase-text {
+    direction: ltr;
+    text-align: right;
+}
+
+.showcase-text {
+    padding: 20px 0;
+    z-index: 2;
+    position: relative;
+}
+
+.showcase-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #ffffff;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    letter-spacing: 1px;
+    transition: text-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.showcase-description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--text-color);
+    opacity: 0.9;
+    max-width: 500px;
+}
+
+.showcase-item:nth-child(even) .showcase-description {
+    margin-left: auto;
+}
+
+.showcase-video {
+    position: relative;
+    border-radius: 12px;
+    overflow: visible;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    background: rgba(40, 40, 40, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    aspect-ratio: 16/9;
+    min-height: 300px;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transform: translateY(0) scale(1);
+}
+
+
+
+.showcase-video video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.showcase-item:hover .showcase-video {
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 255, 255, 0.15);
+    transform: translateY(-8px) scale(1.02) !important;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.showcase-item:hover .showcase-title {
+    text-shadow: 0 0 25px rgba(255, 255, 255, 0.6), 0 0 50px rgba(255, 255, 255, 0.3);
+}
+
+.showcase-item {
+    opacity: 0;
+    transform: translateY(80px);
+    will-change: transform, opacity;
+}
+
+
+
+/* Showcase Responsive Styles */
+@media (max-width: 1200px) {
+    .feature-showcases {
+        padding: 0 15px;
+    }
+    
+    .showcase-content {
+        gap: 40px;
+    }
+    
+    .showcase-title {
+        font-size: 2.2rem;
+    }
+    
+    .showcase-description {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .showcase-content {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        text-align: center;
+    }
+    
+    .showcase-item:nth-child(even) .showcase-content {
+        grid-template-columns: 1fr;
+        direction: ltr;
+    }
+    
+    .showcase-item:nth-child(even) .showcase-text {
+        text-align: center;
+        direction: ltr;
+    }
+    
+    .showcase-description {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .showcase-item:nth-child(even) .showcase-description {
+        margin: 0 auto;
+    }
+    
+    .showcase-title {
+        font-size: 2rem;
+    }
+    
+    .showcase-item {
+        margin-bottom: 60px;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .feature-showcases {
+        margin-top: 60px;
+        padding: 0 10px;
+    }
+    
+    .showcase-title {
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+    }
+    
+    .showcase-description {
+        font-size: 0.95rem;
+        max-width: 100%;
+    }
+    
+    .showcase-video video {
+        min-height: 250px;
+    }
+    
+    .showcase-item {
+        margin-bottom: 50px;
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .showcase-title {
+        font-size: 1.5rem;
+    }
+    
+    .showcase-description {
+        font-size: 0.9rem;
+    }
+    
+    .showcase-video video {
+        min-height: 200px;
+    }
+    
+    .showcase-content {
+        gap: 20px;
+    }
+}
+
+@media (min-width: 1600px) {
+    .feature-showcases {
+        max-width: 1600px;
+    }
+    
+    .showcase-content {
+        gap: 80px;
+    }
+    
+    .showcase-title {
+        font-size: 3rem;
+    }
+    
+    .showcase-description {
+        font-size: 1.2rem;
+        max-width: 600px;
+    }
+    
+    .showcase-video video {
+        min-height: 400px;
+    }
 } 

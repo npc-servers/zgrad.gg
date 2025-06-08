@@ -426,4 +426,29 @@ document.addEventListener('DOMContentLoaded', function() {
         const newDuration = (newItemWidth * totalItems) / scrollSpeed;
         featuresList.style.animationDuration = `${newDuration}s`;
     });
+
+    // ===== FEATURE SHOWCASES IN-VIEW DETECTION =====
+    // Intersection Observer for showcase items
+    const showcaseObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Check if majority of the element is visible (at least 60%)
+                if (entry.intersectionRatio >= 0.6) {
+                    entry.target.classList.add('in-view');
+                } else {
+                    entry.target.classList.remove('in-view');
+                }
+            } else {
+                entry.target.classList.remove('in-view');
+            }
+        });
+    }, {
+        threshold: [0.6] // Trigger when 60% of the element is visible
+    });
+
+    // Observe all showcase items
+    const showcaseItems = document.querySelectorAll('.showcase-item');
+    showcaseItems.forEach(item => {
+        showcaseObserver.observe(item);
+    });
 }); 
