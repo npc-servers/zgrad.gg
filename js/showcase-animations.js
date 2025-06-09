@@ -103,29 +103,32 @@ function initShowcaseAnimations() {
         }
     });
     
-    // Animate features title
-    const featuresTitle = document.querySelector('.features-title');
-    if (featuresTitle) {
-        gsap.fromTo(featuresTitle, 
-            {
-                opacity: 0,
-                y: 50,
-                scale: 0.9
-            },
-            {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                duration: 0.5,
-                ease: "power3.out",
-                scrollTrigger: {
-                    trigger: featuresTitle,
-                    start: "top 95%",
-                    toggleActions: "play none none reverse",
-                    id: "features-title"
-                }
+    // Animate features title container
+    const featuresTitleContainer = document.querySelector('.features-title-container');
+    if (featuresTitleContainer) {
+        const featuresTitle = featuresTitleContainer.querySelector('.features-title');
+        
+        // Set initial state only for title (let bloodsplatter display normally)
+        gsap.set(featuresTitle, {
+            opacity: 0,
+            y: 50,
+            scale: 0.9
+        });
+        
+        // Animate only the title
+        gsap.to(featuresTitle, {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.5,
+            ease: "power3.out",
+            scrollTrigger: {
+                trigger: featuresTitleContainer,
+                start: "top 95%",
+                toggleActions: "play none none reverse",
+                id: "features-title-container"
             }
-        );
+        });
     }
     
     // Animate features list (scrolling features)
