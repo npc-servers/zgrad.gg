@@ -1,0 +1,335 @@
+.gamemodes-section {
+    background-color: var(--dark-bg);
+    padding: 80px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.gamemodes-container-new {
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+.gamemodes-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 60px;
+    gap: 40px;
+    position: relative;
+}
+
+.gamemodes-label-new {
+    flex: 0 0 auto;
+    width: 80px;
+    height: 240px;
+    background-color: rgba(30, 30, 30, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px 0 0 8px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.gamemodes-label-text-new {
+    color: var(--text-color);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transform: rotate(-90deg);
+    white-space: nowrap;
+    font-size: 1.4rem;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.gamemodes-title {
+    color: var(--text-color);
+    font-size: 3.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    line-height: 1.2;
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+}
+
+.gamemodes-title::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: -100vw;
+    height: 240px;
+    transform: translateY(-50%);
+    background: linear-gradient(to right, rgba(26, 26, 26, 0.3), rgba(26, 26, 26, 1));
+    z-index: -1;
+}
+
+.homigrad-highlight {
+    color: var(--highlight-color);
+    font-weight: 800;
+    text-shadow: 0 0 20px rgba(255, 107, 0, 0.5);
+    background: linear-gradient(45deg, var(--highlight-color), #ff8c00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+}
+
+.homigrad-highlight::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(45deg, var(--highlight-color), #ff8c00);
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(255, 107, 0, 0.5);
+}
+
+.gamemodes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.gamemode-item-new {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.gamemode-item-new:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border-color: rgba(var(--highlight-color-rgb), 0.3);
+}
+
+.gamemode-content {
+    display: flex;
+    align-items: center;
+    padding: 40px;
+    gap: 40px;
+}
+
+.gamemode-info {
+    flex: 1;
+    z-index: 2;
+    position: relative;
+}
+
+.gamemode-name {
+    color: var(--highlight-color);
+    font-size: 2.2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    line-height: 1.2;
+}
+
+.gamemode-description {
+    color: var(--text-color);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    opacity: 0.9;
+    max-width: 600px;
+}
+
+.gamemode-video {
+    flex: 0 0 400px;
+    height: 250px;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.gamemode-video video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.gamemode-item-new:hover .gamemode-video video {
+    transform: scale(1.05);
+}
+
+/* Responsive Design */
+@media (max-width: 1400px) {
+    .gamemodes-container-new {
+        padding: 0 30px;
+    }
+    
+    .gamemodes-title {
+        font-size: 3rem;
+    }
+    
+    .gamemode-video {
+        flex: 0 0 350px;
+        height: 220px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .gamemodes-header {
+        gap: 30px;
+        margin-bottom: 50px;
+    }
+    
+    .gamemodes-title {
+        font-size: 2.5rem;
+    }
+    
+    .gamemode-content {
+        padding: 30px;
+        gap: 30px;
+    }
+    
+    .gamemode-video {
+        flex: 0 0 300px;
+        height: 200px;
+    }
+    
+    .gamemode-name {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .gamemodes-section {
+        padding: 60px 0;
+    }
+    
+    .gamemodes-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        text-align: left;
+    }
+    
+    .gamemodes-label-new {
+        width: 70px;
+        height: 200px;
+    }
+    
+    .gamemodes-label-text-new {
+        font-size: 1.2rem;
+    }
+    
+    .gamemodes-title {
+        font-size: 2.2rem;
+    }
+    
+    .homigrad-highlight::after {
+        height: 2px;
+        bottom: -3px;
+    }
+    
+    .gamemode-content {
+        flex-direction: column;
+        text-align: center;
+        padding: 25px;
+    }
+    
+    .gamemode-video {
+        flex: none;
+        width: 100%;
+        max-width: 500px;
+        height: 250px;
+    }
+    
+    .gamemode-name {
+        font-size: 1.8rem;
+    }
+    
+    .gamemode-description {
+        font-size: 1rem;
+        max-width: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .gamemodes-container-new {
+        padding: 0 20px;
+    }
+    
+    .gamemodes-section {
+        padding: 50px 0;
+    }
+    
+    .gamemodes-label-new {
+        width: 60px;
+        height: 160px;
+    }
+    
+    .gamemodes-label-text-new {
+        font-size: 1rem;
+        letter-spacing: 1px;
+    }
+    
+    .gamemodes-title {
+        font-size: 1.8rem;
+        line-height: 1.3;
+    }
+    
+    .homigrad-highlight::after {
+        height: 2px;
+        bottom: -2px;
+    }
+    
+    .gamemodes-list {
+        gap: 30px;
+    }
+    
+    .gamemode-content {
+        padding: 20px;
+    }
+    
+    .gamemode-video {
+        height: 200px;
+    }
+    
+    .gamemode-name {
+        font-size: 1.6rem;
+        margin-bottom: 12px;
+    }
+    
+    .gamemode-description {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .gamemodes-header {
+        margin-bottom: 40px;
+    }
+    
+    .gamemodes-title {
+        font-size: 1.5rem;
+    }
+    
+    .gamemode-content {
+        padding: 15px;
+    }
+    
+    .gamemode-video {
+        height: 180px;
+    }
+    
+    .gamemode-name {
+        font-size: 1.4rem;
+    }
+    
+    .gamemode-description {
+        font-size: 0.9rem;
+    }
+} 
