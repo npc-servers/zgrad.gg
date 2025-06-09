@@ -140,8 +140,11 @@
         font-size: 4.5rem;
     }
     
+
+    
     .homigrad-description {
         padding-left: 15px;
+        max-width: 100%;
     }
     
     .description-title {
@@ -153,6 +156,16 @@
         max-width: 100%;
     }
     
+    .bloodsplatter-decoration {
+        position: relative;
+        right: auto;
+        top: auto;
+        margin-top: 40px;
+    }
+    
+    .bloodsplatter-decoration img {
+        height: 300px;
+    }
 
 }
 
@@ -174,6 +187,8 @@
         margin-bottom: 50px;
     }
     
+
+    
     .homigrad-description {
         margin-top: 50px;
         padding-left: 15px;
@@ -187,6 +202,16 @@
         font-size: 1.05rem;
     }
     
+    .bloodsplatter-decoration {
+        position: relative;
+        right: auto;
+        top: auto;
+        margin-top: 30px;
+    }
+    
+    .bloodsplatter-decoration img {
+        height: 250px;
+    }
 
 }
 
@@ -208,9 +233,11 @@
         margin-bottom: 40px;
     }
     
+
+    
     .homigrad-description {
         margin-top: 40px;
-        padding-left: 15px;
+        padding-left: 10px;
     }
     
     .description-title {
@@ -221,6 +248,16 @@
         font-size: 1rem;
     }
     
+    .bloodsplatter-decoration {
+        position: relative;
+        right: auto;
+        top: auto;
+        margin-top: 25px;
+    }
+    
+    .bloodsplatter-decoration img {
+        height: 200px;
+    }
 
 }
 
@@ -230,6 +267,8 @@
         max-width: 100%;
         padding: 80px 0;
     }
+    
+
     
     .homigrad-description {
         padding-left: 40px;
@@ -242,6 +281,15 @@
     
     .description-text {
         font-size: 1.4rem;
+    }
+    
+    .bloodsplatter-decoration {
+        right: 0;
+        top: 60px;
+    }
+    
+    .bloodsplatter-decoration img {
+        height: 500px;
     }
 }
 
@@ -257,6 +305,7 @@
     text-align: left;
     position: relative;
     z-index: 2;
+    flex: 1;
 }
 
 .homigrad-description::before {
@@ -269,6 +318,34 @@
     height: 250%;
     background: radial-gradient(ellipse, rgba(255, 140, 0, 0.15) 0%, rgba(255, 100, 0, 0.08) 40%, transparent 70%);
     z-index: -1;
+    pointer-events: none;
+}
+
+.bloodsplatter-decoration {
+    position: absolute;
+    right: 0;
+    top: 60px;
+    flex-shrink: 0;
+    z-index: 1;
+}
+
+.bloodsplatter-decoration img {
+    height: 400px;
+    width: auto;
+    object-fit: contain;
+    position: relative;
+    z-index: 1;
+}
+
+.bloodsplatter-decoration::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, transparent 0%, var(--dark-bg) 100%);
+    z-index: 2;
     pointer-events: none;
 }
 
