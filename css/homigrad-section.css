@@ -153,16 +153,7 @@
         max-width: 100%;
     }
     
-    .desc-rect {
-        height: 18px;
-    }
-    
-    .desc-rect:nth-child(1) { width: 70%; }
-    .desc-rect:nth-child(2) { width: 58%; }
-    .desc-rect:nth-child(3) { width: 48%; }
-    .desc-rect:nth-child(4) { width: 38%; }
-    .desc-rect:nth-child(5) { width: 28%; }
-    .desc-rect:nth-child(6) { width: 18%; }
+
 }
 
 @media (max-width: 768px) {
@@ -196,16 +187,7 @@
         font-size: 1.05rem;
     }
     
-    .desc-rect {
-        height: 16px;
-    }
-    
-    .desc-rect:nth-child(1) { width: 60%; }
-    .desc-rect:nth-child(2) { width: 50%; }
-    .desc-rect:nth-child(3) { width: 42%; }
-    .desc-rect:nth-child(4) { width: 34%; }
-    .desc-rect:nth-child(5) { width: 26%; }
-    .desc-rect:nth-child(6) { width: 18%; }
+
 }
 
 @media (max-width: 480px) {
@@ -239,16 +221,7 @@
         font-size: 1rem;
     }
     
-    .desc-rect {
-        height: 14px;
-    }
-    
-    .desc-rect:nth-child(1) { width: 50%; }
-    .desc-rect:nth-child(2) { width: 42%; }
-    .desc-rect:nth-child(3) { width: 36%; }
-    .desc-rect:nth-child(4) { width: 30%; }
-    .desc-rect:nth-child(5) { width: 24%; }
-    .desc-rect:nth-child(6) { width: 18%; }
+
 }
 
 /* Media query for large screens */
@@ -299,50 +272,4 @@
     pointer-events: none;
 }
 
-.description-rectangles {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: -2;
-}
-
-.desc-rect {
-    position: absolute;
-    right: 0;
-    height: 20px;
-    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.08) 20%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.08) 80%, transparent 100%);
-    border: none;
-}
-
-.desc-rect:nth-child(1) {
-    top: 10%;
-    width: 80%;
-}
-
-.desc-rect:nth-child(2) {
-    top: 25%;
-    width: 65%;
-}
-
-.desc-rect:nth-child(3) {
-    top: 40%;
-    width: 55%;
-}
-
-.desc-rect:nth-child(4) {
-    top: 55%;
-    width: 45%;
-}
-
-.desc-rect:nth-child(5) {
-    top: 70%;
-    width: 35%;
-}
-
-.desc-rect:nth-child(6) {
-    top: 85%;
-    width: 25%;
-} 
+ 
