@@ -101,11 +101,7 @@
     font-weight: 700;
     text-transform: uppercase;
     margin-bottom: 25px;
-    background: linear-gradient(45deg, #ffffff, #a8a8a8);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    -webkit-text-fill-color: transparent;
+    color: #ffffff;
     position: relative;
     z-index: 1;
     text-shadow: 0 0 5px rgba(255,255,255,0.2);
@@ -166,6 +162,18 @@
     .bloodsplatter-decoration img {
         height: 300px;
     }
+    
+    .bloodsplatter-decoration-left {
+        position: relative;
+        left: auto;
+        top: auto;
+        margin-top: 20px;
+        order: 3;
+    }
+    
+    .bloodsplatter-decoration-left img {
+        height: 300px;
+    }
 
 }
 
@@ -210,6 +218,18 @@
     }
     
     .bloodsplatter-decoration img {
+        height: 250px;
+    }
+    
+    .bloodsplatter-decoration-left {
+        position: relative;
+        left: auto;
+        top: auto;
+        margin-top: 15px;
+        order: 3;
+    }
+    
+    .bloodsplatter-decoration-left img {
         height: 250px;
     }
 
@@ -258,6 +278,18 @@
     .bloodsplatter-decoration img {
         height: 200px;
     }
+    
+    .bloodsplatter-decoration-left {
+        position: relative;
+        left: auto;
+        top: auto;
+        margin-top: 10px;
+        order: 3;
+    }
+    
+    .bloodsplatter-decoration-left img {
+        height: 200px;
+    }
 
 }
 
@@ -291,6 +323,16 @@
     .bloodsplatter-decoration img {
         height: 500px;
     }
+    
+    .bloodsplatter-decoration-left {
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    .bloodsplatter-decoration-left img {
+        height: 500px;
+    }
 }
 
 .homigrad-content {
@@ -308,18 +350,7 @@
     flex: 1;
 }
 
-.homigrad-description::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    transform: translate(-40%, -50%);
-    width: 120%;
-    height: 250%;
-    background: radial-gradient(ellipse, rgba(255, 140, 0, 0.15) 0%, rgba(255, 100, 0, 0.08) 40%, transparent 70%);
-    z-index: -1;
-    pointer-events: none;
-}
+
 
 .bloodsplatter-decoration {
     position: absolute;
@@ -346,6 +377,35 @@
     height: 120px;
     background: linear-gradient(to bottom, transparent 0%, var(--dark-bg) 100%);
     z-index: 2;
+    pointer-events: none;
+}
+
+.bloodsplatter-decoration-left {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    flex-shrink: 0;
+    z-index: 1;
+}
+
+.bloodsplatter-decoration-left img {
+    height: 400px;
+    width: auto;
+    object-fit: contain;
+    position: relative;
+    z-index: 1;
+}
+
+.bloodsplatter-decoration-left::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, transparent 0%, var(--dark-bg) 100%);
+    z-index: 1;
     pointer-events: none;
 }
 
