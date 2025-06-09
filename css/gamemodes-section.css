@@ -5,6 +5,19 @@
     overflow: hidden;
 }
 
+.gamemodes-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('../images/textures/cooltexturebetter.png') center/cover no-repeat;
+    opacity: 0.2;
+    z-index: 0;
+    pointer-events: none;
+}
+
 .gamemodes-container-new {
     max-width: 1800px;
     margin: 0 auto;
@@ -23,14 +36,15 @@
     flex: 0 0 auto;
     width: 80px;
     height: 240px;
-    background-color: rgba(30, 30, 30, 0.7);
+
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 8px 0 0 8px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .gamemodes-label-text-new {
@@ -64,7 +78,11 @@
     right: -100vw;
     height: 240px;
     transform: translateY(-50%);
-    background: linear-gradient(to right, rgba(26, 26, 26, 0.3), rgba(26, 26, 26, 1));
+
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0 8px 8px 0;
     z-index: -1;
 }
 
@@ -344,6 +362,7 @@
         -webkit-backdrop-filter: none;
         box-shadow: none;
         border-radius: 0;
+        border: none;
         position: relative;
     }
     
@@ -352,10 +371,13 @@
         position: absolute;
         top: 50%;
         left: -100vw;
-        right: 0;
+        right: -100vw;
         height: 80px;
         transform: translateY(-50%);
-        background: linear-gradient(to right, rgba(40, 40, 40, 0.9), rgba(40, 40, 40, 0.2));
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         z-index: 0;
     }
     
@@ -380,6 +402,7 @@
     
     .gamemodes-title::before {
         height: 160px;
+        border-radius: 0 0 0 8px;
     }
     
     .homigrad-highlight::after {
@@ -436,6 +459,12 @@
     
     .gamemodes-label-new::before {
         height: 70px;
+        left: -100vw;
+        right: -100vw;
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     }
     
     .gamemodes-title {
@@ -445,6 +474,7 @@
     
     .gamemodes-title::before {
         height: 140px;
+        border-radius: 0 0 0 8px;
     }
     
     .cycling-gamemode-video {
