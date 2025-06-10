@@ -24,11 +24,111 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let currentGamemodeIndex = 0;
     let cycleInterval;
-    const cycleDuration = 5000; // 5 seconds
+    const cycleDuration = 10000; // 10 seconds to accommodate longer display times
+    
+    // Function to calculate optimal font size for center title
+    function calculateOptimalFontSize(text, containerWidth) {
+        // Determine base size based on screen width for better responsiveness
+        let baseSize = 6; // rem - default large size
+        
+        if (window.innerWidth <= 480) {
+            baseSize = 3; // Mobile portrait
+        } else if (window.innerWidth <= 989) {
+            baseSize = 3.5; // Mobile landscape
+        } else if (window.innerWidth <= 992) {
+            baseSize = 4; // Small tablets
+        } else if (window.innerWidth <= 1200) {
+            baseSize = 5; // Medium tablets
+        } else if (window.innerWidth <= 1400) {
+            baseSize = 5.5; // Large tablets
+        }
+        
+        const maxWidth = containerWidth * 0.85; // Scale when text exceeds 85% of container
+        
+        // Create a temporary element to measure text width accurately
+        const tempElement = document.createElement('div');
+        tempElement.style.position = 'absolute';
+        tempElement.style.visibility = 'hidden';
+        tempElement.style.whiteSpace = 'nowrap';
+        tempElement.style.fontSize = `${baseSize}rem`;
+        tempElement.style.fontWeight = '800';
+        tempElement.style.textTransform = 'uppercase';
+        tempElement.style.letterSpacing = '2px';
+        tempElement.textContent = text;
+        
+        document.body.appendChild(tempElement);
+        const textWidth = tempElement.offsetWidth;
+        document.body.removeChild(tempElement);
+        
+        // Always scale to fit within 85% of container if text is too long
+        if (textWidth > maxWidth) {
+            const scaleFactor = maxWidth / textWidth;
+            const scaledSize = baseSize * scaleFactor;
+            return Math.max(scaledSize, 1.2); // minimum 1.2rem for readability
+        }
+        
+        return baseSize;
+    }
+    
+    // Function to show center title with animation
+    function showCenterTitle(title, description) {
+        if (!gamemodeCenterTitle) return;
+        
+        // Calculate optimal font size
+        const videoContainer = document.querySelector('.cycling-gamemode-video');
+        const containerWidth = videoContainer ? videoContainer.offsetWidth : window.innerWidth;
+        const optimalSize = calculateOptimalFontSize(title, containerWidth);
+        
+        // Update title and font size
+        gamemodeCenterTitle.textContent = title;
+        gamemodeCenterTitle.style.fontSize = `${optimalSize}rem`;
+        
+        // Hide description initially
+        if (gamemodeDescription) {
+            gamemodeDescription.style.opacity = '0';
+            gamemodeDescription.style.transform = 'translateX(-50%) translateY(20px)';
+        }
+        
+        // Animate title in
+        gamemodeCenterTitle.style.transition = 'opacity 0.6s ease-in-out, transform 0.6s ease-in-out';
+        gamemodeCenterTitle.style.opacity = '1';
+        gamemodeCenterTitle.style.transform = 'translate(-50%, -50%) scale(1)';
+        
+        // Animate title out after 3 seconds
+        setTimeout(() => {
+            gamemodeCenterTitle.style.opacity = '0';
+            gamemodeCenterTitle.style.transform = 'translate(-50%, -50%) scale(0.9)';
+            
+            // Show description after title fades out
+            setTimeout(() => {
+                showDescription(description);
+            }, 600); // Wait for title fade out to complete
+        }, 3000);
+    }
+    
+    // Function to show description with animation
+    function showDescription(description) {
+        if (!gamemodeDescription) return;
+        
+        // Update description content
+        gamemodeDescription.textContent = description;
+        
+        // Animate description in
+        gamemodeDescription.style.transition = 'opacity 0.6s ease-in-out, transform 0.6s ease-in-out';
+        gamemodeDescription.style.opacity = '1';
+        gamemodeDescription.style.transform = 'translateX(-50%) translateY(0)';
+        
+        // Hide description after 5 seconds
+        setTimeout(() => {
+            gamemodeDescription.style.opacity = '0';
+            gamemodeDescription.style.transform = 'translateX(-50%) translateY(20px)';
+        }, 5000);
+    }
 
     const gamemodeTitle = document.getElementById('gamemodeTitle');
     const gamemodeDescription = document.getElementById('gamemodeDescription');
     const gamemodeVideo = document.getElementById('gamemodeVideo');
+    const gamemodeCenterTitle = document.getElementById('gamemodeCenterTitle');
     const navDots = document.querySelectorAll('.gamemode-nav-dot');
 
     function updateGamemode(index, animate = true) {
@@ -37,47 +137,33 @@ document.addEventListener('DOMContentLoaded', function() {
         const gamemode = gamemodes[index];
         
         if (animate) {
-            // Smooth fade transition
-            gamemodeTitle.style.transition = 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out';
-            gamemodeDescription.style.transition = 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out';
+            // Show center title and description animation sequence
+            showCenterTitle(gamemode.title, gamemode.description);
             
-            // Fade out current content
-            gamemodeTitle.style.opacity = '0';
-            gamemodeTitle.style.transform = 'translateY(-10px)';
-            gamemodeDescription.style.opacity = '0';
-            gamemodeDescription.style.transform = 'translateY(10px)';
-            
-            setTimeout(() => {
-                // Update content
-                gamemodeTitle.textContent = gamemode.title;
-                gamemodeDescription.textContent = gamemode.description;
-                
-                // Update video source if different
-                const currentSrc = gamemodeVideo.querySelector('source').src;
-                const newSrc = gamemode.video;
-                if (!currentSrc.includes(newSrc)) {
-                    gamemodeVideo.querySelector('source').src = newSrc;
-                    gamemodeVideo.load();
-                }
-                
-                // Fade in new content
-                setTimeout(() => {
-                    gamemodeTitle.style.opacity = '1';
-                    gamemodeTitle.style.transform = 'translateY(0)';
-                    gamemodeDescription.style.opacity = '1';
-                    gamemodeDescription.style.transform = 'translateY(0)';
-                }, 50);
-            }, 300);
+            // Update video source if different
+            const currentSrc = gamemodeVideo.querySelector('source').src;
+            const newSrc = gamemode.video;
+            if (!currentSrc.includes(newSrc)) {
+                gamemodeVideo.querySelector('source').src = newSrc;
+                gamemodeVideo.load();
+            }
         } else {
             // Update without animation (initial load)
-            gamemodeTitle.textContent = gamemode.title;
             gamemodeDescription.textContent = gamemode.description;
             gamemodeVideo.querySelector('source').src = gamemode.video;
             gamemodeVideo.load();
-            gamemodeTitle.style.opacity = '1';
-            gamemodeDescription.style.opacity = '1';
-            gamemodeTitle.style.transform = 'translateY(0)';
-            gamemodeDescription.style.transform = 'translateY(0)';
+            gamemodeDescription.style.opacity = '0';
+            gamemodeDescription.style.transform = 'translateX(-50%) translateY(20px)';
+            
+            // Update center title for initial load
+            if (gamemodeCenterTitle) {
+                gamemodeCenterTitle.textContent = gamemode.title;
+                const videoContainer = document.querySelector('.cycling-gamemode-video');
+                const containerWidth = videoContainer ? videoContainer.offsetWidth : window.innerWidth;
+                const optimalSize = calculateOptimalFontSize(gamemode.title, containerWidth);
+                gamemodeCenterTitle.style.fontSize = `${optimalSize}rem`;
+                gamemodeCenterTitle.style.opacity = '0';
+            }
         }
 
         // Update navigation dots
@@ -114,8 +200,29 @@ document.addEventListener('DOMContentLoaded', function() {
         }, cycleDuration);
     }
 
-    // Initialize with first gamemode
-    updateGamemode(0, false);
+    // Initialize video and basic setup without animation first
+    const initialGamemode = gamemodes[0];
+    if (gamemodeVideo && gamemodeDescription) {
+        gamemodeVideo.querySelector('source').src = initialGamemode.video;
+        gamemodeVideo.load();
+        gamemodeDescription.textContent = initialGamemode.description;
+        gamemodeDescription.style.opacity = '0';
+        gamemodeDescription.style.transform = 'translateX(-50%) translateY(20px)';
+    }
+    if (gamemodeCenterTitle) {
+        gamemodeCenterTitle.textContent = initialGamemode.title;
+        gamemodeCenterTitle.style.opacity = '0';
+    }
+    
+    // Set initial navigation dot state
+    navDots.forEach((dot, dotIndex) => {
+        dot.classList.toggle('active', dotIndex === 0);
+    });
+    
+    // Initialize with first gamemode - show animation for the first one too
+    setTimeout(() => {
+        updateGamemode(0, true); // Use animation for initial display
+    }, 1000); // Small delay to ensure everything is loaded
 
     // Ensure dots are visible (fallback for animation issues)
     navDots.forEach(dot => {
@@ -149,6 +256,16 @@ document.addEventListener('DOMContentLoaded', function() {
             stopCycling();
         } else {
             startCycling();
+        }
+    });
+    
+    // Handle window resize for center title font size
+    window.addEventListener('resize', () => {
+        if (gamemodeCenterTitle && gamemodeCenterTitle.textContent) {
+            const videoContainer = document.querySelector('.cycling-gamemode-video');
+            const containerWidth = videoContainer ? videoContainer.offsetWidth : window.innerWidth;
+            const optimalSize = calculateOptimalFontSize(gamemodeCenterTitle.textContent, containerWidth);
+            gamemodeCenterTitle.style.fontSize = `${optimalSize}rem`;
         }
     });
 
