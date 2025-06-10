@@ -224,7 +224,7 @@
 
 @media (max-width: 768px) {
     .features-container {
-        margin-top: 80px;
+        margin-top: 140px;
         padding: 0 1%;
         overflow: visible;
     }
@@ -280,7 +280,7 @@
 
 @media (max-width: 480px) {
     .features-container {
-        margin-top: 100px;
+        margin-top: 160px;
         padding: 0;
         overflow: visible;
     }
