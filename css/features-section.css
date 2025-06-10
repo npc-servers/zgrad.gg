@@ -7,14 +7,14 @@
     margin-left: auto;
     margin-right: auto;
     overflow: visible;
-    z-index: 1;
+    z-index: 5;
 }
 
 .features-content {
     max-width: 100%;
     text-align: right;
     position: relative;
-    z-index: 1;
+    z-index: 6;
 }
 
 .features-title-container {
@@ -33,7 +33,7 @@
     padding-right: 20px;
     color: #ffffff;
     position: relative;
-    z-index: 2;
+    z-index: 7;
     text-shadow: 0 0 5px rgba(255,255,255,0.2);
 }
 
@@ -63,6 +63,8 @@
     padding-bottom: 10px;
     margin-left: -10px;
     animation: scrollFeatures 25s linear infinite;
+    position: relative;
+    z-index: 6;
 }
 
 .features-list:hover {
