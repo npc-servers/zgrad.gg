@@ -65,6 +65,8 @@
     animation: scrollFeatures 25s linear infinite;
     position: relative;
     z-index: 6;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 .features-list:hover {
@@ -75,8 +77,8 @@
     display: flex;
     align-items: flex-start;
     background: rgba(40, 40, 40, 0.3);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     border-radius: 6px;
     padding: 0.8rem 1rem;
     transition: all 0.3s ease;
@@ -86,6 +88,15 @@
     flex-shrink: 0;
     position: relative;
     overflow: hidden;
+    transform: translateZ(0);
+    will-change: backdrop-filter;
+}
+
+/* Fallback for browsers that don't support backdrop-filter */
+@supports not (backdrop-filter: blur(4px)) {
+    .feature-item {
+        background: rgba(50, 50, 50, 0.6);
+    }
 }
 
 .feature-item::before {

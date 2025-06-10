@@ -134,24 +134,23 @@ function initShowcaseAnimations() {
     // Animate features list (scrolling features)
     const featuresList = document.querySelector('.features-list');
     if (featuresList) {
-        gsap.fromTo(featuresList,
-            {
-                opacity: 0,
-                x: -100
-            },
-            {
-                opacity: 1,
-                x: 0,
-                duration: 0.6,
-                ease: "power2.out",
-                scrollTrigger: {
-                    trigger: featuresList,
-                    start: "top 95%",
-                    toggleActions: "play none none reverse",
-                    id: "features-list"
-                }
+        // Set initial transform without affecting opacity to preserve backdrop-filter
+        gsap.set(featuresList, {
+            x: -100,
+            opacity: 1 // Keep opacity at 1 to maintain backdrop-filter
+        });
+        
+        gsap.to(featuresList, {
+            x: 0,
+            duration: 0.6,
+            ease: "power2.out",
+            scrollTrigger: {
+                trigger: featuresList,
+                start: "top 95%",
+                toggleActions: "play none none reverse",
+                id: "features-list"
             }
-        );
+        });
     }
     
     // Hover animations are handled by CSS

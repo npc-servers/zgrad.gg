@@ -3,6 +3,17 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize any global functionality here
     
+    // Force backdrop-filter rendering for feature items
+    const featureItems = document.querySelectorAll('.feature-item');
+    if (featureItems.length > 0) {
+        // Force browser to render backdrop-filter immediately
+        featureItems.forEach(item => {
+            item.style.transform = 'translateZ(0)';
+            // Trigger a repaint to ensure backdrop-filter is applied
+            item.offsetHeight;
+        });
+    }
+    
     // Add smooth scrolling for all anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
