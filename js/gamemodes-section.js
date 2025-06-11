@@ -24,7 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let currentGamemodeIndex = 0;
     let cycleInterval;
-    const cycleDuration = 10000; // 10 seconds to accommodate longer display times
+    let nextGamemodeTimeout;
+    // Total animation timing: title flicker (1s) + display (1.2s) + blink-out (0.8s) + description (4s) + fade-out (0.6s) = ~7.6s
     
     // Function to calculate optimal font size for center title
     function calculateOptimalFontSize(text, containerWidth) {
@@ -89,21 +90,27 @@ document.addEventListener('DOMContentLoaded', function() {
             gamemodeDescription.style.transform = 'translateX(-50%) translateY(20px)';
         }
         
-        // Animate title in
-        gamemodeCenterTitle.style.transition = 'opacity 0.6s ease-in-out, transform 0.6s ease-in-out';
-        gamemodeCenterTitle.style.opacity = '1';
-        gamemodeCenterTitle.style.transform = 'translate(-50%, -50%) scale(1)';
+        // Reset any existing classes and styles
+        gamemodeCenterTitle.classList.remove('flicker-in', 'blink-out');
+        gamemodeCenterTitle.style.transition = '';
+        gamemodeCenterTitle.style.opacity = '0';
+        gamemodeCenterTitle.style.transform = 'translate(-50%, -50%) scale(0.9)';
         
-        // Animate title out after 3 seconds
+        // Trigger flicker animation
         setTimeout(() => {
-            gamemodeCenterTitle.style.opacity = '0';
-            gamemodeCenterTitle.style.transform = 'translate(-50%, -50%) scale(0.9)';
+            gamemodeCenterTitle.classList.add('flicker-in');
+        }, 50); // Small delay to ensure the reset takes effect
+        
+        // After flicker completes (1s) + display time (1.2s), start blink-out
+        setTimeout(() => {
+            gamemodeCenterTitle.classList.remove('flicker-in');
+            gamemodeCenterTitle.classList.add('blink-out');
             
-            // Show description after title fades out
+            // Show description after blink-out completes (0.8s)
             setTimeout(() => {
                 showDescription(description);
-            }, 600); // Wait for title fade out to complete
-        }, 3000);
+            }, 800); // Wait for blink-out to complete
+        }, 2200);
     }
     
     // Function to show description with animation
@@ -113,16 +120,34 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update description content
         gamemodeDescription.textContent = description;
         
-        // Animate description in
-        gamemodeDescription.style.transition = 'opacity 0.6s ease-in-out, transform 0.6s ease-in-out';
+        // Reset any existing classes and styles
+        gamemodeDescription.classList.remove('wipe-in');
+        gamemodeDescription.style.transition = '';
         gamemodeDescription.style.opacity = '1';
         gamemodeDescription.style.transform = 'translateX(-50%) translateY(0)';
+        gamemodeDescription.style.clipPath = 'inset(0 100% 0 0)';
         
-        // Hide description after 5 seconds
+        // Trigger wipe animation
         setTimeout(() => {
+            gamemodeDescription.classList.add('wipe-in');
+        }, 50); // Small delay to ensure the reset takes effect
+        
+        // Hide description after 4 seconds
+        setTimeout(() => {
+            gamemodeDescription.classList.remove('wipe-in');
+            gamemodeDescription.style.transition = 'opacity 0.6s ease-in-out, transform 0.6s ease-in-out, clip-path 0s';
             gamemodeDescription.style.opacity = '0';
             gamemodeDescription.style.transform = 'translateX(-50%) translateY(20px)';
-        }, 5000);
+            gamemodeDescription.style.clipPath = 'inset(0 100% 0 0)';
+            
+            // Trigger next gamemode immediately after description fade completes
+            setTimeout(() => {
+                if (cycleInterval) { // Only if cycling is active
+                    const nextIndex = (currentGamemodeIndex + 1) % gamemodes.length;
+                    updateGamemode(nextIndex);
+                }
+            }, 600); // Wait for fade out to complete
+        }, 4000);
     }
 
     const gamemodeTitle = document.getElementById('gamemodeTitle');
@@ -154,6 +179,7 @@ document.addEventListener('DOMContentLoaded', function() {
             gamemodeVideo.load();
             gamemodeDescription.style.opacity = '0';
             gamemodeDescription.style.transform = 'translateX(-50%) translateY(20px)';
+            gamemodeDescription.style.clipPath = 'inset(0 100% 0 0)';
             
             // Update center title for initial load
             if (gamemodeCenterTitle) {
@@ -175,29 +201,28 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function startCycling() {
-        // Clear any existing interval first
+        // Clear any existing cycling first
         stopCycling();
-        cycleInterval = setInterval(() => {
-            const nextIndex = (currentGamemodeIndex + 1) % gamemodes.length;
-            updateGamemode(nextIndex);
-        }, cycleDuration);
+        // Set cycling flag to true to allow automatic progression
+        cycleInterval = true;
     }
 
     function stopCycling() {
         if (cycleInterval) {
-            clearInterval(cycleInterval);
             cycleInterval = null;
+        }
+        if (nextGamemodeTimeout) {
+            clearTimeout(nextGamemodeTimeout);
+            nextGamemodeTimeout = null;
         }
     }
 
     function restartCycling() {
         stopCycling();
-        // Start cycling again after the current cycle duration
-        setTimeout(() => {
-            if (!document.hidden) { // Only restart if page is visible
-                startCycling();
-            }
-        }, cycleDuration);
+        // Restart cycling immediately
+        if (!document.hidden) { // Only restart if page is visible
+            startCycling();
+        }
     }
 
     // Initialize video and basic setup without animation first
@@ -208,6 +233,7 @@ document.addEventListener('DOMContentLoaded', function() {
         gamemodeDescription.textContent = initialGamemode.description;
         gamemodeDescription.style.opacity = '0';
         gamemodeDescription.style.transform = 'translateX(-50%) translateY(20px)';
+        gamemodeDescription.style.clipPath = 'inset(0 100% 0 0)';
     }
     if (gamemodeCenterTitle) {
         gamemodeCenterTitle.textContent = initialGamemode.title;
