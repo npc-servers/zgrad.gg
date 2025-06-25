@@ -484,6 +484,30 @@
     width: 100%;
 }
 
+.showcase-video::before {
+    content: '';
+    position: absolute;
+    top: -25px;
+    left: -25px;
+    right: -25px;
+    bottom: -25px;
+    background-image: url('../images/textures/bloodsplatter4.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.7;
+    z-index: -1;
+    border-radius: 25px;
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.showcase-item:hover .showcase-video::before {
+    filter: drop-shadow(0 0 15px rgba(220, 38, 38, 0.6)) drop-shadow(0 0 30px rgba(220, 38, 38, 0.4));
+    opacity: 0.8;
+    transform: scale(1.05);
+}
+
 .showcase-video video {
     width: 100%;
     height: 100%;
@@ -532,6 +556,27 @@
     will-change: transform, opacity;
 }
 
+.bloodsplatter-decoration-ragdoll {
+    position: absolute;
+    left: -80px;
+    top: 20%;
+    transform: translateY(-50%);
+    flex-shrink: 0;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.bloodsplatter-decoration-ragdoll img {
+    height: 400px;
+    width: auto;
+    object-fit: contain;
+    position: relative;
+    z-index: -1;
+    opacity: 0.6;
+    filter: saturate(1.2) contrast(1.1);
+    transform: rotate(-15deg);
+}
+
 /* Showcase Responsive Styles */
 @media (max-width: 1200px) {
     .feature-showcases {
@@ -555,6 +600,14 @@
     .showcase-video {
         min-height: 280px;
     }
+    
+    .showcase-video::before {
+        top: -20px;
+        left: -20px;
+        right: -20px;
+        bottom: -20px;
+        border-radius: 22px;
+    }
 }
 
 @media (max-width: 992px) {
@@ -568,6 +621,18 @@
         gap: 30px;
         text-align: center;
         min-height: auto;
+    }
+    
+    .bloodsplatter-decoration-ragdoll {
+        left: -50px;
+        top: 15%;
+        transform: translateY(-50%) scale(0.8);
+    }
+    
+    .bloodsplatter-decoration-ragdoll img {
+        height: 320px;
+        opacity: 0.5;
+        transform: rotate(-10deg);
     }
     
     .showcase-item:nth-child(even) .showcase-content {
@@ -589,6 +654,14 @@
         order: 2;
         min-height: 250px;
         margin-bottom: 20px;
+    }
+    
+    .showcase-video::before {
+        top: -16px;
+        left: -16px;
+        right: -16px;
+        bottom: -16px;
+        border-radius: 20px;
     }
     
     .showcase-description {
@@ -621,6 +694,18 @@
         gap: 25px;
     }
     
+    .bloodsplatter-decoration-ragdoll {
+        left: -30px;
+        top: 10%;
+        transform: translateY(-50%) scale(0.7);
+    }
+    
+    .bloodsplatter-decoration-ragdoll img {
+        height: 280px;
+        opacity: 0.4;
+        transform: rotate(-8deg);
+    }
+    
     .showcase-title {
         font-size: 1.8rem;
         margin-bottom: 12px;
@@ -636,6 +721,14 @@
     .showcase-video {
         min-height: 220px;
         border-radius: 8px;
+    }
+    
+    .showcase-video::before {
+        top: -12px;
+        left: -12px;
+        right: -12px;
+        bottom: -12px;
+        border-radius: 16px;
     }
     
     .showcase-video video {
@@ -662,6 +755,18 @@
         gap: 20px;
     }
     
+    .bloodsplatter-decoration-ragdoll {
+        left: -20px;
+        top: 15%;
+        transform: translateY(-50%) scale(0.5);
+    }
+    
+    .bloodsplatter-decoration-ragdoll img {
+        height: 200px;
+        opacity: 0.25;
+        transform: rotate(-5deg);
+    }
+    
     .showcase-title {
         font-size: 1.5rem;
         margin-bottom: 10px;
@@ -677,6 +782,14 @@
     .showcase-video {
         min-height: 180px;
         border-radius: 6px;
+    }
+    
+    .showcase-video::before {
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        border-radius: 14px;
     }
     
     .showcase-video video {
@@ -698,6 +811,18 @@
         padding: 0 5px;
     }
     
+    .bloodsplatter-decoration-ragdoll {
+        left: -15px;
+        top: 20%;
+        transform: translateY(-50%) scale(0.4);
+    }
+    
+    .bloodsplatter-decoration-ragdoll img {
+        height: 150px;
+        opacity: 0.2;
+        transform: rotate(-3deg);
+    }
+    
     .showcase-title {
         font-size: 1.3rem;
         margin-bottom: 8px;
@@ -709,6 +834,14 @@
     
     .showcase-video {
         min-height: 160px;
+    }
+    
+    .showcase-video::before {
+        top: -8px;
+        left: -8px;
+        right: -8px;
+        bottom: -8px;
+        border-radius: 12px;
     }
     
     .showcase-item {

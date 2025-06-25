@@ -103,31 +103,16 @@ function initShowcaseAnimations() {
         }
     });
     
-    // Animate features title container
+    // Features title container animation removed per user request
     const featuresTitleContainer = document.querySelector('.features-title-container');
     if (featuresTitleContainer) {
         const featuresTitle = featuresTitleContainer.querySelector('.features-title');
         
-        // Set initial state only for title (let bloodsplatter display normally)
+        // Ensure title is visible without animation
         gsap.set(featuresTitle, {
-            opacity: 0,
-            y: 50,
-            scale: 0.9
-        });
-        
-        // Animate only the title
-        gsap.to(featuresTitle, {
             opacity: 1,
             y: 0,
-            scale: 1,
-            duration: 0.5,
-            ease: "power3.out",
-            scrollTrigger: {
-                trigger: featuresTitleContainer,
-                start: "top 95%",
-                toggleActions: "play none none reverse",
-                id: "features-title-container"
-            }
+            scale: 1
         });
     }
     
