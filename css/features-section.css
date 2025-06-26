@@ -458,10 +458,22 @@
 
 .showcase-description {
     font-size: 1.1rem;
+    font-weight: 700;
     line-height: 1.6;
     color: var(--text-color);
     opacity: 0.9;
     max-width: 500px;
+    -webkit-text-stroke: 0.5px rgba(180, 180, 180, 0.3);
+    text-shadow: 
+        /* Light stroke effect using multiple shadows */
+        -0.5px -0.5px 0 rgba(180, 180, 180, 0.3),
+        0.5px -0.5px 0 rgba(180, 180, 180, 0.3),
+        -0.5px 0.5px 0 rgba(180, 180, 180, 0.3),
+        0.5px 0.5px 0 rgba(180, 180, 180, 0.3),
+        /* Black drop shadow */
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 6px rgba(0, 0, 0, 0.6),
+        0 0 12px rgba(0, 0, 0, 0.3);
 }
 
 .showcase-item:nth-child(even) .showcase-description {
