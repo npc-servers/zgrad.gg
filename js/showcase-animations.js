@@ -77,30 +77,7 @@ function initShowcaseAnimations() {
             ease: "back.out(1.7)"
         }, "-=0.3");
         
-        // Add subtle parallax effect for alternating items
-        if (index % 2 === 1) {
-            gsap.to(showcaseVideo, {
-                y: -30,
-                scrollTrigger: {
-                    trigger: item,
-                    start: "top bottom",
-                    end: "bottom top",
-                    scrub: 1,
-                    id: `parallax-video-${index + 1}`
-                }
-            });
-        } else {
-            gsap.to(showcaseText, {
-                y: -20,
-                scrollTrigger: {
-                    trigger: item,
-                    start: "top bottom",
-                    end: "bottom top",
-                    scrub: 1,
-                    id: `parallax-text-${index + 1}`
-                }
-            });
-        }
+        // Parallax effects removed per user request
     });
     
     // Features title container animation removed per user request

@@ -612,27 +612,29 @@
 
 @media (max-width: 992px) {
     .feature-showcases {
-        margin-top: 60px;
+        margin-top: 120px;
         padding: 0 20px;
     }
     
     .showcase-content {
         grid-template-columns: 1fr;
         gap: 30px;
-        text-align: center;
         min-height: auto;
     }
     
     .bloodsplatter-decoration-ragdoll {
-        left: -50px;
+        left: -160px;
         top: 15%;
-        transform: translateY(-50%) scale(0.8);
+        transform: translateY(-50%) scale(0.9);
     }
     
     .bloodsplatter-decoration-ragdoll img {
-        height: 320px;
-        opacity: 0.5;
+        height: 380px;
         transform: rotate(-10deg);
+    }
+    
+    .showcase-item:nth-child(odd) .showcase-text {
+        text-align: left;
     }
     
     .showcase-item:nth-child(even) .showcase-content {
@@ -641,7 +643,7 @@
     }
     
     .showcase-item:nth-child(even) .showcase-text {
-        text-align: center;
+        text-align: right;
         direction: ltr;
     }
     
@@ -679,14 +681,14 @@
     }
     
     .showcase-item {
-        margin-bottom: 60px;
+        margin-bottom: 100px;
         padding: 15px;
     }
 }
 
 @media (max-width: 768px) {
     .feature-showcases {
-        margin-top: 50px;
+        margin-top: 100px;
         padding: 0 15px;
     }
     
@@ -695,14 +697,13 @@
     }
     
     .bloodsplatter-decoration-ragdoll {
-        left: -30px;
+        left: -140px;
         top: 10%;
-        transform: translateY(-50%) scale(0.7);
+        transform: translateY(-50%) scale(0.8);
     }
     
     .bloodsplatter-decoration-ragdoll img {
-        height: 280px;
-        opacity: 0.4;
+        height: 340px;
         transform: rotate(-8deg);
     }
     
@@ -736,7 +737,7 @@
     }
     
     .showcase-item {
-        margin-bottom: 50px;
+        margin-bottom: 80px;
         padding: 10px;
     }
     
@@ -747,7 +748,7 @@
 
 @media (max-width: 480px) {
     .feature-showcases {
-        margin-top: 40px;
+        margin-top: 80px;
         padding: 0 10px;
     }
     
@@ -756,15 +757,14 @@
     }
     
     .bloodsplatter-decoration-ragdoll {
-        left: -20px;
-        top: 15%;
-        transform: translateY(-50%) scale(0.5);
+        left: -130px;
+        top: 12%;
+        transform: translateY(-50%) scale(0.75);
     }
     
     .bloodsplatter-decoration-ragdoll img {
-        height: 200px;
-        opacity: 0.25;
-        transform: rotate(-5deg);
+        height: 320px;
+        transform: rotate(-6deg);
     }
     
     .showcase-title {
@@ -797,7 +797,7 @@
     }
     
     .showcase-item {
-        margin-bottom: 40px;
+        margin-bottom: 70px;
         padding: 5px;
     }
     
@@ -812,15 +812,14 @@
     }
     
     .bloodsplatter-decoration-ragdoll {
-        left: -15px;
-        top: 20%;
-        transform: translateY(-50%) scale(0.4);
+        left: -110px;
+        top: 18%;
+        transform: translateY(-50%) scale(0.65);
     }
     
     .bloodsplatter-decoration-ragdoll img {
-        height: 150px;
-        opacity: 0.2;
-        transform: rotate(-3deg);
+        height: 280px;
+        transform: rotate(-4deg);
     }
     
     .showcase-title {
@@ -845,7 +844,7 @@
     }
     
     .showcase-item {
-        margin-bottom: 35px;
+        margin-bottom: 60px;
     }
 }
 
