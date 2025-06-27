@@ -592,7 +592,7 @@
 .bloodsplatter-decoration-medical {
     position: absolute;
     right: -80px;
-    top: 30%;
+    top: 20%;
     transform: translateY(-50%);
     flex-shrink: 0;
     z-index: -1;
@@ -608,6 +608,69 @@
     opacity: 0.7;
     filter: saturate(1.3) contrast(1.2);
     transform: rotate(20deg);
+}
+
+.bloodsplatter-decoration-gore {
+    position: absolute;
+    left: -80px;
+    top: 20%;
+    transform: translateY(-50%);
+    flex-shrink: 0;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.bloodsplatter-decoration-gore img {
+    height: 450px;
+    width: auto;
+    object-fit: contain;
+    position: relative;
+    z-index: -1;
+    opacity: 0.8;
+    filter: saturate(1.4) contrast(1.3);
+    transform: rotate(-25deg);
+}
+
+.bloodsplatter-decoration-cw {
+    position: absolute;
+    right: -80px;
+    top: 20%;
+    transform: translateY(-50%);
+    flex-shrink: 0;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.bloodsplatter-decoration-cw img {
+    height: 440px;
+    width: auto;
+    object-fit: contain;
+    position: relative;
+    z-index: -1;
+    opacity: 0.75;
+    filter: saturate(1.35) contrast(1.25);
+    transform: rotate(22deg);
+}
+
+.bloodsplatter-decoration-classes {
+    position: absolute;
+    left: -80px;
+    top: 20%;
+    transform: translateY(-50%);
+    flex-shrink: 0;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.bloodsplatter-decoration-classes img {
+    height: 460px;
+    width: auto;
+    object-fit: contain;
+    position: relative;
+    z-index: -1;
+    opacity: 0.72;
+    filter: saturate(1.25) contrast(1.15);
+    transform: rotate(-18deg);
 }
 
 /* Showcase Responsive Styles */
@@ -668,13 +731,46 @@
     
     .bloodsplatter-decoration-medical {
         right: -160px;
-        top: 25%;
+        top: 15%;
         transform: translateY(-50%) scale(0.9);
     }
     
     .bloodsplatter-decoration-medical img {
         height: 400px;
         transform: rotate(18deg);
+    }
+    
+    .bloodsplatter-decoration-gore {
+        left: -160px;
+        top: 15%;
+        transform: translateY(-50%) scale(0.9);
+    }
+    
+    .bloodsplatter-decoration-gore img {
+        height: 430px;
+        transform: rotate(-20deg);
+    }
+    
+    .bloodsplatter-decoration-cw {
+        right: -160px;
+        top: 15%;
+        transform: translateY(-50%) scale(0.9);
+    }
+    
+    .bloodsplatter-decoration-cw img {
+        height: 420px;
+        transform: rotate(19deg);
+    }
+    
+    .bloodsplatter-decoration-classes {
+        left: -160px;
+        top: 15%;
+        transform: translateY(-50%) scale(0.9);
+    }
+    
+    .bloodsplatter-decoration-classes img {
+        height: 440px;
+        transform: rotate(-15deg);
     }
     
     .showcase-item:nth-child(odd) .showcase-text {
@@ -753,13 +849,46 @@
     
     .bloodsplatter-decoration-medical {
         right: -140px;
-        top: 20%;
+        top: 10%;
         transform: translateY(-50%) scale(0.8);
     }
     
     .bloodsplatter-decoration-medical img {
         height: 360px;
         transform: rotate(15deg);
+    }
+    
+    .bloodsplatter-decoration-gore {
+        left: -140px;
+        top: 10%;
+        transform: translateY(-50%) scale(0.8);
+    }
+    
+    .bloodsplatter-decoration-gore img {
+        height: 390px;
+        transform: rotate(-18deg);
+    }
+    
+    .bloodsplatter-decoration-cw {
+        right: -140px;
+        top: 10%;
+        transform: translateY(-50%) scale(0.8);
+    }
+    
+    .bloodsplatter-decoration-cw img {
+        height: 380px;
+        transform: rotate(16deg);
+    }
+    
+    .bloodsplatter-decoration-classes {
+        left: -140px;
+        top: 10%;
+        transform: translateY(-50%) scale(0.8);
+    }
+    
+    .bloodsplatter-decoration-classes img {
+        height: 400px;
+        transform: rotate(-14deg);
     }
     
     .showcase-title {
@@ -824,13 +953,46 @@
     
     .bloodsplatter-decoration-medical {
         right: -130px;
-        top: 18%;
+        top: 12%;
         transform: translateY(-50%) scale(0.75);
     }
     
     .bloodsplatter-decoration-medical img {
         height: 340px;
         transform: rotate(12deg);
+    }
+    
+    .bloodsplatter-decoration-gore {
+        left: -130px;
+        top: 12%;
+        transform: translateY(-50%) scale(0.75);
+    }
+    
+    .bloodsplatter-decoration-gore img {
+        height: 360px;
+        transform: rotate(-15deg);
+    }
+    
+    .bloodsplatter-decoration-cw {
+        right: -130px;
+        top: 12%;
+        transform: translateY(-50%) scale(0.75);
+    }
+    
+    .bloodsplatter-decoration-cw img {
+        height: 360px;
+        transform: rotate(13deg);
+    }
+    
+    .bloodsplatter-decoration-classes {
+        left: -130px;
+        top: 12%;
+        transform: translateY(-50%) scale(0.75);
+    }
+    
+    .bloodsplatter-decoration-classes img {
+        height: 380px;
+        transform: rotate(-12deg);
     }
     
     .showcase-title {
@@ -890,13 +1052,46 @@
     
     .bloodsplatter-decoration-medical {
         right: -110px;
-        top: 22%;
+        top: 18%;
         transform: translateY(-50%) scale(0.65);
     }
     
     .bloodsplatter-decoration-medical img {
         height: 300px;
         transform: rotate(8deg);
+    }
+    
+    .bloodsplatter-decoration-gore {
+        left: -110px;
+        top: 18%;
+        transform: translateY(-50%) scale(0.65);
+    }
+    
+    .bloodsplatter-decoration-gore img {
+        height: 320px;
+        transform: rotate(-10deg);
+    }
+    
+    .bloodsplatter-decoration-cw {
+        right: -110px;
+        top: 18%;
+        transform: translateY(-50%) scale(0.65);
+    }
+    
+    .bloodsplatter-decoration-cw img {
+        height: 320px;
+        transform: rotate(9deg);
+    }
+    
+    .bloodsplatter-decoration-classes {
+        left: -110px;
+        top: 18%;
+        transform: translateY(-50%) scale(0.65);
+    }
+    
+    .bloodsplatter-decoration-classes img {
+        height: 340px;
+        transform: rotate(-8deg);
     }
     
     .showcase-title {
@@ -946,5 +1141,35 @@
     
     .showcase-video {
         min-height: 400px;
+    }
+    
+    .bloodsplatter-decoration-gore {
+        left: -80px;
+        top: 20%;
+    }
+    
+    .bloodsplatter-decoration-gore img {
+        height: 500px;
+        transform: rotate(-30deg);
+    }
+    
+    .bloodsplatter-decoration-cw {
+        right: -80px;
+        top: 20%;
+    }
+    
+    .bloodsplatter-decoration-cw img {
+        height: 520px;
+        transform: rotate(25deg);
+    }
+    
+    .bloodsplatter-decoration-classes {
+        left: -80px;
+        top: 20%;
+    }
+    
+    .bloodsplatter-decoration-classes img {
+        height: 540px;
+        transform: rotate(-22deg);
     }
 } 
