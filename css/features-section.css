@@ -1172,4 +1172,73 @@
         height: 540px;
         transform: rotate(-22deg);
     }
+}
+
+/* Splatter Reveal Animation Styles */
+.bloodsplatter-decoration-left,
+.bloodsplatter-decoration-right,
+.bloodsplatter-decoration-ragdoll,
+.bloodsplatter-decoration-medical,
+.bloodsplatter-decoration-gore,
+.bloodsplatter-decoration-cw,
+.bloodsplatter-decoration-classes {
+    overflow: visible;
+}
+
+.bloodsplatter-decoration-left img,
+.bloodsplatter-decoration-right img,
+.bloodsplatter-decoration-ragdoll img,
+.bloodsplatter-decoration-medical img,
+.bloodsplatter-decoration-gore img,
+.bloodsplatter-decoration-cw img,
+.bloodsplatter-decoration-classes img {
+    clip-path: circle(0% at 50% 50%);
+    transition: none; /* Disable default transitions for GSAP control */
+    will-change: clip-path, transform, filter;
+}
+
+/* Splatter reveal mask variations for different positions */
+/* Initial state will be set by JavaScript with noise patterns */
+.bloodsplatter-decoration-left img {
+    clip-path: polygon(50% 50%); /* Single point - completely hidden */
+}
+
+.bloodsplatter-decoration-right img {
+    clip-path: polygon(50% 50%);
+}
+
+.bloodsplatter-decoration-ragdoll img {
+    clip-path: polygon(50% 50%);
+}
+
+.bloodsplatter-decoration-medical img {
+    clip-path: polygon(50% 50%);
+}
+
+.bloodsplatter-decoration-gore img {
+    clip-path: polygon(50% 50%);
+}
+
+.bloodsplatter-decoration-cw img {
+    clip-path: polygon(50% 50%);
+}
+
+.bloodsplatter-decoration-classes img {
+    clip-path: polygon(50% 50%);
+}
+
+/* Clean bloodsplatter styling - no extra effects */
+
+@media (max-width: 768px) {
+    /* Mobile devices will use the same noise patterns but with adjusted centers */
+    /* JavaScript will handle the responsive positioning automatically */
+    .bloodsplatter-decoration-left img,
+    .bloodsplatter-decoration-right img,
+    .bloodsplatter-decoration-ragdoll img,
+    .bloodsplatter-decoration-medical img,
+    .bloodsplatter-decoration-gore img,
+    .bloodsplatter-decoration-cw img,
+    .bloodsplatter-decoration-classes img {
+        clip-path: polygon(50% 50%); /* JavaScript will override with noise patterns */
+    }
 } 
