@@ -245,7 +245,7 @@ function initBloodsplatterAnimations() {
             trigger: triggerElement,
             start: "top 95%",
             end: "bottom 20%",
-            markers: true,
+            markers: false,
             onEnter: () => {
                 // Add delay and play animation
                 gsap.delayedCall(config.delay, () => {
