@@ -34,7 +34,17 @@
     color: #ffffff;
     position: relative;
     z-index: 7;
-    text-shadow: 0 0 5px rgba(255,255,255,0.2);
+    -webkit-text-stroke: 0.5px rgba(180, 180, 180, 0.3);
+    text-shadow: 
+        /* Light stroke effect using multiple shadows */
+        -0.5px -0.5px 0 rgba(180, 180, 180, 0.3),
+        0.5px -0.5px 0 rgba(180, 180, 180, 0.3),
+        -0.5px 0.5px 0 rgba(180, 180, 180, 0.3),
+        0.5px 0.5px 0 rgba(180, 180, 180, 0.3),
+        /* Black drop shadow */
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 6px rgba(0, 0, 0, 0.6),
+        0 0 12px rgba(0, 0, 0, 0.3);
 }
 
 .bloodsplatter-decoration-right {
@@ -450,10 +460,20 @@
     text-transform: uppercase;
     color: #ffffff;
     margin-bottom: 20px;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
     letter-spacing: 1px;
     transition: text-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     line-height: 1.2;
+    -webkit-text-stroke: 0.5px rgba(180, 180, 180, 0.3);
+    text-shadow: 
+        /* Light stroke effect using multiple shadows */
+        -0.5px -0.5px 0 rgba(180, 180, 180, 0.3),
+        0.5px -0.5px 0 rgba(180, 180, 180, 0.3),
+        -0.5px 0.5px 0 rgba(180, 180, 180, 0.3),
+        0.5px 0.5px 0 rgba(180, 180, 180, 0.3),
+        /* Black drop shadow */
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 6px rgba(0, 0, 0, 0.6),
+        0 0 12px rgba(0, 0, 0, 0.3);
 }
 
 .showcase-description {

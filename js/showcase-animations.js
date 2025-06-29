@@ -24,20 +24,10 @@ function initShowcaseAnimations() {
             scrollTrigger: {
                 trigger: item,
                 start: "top 95%",
-                end: "bottom 15%",
-                toggleActions: "play none none reverse",
+                toggleActions: "play none none none",
                 id: `showcase-${index + 1}`, // Give each trigger a unique ID
                 onEnter: () => {
                     item.classList.add('in-view');
-                },
-                onLeave: () => {
-                    item.classList.remove('in-view');
-                },
-                onEnterBack: () => {
-                    item.classList.add('in-view');
-                },
-                onLeaveBack: () => {
-                    item.classList.remove('in-view');
                 }
             }
         });
@@ -110,7 +100,7 @@ function initShowcaseAnimations() {
             scrollTrigger: {
                 trigger: featuresList,
                 start: "top 95%",
-                toggleActions: "play none none reverse",
+                toggleActions: "play none none none",
                 id: "features-list"
             }
         });
@@ -244,7 +234,6 @@ function initBloodsplatterAnimations() {
         ScrollTrigger.create({
             trigger: triggerElement,
             start: "top 95%",
-            end: "bottom 20%",
             markers: false,
             onEnter: () => {
                 // Add delay and play animation
@@ -252,29 +241,6 @@ function initBloodsplatterAnimations() {
                     tl.play();
                     element.classList.add('bloodsplatter-revealed');
                 });
-            },
-            onLeave: () => {
-                // Optional: reverse animation when leaving view
-                if (element.classList.contains('bloodsplatter-revealed')) {
-                    tl.reverse();
-                    element.classList.remove('bloodsplatter-revealed');
-                }
-            },
-            onEnterBack: () => {
-                // Re-trigger when scrolling back up
-                if (!element.classList.contains('bloodsplatter-revealed')) {
-                    gsap.delayedCall(config.delay * 0.5, () => {
-                        tl.play();
-                        element.classList.add('bloodsplatter-revealed');
-                    });
-                }
-            },
-            onLeaveBack: () => {
-                // Optional: hide when scrolling up past element
-                if (element.classList.contains('bloodsplatter-revealed')) {
-                    tl.reverse();
-                    element.classList.remove('bloodsplatter-revealed');
-                }
             },
             id: `bloodsplatter-${splatterType}-${index}`
         });
