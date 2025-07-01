@@ -1,0 +1,128 @@
+/* Servers Page Styles */
+.servers-page {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    background-color: var(--dark-bg);
+    overflow: hidden;
+}
+
+.server-title-splatter {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.server-title-splatter img {
+    display: block;
+    width: 1200px;
+    height: auto;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    mask: radial-gradient(ellipse at center, rgba(0,0,0,1) 40%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,0.5) 75%, rgba(0,0,0,0.2) 85%, transparent 95%);
+    -webkit-mask: radial-gradient(ellipse at center, rgba(0,0,0,1) 40%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,0.5) 75%, rgba(0,0,0,0.2) 85%, transparent 95%);
+}
+
+.servers-title {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    padding: 40px;
+
+}
+
+.servers-title-text {
+    font-size: 6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin: 0;
+    color: #ffffff;
+    -webkit-text-stroke: 0.5px rgba(180, 180, 180, 0.3);
+    text-shadow: 
+        /* Light stroke effect using multiple shadows */
+        -0.5px -0.5px 0 rgba(180, 180, 180, 0.3),
+        0.5px -0.5px 0 rgba(180, 180, 180, 0.3),
+        -0.5px 0.5px 0 rgba(180, 180, 180, 0.3),
+        0.5px 0.5px 0 rgba(180, 180, 180, 0.3),
+        /* Black drop shadow */
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 6px rgba(0, 0, 0, 0.6),
+        0 0 12px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.servers-title-text::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    filter: blur(6px);
+    opacity: 0.25;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Responsive Design */
+@media (max-width: 1400px) {
+    .server-title-splatter img {
+        width: 1000px;
+    }
+    
+    .servers-title-text {
+        font-size: 5rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .server-title-splatter img {
+        width: 800px;
+    }
+    
+    .servers-title-text {
+        font-size: 4.5rem;
+    }
+}
+
+@media (max-width: 900px) {
+    .server-title-splatter img {
+        width: 600px;
+    }
+    
+    .servers-title-text {
+        font-size: 4rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .server-title-splatter img {
+        width: 700px;
+    }
+    
+    .servers-title {
+        padding: 30px;
+    }
+    
+    .servers-title-text {
+        font-size: 4.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .server-title-splatter img {
+        width: 600px;
+    }
+    
+    .servers-title {
+        padding: 20px;
+    }
+    
+    .servers-title-text {
+        font-size: 3.5rem;
+    }
+} 
