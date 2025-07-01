@@ -153,10 +153,8 @@ document.addEventListener('DOMContentLoaded', () => {
         playersSpan.className = playerCountClass;
         
         // Update gamemode and map
-        const gamemodeSpan = wrapper.querySelector('.server-gamemode-display span');
-        gamemodeSpan.textContent = serverStatus.gamemode;
-        const mapText = wrapper.querySelector('.server-gamemode-display').childNodes[2];
-        mapText.textContent = ` on ${serverStatus.map}`;
+        const gamemodeDisplay = wrapper.querySelector('.server-gamemode-display');
+        gamemodeDisplay.innerHTML = `Now Playing: <span>${serverStatus.gamemode}</span> <span style="color: #a8a8a8;">on</span> ${serverStatus.map}`;
         
         // Update join button
         const joinBtn = wrapper.querySelector('.server-join-btn');
