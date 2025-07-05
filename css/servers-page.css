@@ -108,37 +108,7 @@
     }
 }
 
-@media (max-width: 768px) {
-    .servers-title {
-        position: relative;
-        padding: 30px;
-        text-align: center;
-        left: auto;
-        top: auto;
-        width: 100%;
-    }
-    
-    .servers-title-text {
-        font-size: 4.2rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .servers-title {
-        position: relative;
-        padding: 20px;
-        text-align: center;
-        left: auto;
-        top: auto;
-        width: 100%;
-    }
-    
-    .servers-title-text {
-        font-size: 3.5rem;
-    }
-}
-
-/* PC-only notice for mobile */
+/* PC-only notice - hidden by default, shown on mobile */
 .pc-only-notice {
     display: none;
     text-align: center;
@@ -162,6 +132,37 @@
     margin-right: 0.25em;
     display: inline-block;
     filter: brightness(0) invert(1);
+}
+
+
+
+/* Total playercount display */
+.total-playercount {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.9);
+    position: relative;
+    z-index: 10;
+}
+
+.total-playercount-text {
+    font-weight: 600;
+    text-shadow: 
+        1px 1px 2px rgba(0, 0, 0, 0.8),
+        0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.total-playercount-text.loading {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.total-playercount-text.online {
+    color: rgba(255, 255, 255, 1);
+}
+
+.total-playercount-text.offline {
+    color: rgba(255, 255, 255, 0.5);
 }
 
 /* Server Browser Styles */
@@ -396,6 +397,10 @@
     color: rgba(255, 255, 255, 0.7);
 }
 
+/* =================================
+   RESPONSIVE DESIGN - MEDIA QUERIES
+   ================================= */
+
 /* Server Browser Responsive Design */
 @media (max-width: 1200px) {
     .server-browser {
@@ -404,20 +409,39 @@
 }
 
 @media (max-width: 768px) {
+    .servers-title {
+        position: relative;
+        padding: 30px 30px 10px 30px;
+        text-align: center;
+        left: auto;
+        top: auto;
+        width: 100%;
+    }
+    
+    .servers-title-text {
+        font-size: 4.2rem;
+    }
+    
+    .total-playercount {
+        font-size: 1.1rem;
+        margin-top: 15px;
+    }
+    
     .pc-only-notice {
-        display: block;
-        margin: 20px 0 0 0;
-        padding: 15px 20px;
+        display: block !important;
         font-size: 0.9rem;
+        padding: 15px 30px;
+        margin-top: 15px;
+        margin-bottom: 0;
     }
     
     .server-browser {
-        margin-top: 0;
-        padding: 30px 0;
+        margin-top: 20px;
+        padding: 20px 0;
     }
     
     .server-list {
-        padding: 0 20px;
+        padding: 0 30px;
     }
     
     .server-wrapper {
@@ -425,21 +449,40 @@
     }
     
     .server-wrapper .server-join-btn {
-        display: none;
+        display: none !important;
     }
 }
 
 @media (max-width: 480px) {
+    .servers-title {
+        position: relative;
+        padding: 20px 20px 10px 20px;
+        text-align: center;
+        left: auto;
+        top: auto;
+        width: 100%;
+    }
+    
+    .servers-title-text {
+        font-size: 3.5rem;
+    }
+    
+    .total-playercount {
+        font-size: 1rem;
+        margin-top: 15px;
+    }
+    
     .pc-only-notice {
-        display: block;
-        margin: 15px 0 0 0;
-        padding: 12px 15px;
+        display: block !important;
         font-size: 0.85rem;
+        padding: 12px 15px;
+        margin-top: 15px;
+        margin-bottom: 0;
     }
     
     .server-browser {
-        margin-top: 0;
-        padding: 20px 0;
+        margin-top: 15px;
+        padding: 15px 0;
     }
     
     .server-list {
@@ -457,17 +500,31 @@
     }
     
     .server-wrapper .server-join-btn {
-        display: none;
+        display: none !important;
     }
 }
 
-/* Extra small screens */
 @media (max-width: 375px) {
+    .servers-title {
+        padding: 15px 15px 5px 15px;
+    }
+    
+    .total-playercount {
+        font-size: 0.9rem;
+        margin-top: 10px;
+    }
+    
     .pc-only-notice {
-        display: block;
-        margin: 10px 0 0 0;
-        padding: 10px 12px;
+        display: block !important;
         font-size: 0.8rem;
+        padding: 10px 12px;
+        margin-top: 10px;
+        margin-bottom: 0;
+    }
+    
+    .server-browser {
+        margin-top: 10px;
+        padding: 10px 0;
     }
     
     .server-list {
@@ -479,6 +536,6 @@
     }
     
     .server-wrapper .server-join-btn {
-        display: none;
+        display: none !important;
     }
 } 

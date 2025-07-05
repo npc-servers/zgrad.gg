@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
             id: 'zgrad4',
             title: 'ZGRAD US4',
             ip: '193.243.190.18',
-            port: 27052,
+            port: 27050,
             region: 'US',
             gamemode: 'Homicide Only',
             link: '/us4/connect.html'
@@ -176,6 +176,18 @@ document.addEventListener('DOMContentLoaded', () => {
         // Fetch status for all servers
         Promise.all(servers.map(server => fetchServerStatus(server)))
             .then(statuses => {
+                // Calculate total player count
+                const totalPlayers = statuses.reduce((sum, status) => sum + status.players, 0);
+                const totalMaxPlayers = statuses.reduce((sum, status) => sum + status.maxPlayers, 0);
+                const onlineServers = statuses.filter(status => status.online).length;
+                
+                // Update total playercount display
+                const totalPlayercountText = document.querySelector('.total-playercount-text');
+                if (totalPlayercountText) {
+                    totalPlayercountText.className = 'total-playercount-text online';
+                    totalPlayercountText.textContent = `${totalPlayers}/${totalMaxPlayers} total players online across ${onlineServers} servers`;
+                }
+                
                 // Sort servers by player count (highest first)
                 statuses.sort((a, b) => {
                     // Online servers first
@@ -223,6 +235,14 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(error => {
                 console.error("Error updating server list:", error);
+                
+                // Update total playercount display with error state
+                const totalPlayercountText = document.querySelector('.total-playercount-text');
+                if (totalPlayercountText) {
+                    totalPlayercountText.className = 'total-playercount-text offline';
+                    totalPlayercountText.textContent = 'Error loading player count';
+                }
+                
                 if (serverElements.size === 0) {
                     serverList.innerHTML = `
                         <div class="server-loading" style="color: #f44336;">
