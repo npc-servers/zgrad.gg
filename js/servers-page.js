@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const totalPlayercountText = document.querySelector('.total-playercount-text');
                 if (totalPlayercountText) {
                     totalPlayercountText.className = 'total-playercount-text online';
-                    totalPlayercountText.textContent = `${totalPlayers}/${totalMaxPlayers} total players online across ${onlineServers} servers`;
+                    totalPlayercountText.innerHTML = `<span class="current-count">${totalPlayers}</span>/${totalMaxPlayers} total players online across ${onlineServers} servers`;
                 }
                 
                 // Sort servers by player count (highest first)

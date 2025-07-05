@@ -32,7 +32,7 @@
 
 .server-title-splatter img {
     display: block;
-    width: clamp(600px, 100vw, 1200px);
+    width: clamp(900px, 150vw, 1200px);
     height: auto;
     margin: 0;
     padding: 0;
@@ -47,12 +47,10 @@
 }
 
 .servers-title {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: relative;
     z-index: 10;
     padding: 40px;
-
+    margin-top: 0;
 }
 
 .servers-title-text {
@@ -138,7 +136,7 @@
 
 /* Total playercount display */
 .total-playercount {
-    text-align: center;
+    text-align: left;
     margin-top: 20px;
     font-size: 1.2rem;
     color: rgba(255, 255, 255, 0.9);
@@ -151,6 +149,12 @@
     text-shadow: 
         1px 1px 2px rgba(0, 0, 0, 0.8),
         0 0 4px rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 8px 16px;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: inline-block;
 }
 
 .total-playercount-text.loading {
@@ -165,11 +169,22 @@
     color: rgba(255, 255, 255, 0.5);
 }
 
+.current-count {
+    color: #ffffff;
+    font-weight: 700;
+    text-shadow: 
+        0 0 5px rgba(255, 71, 87, 0.8),
+        0 0 10px rgba(255, 71, 87, 0.6),
+        0 0 15px rgba(255, 71, 87, 0.4),
+        0 0 20px rgba(255, 71, 87, 0.2),
+        1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
 /* Server Browser Styles */
 .server-browser {
     position: relative;
     z-index: 10;
-    margin-top: 200px;
+    margin-top: 20px;
     padding: 40px 0;
     width: 100%;
 }
@@ -434,29 +449,27 @@
    ================================= */
 
 /* Server Browser Responsive Design */
-@media (max-width: 1200px) {
-    .server-browser {
-        margin-top: 150px;
-    }
-}
-
 @media (max-width: 768px) {
     .servers-title {
-        position: relative;
-        padding: 30px 30px 10px 30px;
-        text-align: center;
-        left: auto;
-        top: auto;
+        padding: 30px 30px 20px 30px;
         width: 100%;
     }
     
     .servers-title-text {
+        text-align: center;
         font-size: 4.2rem;
     }
     
     .total-playercount {
         font-size: 1.1rem;
-        margin-top: 15px;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    
+    .total-playercount-text {
+        padding: 15px 30px;
+        display: block;
     }
     
     .pc-only-notice {
@@ -464,7 +477,7 @@
         font-size: 0.9rem;
         padding: 15px 30px;
         margin-top: 15px;
-        margin-bottom: 0;
+        margin-bottom: 20px;
     }
     
     .server-browser {
@@ -487,21 +500,25 @@
 
 @media (max-width: 480px) {
     .servers-title {
-        position: relative;
-        padding: 20px 20px 10px 20px;
-        text-align: center;
-        left: auto;
-        top: auto;
+        padding: 20px 20px 15px 20px;
         width: 100%;
     }
     
     .servers-title-text {
+        text-align: center;
         font-size: 3.5rem;
     }
     
     .total-playercount {
         font-size: 1rem;
-        margin-top: 15px;
+        margin-top: 18px;
+        margin-bottom: 8px;
+        text-align: center;
+    }
+    
+    .total-playercount-text {
+        padding: 12px 15px;
+        display: block;
     }
     
     .pc-only-notice {
@@ -509,7 +526,7 @@
         font-size: 0.85rem;
         padding: 12px 15px;
         margin-top: 15px;
-        margin-bottom: 0;
+        margin-bottom: 15px;
     }
     
     .server-browser {
@@ -538,24 +555,31 @@
 
 @media (max-width: 375px) {
     .servers-title {
-        padding: 15px 15px 5px 15px;
+        padding: 15px 15px 12px 15px;
     }
     
     .total-playercount {
         font-size: 0.9rem;
-        margin-top: 10px;
+        margin-top: 15px;
+        margin-bottom: 8px;
+        text-align: center;
+    }
+    
+    .total-playercount-text {
+        padding: 10px 12px;
+        display: block;
     }
     
     .pc-only-notice {
         display: block !important;
         font-size: 0.8rem;
         padding: 10px 12px;
-        margin-top: 10px;
-        margin-bottom: 0;
+        margin-top: 12px;
+        margin-bottom: 12px;
     }
     
     .server-browser {
-        margin-top: 10px;
+        margin-top: 12px;
         padding: 10px 0;
     }
     
