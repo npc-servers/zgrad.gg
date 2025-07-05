@@ -96,30 +96,48 @@ document.addEventListener('DOMContentLoaded', () => {
         // Determine player count color classes and server capacity classes
         let playerCountClass = '';
         let serverCapacityClass = '';
-        if (playerPercentage >= 90) {
-            playerCountClass = 'nearly-full';
-            serverCapacityClass = 'nearly-full';
-        } else if (playerPercentage >= 70) {
-            playerCountClass = 'getting-full';
-            serverCapacityClass = 'getting-full';
+        if (isOnline) {
+            if (playerPercentage >= 90) {
+                playerCountClass = 'nearly-full';
+                serverCapacityClass = 'nearly-full';
+            } else if (playerPercentage >= 70) {
+                playerCountClass = 'getting-full';
+                serverCapacityClass = 'getting-full';
+            }
+        } else {
+            serverCapacityClass = 'offline';
         }
         
         const wrapper = document.createElement('div');
         wrapper.className = 'server-wrapper';
-        wrapper.innerHTML = `
-            <div class="server-item ${serverCapacityClass}" data-server-id="${server.id}">
-                <div class="server-content">
-                    <div class="server-info">
-                        <div class="server-name-display">${server.title}</div>
-                        <div class="server-players-display">// <span class="${playerCountClass}">${playerCount}/${maxPlayers}</span> players online</div>
-                        <div class="server-gamemode-display">Now Playing: <span>${serverStatus.gamemode}</span> <span style="color: #a8a8a8;">on</span> ${serverStatus.map}</div>
+        
+        // Create different HTML based on server status
+        if (isOnline) {
+            wrapper.innerHTML = `
+                <div class="server-item ${serverCapacityClass}" data-server-id="${server.id}">
+                    <div class="server-content">
+                        <div class="server-info">
+                            <div class="server-name-display">${server.title}</div>
+                            <div class="server-players-display">// <span class="${playerCountClass}">${playerCount}/${maxPlayers}</span> players online</div>
+                            <div class="server-gamemode-display">Now Playing: <span>${serverStatus.gamemode}</span> <span style="color: #a8a8a8;">on</span> ${serverStatus.map}</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <a href="${server.link}" class="server-join-btn" ${!isOnline ? 'style="pointer-events: none;"' : ''}>
-                ${isOnline ? 'JOIN' : 'OFFLINE'}
-            </a>
-        `;
+                <a href="${server.link}" class="server-join-btn">JOIN</a>
+            `;
+        } else {
+            wrapper.innerHTML = `
+                <div class="server-item ${serverCapacityClass}" data-server-id="${server.id}">
+                    <div class="server-content">
+                        <div class="server-info">
+                            <div class="server-name-display">${server.title}</div>
+                            <div class="server-offline-message">This server is down, we may be experiencing an outage or crashed :(</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="${server.link}" class="server-join-btn" style="pointer-events: none;">OFFLINE</a>
+            `;
+        }
         
         return wrapper;
     };
@@ -135,26 +153,39 @@ document.addEventListener('DOMContentLoaded', () => {
         // Determine player count color classes and server capacity classes
         let playerCountClass = '';
         let serverCapacityClass = '';
-        if (playerPercentage >= 90) {
-            playerCountClass = 'nearly-full';
-            serverCapacityClass = 'nearly-full';
-        } else if (playerPercentage >= 70) {
-            playerCountClass = 'getting-full';
-            serverCapacityClass = 'getting-full';
+        if (isOnline) {
+            if (playerPercentage >= 90) {
+                playerCountClass = 'nearly-full';
+                serverCapacityClass = 'nearly-full';
+            } else if (playerPercentage >= 70) {
+                playerCountClass = 'getting-full';
+                serverCapacityClass = 'getting-full';
+            }
+        } else {
+            serverCapacityClass = 'offline';
         }
 
         // Update server item classes
         const serverItem = wrapper.querySelector('.server-item');
         serverItem.className = `server-item ${serverCapacityClass}`;
         
-        // Update player count and class
-        const playersSpan = wrapper.querySelector('.server-players-display span');
-        playersSpan.textContent = `${playerCount}/${maxPlayers}`;
-        playersSpan.className = playerCountClass;
+        // Update server info based on status
+        const serverInfo = wrapper.querySelector('.server-info');
         
-        // Update gamemode and map
-        const gamemodeDisplay = wrapper.querySelector('.server-gamemode-display');
-        gamemodeDisplay.innerHTML = `Now Playing: <span>${serverStatus.gamemode}</span> <span style="color: #a8a8a8;">on</span> ${serverStatus.map}`;
+        if (isOnline) {
+            // Update for online server
+            serverInfo.innerHTML = `
+                <div class="server-name-display">${server.title}</div>
+                <div class="server-players-display">// <span class="${playerCountClass}">${playerCount}/${maxPlayers}</span> players online</div>
+                <div class="server-gamemode-display">Now Playing: <span>${serverStatus.gamemode}</span> <span style="color: #a8a8a8;">on</span> ${serverStatus.map}</div>
+            `;
+        } else {
+            // Update for offline server
+            serverInfo.innerHTML = `
+                <div class="server-name-display">${server.title}</div>
+                <div class="server-offline-message">This server is down, we may be experiencing an outage or crashed :(</div>
+            `;
+        }
         
         // Update join button
         const joinBtn = wrapper.querySelector('.server-join-btn');
