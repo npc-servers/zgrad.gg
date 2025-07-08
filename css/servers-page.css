@@ -439,6 +439,88 @@
     color: rgba(255, 255, 255, 0.7);
 }
 
+/* Right-side buttons */
+.right-buttons {
+    position: absolute;
+    right: 40px;
+    top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 15;
+}
+
+.right-btn {
+    background-color: rgba(30, 30, 30, 0.85);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: #ffffff;
+    font-family: 'Oxanium', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 160px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-icon {
+    width: 36px;
+    height: 36px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.btn-icon img {
+    width: 20px;
+    height: 20px;
+    filter: brightness(0) invert(1);
+    transition: all 0.3s ease;
+}
+
+.btn-text {
+    flex: 1;
+    text-align: left;
+}
+
+.right-btn:hover {
+    background-color: rgba(255, 107, 0, 0.2);
+    border-color: rgba(255, 107, 0, 0.6);
+    transform: translateX(-5px);
+    box-shadow: 
+        0 0 15px rgba(255, 107, 0, 0.3),
+        0 0 30px rgba(255, 107, 0, 0.1);
+}
+
+.right-btn:hover .btn-icon {
+    background-color: rgba(255, 107, 0, 0.3);
+    border-color: rgba(255, 107, 0, 0.5);
+    transform: scale(1.05);
+}
+
+.right-btn:hover .btn-icon img {
+    filter: brightness(0) invert(1);
+    transform: scale(1.1);
+}
+
+.right-btn:active {
+    transform: translateX(-3px);
+}
+
 /* =================================
    RESPONSIVE DESIGN - MEDIA QUERIES
    ================================= */
@@ -446,147 +528,218 @@
 /* Server Browser Responsive Design */
 @media (max-width: 768px) {
     .servers-title {
-        padding: 30px 30px 20px 30px;
+        padding: 20px;
+    }
+
+    .servers-title-text {
+        font-size: 3rem;
+        text-align: center;
+    }
+
+    .total-playercount {
+        text-align: center;
+        margin: 15px 20px;
+    }
+
+    .total-playercount-text {
+        font-size: 1rem;
+        display: block;
         width: 100%;
     }
-    
-    .servers-title-text {
-        text-align: center;
-        font-size: 4.2rem;
-    }
-    
-    .total-playercount {
-        font-size: 1.1rem;
-        margin-top: 20px;
-        margin-bottom: 10px;
-        text-align: center;
-    }
-    
-    .total-playercount-text {
-        padding: 15px 30px;
-        display: block;
-    }
-    
+
     .pc-only-notice {
-        display: block !important;
+        display: block;
+        margin: 20px;
+        padding: 15px 20px;
         font-size: 0.9rem;
-        padding: 15px 30px;
-        margin-top: 15px;
-        margin-bottom: 20px;
     }
-    
+
     .server-browser {
-        margin-top: 20px;
         padding: 20px 0;
     }
-    
+
     .server-list {
-        padding: 0 30px;
+        padding: 0 20px;
     }
-    
-    .server-wrapper {
-        gap: 15px;
-    }
-    
+
     .server-wrapper .server-join-btn {
         display: none !important;
+    }
+
+    /* Right buttons responsive */
+    .right-buttons {
+        position: fixed;
+        right: 15px;
+        top: auto;
+        bottom: 20px;
+        transform: none;
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px;
+        left: 15px;
+        width: auto;
+    }
+
+    .right-btn {
+        flex: 1;
+        min-width: auto;
+        padding: 12px 16px;
+        font-size: 0.9rem;
+        gap: 8px;
+        justify-content: center;
+    }
+    
+    .btn-icon {
+        display: none;
+    }
+    
+    .btn-text {
+        text-align: center;
+    }
+
+    .right-btn:hover {
+        transform: translateY(-2px);
     }
 }
 
 @media (max-width: 480px) {
     .servers-title {
-        padding: 20px 20px 15px 20px;
+        padding: 15px;
+    }
+
+    .servers-title-text {
+        font-size: 2.5rem;
+        text-align: center;
+    }
+
+    .total-playercount {
+        text-align: center;
+        margin: 10px 15px;
+    }
+
+    .total-playercount-text {
+        font-size: 0.9rem;
+        padding: 6px 12px;
+        display: block;
         width: 100%;
     }
-    
-    .servers-title-text {
-        text-align: center;
-        font-size: 3.5rem;
-    }
-    
-    .total-playercount {
-        font-size: 1rem;
-        margin-top: 18px;
-        margin-bottom: 8px;
-        text-align: center;
-    }
-    
-    .total-playercount-text {
-        padding: 12px 15px;
-        display: block;
-    }
-    
+
     .pc-only-notice {
-        display: block !important;
+        display: block;
+        margin: 15px;
+        padding: 12px 16px;
         font-size: 0.85rem;
-        padding: 12px 15px;
-        margin-top: 15px;
-        margin-bottom: 15px;
     }
-    
+
     .server-browser {
-        margin-top: 15px;
         padding: 15px 0;
     }
-    
+
     .server-list {
         padding: 0 15px;
     }
-    
+
     .server-item {
         padding: 15px;
     }
-    
+
     .server-wrapper {
-        flex-direction: column;
-        gap: 15px;
-        align-items: stretch;
+        gap: 12px;
     }
-    
+
     .server-wrapper .server-join-btn {
         display: none !important;
+    }
+
+    /* Right buttons mobile */
+    .right-buttons {
+        right: 10px;
+        left: 10px;
+        bottom: 15px;
+        gap: 8px;
+    }
+
+    .right-btn {
+        padding: 10px 12px;
+        font-size: 0.8rem;
+        min-width: 80px;
+        gap: 6px;
+        justify-content: center;
+    }
+    
+    .btn-icon {
+        display: none;
+    }
+    
+    .btn-text {
+        text-align: center;
     }
 }
 
 @media (max-width: 375px) {
     .servers-title {
-        padding: 15px 15px 12px 15px;
+        padding: 10px;
     }
-    
-    .total-playercount {
-        font-size: 0.9rem;
-        margin-top: 15px;
-        margin-bottom: 8px;
+
+    .servers-title-text {
         text-align: center;
     }
-    
+
+    .total-playercount {
+        text-align: center;
+        margin: 8px 10px;
+    }
+
     .total-playercount-text {
-        padding: 10px 12px;
-        display: block;
-    }
-    
-    .pc-only-notice {
-        display: block !important;
         font-size: 0.8rem;
-        padding: 10px 12px;
-        margin-top: 12px;
-        margin-bottom: 12px;
+        padding: 4px 8px;
+        display: block;
+        width: 100%;
     }
-    
+
+    .pc-only-notice {
+        display: block;
+        margin: 10px;
+        padding: 10px 12px;
+        font-size: 0.8rem;
+    }
+
     .server-browser {
-        margin-top: 12px;
         padding: 10px 0;
     }
-    
+
     .server-list {
         padding: 0 10px;
     }
-    
+
     .server-item {
         padding: 12px;
     }
-    
+
     .server-wrapper .server-join-btn {
         display: none !important;
+    }
+
+    /* Right buttons extra small */
+    .right-buttons {
+        right: 8px;
+        left: 8px;
+        bottom: 12px;
+        gap: 6px;
+    }
+
+    .right-btn {
+        padding: 8px 10px;
+        font-size: 0.75rem;
+        gap: 4px;
+        justify-content: center;
+    }
+    
+    .btn-icon {
+        display: none;
+    }
+    
+    .btn-text {
+        text-align: center;
     }
 } 
