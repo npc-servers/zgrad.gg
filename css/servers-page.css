@@ -101,6 +101,51 @@
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     display: inline-block;
+    position: relative;
+}
+
+.support-ad-content::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    border-radius: 9px;
+    padding: 1px;
+    background: conic-gradient(
+        from var(--angle),
+        transparent 0deg,
+        transparent 45deg,
+        rgba(255, 71, 87, 0.9) 90deg,
+        rgba(255, 71, 87, 1) 135deg,
+        rgba(255, 71, 87, 0.9) 180deg,
+        transparent 225deg,
+        transparent 270deg,
+        transparent 315deg,
+        transparent 360deg
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    z-index: -1;
+    animation: shine-border 3s linear infinite;
+}
+
+@property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@keyframes shine-border {
+    0% {
+        --angle: 0deg;
+    }
+    100% {
+        --angle: 360deg;
+    }
 }
 
 .support-ad-text {
