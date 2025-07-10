@@ -287,4 +287,150 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update server list immediately and then every 30 seconds
     updateServerList();
     setInterval(updateServerList, 30000);
+    
+    // Hosting Notification Functionality
+    const initHostingNotification = () => {
+        const notification = document.getElementById('hostingNotification');
+        const notificationHeader = document.getElementById('notificationHeader');
+        
+        if (!notification || !notificationHeader) return;
+        
+        // Check if user has already interacted with notification
+        const hasSeenNotification = localStorage.getItem('hostingNotificationSeen');
+        const lastDismissed = localStorage.getItem('hostingNotificationDismissed');
+        
+        // Don't show if dismissed within last 7 days
+        if (lastDismissed) {
+            const daysSinceDismissed = (Date.now() - parseInt(lastDismissed)) / (1000 * 60 * 60 * 24);
+            if (daysSinceDismissed < 7) {
+                return;
+            }
+        }
+        
+        // Show notification after 10 seconds
+        setTimeout(() => {
+            notification.classList.add('show');
+            
+            // Track that notification has been shown
+            localStorage.setItem('hostingNotificationSeen', 'true');
+        }, 10000);
+        
+        // Handle notification header click (expand/collapse)
+        notificationHeader.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const isExpanded = notification.classList.contains('expanded');
+            
+            if (isExpanded) {
+                notification.classList.remove('expanded');
+            } else {
+                notification.classList.add('expanded');
+            }
+            
+            // Track user interaction
+            localStorage.setItem('hostingNotificationInteracted', 'true');
+        });
+        
+        // Handle affiliate button click tracking
+        const affiliateBtn = notification.querySelector('.affiliate-btn');
+        if (affiliateBtn) {
+            affiliateBtn.addEventListener('click', (e) => {
+                // Track affiliate button click
+                localStorage.setItem('hostingNotificationClicked', 'true');
+                
+                // Optional: You can add analytics tracking here
+                console.log('Affiliate button clicked - Physgun referral');
+            });
+        }
+        
+        // Handle copy code functionality
+        const copyCodeElement = notification.querySelector('.copy-code');
+        if (copyCodeElement) {
+            copyCodeElement.addEventListener('click', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const codeText = copyCodeElement.getAttribute('data-code');
+                
+                try {
+                    // Use modern clipboard API if available
+                    if (navigator.clipboard && window.isSecureContext) {
+                        await navigator.clipboard.writeText(codeText);
+                    } else {
+                        // Fallback for older browsers
+                        const textArea = document.createElement('textarea');
+                        textArea.value = codeText;
+                        textArea.style.position = 'fixed';
+                        textArea.style.opacity = '0';
+                        textArea.style.left = '-9999px';
+                        document.body.appendChild(textArea);
+                        textArea.focus();
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                    }
+                    
+                    // Visual feedback
+                    copyCodeElement.classList.add('copied');
+                    const originalText = copyCodeElement.textContent;
+                    copyCodeElement.textContent = 'COPIED!';
+                    
+                    // Reset after 2 seconds
+                    setTimeout(() => {
+                        copyCodeElement.classList.remove('copied');
+                        copyCodeElement.textContent = originalText;
+                    }, 2000);
+                    
+                    // Track copy action
+                    localStorage.setItem('hostingNotificationCodeCopied', 'true');
+                    console.log('Discount code copied to clipboard:', codeText);
+                    
+                } catch (err) {
+                    console.error('Failed to copy code:', err);
+                    
+                    // Fallback visual feedback for copy failure
+                    copyCodeElement.style.background = 'rgba(244, 67, 54, 0.3)';
+                    copyCodeElement.style.borderColor = 'rgba(244, 67, 54, 0.6)';
+                    const originalText = copyCodeElement.textContent;
+                    copyCodeElement.textContent = 'FAILED';
+                    
+                    setTimeout(() => {
+                        copyCodeElement.style.background = '';
+                        copyCodeElement.style.borderColor = '';
+                        copyCodeElement.textContent = originalText;
+                    }, 2000);
+                }
+            });
+        }
+        
+        // Add close functionality (optional - click outside to dismiss)
+        document.addEventListener('click', (e) => {
+            if (notification.classList.contains('show') && 
+                !notification.contains(e.target) && 
+                notification.classList.contains('expanded')) {
+                
+                notification.classList.remove('expanded');
+                
+                // If user clicks outside after expanding, consider it as "dismissed"
+                setTimeout(() => {
+                    if (!notification.classList.contains('expanded')) {
+                        localStorage.setItem('hostingNotificationDismissed', Date.now().toString());
+                    }
+                }, 300);
+            }
+        });
+        
+        // Auto-hide notification after 60 seconds if not interacted with
+        setTimeout(() => {
+            const hasInteracted = localStorage.getItem('hostingNotificationInteracted');
+            if (!hasInteracted && notification.classList.contains('show')) {
+                notification.classList.remove('show');
+                localStorage.setItem('hostingNotificationDismissed', Date.now().toString());
+            }
+        }, 60000);
+    };
+    
+    // Initialize notification system
+    initHostingNotification();
 }); 
