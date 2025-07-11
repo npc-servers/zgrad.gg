@@ -866,6 +866,7 @@
     opacity: 0;
     transform: translateY(100px);
     animation: slideUp 0.5s ease forwards;
+    animation-delay: 2s;
 }
 
 .hosting-notification.show {
@@ -1085,10 +1086,7 @@
 /* Responsive Design for Notification */
 @media (max-width: 768px) {
     .hosting-notification {
-        bottom: 15px;
-        right: 15px;
-        left: 15px;
-        max-width: none;
+        display: none;
     }
     
     .notification-header {
