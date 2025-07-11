@@ -865,12 +865,10 @@
     transition: all 0.3s ease;
     opacity: 0;
     transform: translateY(100px);
-    animation: slideUp 0.5s ease forwards;
 }
 
 .hosting-notification.show {
-    opacity: 1;
-    transform: translateY(0);
+    animation: slideUp 0.5s ease forwards;
 }
 
 .hosting-notification:hover {
@@ -1085,65 +1083,12 @@
 /* Responsive Design for Notification */
 @media (max-width: 768px) {
     .hosting-notification {
-        bottom: 15px;
-        right: 15px;
-        left: 15px;
-        max-width: none;
-    }
-    
-    .notification-header {
-        padding: 14px 16px;
-    }
-    
-    .notification-title {
-        font-size: 0.95rem;
-    }
-    
-    .notification-body {
-        padding: 14px 16px 16px 16px;
-    }
-    
-    .affiliate-text {
-        font-size: 0.9rem;
-    }
-    
-    .affiliate-description {
-        font-size: 0.8rem;
-    }
-    
-    .affiliate-btn {
-        padding: 10px 14px;
-        font-size: 0.85rem;
+        display: none;
     }
 }
 
 @media (max-width: 480px) {
     .hosting-notification {
-        bottom: 10px;
-        right: 10px;
-        left: 10px;
-    }
-    
-    .notification-header {
-        padding: 12px 14px;
-    }
-    
-    .notification-title {
-        font-size: 0.9rem;
-    }
-    
-    .notification-body {
-        padding: 12px 14px 14px 14px;
-    }
-    
-    .discount-highlight {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
-    }
-    
-    .affiliate-btn {
-        padding: 10px 12px;
-        font-size: 0.8rem;
+        display: none;
     }
 } 

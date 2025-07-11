@@ -295,25 +295,13 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (!notification || !notificationHeader) return;
         
-        // Check if user has already interacted with notification
-        const hasSeenNotification = localStorage.getItem('hostingNotificationSeen');
-        const lastDismissed = localStorage.getItem('hostingNotificationDismissed');
-        
-        // Don't show if dismissed within last 7 days
-        if (lastDismissed) {
-            const daysSinceDismissed = (Date.now() - parseInt(lastDismissed)) / (1000 * 60 * 60 * 24);
-            if (daysSinceDismissed < 7) {
-                return;
-            }
-        }
-        
-        // Show notification after 10 seconds
+        // Show notification after 2 seconds
         setTimeout(() => {
             notification.classList.add('show');
             
             // Track that notification has been shown
             localStorage.setItem('hostingNotificationSeen', 'true');
-        }, 10000);
+        }, 2000);
         
         // Handle notification header click (expand/collapse)
         notificationHeader.addEventListener('click', (e) => {
@@ -421,14 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         
-        // Auto-hide notification after 60 seconds if not interacted with
-        setTimeout(() => {
-            const hasInteracted = localStorage.getItem('hostingNotificationInteracted');
-            if (!hasInteracted && notification.classList.contains('show')) {
-                notification.classList.remove('show');
-                localStorage.setItem('hostingNotificationDismissed', Date.now().toString());
-            }
-        }, 60000);
+        // Auto-hide functionality removed for testing
     };
     
     // Initialize notification system
