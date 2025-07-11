@@ -307,11 +307,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         
-        // Show notification immediately, let CSS handle the delay
-        notification.classList.add('show');
-        
-        // Track that notification has been shown
-        localStorage.setItem('hostingNotificationSeen', 'true');
+        // Show notification after 10 seconds
+        setTimeout(() => {
+            notification.classList.add('show');
+            
+            // Track that notification has been shown
+            localStorage.setItem('hostingNotificationSeen', 'true');
+        }, 10000);
         
         // Handle notification header click (expand/collapse)
         notificationHeader.addEventListener('click', (e) => {
