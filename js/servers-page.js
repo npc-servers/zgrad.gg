@@ -414,4 +414,94 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize notification system
     initHostingNotification();
+    
+    // Mobile Affiliate Ad Functionality
+    const initMobileAffiliateAd = () => {
+        const mobileAd = document.getElementById('mobileAffiliateAd');
+        if (!mobileAd) return;
+        
+        // Show mobile ad after servers are loaded (add a small delay)
+        setTimeout(() => {
+            mobileAd.style.opacity = '1';
+            mobileAd.style.transform = 'translateY(0)';
+            
+            // Track that mobile ad has been shown
+            localStorage.setItem('mobileAffiliateAdSeen', 'true');
+        }, 3000);
+        
+        // Handle mobile affiliate button click tracking
+        const mobileAffiliateBtn = mobileAd.querySelector('.mobile-cta-btn');
+        if (mobileAffiliateBtn) {
+            mobileAffiliateBtn.addEventListener('click', (e) => {
+                // Track mobile affiliate button click
+                localStorage.setItem('mobileAffiliateAdClicked', 'true');
+                
+                // Optional: You can add analytics tracking here
+                console.log('Mobile affiliate button clicked - Physgun referral');
+            });
+        }
+        
+        // Handle mobile copy code functionality
+        const mobileCopyCodeElement = mobileAd.querySelector('.mobile-copy-code');
+        if (mobileCopyCodeElement) {
+            mobileCopyCodeElement.addEventListener('click', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const codeText = mobileCopyCodeElement.getAttribute('data-code');
+                
+                try {
+                    // Use modern clipboard API if available
+                    if (navigator.clipboard && window.isSecureContext) {
+                        await navigator.clipboard.writeText(codeText);
+                    } else {
+                        // Fallback for older browsers
+                        const textArea = document.createElement('textarea');
+                        textArea.value = codeText;
+                        textArea.style.position = 'fixed';
+                        textArea.style.opacity = '0';
+                        textArea.style.left = '-9999px';
+                        document.body.appendChild(textArea);
+                        textArea.focus();
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                    }
+                    
+                    // Visual feedback
+                    mobileCopyCodeElement.classList.add('copied');
+                    const originalText = mobileCopyCodeElement.textContent;
+                    mobileCopyCodeElement.textContent = 'COPIED!';
+                    
+                    // Reset after 2 seconds
+                    setTimeout(() => {
+                        mobileCopyCodeElement.classList.remove('copied');
+                        mobileCopyCodeElement.textContent = originalText;
+                    }, 2000);
+                    
+                    // Track copy action
+                    localStorage.setItem('mobileAffiliateCodeCopied', 'true');
+                    console.log('Mobile discount code copied to clipboard:', codeText);
+                    
+                } catch (err) {
+                    console.error('Failed to copy mobile code:', err);
+                    
+                    // Fallback visual feedback for copy failure
+                    mobileCopyCodeElement.style.background = 'rgba(244, 67, 54, 0.3)';
+                    mobileCopyCodeElement.style.borderColor = 'rgba(244, 67, 54, 0.6)';
+                    const originalText = mobileCopyCodeElement.textContent;
+                    mobileCopyCodeElement.textContent = 'FAILED';
+                    
+                    setTimeout(() => {
+                        mobileCopyCodeElement.style.background = '';
+                        mobileCopyCodeElement.style.borderColor = '';
+                        mobileCopyCodeElement.textContent = originalText;
+                    }, 2000);
+                }
+            });
+        }
+    };
+    
+    // Initialize mobile affiliate ad system
+    initMobileAffiliateAd();
 }); 
