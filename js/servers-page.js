@@ -504,4 +504,70 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize mobile affiliate ad system
     initMobileAffiliateAd();
+    
+    // Join Guide Popup Functionality
+    const initJoinGuidePopup = () => {
+        const guideBtn = document.querySelector('.guide-btn');
+        const popup = document.getElementById('joinGuidePopup');
+        const popupClose = document.getElementById('popupClose');
+        const popupBackdrop = document.getElementById('popupBackdrop');
+        
+        if (!guideBtn || !popup || !popupClose || !popupBackdrop) return;
+        
+        // Open popup when guide button is clicked
+        guideBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            popup.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            
+            // Track popup opened
+            localStorage.setItem('joinGuidePopupOpened', 'true');
+            console.log('Join Guide popup opened');
+        });
+        
+        // Close popup when close button is clicked
+        popupClose.addEventListener('click', (e) => {
+            e.preventDefault();
+            popup.classList.remove('show');
+            document.body.style.overflow = ''; // Restore background scrolling
+            
+            // Track popup closed
+            localStorage.setItem('joinGuidePopupClosed', 'true');
+            console.log('Join Guide popup closed');
+        });
+        
+        // Close popup when backdrop is clicked
+        popupBackdrop.addEventListener('click', (e) => {
+            e.preventDefault();
+            popup.classList.remove('show');
+            document.body.style.overflow = ''; // Restore background scrolling
+            
+            // Track popup closed via backdrop
+            localStorage.setItem('joinGuidePopupClosedViaBackdrop', 'true');
+            console.log('Join Guide popup closed via backdrop');
+        });
+        
+        // Close popup when Escape key is pressed
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && popup.classList.contains('show')) {
+                popup.classList.remove('show');
+                document.body.style.overflow = ''; // Restore background scrolling
+                
+                // Track popup closed via escape key
+                localStorage.setItem('joinGuidePopupClosedViaEscape', 'true');
+                console.log('Join Guide popup closed via escape key');
+            }
+        });
+        
+        // Prevent popup content clicks from closing the popup
+        const popupContent = popup.querySelector('.popup-content');
+        if (popupContent) {
+            popupContent.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        }
+    };
+    
+    // Initialize join guide popup system
+    initJoinGuidePopup();
 }); 

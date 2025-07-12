@@ -1427,4 +1427,486 @@
         font-size: 0.85rem;
         width: 90%;
     }
+}
+
+/* Join Guide Popup Styles */
+.join-guide-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.join-guide-popup.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.popup-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    cursor: pointer;
+}
+
+.popup-content {
+    position: relative;
+    background: rgba(20, 20, 20, 0.95);
+    border-radius: 16px;
+    padding: 0;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.4);
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.popup-body {
+    padding: 24px;
+    max-height: calc(80vh - 160px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Custom scrollbar for popup body */
+.popup-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.popup-body::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    margin: 0;
+}
+
+.popup-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.popup-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.join-guide-popup.show .popup-content {
+    transform: scale(1) translateY(0);
+}
+
+.popup-header {
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px 0 0 0;
+}
+
+.popup-title {
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.popup-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.popup-close:hover {
+    background: #ff0000;
+    transform: scale(1.1);
+}
+
+.popup-close img {
+    width: 20px;
+    height: 20px;
+    filter: invert(1);
+}
+
+.section-title {
+    color: #ffffff;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0 0 16px 0;
+}
+
+.requirements-section {
+    margin-bottom: 32px;
+}
+
+.requirements-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.requirement-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+}
+
+.requirement-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateX(4px);
+}
+
+.requirement-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.requirement-icon img {
+    width: 24px;
+    height: 24px;
+    filter: invert(1);
+}
+
+/* Steam specific styling */
+.requirement-item:nth-child(2) .requirement-icon {
+    background: #1b2838;
+}
+
+.requirement-item:nth-child(2) .requirement-icon img {
+    filter: invert(1);
+}
+
+/* Garry's Mod specific styling */
+.requirement-item:nth-child(3) .requirement-icon {
+    background: url('../images/logos/gmod.svg') center/contain no-repeat;
+    background-size: 40px 40px;
+}
+
+.requirement-item:nth-child(3) .requirement-icon img {
+    display: none;
+}
+
+.requirement-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.requirement-text strong {
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.requirement-text span {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+.requirement-text span a {
+    color: #66b3ff;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.requirement-text span a:hover {
+    color: #99ccff;
+    text-decoration: underline;
+}
+
+.steps-section {
+    margin-bottom: 32px;
+}
+
+.steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+}
+
+.step-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateX(4px);
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #ffffff;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.step-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.step-content strong {
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.step-content span {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+.popup-footer {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px 24px;
+    border-radius: 0 0 16px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+}
+
+.footer-note {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+}
+
+.footer-note strong {
+    color: #ffffff;
+}
+
+.discord-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to bottom, #7289da, #5a6cb5);
+    color: #ffffff;
+    font-family: 'Oxanium', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 12px 24px;
+    border-radius: 6px;
+    border: none;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(114, 137, 218, 0.3);
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    gap: 8px;
+}
+
+.discord-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #8599e4, #6f81d3);
+    z-index: -1;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.discord-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(114, 137, 218, 0.4);
+    color: #ffffff;
+}
+
+.discord-btn:hover::before {
+    opacity: 1;
+}
+
+.discord-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    transition: transform 0.3s ease;
+}
+
+.discord-btn:hover svg {
+    transform: scale(1.1);
+}
+
+/* Responsive Design for Popup */
+@media (max-width: 768px) {
+    .popup-content {
+        width: 95%;
+        max-height: 90vh;
+    }
+    
+    .popup-header {
+        padding: 20px 20px 16px;
+    }
+    
+    .popup-title {
+        font-size: 1.3rem;
+    }
+    
+    .popup-body {
+        padding: 20px;
+    }
+    
+    .requirements-list,
+    .steps-list {
+        gap: 12px;
+    }
+    
+    .requirement-item,
+    .step-item {
+        padding: 12px;
+    }
+    
+    .requirement-icon {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .requirement-icon img {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .step-number {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+    
+    .popup-footer {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+        padding: 16px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .popup-content {
+        width: 98%;
+        margin: 1%;
+    }
+    
+    .popup-header {
+        padding: 16px 16px 12px;
+    }
+    
+    .popup-title {
+        font-size: 1.2rem;
+    }
+    
+    .popup-body {
+        padding: 16px;
+    }
+    
+    .requirements-section,
+    .steps-section {
+        margin-bottom: 24px;
+    }
+    
+    .section-title {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+    }
+    
+    .requirement-item,
+    .step-item {
+        padding: 10px;
+        gap: 12px;
+    }
+    
+    .requirement-icon {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .requirement-icon img {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .step-number {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+    
+    .requirement-text strong,
+    .step-content strong {
+        font-size: 0.9rem;
+    }
+    
+    .requirement-text span,
+    .step-content span {
+        font-size: 0.8rem;
+    }
+    
+    .popup-footer {
+        padding: 12px 16px;
+    }
+    
+    .footer-note {
+        font-size: 0.8rem;
+    }
+    
+    .discord-btn {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
 } 
