@@ -950,6 +950,14 @@
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
+.physgun-logo {
+    height: 2.5em;
+    width: auto;
+    vertical-align: middle;
+    margin-right: 8px;
+    display: inline-block;
+}
+
 .affiliate-description {
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.8);
@@ -962,14 +970,11 @@
     align-items: center;
     gap: 10px;
     margin-bottom: 16px;
-    padding: 8px 12px;
-    background: linear-gradient(135deg, rgba(255, 71, 87, 0.2), rgba(255, 71, 87, 0.1));
-    border-radius: 8px;
-    border: 1px solid rgba(255, 71, 87, 0.3);
+    padding: 0;
 }
 
 .discount-badge {
-    background: linear-gradient(135deg, #ff4757, #ff3742);
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
     color: white;
     padding: 4px 8px;
     border-radius: 4px;
@@ -977,12 +982,31 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.4);
 }
 
 .discount-text {
     font-size: 0.85rem;
     color: #ffffff;
     font-weight: 600;
+    position: relative;
+    text-shadow: 0 0 8px rgba(255, 71, 87, 0.8);
+    animation: redGlow 6s ease-in-out infinite;
+}
+
+@keyframes redGlow {
+    0% {
+        text-shadow: 0 0 8px rgba(255, 71, 87, 0.8);
+    }
+    50% {
+        text-shadow: 
+            0 0 15px rgba(255, 71, 87, 1),
+            0 0 25px rgba(255, 71, 87, 0.8),
+            0 0 35px rgba(255, 71, 87, 0.6);
+    }
+    100% {
+        text-shadow: 0 0 8px rgba(255, 71, 87, 0.8);
+    }
 }
 
 .copy-code {
