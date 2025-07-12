@@ -671,15 +671,20 @@
     /* Right buttons responsive */
     .right-buttons {
         position: fixed;
-        right: 15px;
+        right: 0;
         top: auto;
-        bottom: 20px;
+        bottom: 0;
         transform: none;
         flex-direction: row;
         justify-content: center;
         gap: 10px;
-        left: 15px;
-        width: auto;
+        left: 0;
+        width: 100%;
+        background-color: rgba(18, 18, 18, 0.3);
+        border-radius: 0;
+        padding: 15px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .right-btn {
@@ -755,10 +760,16 @@
 
     /* Right buttons mobile */
     .right-buttons {
-        right: 10px;
-        left: 10px;
-        bottom: 15px;
+        right: 0;
+        left: 0;
+        bottom: 0;
         gap: 8px;
+        width: 100%;
+        background-color: rgba(18, 18, 18, 0.3);
+        border-radius: 0;
+        padding: 15px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .right-btn {
@@ -824,10 +835,16 @@
 
     /* Right buttons extra small */
     .right-buttons {
-        right: 8px;
-        left: 8px;
-        bottom: 12px;
+        right: 0;
+        left: 0;
+        bottom: 0;
         gap: 6px;
+        width: 100%;
+        background-color: rgba(18, 18, 18, 0.3);
+        border-radius: 0;
+        padding: 15px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .right-btn {
