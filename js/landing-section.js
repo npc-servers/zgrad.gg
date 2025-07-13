@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     joinButton.href = selectedServer.link;
                     
                     // Set VIEW SERVERS button link to servers page
-                    viewServersButton.href = "/servers.html";
+                    viewServersButton.href = "servers.html";
                     
                     // Player icon SVG
                     const playerIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="player-icon">
@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error("Error updating server buttons:", error);
                     // Default to first server on error
                     joinButton.href = servers[0].link;
-                    viewServersButton.href = "/servers.html";
+                    viewServersButton.href = "servers.html";
                     
                     // Even on error, display the right message for the device
                     if (isTabletOrMobile()) {
