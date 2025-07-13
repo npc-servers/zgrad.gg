@@ -570,4 +570,161 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize join guide popup system
     initJoinGuidePopup();
-}); 
+    
+    // Initialize bloodsplatter animation
+    initBloodsplatterAnimation();
+});
+
+// Register ScrollTrigger plugin
+gsap.registerPlugin(ScrollTrigger);
+
+// Bloodsplatter Animation System for Servers Page
+function initBloodsplatterAnimation() {
+    const serverTitleSplatter = document.querySelector('.server-title-splatter');
+    if (!serverTitleSplatter) return;
+    
+    const img = serverTitleSplatter.querySelector('img');
+    if (!img) return;
+    
+    // Configuration for server title splatter
+    const config = {
+        centerX: 5, // Far left edge
+        centerY: 15, // Upper edge
+        duration: 0.6,
+        delay: 0.2,
+        ease: "power3.out"
+    };
+    
+    // Create the reveal animation timeline
+    const tl = gsap.timeline({
+        paused: true
+    });
+    
+    // Get unique seed for this splatter
+    const seed = getSplatterSeed('server-title-splatter');
+    
+    // Initial state - completely hidden with noise pattern
+    const initialPath = createNoisyRevealPath(0, config.centerX, config.centerY, seed);
+    gsap.set(img, {
+        clipPath: initialPath
+    });
+    
+    // Create the main splatter reveal animation with noise
+    tl.to(img, {
+        duration: config.duration,
+        ease: config.ease,
+        onUpdate: function() {
+            // Create organic noise-based reveal
+            const progress = this.progress();
+            const maxProgress = 150; // Go well beyond 100% to ensure full PNG reveal
+            
+            // Add subtle pulsing to make it more dynamic
+            const pulse = Math.sin(progress * Math.PI * 1.2) * 2;
+            const adjustedProgress = Math.min(maxProgress, Math.max(0, (progress * maxProgress) + pulse));
+            
+            // Generate the noisy reveal path
+            const noisyPath = createNoisyRevealPath(adjustedProgress, config.centerX, config.centerY, seed);
+            img.style.clipPath = noisyPath;
+        }
+    });
+    
+    // Create ScrollTrigger for the splatter - trigger immediately when page loads
+    ScrollTrigger.create({
+        trigger: serverTitleSplatter,
+        start: "top 95%",
+        markers: false,
+        onEnter: () => {
+            // Add delay and play animation
+            gsap.delayedCall(config.delay, () => {
+                tl.play();
+                serverTitleSplatter.classList.add('bloodsplatter-revealed');
+            });
+        },
+        id: 'server-title-splatter'
+    });
+    
+    // Also trigger immediately on page load (for users already at top)
+    gsap.delayedCall(config.delay + 0.5, () => {
+        if (!serverTitleSplatter.classList.contains('bloodsplatter-revealed')) {
+            tl.play();
+            serverTitleSplatter.classList.add('bloodsplatter-revealed');
+        }
+    });
+}
+
+// Advanced noise-based splatter edge generator with smooth curves
+function createNoisyRevealPath(progress, centerX, centerY, seed = 0) {
+    const points = 48; // Many points for smooth curves
+    const baseRadius = progress;
+    const maxVariation = 0.35; // Reduced chaos for smoother edges
+    let path = 'polygon(';
+    
+    // Improved noise function with multiple octaves for smoother variation
+    function smoothNoise(x, offset = 0) {
+        // Primary wave (large features)
+        const wave1 = Math.sin(x * 2.5 + offset + seed) * 0.6;
+        // Secondary wave (medium features)  
+        const wave2 = Math.sin(x * 5.2 + offset * 1.7 + seed * 2) * 0.3;
+        // Tertiary wave (fine details)
+        const wave3 = Math.sin(x * 8.1 + offset * 2.3 + seed * 3) * 0.1;
+        
+        return wave1 + wave2 + wave3;
+    }
+    
+    // Generate smooth points with interpolation
+    const rawPoints = [];
+    for (let i = 0; i < points; i++) {
+        const angle = (i / points) * Math.PI * 2;
+        
+        // Generate smooth noise-based radius variation
+        const noiseValue = smoothNoise(i * 0.4, angle);
+        
+        // Progressive variation - less chaos at small sizes, more at larger
+        const progressFactor = Math.min(1, progress / 80);
+        const radiusVariation = 1 + (noiseValue * maxVariation * progressFactor);
+        // Allow very small radius for initial state, but ensure minimum of 0.5 to avoid invisible points
+        const radius = Math.max(0.5, baseRadius * radiusVariation);
+        
+        // Calculate point position with better scaling
+        const x = centerX + Math.cos(angle) * (radius * 0.9); // Less aggressive scaling
+        const y = centerY + Math.sin(angle) * (radius * 0.9);
+        
+        rawPoints.push({ x, y });
+    }
+    
+    // Smooth the points using simple averaging
+    const smoothedPoints = [];
+    for (let i = 0; i < rawPoints.length; i++) {
+        const prev = rawPoints[(i - 1 + rawPoints.length) % rawPoints.length];
+        const curr = rawPoints[i];
+        const next = rawPoints[(i + 1) % rawPoints.length];
+        
+        // Simple smoothing - average with neighbors
+        const smoothX = (prev.x * 0.15 + curr.x * 0.7 + next.x * 0.15);
+        const smoothY = (prev.y * 0.15 + curr.y * 0.7 + next.y * 0.15);
+        
+        // Clamp to safe bounds with some overflow allowance
+        const clampedX = Math.max(-10, Math.min(110, smoothX));
+        const clampedY = Math.max(-10, Math.min(110, smoothY));
+        
+        smoothedPoints.push({ x: clampedX, y: clampedY });
+    }
+    
+    // Build the polygon path
+    for (let i = 0; i < smoothedPoints.length; i++) {
+        const point = smoothedPoints[i];
+        path += `${point.x}% ${point.y}%`;
+        if (i < smoothedPoints.length - 1) path += ', ';
+    }
+    
+    path += ')';
+    return path;
+}
+
+// Generate unique seed for server title splatter
+function getSplatterSeed(splatterType) {
+    const seeds = {
+        'server-title-splatter': 15.34 // Updated seed for edge-based animation
+    };
+    return seeds[splatterType] || Math.random() * 100;
+} 
