@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     port: 27066,
                     region: 'US',
                     gamemode: 'All Gamemodes',
-                    link: '/us1/connect.html'
+                    link: 'connect/us1.html'
                 },
                 {
                     id: 'zgrad2',
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     port: 27051,
                     region: 'US',
                     gamemode: 'All Gamemodes',
-                    link: '/us2/connect.html'
+                    link: 'connect/us2.html'
                 },
                 {
                     id: 'zgrad3',
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     port: 27053,
                     region: 'US',
                     gamemode: 'Low Loot Rate',
-                    link: '/us3/connect.html'
+                    link: 'connect/us3.html'
                 },
                 {
                     id: 'zgrad4',
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     port: 27052,
                     region: 'US',
                     gamemode: 'Homicide Only',
-                    link: '/us4/connect.html'
+                    link: 'connect/us4.html'
                 }
             ];
             
