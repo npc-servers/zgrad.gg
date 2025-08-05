@@ -212,7 +212,9 @@ function createLegalLinks(config = {}) {
 function createLinkHTML(link) {
     const trackAttr = link.track ? ` data-track="${link.track}"` : '';
     const currentClass = link.current ? ' class="current"' : '';
-    return `<li><a href="${link.href}"${trackAttr}${currentClass}>${link.text}</a></li>`;
+    const isExternal = link.href.startsWith('http') && !link.href.includes(window.location.hostname);
+    const externalAttrs = isExternal ? ' rel="noopener" target="_blank"' : '';
+    return `<li><a href="${link.href}"${trackAttr}${currentClass}${externalAttrs}>${link.text}</a></li>`;
 }
 
 /**
@@ -224,7 +226,9 @@ function createSocialIcons(config = {}) {
     const icons = config.social || footerConfig.social;
     
     return icons.map(icon => {
-        return `<a href="${icon.href}" aria-label="${icon.label}">${icon.svg}</a>`;
+        const isExternal = icon.href.startsWith('http') && !icon.href.includes(window.location.hostname);
+        const externalAttrs = isExternal ? ' rel="noopener" target="_blank"' : '';
+        return `<a href="${icon.href}" aria-label="${icon.label}"${externalAttrs}>${icon.svg}</a>`;
     }).join('');
 }
 
