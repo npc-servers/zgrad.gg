@@ -91,15 +91,110 @@ a:hover {
     padding: 0 20px;
 }
 
+/* Video Lazy Loading Styles */
+/* Default state for lazy videos */
+.lazy-video {
+    background-color: #1a1a1a;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Loading state */
+.lazy-video.video-loading {
+    opacity: 0.7;
+    position: relative;
+}
+
+.lazy-video.video-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #333;
+    border-top: 2px solid #fff;
+    border-radius: 50%;
+    animation: video-loading-spin 1s linear infinite;
+    z-index: 10;
+}
+
+@keyframes video-loading-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Loaded state */
+.lazy-video.video-loaded {
+    opacity: 1;
+}
+
+/* Playing state */
+.lazy-video.video-playing {
+    opacity: 1;
+}
+
+/* Error state */
+.lazy-video.video-error {
+    opacity: 0.5;
+    background-color: #2a1a1a;
+}
+
+.lazy-video.video-error::after {
+    content: '⚠';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ff6b6b;
+    font-size: 24px;
+    z-index: 10;
+}
+
 /* Responsive Utilities */
 @media (max-width: 768px) {
     .container {
         padding: 0 15px;
+    }
+    
+    .lazy-video.video-loading::after {
+        width: 16px;
+        height: 16px;
+        margin: -8px 0 0 -8px;
     }
 }
 
 @media (max-width: 480px) {
     .container {
         padding: 0 10px;
+    }
+    
+    .lazy-video {
+        /* Reduce quality on small screens to improve performance */
+        image-rendering: optimizeSpeed;
+    }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    .lazy-video {
+        transition: none;
+    }
+    
+    .lazy-video.video-loading::after {
+        animation: none;
+        border: 2px solid #666;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .lazy-video.video-loading::after {
+        border-color: #000;
+        border-top-color: #fff;
+    }
+    
+    .lazy-video.video-error::after {
+        color: #ff0000;
     }
 } 
