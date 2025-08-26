@@ -224,13 +224,36 @@ body, html {
     color: #ffffff;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin: 0 0 16px 0;
+    margin: 0 0 8px 0;
     text-align: center;
     text-shadow: 
         0 0 5px rgba(255, 0, 0, 0.8),
         0 0 10px rgba(255, 0, 0, 0.6),
         0 0 15px rgba(255, 0, 0, 0.4),
         2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.total-players-count {
+    text-align: center;
+    margin-bottom: 16px;
+    font-family: 'Oxanium', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.total-players-number {
+    display: inline;
+    font-weight: 700;
+    color: #ffffff;
+    margin-right: 4px;
+}
+
+.total-players-text {
+    display: inline;
 }
 
 .server-list {

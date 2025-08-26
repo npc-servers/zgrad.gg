@@ -150,6 +150,7 @@ var logoSubtext = null;
 var advertTitle = null;
 var advertSubtext = null;
 var serverListElement = null;
+var totalPlayersCountElement = null;
 
 // Configuration for rotating messages
 var config = {
@@ -282,6 +283,7 @@ function initializeUI() {
     advertTitle = document.querySelector('.advert-title');
     advertSubtext = document.querySelector('.advert-subtext');
     serverListElement = document.getElementById('loadingScreenServerList');
+    totalPlayersCountElement = document.getElementById('totalPlayersCount');
     
     console.log("UI initialized");
     
@@ -459,6 +461,18 @@ function updateAdvertMessage() {
 }
 
 /**
+ * Update the total player count display
+ */
+function updateTotalPlayerCount(totalPlayers) {
+    if (!totalPlayersCountElement) return;
+    
+    var numberElement = totalPlayersCountElement.querySelector('.total-players-number');
+    if (numberElement) {
+        numberElement.textContent = totalPlayers;
+    }
+}
+
+/**
  * Server Management Functions
  */
 
@@ -541,6 +555,14 @@ function fetchAllServerStatus() {
     });
     
     Promise.all(serverPromises).then(function(serverStatuses) {
+        // Calculate total player count across all servers
+        var totalPlayers = serverStatuses.reduce(function(total, serverStatus) {
+            return total + (serverStatus.online ? serverStatus.players : 0);
+        }, 0);
+        
+        // Update the total player count display
+        updateTotalPlayerCount(totalPlayers);
+        
         // Filter out the current server if we have that information
         var serversToShow = serverStatuses.filter(function(serverStatus) {
             if (currentServerInfo) {
