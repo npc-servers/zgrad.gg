@@ -460,6 +460,9 @@ body, html {
     opacity: 0.9;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
     transition: opacity 0.5s ease-in-out;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .subtext a {
@@ -480,12 +483,12 @@ body, html {
 
 /* Progress bar container */
 .progress-bar-container {
-    width: 100%;
+    width: 500px;
     height: 24px;
     background: linear-gradient(145deg, rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0.1));
     border-radius: 0;
     overflow: hidden;
-    margin-bottom: 1rem;
+    margin: 0 auto 1rem auto;
     border: 2px solid rgba(255, 0, 0, 0.3);
     box-shadow: 
         inset 0 2px 4px rgba(0, 0, 0, 0.6),
@@ -631,6 +634,7 @@ body, html {
     
     .subtext {
         font-size: 1rem;
+        max-width: 400px;
     }
     
     .blood-splatter {
@@ -662,6 +666,10 @@ body, html {
     
     .content {
         padding: 1rem;
+    }
+    
+    .progress-bar-container {
+        width: 400px;
     }
     
     .percentage {
@@ -733,6 +741,11 @@ body, html {
     .subtext {
         font-size: 0.9rem;
         margin-bottom: 1rem;
+        max-width: 350px;
+    }
+    
+    .progress-bar-container {
+        width: 320px;
     }
     
     .blood-splatter {
