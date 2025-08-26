@@ -151,6 +151,7 @@ var advertTitle = null;
 var advertSubtext = null;
 var serverListElement = null;
 var totalPlayersCountElement = null;
+var backgroundElement = null;
 
 // Configuration for rotating messages
 var config = {
@@ -196,9 +197,19 @@ var config = {
         
     ],
     
+    // Background images for rotation
+    backgroundImages: [
+        '../../images/homigrad-render.png',
+        '../../images/homigrad-render2.png',
+        '../../images/maps/zgr_harbor.png',
+        '../../images/maps/zgr_mineral.png',
+        '../../images/maps/zgr_trap_heaven.png'
+    ],
+    
     // Rotation intervals (in milliseconds)
     logoSubtextInterval: 8000,  // 8 seconds
     advertInterval: 12000,      // 12 seconds
+    backgroundInterval: 15000,  // 15 seconds
     
     // Server configuration - easily configurable IPs and titles
     servers: [
@@ -255,8 +266,10 @@ var currentLogoMessageIndex = 0;
 var currentAdvertMessageIndex = 0;
 var lastLogoMessageIndex = -1;
 var lastAdvertMessageIndex = -1;
+var lastBackgroundUrl = "";
 var logoSubtextRotationInterval = null;
 var advertRotationInterval = null;
+var backgroundRotationInterval = null;
 
 /**
  * Get a random index from an array, avoiding the last used index
@@ -273,6 +286,22 @@ function getRandomIndex(arrayLength, lastIndex) {
 }
 
 /**
+ * Get a random background URL that's different from the last one
+ */
+function getRandomBackground() {
+    var availableBackgrounds = config.backgroundImages.filter(function(bg) {
+        return bg !== lastBackgroundUrl;
+    });
+    
+    if (availableBackgrounds.length === 0) {
+        availableBackgrounds = config.backgroundImages;
+    }
+    
+    var randomIndex = Math.floor(Math.random() * availableBackgrounds.length);
+    return availableBackgrounds[randomIndex];
+}
+
+/**
  * Initialize UI elements when DOM is ready
  */
 function initializeUI() {
@@ -284,6 +313,7 @@ function initializeUI() {
     advertSubtext = document.querySelector('.advert-subtext');
     serverListElement = document.getElementById('loadingScreenServerList');
     totalPlayersCountElement = document.getElementById('totalPlayersCount');
+    backgroundElement = document.querySelector('.background');
     
     console.log("UI initialized");
     
@@ -293,6 +323,7 @@ function initializeUI() {
     // Start message rotations
     startLogoSubtextRotation();
     startAdvertRotation();
+    startBackgroundRotation();
     
     // Initialize server list
     initializeServerList();
@@ -458,6 +489,51 @@ function updateAdvertMessage() {
     advertTitle.textContent = currentAdvert.title;
     advertTitle.setAttribute('data-text', currentAdvert.title);
     advertSubtext.textContent = currentAdvert.subtitle;
+}
+
+/**
+ * Set a random background immediately
+ */
+function setRandomBackground(isInitial) {
+    if (!backgroundElement) return;
+    
+    var randomBackground = getRandomBackground();
+    lastBackgroundUrl = randomBackground;
+    
+    // Disable transition for initial load
+    if (isInitial) {
+        backgroundElement.style.transition = 'none';
+        backgroundElement.style.backgroundImage = 'url(' + randomBackground + ')';
+        
+        // Re-enable transition after a short delay
+        setTimeout(function() {
+            backgroundElement.style.transition = 'background-image 2s ease-in-out';
+        }, 50);
+    } else {
+        backgroundElement.style.backgroundImage = 'url(' + randomBackground + ')';
+    }
+    
+    console.log("Background set to:", randomBackground);
+}
+
+/**
+ * Start the background rotation system
+ */
+function startBackgroundRotation() {
+    if (!backgroundElement) {
+        console.error("Background element not found!");
+        return;
+    }
+    
+    console.log("Starting background rotation");
+    
+    // Set random background immediately (no transition)
+    setRandomBackground(true);
+    
+    // Start rotation interval (with transitions)
+    backgroundRotationInterval = setInterval(function() {
+        setRandomBackground(false);
+    }, config.backgroundInterval);
 }
 
 /**
