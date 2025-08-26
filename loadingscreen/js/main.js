@@ -15,6 +15,26 @@ var currentStatus = "Initializing...";
 function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
     isGmod = true;
     console.log("GameDetails called:", { servername, serverurl, mapname, maxplayers, steamid, gamemode });
+    
+    // Store current server info to filter it out from the server list
+    if (serverurl) {
+        // Extract IP and port from serverurl (format is usually "ip:port")
+        var urlParts = serverurl.split(':');
+        currentServerInfo = {
+            ip: urlParts[0],
+            port: urlParts[1] ? parseInt(urlParts[1]) : 27015,
+            name: servername,
+            map: mapname,
+            maxPlayers: maxplayers,
+            gamemode: gamemode
+        };
+        console.log("Current server info stored:", currentServerInfo);
+        
+        // Refresh server list to apply the filter
+        if (serverListElement) {
+            fetchAllServerStatus();
+        }
+    }
 }
 
 function SetFilesTotal(total) {
@@ -127,19 +147,130 @@ var loadingBar = null;
 var loadingPercentage = null;
 var loadingStatus = null;
 var logoSubtext = null;
+var advertTitle = null;
+var advertSubtext = null;
+var serverListElement = null;
 
-// Subtext rotation system
-var subtextMessages = [
-    'Join our community at <a href="https://zgrad.gg" target="_blank">zgrad.gg</a>',
-    'Follow us on <a href="https://discord.gg/zgrad" target="_blank">Discord</a>',
-    'Check out our <a href="https://steam.com/groups/zgrad" target="_blank">Steam Group</a>',
-    'Watch gameplay on <a href="https://youtube.com/@zgrad" target="_blank">YouTube</a>',
-    'Experience tactical combat like never before',
-    'New updates and features added regularly'
-];
+// Configuration for rotating messages
+var config = {
+    // Logo subtext messages (below the logo)
+    logoSubtextMessages: [
+        'Join our community at <a href="https://zgrad.gg" target="_blank">zgrad.gg</a>',
+        'Follow us on <a href="https://discord.gg/zgrad" target="_blank">Discord</a>',
+        'Check out our <a href="https://steam.com/groups/zgrad" target="_blank">Steam Group</a>',
+        'Watch gameplay on <a href="https://youtube.com/@zgrad" target="_blank">YouTube</a>',
+        'Experience tactical combat like never before',
+        'New updates and features added regularly'
+    ],
+    
+    // Bottom left advert messages
+    advertMessages: [
+        {
+            title: "DID YOU KNOW?",
+            subtitle: "You can type !settings to change your keybinds!"
+        },
+        {
+            title: "TIRED OF FULL SERVERS?",
+            subtitle: "Get a reserved slot on our webstore: https://store.npcz.gg!"
+        },
+        {
+            title: "DID YOU KNOW?", 
+            subtitle: "You can use A and D to grab while climbing!"
+        },
+        {
+            title: "POST YOUR CLIPS!",
+            subtitle: "We have a clip section on our Discord! Post your clips for a chance for them to be featured on our socials!"
+        },
+        {
+            title: "ARE YOU IN OUR DISCORD?",
+            subtitle: "We've been working on a complete overhaul of the gunplay, and playtests are soon! Don't miss out, join the Discord and signup!"
+        },
+        {
+            title: "GET CUSTOM PLAYERMODELS!",
+            subtitle: "Go to https://store.npcz.gg to unlock our custom playermodel system! (You also get so much more!!!)"
+        },
+        {
+            title: "GIVEAWAYS!?!?",
+            subtitle: "We giveaway hundreds of dollars worth of ranks on our Discord every month!"
+        },
+        
+    ],
+    
+    // Rotation intervals (in milliseconds)
+    logoSubtextInterval: 8000,  // 8 seconds
+    advertInterval: 12000,      // 12 seconds
+    
+    // Server configuration - easily configurable IPs and titles
+    servers: [
+        {
+            id: 'zgrad1',
+            title: 'ZGRAD US1',
+            ip: '193.243.190.18',
+            port: 27066,
+            region: 'US',
+            gamemode: 'All Gamemodes',
+            logo: '../images/logos/zgrad-logopiece-z.png'
+        },
+        {
+            id: 'zgrad2',
+            title: 'ZGRAD US2',
+            ip: '193.243.190.18',
+            port: 27051,
+            region: 'US',
+            gamemode: 'All Gamemodes',
+            logo: '../images/logos/zgrad-logopiece-z.png'
+        },
+        {
+            id: 'zgrad3',
+            title: 'ZGRAD US3',
+            ip: '193.243.190.18',
+            port: 27053,
+            region: 'US',
+            gamemode: 'TDM 24/7',
+            logo: '../images/logos/zgrad-logopiece-z.png'
+        },
+        {
+            id: 'zgrad4',
+            title: 'ZGRAD US4',
+            ip: '193.243.190.18',
+            port: 27052,
+            region: 'US',
+            gamemode: 'Homicide Only',
+            logo: '../images/logos/zgrad-logopiece-z.png'
+        },
+        {
+            id: 'npcz',
+            title: 'NPC Zombies Vs. Players',
+            ip: '193.243.190.18',
+            port: 27015,
+            region: 'US',
+            gamemode: 'Sandbox',
+            logo: '../images/logos/npcz.png'
+        }
+    ]
+};
 
-var currentMessageIndex = 0;
-var subtextInterval = null;
+// Rotation state
+var currentLogoMessageIndex = 0;
+var currentAdvertMessageIndex = 0;
+var lastLogoMessageIndex = -1;
+var lastAdvertMessageIndex = -1;
+var logoSubtextRotationInterval = null;
+var advertRotationInterval = null;
+
+/**
+ * Get a random index from an array, avoiding the last used index
+ */
+function getRandomIndex(arrayLength, lastIndex) {
+    if (arrayLength <= 1) return 0;
+    
+    var newIndex;
+    do {
+        newIndex = Math.floor(Math.random() * arrayLength);
+    } while (newIndex === lastIndex);
+    
+    return newIndex;
+}
 
 /**
  * Initialize UI elements when DOM is ready
@@ -149,14 +280,21 @@ function initializeUI() {
     loadingPercentage = document.getElementById('loadingPercentage');
     loadingStatus = document.getElementById('loadingStatus');
     logoSubtext = document.getElementById('logoSubtext');
+    advertTitle = document.querySelector('.advert-title');
+    advertSubtext = document.querySelector('.advert-subtext');
+    serverListElement = document.getElementById('loadingScreenServerList');
     
     console.log("UI initialized");
     
     // Start the UI update loop
     updateUI();
     
-    // Start subtext rotation
-    startSubtextRotation();
+    // Start message rotations
+    startLogoSubtextRotation();
+    startAdvertRotation();
+    
+    // Initialize server list
+    initializeServerList();
 }
 
 /**
@@ -168,6 +306,26 @@ function updateUI() {
         if (lastPercentage !== percentage) {
             lastPercentage = percentage;
             loadingPercentage.textContent = percentage + '%';
+            loadingPercentage.setAttribute('data-percentage', percentage + '%');
+            
+            // Calculate when the progress bar actually covers the text
+            // Text is positioned at 8px from left, and we need to account for text width
+            var progressContainer = loadingPercentage.parentElement;
+            var containerWidth = progressContainer.offsetWidth;
+            var textPosition = 8; // 8px from left
+            var textWidth = loadingPercentage.offsetWidth;
+            var textEndPosition = textPosition + textWidth;
+            
+            // Calculate the percentage when progress bar reaches the end of the text
+            var textCoveragePercentage = (textEndPosition / containerWidth) * 100;
+            
+            // Calculate how much of the text should be revealed based on current progress
+            var currentProgressPixels = (percentage / 100) * containerWidth;
+            var textRevealPercentage = Math.max(0, Math.min(100, 
+                ((currentProgressPixels - textPosition) / textWidth) * 100
+            ));
+            
+            loadingPercentage.style.setProperty('--progress-width', textRevealPercentage + '%');
             loadingBar.style.width = percentage + '%';
         }
         
@@ -189,6 +347,12 @@ function updateUI() {
 function getCurrentStatus() {
     if (!isGmod && !isTest) {
         return "Waiting for game...";
+    }
+    
+    // Check for gluapack in current status or downloading file
+    if ((currentStatus && currentStatus.toLowerCase().includes("gluapack")) ||
+        (currentDownloadingFile && currentDownloadingFile.toLowerCase().includes("gluapack"))) {
+        return "Loading super-fast bundled Lua!";
     }
     
     // If we have a specific status from GMod, use that
@@ -234,37 +398,257 @@ function getCurrentStatus() {
 }
 
 /**
- * Start the subtext rotation system
+ * Start the logo subtext rotation system
  */
-function startSubtextRotation() {
+function startLogoSubtextRotation() {
     if (!logoSubtext) return;
     
-    // Set initial message
-    updateSubtextMessage();
+    // Set initial random message
+    currentLogoMessageIndex = Math.floor(Math.random() * config.logoSubtextMessages.length);
+    lastLogoMessageIndex = currentLogoMessageIndex;
+    updateLogoSubtextMessage();
     
-    // Start rotation interval (change every 8 seconds)
-    subtextInterval = setInterval(function() {
-        currentMessageIndex = (currentMessageIndex + 1) % subtextMessages.length;
-        updateSubtextMessage();
-    }, 8000);
+    // Start rotation interval
+    logoSubtextRotationInterval = setInterval(function() {
+        currentLogoMessageIndex = getRandomIndex(config.logoSubtextMessages.length, lastLogoMessageIndex);
+        lastLogoMessageIndex = currentLogoMessageIndex;
+        updateLogoSubtextMessage();
+    }, config.logoSubtextInterval);
 }
 
 /**
- * Update the subtext message with fade transition
+ * Update the logo subtext message with no animation
  */
-function updateSubtextMessage() {
+function updateLogoSubtextMessage() {
     if (!logoSubtext) return;
     
-    // Fade out
-    logoSubtext.style.opacity = '0';
+    // Simply change the message directly
+    logoSubtext.innerHTML = config.logoSubtextMessages[currentLogoMessageIndex];
+}
+
+/**
+ * Start the advert rotation system
+ */
+function startAdvertRotation() {
+    if (!advertTitle || !advertSubtext) return;
     
-    // Change message after fade out completes
-    setTimeout(function() {
-        logoSubtext.innerHTML = subtextMessages[currentMessageIndex];
+    // Set initial random message
+    currentAdvertMessageIndex = Math.floor(Math.random() * config.advertMessages.length);
+    lastAdvertMessageIndex = currentAdvertMessageIndex;
+    updateAdvertMessage();
+    
+    // Start rotation interval
+    advertRotationInterval = setInterval(function() {
+        currentAdvertMessageIndex = getRandomIndex(config.advertMessages.length, lastAdvertMessageIndex);
+        lastAdvertMessageIndex = currentAdvertMessageIndex;
+        updateAdvertMessage();
+    }, config.advertInterval);
+}
+
+/**
+ * Update the advert message with no animation
+ */
+function updateAdvertMessage() {
+    if (!advertTitle || !advertSubtext) return;
+    
+    var currentAdvert = config.advertMessages[currentAdvertMessageIndex];
+    
+    // Update title and subtitle
+    advertTitle.textContent = currentAdvert.title;
+    advertTitle.setAttribute('data-text', currentAdvert.title);
+    advertSubtext.textContent = currentAdvert.subtitle;
+}
+
+/**
+ * Server Management Functions
+ */
+
+// Server status tracking
+var serverElements = new Map();
+var serverUpdateInterval = null;
+var currentServerInfo = null;
+
+/**
+ * Initialize the server list
+ */
+function initializeServerList() {
+    if (!serverListElement) return;
+    
+    console.log("Initializing server list");
+    
+    // Start fetching server data immediately
+    fetchAllServerStatus();
+    
+    // Set up periodic updates every 30 seconds
+    serverUpdateInterval = setInterval(fetchAllServerStatus, 30000);
+}
+
+/**
+ * Fetch server status from API
+ */
+function fetchServerStatus(server) {
+    return fetch("https://gameserveranalytics.com/api/v2/query?game=source&ip=" + server.ip + "&port=" + server.port + "&type=info")
+        .then(function(response) { return response.json(); })
+        .then(function(serverInfo) {
+            var status = {
+                online: false,
+                players: 0,
+                maxPlayers: 0,
+                map: 'Unknown',
+                gamemode: server.gamemode,
+                server: server
+            };
+
+            if (serverInfo && (serverInfo.status && serverInfo.status.toLowerCase() === 'online' || serverInfo.players !== undefined)) {
+                status.online = true;
+                status.players = serverInfo.players || serverInfo.num_players || serverInfo.playercount || 0;
+                status.maxPlayers = serverInfo.maxplayers || serverInfo.max_players || serverInfo.maxclients || 32;
+                status.map = serverInfo.map || 'Unknown';
+                
+                // Extract gamemode from server name if available
+                var serverTitle = serverInfo.name || serverInfo.hostname || '';
+                var gamemodeMatch = serverTitle.match(/Now Playing:\s*([^|]+)/i);
+                if (gamemodeMatch) {
+                    status.gamemode = gamemodeMatch[1].trim();
+                }
+            }
+
+            return status;
+        })
+        .catch(function(error) {
+            console.error("Error fetching data for " + server.id + ":", error);
+            return { 
+                online: false, 
+                players: 0, 
+                maxPlayers: 32, 
+                map: 'Unknown',
+                gamemode: server.gamemode,
+                server: server 
+            };
+        });
+}
+
+/**
+ * Fetch status for all servers
+ */
+function fetchAllServerStatus() {
+    if (!serverListElement) return;
+    
+    console.log("Fetching server status for all servers");
+    
+    // Get all servers first to fetch their status
+    var serverPromises = config.servers.map(function(server) {
+        return fetchServerStatus(server);
+    });
+    
+    Promise.all(serverPromises).then(function(serverStatuses) {
+        // Filter out the current server if we have that information
+        var serversToShow = serverStatuses.filter(function(serverStatus) {
+            if (currentServerInfo) {
+                var server = serverStatus.server;
+                // Check if this server matches the one the user is joining
+                var isSameServer = server.ip === currentServerInfo.ip && server.port === currentServerInfo.port;
+                if (isSameServer) {
+                    console.log("Filtering out current server:", server.title);
+                    return false;
+                }
+            }
+            return true;
+        });
         
-        // Fade back in
-        logoSubtext.style.opacity = '0.9';
-    }, 250); // Half of the CSS transition duration
+        // Sort servers by player count (highest to lowest)
+        serversToShow.sort(function(a, b) {
+            // Online servers take priority over offline servers
+            if (a.online && !b.online) return -1;
+            if (!a.online && b.online) return 1;
+            
+            // If both are online or both are offline, sort by player count
+            return b.players - a.players;
+        });
+        
+        // Limit to maximum 4 servers AFTER sorting
+        serversToShow = serversToShow.slice(0, 4);
+        
+        if (serversToShow.length === 0) {
+            // If all servers are filtered out, show a message
+            serverListElement.innerHTML = '<div class="server-loading">You\'re joining one of our servers!</div>';
+            return;
+        }
+        
+        updateServerList(serversToShow);
+    }).catch(function(error) {
+        console.error("Error fetching server statuses:", error);
+    });
+}
+
+/**
+ * Update the server list display
+ */
+function updateServerList(serverStatuses) {
+    if (!serverListElement) return;
+    
+    // Clear loading message
+    serverListElement.innerHTML = '';
+    
+    serverStatuses.forEach(function(serverStatus) {
+        var serverElement = createServerElement(serverStatus);
+        serverListElement.appendChild(serverElement);
+    });
+    
+    // Add footer message
+    var footerMessage = document.createElement('div');
+    footerMessage.className = 'server-list-footer';
+    footerMessage.textContent = 'TYPE !SERVERS IN-GAME TO CONNECT TO OUR SERVERS!';
+    serverListElement.appendChild(footerMessage);
+}
+
+/**
+ * Create a server element
+ */
+function createServerElement(serverStatus) {
+    var server = serverStatus.server;
+    var isOnline = serverStatus.online;
+    var playerCount = serverStatus.players;
+    var maxPlayers = serverStatus.maxPlayers;
+    var playerPercentage = maxPlayers > 0 ? (playerCount / maxPlayers) * 100 : 0;
+    
+    // Determine player count color classes and server capacity classes
+    var playerCountClass = '';
+    var serverCapacityClass = '';
+    if (isOnline) {
+        if (playerPercentage >= 90) {
+            playerCountClass = 'nearly-full';
+            serverCapacityClass = 'nearly-full';
+        } else if (playerPercentage >= 70) {
+            playerCountClass = 'getting-full';
+            serverCapacityClass = 'getting-full';
+        }
+    } else {
+        serverCapacityClass = 'offline';
+    }
+    
+    var serverDiv = document.createElement('div');
+    serverDiv.className = 'loading-screen-server-item ' + serverCapacityClass;
+    serverDiv.setAttribute('data-server-id', server.id);
+    
+    if (isOnline) {
+        serverDiv.innerHTML = 
+            '<div class="loading-screen-server-header">' +
+                '<img src="' + server.logo + '" alt="' + server.title + ' Logo" class="loading-screen-server-logo">' +
+                '<div class="loading-screen-server-name">' + server.title + '</div>' +
+            '</div>' +
+            '<div class="loading-screen-server-players"><span class="' + playerCountClass + '">' + playerCount + '/' + maxPlayers + '</span> players online</div>' +
+            '<div class="loading-screen-server-gamemode">Now Playing: <span>' + serverStatus.gamemode + '</span> <span style="color: #a8a8a8;">on</span> ' + serverStatus.map + '</div>';
+    } else {
+        serverDiv.innerHTML = 
+            '<div class="loading-screen-server-header">' +
+                '<img src="' + server.logo + '" alt="' + server.title + ' Logo" class="loading-screen-server-logo">' +
+                '<div class="loading-screen-server-name">' + server.title + '</div>' +
+            '</div>' +
+            '<div class="loading-screen-server-offline">Server is offline</div>';
+    }
+    
+    return serverDiv;
 }
 
 /**
