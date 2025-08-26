@@ -155,12 +155,11 @@ var serverListElement = null;
 var config = {
     // Logo subtext messages (below the logo)
     logoSubtextMessages: [
-        'Join our community at <a href="https://zgrad.gg" target="_blank">zgrad.gg</a>',
-        'Follow us on <a href="https://discord.gg/zgrad" target="_blank">Discord</a>',
-        'Check out our <a href="https://steam.com/groups/zgrad" target="_blank">Steam Group</a>',
-        'Watch gameplay on <a href="https://youtube.com/@zgrad" target="_blank">YouTube</a>',
-        'Experience tactical combat like never before',
-        'New updates and features added regularly'
+        'Your feedback is important, make suggestions and vote on our Discord!',
+        'You can support us on our webstore, <a href="https://store.npcz.gg" target="_blank">store.npcz.gg</a>!',
+        'Fart',
+        'We release updates nearly every day!',
+        'Coming from social media? Be sure to join our Discord!'
     ],
     
     // Bottom left advert messages
