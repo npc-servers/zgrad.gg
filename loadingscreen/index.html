@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZGrad Loading Screen</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <div class="loading-container">
+        <!-- Background -->
+        <div class="background"></div>
+        
+        <!-- Vignette overlay -->
+        <div class="vignette"></div>
+        
+        <!-- Horizontal black bar behind blood splatter -->
+        <div class="blood-splatter-bar"></div>
+        
+        <!-- Blood splatter in bottom left -->
+        <div class="blood-splatter"></div>
+        
+        <!-- Advert text in upper area of bottom left -->
+        <div class="advert-section">
+            <h2 class="advert-title" data-text="JOIN THE FIGHT">JOIN THE FIGHT</h2>
+            <p class="advert-subtext">Experience intense tactical combat in our custom gamemode</p>
+        </div>
+        
+        <!-- Main content -->
+        <div class="content">
+            <!-- ZGrad Logo -->
+            <div class="logo-container">
+                <img src="../images/logos/zgrad-logo.png" alt="ZGrad" class="main-logo">
+            </div>
+            
+            <!-- Smaller subtext with link -->
+            <p class="subtext" id="logoSubtext">
+                Join our community at <a href="https://zgrad.gg" target="_blank">zgrad.gg</a>
+            </p>
+            
+            <!-- Loading progress -->
+            <div class="loading-progress">
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="loadingBar"></div>
+                </div>
+                <div class="loading-info">
+                    <span class="percentage" id="loadingPercentage">0%</span>
+                    <span class="status" id="loadingStatus">Initializing...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/main.js"></script>
+</body>
+</html>
