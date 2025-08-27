@@ -203,7 +203,6 @@ var config = {
         '../../images/homigrad-render2.png',
         '../../images/maps/zgr_harbor.png',
         '../../images/maps/zgr_mineral.png',
-        '../../images/maps/zgr_trap_heaven.png'
     ],
     
     // Rotation intervals (in milliseconds)
