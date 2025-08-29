@@ -56,10 +56,21 @@ class VideoLazyLoader {
         // Create visibility observer for pausing/playing videos based on visibility
         this.createVisibilityObserver();
         
+        // Create special observer for landing video
+        this.createLandingVideoObserver();
+        
         // Observe all videos
         this.videos.forEach(video => {
             this.intersectionObserver.observe(video);
-            this.visibilityObserver.observe(video);
+            
+            // Use special observer for landing video, regular for showcase videos
+            if (video.classList.contains('landing-background-video')) {
+                this.landingVideoObserver.observe(video);
+                // Prioritize loading the landing video immediately
+                this.loadVideo(video);
+            } else {
+                this.visibilityObserver.observe(video);
+            }
         });
 
         // Add performance monitoring
@@ -96,13 +107,41 @@ class VideoLazyLoader {
                     }
                 } else {
                     // Video is not visible - pause to save resources
+                    // Exception: Don't pause landing background video as it's always meant to be playing
+                    if (!video.classList.contains('landing-background-video')) {
+                        this.pauseVideo(video);
+                    }
+                }
+            });
+        }, {
+            // Trigger when 25% of video is visible for showcase videos
+            // Landing video gets different treatment with larger threshold
+            rootMargin: '50px',
+            threshold: 0.25
+        });
+    }
+
+    createLandingVideoObserver() {
+        // Special observer for landing background video
+        // This ensures the landing video stays playing when visible and pauses when completely out of view
+        this.landingVideoObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const video = entry.target;
+                
+                if (entry.isIntersecting) {
+                    // Landing video is visible - ensure it's playing
+                    if (this.loadedVideos.has(video)) {
+                        this.playVideo(video);
+                    }
+                } else {
+                    // Landing video is completely out of view - pause to save resources
                     this.pauseVideo(video);
                 }
             });
         }, {
-            // Trigger when 25% of video is visible
+            // Only pause when completely out of view
             rootMargin: '0px',
-            threshold: 0.25
+            threshold: 0
         });
     }
 
@@ -287,6 +326,9 @@ class VideoLazyLoader {
         }
         if (this.visibilityObserver) {
             this.visibilityObserver.disconnect();
+        }
+        if (this.landingVideoObserver) {
+            this.landingVideoObserver.disconnect();
         }
         
         // Pause all active videos

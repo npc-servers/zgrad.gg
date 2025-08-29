@@ -438,6 +438,31 @@ document.addEventListener('DOMContentLoaded', function() {
         featuresList.style.animationDuration = `${newDuration}s`;
     });
 
+    // ===== FEATURES LIST ANIMATION OPTIMIZATION =====
+    // Pause/resume the horizontally scrolling features animation based on visibility
+    const featuresListObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const featuresList = entry.target;
+            
+            if (entry.isIntersecting) {
+                // Features are visible - resume animation
+                featuresList.style.animationPlayState = 'running';
+            } else {
+                // Features are not visible - pause animation to save resources
+                featuresList.style.animationPlayState = 'paused';
+            }
+        });
+    }, {
+        rootMargin: '50px',
+        threshold: 0.1
+    });
+
+    // Observe the features list for animation optimization
+    const featuresList = document.getElementById('features-list');
+    if (featuresList) {
+        featuresListObserver.observe(featuresList);
+    }
+
     // ===== FEATURE SHOWCASES IN-VIEW DETECTION =====
     // Intersection Observer for showcase items
     const showcaseObserver = new IntersectionObserver((entries) => {
@@ -446,11 +471,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Check if majority of the element is visible (at least 60%)
                 if (entry.intersectionRatio >= 0.6) {
                     entry.target.classList.add('in-view');
+                    // Play video if it exists and is loaded
+                    const video = entry.target.querySelector('.lazy-video');
+                    if (video && video.readyState >= 2) {
+                        video.play().catch(e => console.log('Video play failed:', e));
+                    }
                 } else {
                     entry.target.classList.remove('in-view');
+                    // Pause video to save resources
+                    const video = entry.target.querySelector('.lazy-video');
+                    if (video) {
+                        video.pause();
+                    }
                 }
             } else {
                 entry.target.classList.remove('in-view');
+                // Pause video when completely out of view
+                const video = entry.target.querySelector('.lazy-video');
+                if (video) {
+                    video.pause();
+                }
             }
         });
     }, {
@@ -462,4 +502,32 @@ document.addEventListener('DOMContentLoaded', function() {
     showcaseItems.forEach(item => {
         showcaseObserver.observe(item);
     });
+
+    // ===== ADDITIONAL VIDEO OPTIMIZATION FOR FEATURES SECTION =====
+    // Pause all showcase videos when the entire homigrad section is not visible
+    const homigradSectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const section = entry.target;
+            const showcaseVideos = section.querySelectorAll('.showcase-video .lazy-video');
+            
+            if (!entry.isIntersecting) {
+                // Section is not visible - pause all showcase videos to save resources
+                showcaseVideos.forEach(video => {
+                    if (video && !video.paused) {
+                        video.pause();
+                    }
+                });
+            }
+            // Note: We don't auto-play here because the individual showcase observer handles that
+        });
+    }, {
+        rootMargin: '100px',
+        threshold: 0
+    });
+
+    // Observe the homigrad section
+    const homigradSection = document.querySelector('.homigrad-section');
+    if (homigradSection) {
+        homigradSectionObserver.observe(homigradSection);
+    }
 }); 
