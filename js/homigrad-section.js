@@ -439,18 +439,32 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // ===== FEATURES LIST ANIMATION OPTIMIZATION =====
-    // Pause/resume the horizontally scrolling features animation based on visibility
+    // Pause/resume the horizontally scrolling features animation based on visibility and hover state
+    
+    // Track visibility and hover state
+    let isVisible = false;
+    let isHovered = false;
+    
+    // Function to update animation state based on visibility and hover
+    function updateAnimationState(featuresList) {
+        if (!isVisible) {
+            // Not visible - pause to save resources
+            featuresList.style.animationPlayState = 'paused';
+        } else if (isHovered) {
+            // Visible and hovered - pause for user interaction
+            featuresList.style.animationPlayState = 'paused';
+        } else {
+            // Visible and not hovered - run normally
+            featuresList.style.animationPlayState = 'running';
+        }
+    }
+    
     const featuresListObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             const featuresList = entry.target;
             
-            if (entry.isIntersecting) {
-                // Features are visible - resume animation
-                featuresList.style.animationPlayState = 'running';
-            } else {
-                // Features are not visible - pause animation to save resources
-                featuresList.style.animationPlayState = 'paused';
-            }
+            isVisible = entry.isIntersecting;
+            updateAnimationState(featuresList);
         });
     }, {
         rootMargin: '50px',
@@ -461,6 +475,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const featuresList = document.getElementById('features-list');
     if (featuresList) {
         featuresListObserver.observe(featuresList);
+        
+        // Add hover event listeners to properly handle hover pause functionality
+        featuresList.addEventListener('mouseenter', () => {
+            isHovered = true;
+            updateAnimationState(featuresList);
+        });
+        
+        featuresList.addEventListener('mouseleave', () => {
+            isHovered = false;
+            updateAnimationState(featuresList);
+        });
     }
 
     // ===== FEATURE SHOWCASES IN-VIEW DETECTION =====

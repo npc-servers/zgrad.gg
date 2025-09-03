@@ -79,9 +79,7 @@
     backface-visibility: hidden;
 }
 
-.features-list:hover {
-    animation-play-state: paused;
-}
+/* Hover pause functionality is now handled by JavaScript in homigrad-section.js */
 
 .feature-item {
     display: flex;
