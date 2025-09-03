@@ -550,9 +550,9 @@
 }
 
 .showcase-item:hover .showcase-video {
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 255, 255, 0.15);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 255, 255, 0.15), 0 0 0 2px rgba(255, 0, 0, 0.8);
     transform: translateY(-8px) scale(1.02) !important;
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 0, 0, 0.9);
 }
 
 .showcase-item:hover .showcase-title {
@@ -590,6 +590,24 @@
 .showcase-item {
     opacity: 0;
     transform: translateY(80px);
+    will-change: transform, opacity;
+}
+
+/* Initial states for reveal animations */
+.homigrad-small,
+.homigrad-large,
+.player-count,
+.description-title,
+.description-text,
+.features-title {
+    opacity: 0;
+    transform: translateY(30px);
+    will-change: transform, opacity;
+}
+
+.feature-item {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
     will-change: transform, opacity;
 }
 

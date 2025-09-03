@@ -5,6 +5,7 @@ gsap.registerPlugin(ScrollTrigger);
 document.addEventListener('DOMContentLoaded', function() {
     initShowcaseAnimations();
     initBloodsplatterAnimations();
+    initAllRevealAnimations();
 });
 
 function initShowcaseAnimations() {
@@ -115,13 +116,13 @@ function initBloodsplatterAnimations() {
     const splatterConfigs = {
         'bloodsplatter-decoration-left': {
             centerX: 80, centerY: 30,
-            duration: 0.4,
+            duration: 0.8,
             delay: 0.1,
             ease: "power3.out"
         },
         'bloodsplatter-decoration-right': {
             centerX: 20, centerY: 70,
-            duration: 0.3,
+            duration: 0.7,
             delay: 0.05,
             ease: "power3.out"
         },
@@ -533,10 +534,156 @@ function getPreCalculatedPath(progress, centerX, centerY, seed) {
     return coordinatesToCSS(paths[lowerKey] || paths[upperKey] || paths[0]);
 }
 
+// Title and Content Reveal Animation System
+function initTitleRevealAnimations() {
+    // Animate homigrad section titles and content
+    const homigradSmall = document.querySelector('.homigrad-small');
+    const homigradLarge = document.querySelector('.homigrad-large');
+    const playerCount = document.querySelector('.player-count');
+    const descriptionTitle = document.querySelector('.description-title');
+    const descriptionText = document.querySelector('.description-text');
+    const featuresTitle = document.querySelector('.features-title');
+    const featuresList = document.querySelector('.features-list');
+
+    // Set initial states
+    gsap.set([homigradSmall, homigradLarge, playerCount, descriptionTitle, descriptionText, featuresTitle], {
+        opacity: 0,
+        y: 30
+    });
+
+    // Create timeline for homigrad section
+    const homigradTl = gsap.timeline({
+        scrollTrigger: {
+            trigger: '.homigrad-section',
+            start: 'top 95%',
+            markers: false,
+            onEnter: () => {
+                // Animate homigrad elements sequentially
+                gsap.to(homigradSmall, { duration: 0.6, opacity: 1, y: 0, ease: 'power3.out' });
+                gsap.to(homigradLarge, { duration: 0.8, opacity: 1, y: 0, ease: 'power3.out', delay: 0.3 });
+                gsap.to(playerCount, { duration: 0.6, opacity: 1, y: 0, ease: 'power3.out', delay: 0.2 });
+                gsap.to(descriptionTitle, { duration: 0.7, opacity: 1, y: 0, ease: 'power3.out', delay: 0.4 });
+                gsap.to(descriptionText, { duration: 0.8, opacity: 1, y: 0, ease: 'power3.out', delay: 0.6 });
+            }
+        }
+    });
+
+
+
+    // Animate features title
+    const featuresTl = gsap.timeline({
+        scrollTrigger: {
+            trigger: '.features-container',
+            start: 'top 95%',
+            markers: false,
+            onEnter: () => {
+                gsap.to(featuresTitle, { 
+                    duration: 0.8, 
+                    opacity: 1, 
+                    y: 0, 
+                    ease: 'power3.out' 
+                });
+            }
+        }
+    });
+
+    // Animate scrolling features list
+    if (featuresList) {
+        const featureItems = featuresList.querySelectorAll('.feature-item');
+        
+        // Set initial state for feature items
+        gsap.set(featureItems, {
+            opacity: 0,
+            y: 20,
+            scale: 0.95
+        });
+
+        // Create staggered animation for feature items
+        const featuresListTl = gsap.timeline({
+            scrollTrigger: {
+                trigger: featuresList,
+                start: 'top 95%',
+                markers: false,
+                onEnter: () => {
+                    gsap.to(featureItems, {
+                        duration: 0.6,
+                        opacity: 1,
+                        y: 0,
+                        scale: 1,
+                        ease: 'power3.out',
+                        stagger: 0.1
+                    });
+                }
+            }
+        });
+    }
+}
+
+// Showcase items reveal animation
+function initShowcaseItemReveals() {
+    const showcaseItems = document.querySelectorAll('.showcase-item');
+    
+    showcaseItems.forEach((item, index) => {
+        const title = item.querySelector('.showcase-title');
+        const description = item.querySelector('.showcase-description');
+        const video = item.querySelector('.showcase-video');
+        
+        // Set initial states
+        gsap.set([title, description], {
+            opacity: 0,
+            x: index % 2 === 0 ? -30 : 30
+        });
+        
+        gsap.set(video, {
+            opacity: 0,
+            scale: 0.9,
+            y: 20
+        });
+
+        // Create timeline for each showcase item
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: item,
+                start: 'top 75%',
+                end: 'bottom 25%',
+                toggleActions: 'play none none reverse'
+            }
+        });
+
+        // Animate elements with staggered timing
+        tl.to(title, { 
+            duration: 0.7, 
+            opacity: 1, 
+            x: 0, 
+            ease: 'power3.out' 
+        })
+        .to(description, { 
+            duration: 0.8, 
+            opacity: 1, 
+            x: 0, 
+            ease: 'power3.out' 
+        }, '-=0.4')
+        .to(video, { 
+            duration: 0.9, 
+            opacity: 1, 
+            scale: 1, 
+            y: 0, 
+            ease: 'power3.out' 
+        }, '-=0.6');
+    });
+}
+
+// Initialize all reveal animations
+function initAllRevealAnimations() {
+    initTitleRevealAnimations();
+    initShowcaseItemReveals();
+}
+
 // Export functions for external use
 window.ShowcaseAnimations = {
     initShowcase: initShowcaseAnimations,
     initBloodsplatter: initBloodsplatterAnimations,
+    initReveals: initAllRevealAnimations,
     createIrregularSplatter: createIrregularSplatter,
     createNoisyRevealPath: createNoisyRevealPath,
     getSplatterSeed: getSplatterSeed,
