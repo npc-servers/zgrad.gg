@@ -27,6 +27,7 @@ class VideoLazyLoader {
         this.videos = [];
         this.loadedVideos = new Set();
         this.activeVideos = new Set();
+        this.currentlyPlayingVideo = null; // Track currently playing video for single playback
         this.intersectionObserver = null;
         this.visibilityObserver = null;
         
@@ -228,6 +229,11 @@ class VideoLazyLoader {
             return;
         }
 
+        // SINGLE VIDEO PLAYBACK: Pause currently playing video before starting new one
+        if (this.currentlyPlayingVideo && this.currentlyPlayingVideo !== video) {
+            this.pauseVideo(this.currentlyPlayingVideo);
+        }
+
         try {
             const playPromise = video.play();
             
@@ -235,17 +241,27 @@ class VideoLazyLoader {
                 playPromise
                     .then(() => {
                         this.activeVideos.add(video);
+                        this.currentlyPlayingVideo = video; // Set as currently playing
                         video.classList.add('video-playing');
                     })
                     .catch(error => {
                         console.warn('Video play failed:', error);
+                        // Reset currentlyPlayingVideo on failure
+                        if (this.currentlyPlayingVideo === video) {
+                            this.currentlyPlayingVideo = null;
+                        }
                     });
             } else {
                 this.activeVideos.add(video);
+                this.currentlyPlayingVideo = video; // Set as currently playing
                 video.classList.add('video-playing');
             }
         } catch (error) {
             console.warn('Video play error:', error);
+            // Reset currentlyPlayingVideo on error
+            if (this.currentlyPlayingVideo === video) {
+                this.currentlyPlayingVideo = null;
+            }
         }
     }
 
@@ -258,6 +274,11 @@ class VideoLazyLoader {
             video.pause();
             this.activeVideos.delete(video);
             video.classList.remove('video-playing');
+            
+            // Clear currently playing video if this is the one being paused
+            if (this.currentlyPlayingVideo === video) {
+                this.currentlyPlayingVideo = null;
+            }
         } catch (error) {
             console.warn('Video pause error:', error);
         }
@@ -281,15 +302,27 @@ class VideoLazyLoader {
             });
         }
 
-        // Monitor memory usage if available
+        // Monitor memory usage if available - improved memory management
         if ('memory' in performance) {
             setInterval(() => {
                 const memory = performance.memory;
-                if (memory.usedJSHeapSize / memory.totalJSHeapSize > 0.9) {
+                const memoryUsageRatio = memory.usedJSHeapSize / memory.totalJSHeapSize;
+                
+                if (memoryUsageRatio > 0.9) {
                     console.warn('High memory usage detected, pausing non-visible videos');
                     this.pauseAllNonVisibleVideos();
+                } else if (memoryUsageRatio > 0.8) {
+                    console.warn('Moderate memory usage detected, pausing currently playing video if not in view');
+                    // More aggressive memory management - pause current video if not fully visible
+                    if (this.currentlyPlayingVideo) {
+                        const rect = this.currentlyPlayingVideo.getBoundingClientRect();
+                        const isFullyVisible = rect.top >= 0 && rect.bottom <= window.innerHeight;
+                        if (!isFullyVisible) {
+                            this.pauseVideo(this.currentlyPlayingVideo);
+                        }
+                    }
                 }
-            }, 10000); // Check every 10 seconds
+            }, 8000); // Check every 8 seconds for better responsiveness
         }
     }
 
@@ -336,9 +369,15 @@ class VideoLazyLoader {
             video.pause();
         });
         
-        // Clear sets
+        // Clear sets and references
         this.loadedVideos.clear();
         this.activeVideos.clear();
+        this.currentlyPlayingVideo = null;
+    }
+
+    // Public method to get currently playing video
+    getCurrentlyPlayingVideo() {
+        return this.currentlyPlayingVideo;
     }
 }
 
@@ -353,7 +392,10 @@ document.addEventListener('DOMContentLoaded', () => {
 window.VideoLazyLoader = {
     getInstance: () => videoLazyLoader,
     forceLoadVideo: (video) => videoLazyLoader?.forceLoadVideo(video),
-    getStats: () => videoLazyLoader?.getStats() || { totalVideos: 0, loadedVideos: 0, activeVideos: 0 }
+    getStats: () => videoLazyLoader?.getStats() || { totalVideos: 0, loadedVideos: 0, activeVideos: 0 },
+    getCurrentlyPlayingVideo: () => videoLazyLoader?.getCurrentlyPlayingVideo() || null,
+    playVideo: (video) => videoLazyLoader?.playVideo(video),
+    pauseVideo: (video) => videoLazyLoader?.pauseVideo(video)
 };
 
 // Handle page visibility changes to pause all videos when tab is not active

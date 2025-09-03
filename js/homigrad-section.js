@@ -425,17 +425,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initial render
     renderFeatures();
     
-    // Adjust animation on window resize
+    // Debounced resize handler for better performance
+    let resizeTimeout;
     window.addEventListener('resize', () => {
-        const featuresList = document.getElementById('features-list');
-        if (!featuresList) return;
-        
-        const totalItems = featuresList.childElementCount;
-        const newItemWidth = getFeatureItemWidth();
-        const scrollSpeed = 40;
-        
-        const newDuration = (newItemWidth * totalItems) / scrollSpeed;
-        featuresList.style.animationDuration = `${newDuration}s`;
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            const featuresList = document.getElementById('features-list');
+            if (!featuresList) return;
+            
+            const totalItems = featuresList.childElementCount;
+            const newItemWidth = getFeatureItemWidth();
+            const scrollSpeed = 40;
+            
+            const newDuration = (newItemWidth * totalItems) / scrollSpeed;
+            featuresList.style.animationDuration = `${newDuration}s`;
+        }, 150); // Debounce resize events by 150ms
     });
 
     // ===== FEATURES LIST ANIMATION OPTIMIZATION =====
@@ -489,37 +493,104 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ===== FEATURE SHOWCASES IN-VIEW DETECTION =====
-    // Intersection Observer for showcase items
-    const showcaseObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // Check if majority of the element is visible (at least 60%)
-                if (entry.intersectionRatio >= 0.6) {
-                    entry.target.classList.add('in-view');
-                    // Play video if it exists and is loaded
-                    const video = entry.target.querySelector('.lazy-video');
-                    if (video && video.readyState >= 2) {
-                        video.play().catch(e => console.log('Video play failed:', e));
+    // Track video visibility ratios to play the MOST visible video
+    const videoVisibilityTracker = new Map(); // Maps video elements to their visibility ratios
+    let mostVisibleVideo = null;
+    let updateMostVisibleTimeout = null;
+    
+    // Function to determine and play the most visible video
+    function updateMostVisibleVideo() {
+        let highestRatio = 0;
+        let targetVideo = null;
+        let bestCenterDistance = Infinity;
+        
+        const viewportCenter = window.innerHeight / 2;
+        
+        // Find the video with the highest visibility ratio (with tie-breaker for center proximity)
+        videoVisibilityTracker.forEach((ratio, video) => {
+            if (ratio > 0.1 && video.readyState >= 2) { // Only consider videos that are somewhat visible and loaded
+                const showcaseItem = video.closest('.showcase-item');
+                if (showcaseItem) {
+                    const rect = showcaseItem.getBoundingClientRect();
+                    const elementCenter = rect.top + (rect.height / 2);
+                    const distanceFromCenter = Math.abs(viewportCenter - elementCenter);
+                    
+                    // Prefer higher visibility ratio, but if ratios are close (within 0.1), prefer center proximity
+                    if (ratio > highestRatio || (Math.abs(ratio - highestRatio) <= 0.1 && distanceFromCenter < bestCenterDistance)) {
+                        highestRatio = ratio;
+                        targetVideo = video;
+                        bestCenterDistance = distanceFromCenter;
                     }
-                } else {
-                    entry.target.classList.remove('in-view');
-                    // Pause video to save resources
-                    const video = entry.target.querySelector('.lazy-video');
-                    if (video) {
-                        video.pause();
-                    }
-                }
-            } else {
-                entry.target.classList.remove('in-view');
-                // Pause video when completely out of view
-                const video = entry.target.querySelector('.lazy-video');
-                if (video) {
-                    video.pause();
                 }
             }
         });
+        
+        // Only play if visibility is substantial (at least 30%)
+        if (targetVideo && highestRatio >= 0.3) {
+            if (mostVisibleVideo !== targetVideo) {
+                // Pause the previously most visible video
+                if (mostVisibleVideo && window.VideoLazyLoader) {
+                    window.VideoLazyLoader.pauseVideo(mostVisibleVideo);
+                }
+                
+                // Play the new most visible video
+                mostVisibleVideo = targetVideo;
+                if (window.VideoLazyLoader) {
+                    window.VideoLazyLoader.playVideo(targetVideo);
+                } else {
+                    targetVideo.play().catch(e => console.log('Video play failed:', e));
+                }
+                
+                // Debug logging (can be removed in production)
+                console.log(`Playing most visible video (${Math.round(highestRatio * 100)}% visible)`);
+            }
+        } else {
+            // No video is sufficiently visible, pause current if any
+            if (mostVisibleVideo && window.VideoLazyLoader) {
+                window.VideoLazyLoader.pauseVideo(mostVisibleVideo);
+                mostVisibleVideo = null;
+            }
+        }
+    }
+    
+    // Debounced update function to prevent excessive calculations
+    function debouncedUpdateMostVisible() {
+        clearTimeout(updateMostVisibleTimeout);
+        updateMostVisibleTimeout = setTimeout(updateMostVisibleVideo, 50);
+    }
+
+    // Enhanced Intersection Observer for showcase items - tracks multiple thresholds for precise visibility
+    const showcaseObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const video = entry.target.querySelector('.lazy-video');
+            if (!video) return;
+            
+            if (entry.isIntersecting) {
+                // Update visibility ratio for this video
+                videoVisibilityTracker.set(video, entry.intersectionRatio);
+                
+                // Add visual class when substantially visible
+                if (entry.intersectionRatio >= 0.6) {
+                    entry.target.classList.add('in-view');
+                } else {
+                    entry.target.classList.remove('in-view');
+                }
+            } else {
+                // Remove from tracking when not intersecting
+                videoVisibilityTracker.delete(video);
+                entry.target.classList.remove('in-view');
+                
+                // If this was the most visible video, clear it
+                if (mostVisibleVideo === video) {
+                    mostVisibleVideo = null;
+                }
+            }
+            
+            // Update which video should be playing based on visibility
+            debouncedUpdateMostVisible();
+        });
     }, {
-        threshold: [0.6] // Trigger when 60% of the element is visible
+        threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0] // Multiple thresholds for precise visibility tracking
     });
 
     // Observe all showcase items
@@ -529,19 +600,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // ===== ADDITIONAL VIDEO OPTIMIZATION FOR FEATURES SECTION =====
-    // Pause all showcase videos when the entire homigrad section is not visible
+    // Pause all showcase videos when the entire homigrad section is not visible - uses centralized manager
     const homigradSectionObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            const section = entry.target;
-            const showcaseVideos = section.querySelectorAll('.showcase-video .lazy-video');
-            
             if (!entry.isIntersecting) {
-                // Section is not visible - pause all showcase videos to save resources
-                showcaseVideos.forEach(video => {
-                    if (video && !video.paused) {
-                        video.pause();
-                    }
-                });
+                // Section is not visible - clear all video tracking and pause videos
+                videoVisibilityTracker.clear();
+                if (mostVisibleVideo && window.VideoLazyLoader) {
+                    window.VideoLazyLoader.pauseVideo(mostVisibleVideo);
+                    mostVisibleVideo = null;
+                }
             }
             // Note: We don't auto-play here because the individual showcase observer handles that
         });
@@ -549,10 +617,77 @@ document.addEventListener('DOMContentLoaded', function() {
         rootMargin: '100px',
         threshold: 0
     });
+    
+    // Add scroll-based recalculation for smoother most visible video detection
+    let scrollUpdateTimeout = null;
+    function onScroll() {
+        clearTimeout(scrollUpdateTimeout);
+        scrollUpdateTimeout = setTimeout(() => {
+            // Recalculate visibility ratios during scroll for more responsive video switching
+            if (videoVisibilityTracker.size > 0) {
+                // Force update visibility ratios by manually checking each tracked video
+                videoVisibilityTracker.forEach((ratio, video) => {
+                    const showcaseItem = video.closest('.showcase-item');
+                    if (showcaseItem) {
+                        const rect = showcaseItem.getBoundingClientRect();
+                        const viewportHeight = window.innerHeight;
+                        
+                        // Calculate precise intersection ratio
+                        const visibleTop = Math.max(0, rect.top);
+                        const visibleBottom = Math.min(viewportHeight, rect.bottom);
+                        const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+                        const elementHeight = rect.height;
+                        const newRatio = elementHeight > 0 ? visibleHeight / elementHeight : 0;
+                        
+                        // Update tracking with new ratio
+                        if (newRatio > 0) {
+                            videoVisibilityTracker.set(video, newRatio);
+                        } else {
+                            videoVisibilityTracker.delete(video);
+                        }
+                    }
+                });
+                
+                debouncedUpdateMostVisible();
+            }
+        }, 100); // Update during scroll every 100ms
+    }
+    
+    // Listen for scroll events to ensure most visible video is always playing
+    window.addEventListener('scroll', onScroll, { passive: true });
 
     // Observe the homigrad section
     const homigradSection = document.querySelector('.homigrad-section');
     if (homigradSection) {
         homigradSectionObserver.observe(homigradSection);
     }
+
+    // Cleanup function for video visibility tracking
+    window.addEventListener('beforeunload', () => {
+        clearTimeout(updateMostVisibleTimeout);
+        clearTimeout(scrollUpdateTimeout);
+        window.removeEventListener('scroll', onScroll);
+        videoVisibilityTracker.clear();
+    });
+    
+    // Export debug functions for development (can be removed in production)
+    window.VideoVisibilityDebug = {
+        getMostVisibleVideo: () => mostVisibleVideo,
+        getVisibilityTracker: () => videoVisibilityTracker,
+        getVisibilityStats: () => {
+            const stats = [];
+            videoVisibilityTracker.forEach((ratio, video) => {
+                const showcaseItem = video.closest('.showcase-item');
+                const index = showcaseItem ? Array.from(document.querySelectorAll('.showcase-item')).indexOf(showcaseItem) + 1 : 'unknown';
+                stats.push({
+                    video: `Video ${index}`,
+                    visibility: `${Math.round(ratio * 100)}%`,
+                    isPlaying: video === mostVisibleVideo,
+                    readyState: video.readyState
+                });
+            });
+            return stats.sort((a, b) => parseFloat(b.visibility) - parseFloat(a.visibility));
+        },
+        forceMostVisibleUpdate: () => updateMostVisibleVideo()
+    };
 }); 

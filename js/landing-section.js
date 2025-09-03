@@ -294,7 +294,11 @@ document.addEventListener('DOMContentLoaded', () => {
         updateServerButtons();
         setInterval(updateServerButtons, 30000);
         
-        // Update on window resize
-        window.addEventListener('resize', updateServerButtons);
+        // Debounced resize handler for better performance
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(updateServerButtons, 150); // Debounce resize events by 150ms
+        });
     }
 }); 

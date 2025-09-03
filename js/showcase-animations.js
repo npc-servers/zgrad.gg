@@ -406,9 +406,13 @@ function enhancedSplatterReveal(element, config) {
     return tl;
 }
 
-// Refresh ScrollTrigger on window resize
+// Debounced refresh ScrollTrigger on window resize for better performance
+let scrollTriggerResizeTimeout;
 window.addEventListener('resize', () => {
-    ScrollTrigger.refresh();
+    clearTimeout(scrollTriggerResizeTimeout);
+    scrollTriggerResizeTimeout = setTimeout(() => {
+        ScrollTrigger.refresh();
+    }, 200); // Debounce ScrollTrigger refresh by 200ms
 });
 
 // Export functions for external use
