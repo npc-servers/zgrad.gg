@@ -133,6 +133,33 @@ function initShowcaseAnimations() {
                 id: "features-list"
             }
         });
+        
+        // Add hover effects to feature items
+        const featureItems = featuresList.querySelectorAll('.feature-item');
+        featureItems.forEach((featureItem) => {
+            // Set transform origin to center for uniform scaling
+            gsap.set(featureItem, {
+                transformOrigin: "center center"
+            });
+            
+            // Mouse enter event
+            featureItem.addEventListener('mouseenter', () => {
+                gsap.to(featureItem, {
+                    scale: 1.05,
+                    duration: 0.08,
+                    ease: "none"
+                });
+            });
+            
+            // Mouse leave event
+            featureItem.addEventListener('mouseleave', () => {
+                gsap.to(featureItem, {
+                    scale: 1,
+                    duration: 0.08,
+                    ease: "none"
+                });
+            });
+        });
     }
     
     // Hover animations are handled by CSS
