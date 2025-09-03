@@ -230,7 +230,7 @@
     background-color: rgba(30, 30, 30, 0.95);
     color: var(--text-color);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 25px;
+    border-radius: 6px;
     padding: 0.7rem 1.8rem;
     font-size: 1rem;
     font-weight: 600;
