@@ -69,7 +69,35 @@ function initShowcaseAnimations() {
             ease: "back.out(1.7)"
         }, "-=0.3");
         
-        // Parallax effects removed per user request
+        // Add hover effects for title scaling
+        const showcaseItemElement = item;
+        const titleElement = showcaseTitle;
+        
+        // Set transform origin based on showcase item position (even items are right-aligned)
+        const isEvenItem = (index + 1) % 2 === 0;
+        const transformOrigin = isEvenItem ? "right center" : "left center";
+        
+        gsap.set(titleElement, {
+            transformOrigin: transformOrigin
+        });
+        
+        // Mouse enter event
+        showcaseItemElement.addEventListener('mouseenter', () => {
+            gsap.to(titleElement, {
+                scale: 1.08,
+                duration: 0.4,
+                ease: "power3.out"
+            });
+        });
+        
+        // Mouse leave event
+        showcaseItemElement.addEventListener('mouseleave', () => {
+            gsap.to(titleElement, {
+                scale: 1,
+                duration: 0.4,
+                ease: "power3.out"
+            });
+        });
     });
     
     // Features title container animation removed per user request
@@ -619,64 +647,11 @@ function initTitleRevealAnimations() {
     }
 }
 
-// Showcase items reveal animation
-function initShowcaseItemReveals() {
-    const showcaseItems = document.querySelectorAll('.showcase-item');
-    
-    showcaseItems.forEach((item, index) => {
-        const title = item.querySelector('.showcase-title');
-        const description = item.querySelector('.showcase-description');
-        const video = item.querySelector('.showcase-video');
-        
-        // Set initial states
-        gsap.set([title, description], {
-            opacity: 0,
-            x: index % 2 === 0 ? -30 : 30
-        });
-        
-        gsap.set(video, {
-            opacity: 0,
-            scale: 0.9,
-            y: 20
-        });
 
-        // Create timeline for each showcase item
-        const tl = gsap.timeline({
-            scrollTrigger: {
-                trigger: item,
-                start: 'top 75%',
-                end: 'bottom 25%',
-                toggleActions: 'play none none reverse'
-            }
-        });
-
-        // Animate elements with staggered timing
-        tl.to(title, { 
-            duration: 0.7, 
-            opacity: 1, 
-            x: 0, 
-            ease: 'power3.out' 
-        })
-        .to(description, { 
-            duration: 0.8, 
-            opacity: 1, 
-            x: 0, 
-            ease: 'power3.out' 
-        }, '-=0.4')
-        .to(video, { 
-            duration: 0.9, 
-            opacity: 1, 
-            scale: 1, 
-            y: 0, 
-            ease: 'power3.out' 
-        }, '-=0.6');
-    });
-}
 
 // Initialize all reveal animations
 function initAllRevealAnimations() {
     initTitleRevealAnimations();
-    initShowcaseItemReveals();
 }
 
 // Export functions for external use
