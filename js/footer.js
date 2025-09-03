@@ -111,6 +111,7 @@ function createFooterHTML(config = {}) {
     const company = config.company || footerConfig.company;
     
     return `
+        <div class="footer-splatter"></div>
         <div class="footer-container">
             <div class="footer-logo">
                 <img src="${company.logo}" alt="${company.logoAlt}">

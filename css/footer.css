@@ -1,5 +1,5 @@
 .footer {
-    background: linear-gradient(to bottom, #1a1a1a, #000000);
+    background: #1a1a1a;
     color: var(--text-color);
     padding: 40px 0 20px;
     position: relative;
@@ -14,44 +14,35 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: 450px;
-    height: 450px;
-    background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
-    pointer-events: none;
+    right: 0;
+    bottom: 0;
+    background: url('../images/textures/cooltexturebetter.png') center/cover no-repeat;
+    opacity: 0.15;
     z-index: 0;
-    animation: footerGlowPulseTopLeft 4s infinite alternate ease-in-out;
+    pointer-events: none;
 }
 
-.footer::after {
+.footer-splatter {
     content: '';
     position: absolute;
     bottom: 0;
-    right: 0;
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 110vw;
+    height: 200px;
+    background: url('../images/textures/footer-splatter.png') center bottom/cover no-repeat;
     pointer-events: none;
-    z-index: 0;
-    animation: footerGlowPulse 3s infinite alternate ease-in-out;
+    z-index: 1;
+    opacity: 0.4;
+    mask: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,0) 100%);
+    -webkit-mask: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,0) 100%);
 }
 
-@keyframes footerGlowPulseTopLeft {
-    0% {
-        opacity: 0.5;
-    }
-    100% {
-        opacity: 0.9;
-    }
-}
 
-@keyframes footerGlowPulse {
-    0% {
-        opacity: 0.7;
-    }
-    100% {
-        opacity: 1;
-    }
-}
+
+
+
+
 
 .footer-container {
     display: flex;
@@ -60,6 +51,8 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
+    position: relative;
+    z-index: 2;
 }
 
 .footer-logo {
@@ -116,6 +109,7 @@
     transition: var(--transition);
     display: block;
     font-size: 14px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 .footer-links a:hover {
@@ -174,6 +168,7 @@
 .footer-bottom-left p {
     margin: 0;
     opacity: 0.7;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 .footer-legal {
@@ -195,6 +190,7 @@
     margin-bottom: 10px;
     text-transform: uppercase;
     letter-spacing: 1px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 .social-icons {
@@ -224,11 +220,13 @@
     width: 16px;
     height: 16px;
     fill: var(--text-color);
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.7));
 }
 
 .footer-legal a {
     color: #999999;
     transition: var(--transition);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 .footer-legal a:hover {
@@ -245,6 +243,7 @@
     color: var(--text-color);
     margin-top: 5px;
     font-size: 12px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 .powered-by-zmod:hover {
@@ -275,7 +274,7 @@
     transition: fill 0.3s ease;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 925px) {
     .footer-container {
         flex-direction: column;
     }
