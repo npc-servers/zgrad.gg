@@ -203,18 +203,20 @@ function initBloodsplatterAnimations() {
         // Get unique seed for this splatter type
         const seed = getSplatterSeed(splatterType);
         
+        // Paths will be lazily calculated when animation starts
+        
         // Initial state - completely hidden with noise pattern
-        const initialPath = createNoisyRevealPath(0, config.centerX, config.centerY, seed);
+        const initialPath = getPreCalculatedPath(0, config.centerX, config.centerY, seed);
         gsap.set(img, {
             clipPath: initialPath
         });
 
-        // Create the main splatter reveal animation with noise
+        // Create the main splatter reveal animation with pre-calculated paths
         tl.to(img, {
             duration: config.duration,
             ease: config.ease,
             onUpdate: function() {
-                // Create organic noise-based reveal
+                // Use pre-calculated paths for much better performance
                 const progress = this.progress();
                 const maxProgress = 150; // Go well beyond 100% to ensure full PNG reveal
                 
@@ -222,8 +224,8 @@ function initBloodsplatterAnimations() {
                 const pulse = Math.sin(progress * Math.PI * 1.2) * 2;
                 const adjustedProgress = Math.min(maxProgress, Math.max(0, (progress * maxProgress) + pulse));
                 
-                // Generate the noisy reveal path
-                const noisyPath = createNoisyRevealPath(adjustedProgress, config.centerX, config.centerY, seed);
+                // Use pre-calculated path lookup instead of real-time generation
+                const noisyPath = getPreCalculatedPath(adjustedProgress, config.centerX, config.centerY, seed);
                 img.style.clipPath = noisyPath;
             }
         })
@@ -361,6 +363,8 @@ function enhancedSplatterReveal(element, config) {
     // Get seed for enhanced animation
     const enhancedSeed = getSplatterSeed('enhanced-' + Date.now());
     
+    // Paths will be lazily calculated when animation starts
+    
     // Stage 1: Initial small splatter
     tl.to(img, {
         duration: 0.1,
@@ -368,7 +372,7 @@ function enhancedSplatterReveal(element, config) {
         onUpdate: function() {
             const progress = this.progress() * 20;
             if (config.centerX !== undefined && config.centerY !== undefined) {
-                const noisyPath = createNoisyRevealPath(progress, config.centerX, config.centerY, enhancedSeed);
+                const noisyPath = getPreCalculatedPath(progress, config.centerX, config.centerY, enhancedSeed);
                 img.style.clipPath = noisyPath;
             }
         }
@@ -380,7 +384,7 @@ function enhancedSplatterReveal(element, config) {
         onUpdate: function() {
             const progress = 20 + (this.progress() * 60); // From 20% to 80%
             if (config.centerX !== undefined && config.centerY !== undefined) {
-                const noisyPath = createNoisyRevealPath(progress, config.centerX, config.centerY, enhancedSeed);
+                const noisyPath = getPreCalculatedPath(progress, config.centerX, config.centerY, enhancedSeed);
                 img.style.clipPath = noisyPath;
             }
         }
@@ -395,9 +399,9 @@ function enhancedSplatterReveal(element, config) {
             const pulse = Math.sin(progress * Math.PI * 2.5) * 1.5;
             const currentProgress = 80 + (progress * 70) + pulse; // Go to 150% like main animation
             
-            // Use the same noise system as main animation
+            // Use pre-calculated paths instead of real-time generation
             if (config.centerX !== undefined && config.centerY !== undefined) {
-                const noisyPath = createNoisyRevealPath(currentProgress, config.centerX, config.centerY, enhancedSeed);
+                const noisyPath = getPreCalculatedPath(currentProgress, config.centerX, config.centerY, enhancedSeed);
                 img.style.clipPath = noisyPath;
             }
         }
@@ -415,6 +419,120 @@ window.addEventListener('resize', () => {
     }, 200); // Debounce ScrollTrigger refresh by 200ms
 });
 
+// Ultra-optimized path cache with compressed storage
+const pathCache = new Map();
+const sharedNoisePatterns = new Map();
+
+// Generate shared noise pattern (reusable base pattern)
+function generateSharedNoisePattern(seed, points = 24) {
+    const cacheKey = `noise-${seed}-${points}`;
+    if (sharedNoisePatterns.has(cacheKey)) {
+        return sharedNoisePatterns.get(cacheKey);
+    }
+    
+    const pattern = [];
+    for (let i = 0; i < points; i++) {
+        const angle = (i / points) * Math.PI * 2;
+        // Simplified dual-wave noise for better performance
+        const wave1 = Math.sin(angle * 2.5 + seed) * 0.7;
+        const wave2 = Math.sin(angle * 5.2 + seed * 2) * 0.3;
+        pattern.push(wave1 + wave2);
+    }
+    
+    sharedNoisePatterns.set(cacheKey, pattern);
+    return pattern;
+}
+
+// Generate optimized coordinate points (stored as arrays, not CSS strings)
+function generateOptimizedPoints(progress, centerX, centerY, noisePattern) {
+    const points = noisePattern.length;
+    const baseRadius = progress;
+    const maxVariation = 0.35;
+    const coordinates = [];
+    
+    for (let i = 0; i < points; i++) {
+        const angle = (i / points) * Math.PI * 2;
+        const progressFactor = Math.min(1, progress / 80);
+        const radiusVariation = 1 + (noisePattern[i] * maxVariation * progressFactor);
+        const radius = Math.max(5, baseRadius * radiusVariation);
+        
+        const x = Math.max(0, Math.min(100, centerX + Math.cos(angle) * (radius * 0.9)));
+        const y = Math.max(0, Math.min(100, centerY + Math.sin(angle) * (radius * 0.9)));
+        
+        coordinates.push(x, y);
+    }
+    
+    return coordinates;
+}
+
+// Convert coordinate array to CSS polygon string (only when needed)
+function coordinatesToCSS(coordinates) {
+    let path = 'polygon(';
+    for (let i = 0; i < coordinates.length; i += 2) {
+        path += `${coordinates[i].toFixed(1)}% ${coordinates[i + 1].toFixed(1)}%`;
+        if (i < coordinates.length - 2) path += ', ';
+    }
+    path += ')';
+    return path;
+}
+
+// Ultra-optimized pre-calculation with compressed storage
+function preCalculateSplatterPaths(centerX, centerY, seed) {
+    const cacheKey = `${centerX}-${centerY}-${seed}`;
+    if (pathCache.has(cacheKey)) {
+        return pathCache.get(cacheKey);
+    }
+    
+    const noisePattern = generateSharedNoisePattern(seed, 24); // 50% fewer points
+    const paths = {};
+    
+    // Pre-calculate paths for progress values from 0 to 150 in steps of 6 (50% fewer calculations)
+    for (let progress = 0; progress <= 150; progress += 6) {
+        paths[progress] = generateOptimizedPoints(progress, centerX, centerY, noisePattern);
+    }
+    
+    pathCache.set(cacheKey, paths);
+    return paths;
+}
+
+// Get pre-calculated path with linear interpolation for ultra-smooth animation
+function getPreCalculatedPath(progress, centerX, centerY, seed) {
+    const cacheKey = `${centerX}-${centerY}-${seed}`;
+    const paths = pathCache.get(cacheKey);
+    
+    if (!paths) {
+        // Lazy initialization - only calculate when needed
+        preCalculateSplatterPaths(centerX, centerY, seed);
+        return getPreCalculatedPath(progress, centerX, centerY, seed);
+    }
+    
+    const adjustedProgress = Math.max(0, Math.min(150, progress));
+    const lowerKey = Math.floor(adjustedProgress / 6) * 6;
+    const upperKey = Math.min(150, lowerKey + 6);
+    
+    // Use exact match if available
+    if (paths[adjustedProgress]) {
+        return coordinatesToCSS(paths[adjustedProgress]);
+    }
+    
+    // Linear interpolation between two nearest points for smoother animation
+    if (paths[lowerKey] && paths[upperKey] && lowerKey !== upperKey) {
+        const factor = (adjustedProgress - lowerKey) / (upperKey - lowerKey);
+        const lowerCoords = paths[lowerKey];
+        const upperCoords = paths[upperKey];
+        const interpolated = [];
+        
+        for (let i = 0; i < lowerCoords.length; i++) {
+            interpolated[i] = lowerCoords[i] + (upperCoords[i] - lowerCoords[i]) * factor;
+        }
+        
+        return coordinatesToCSS(interpolated);
+    }
+    
+    // Fallback to nearest neighbor
+    return coordinatesToCSS(paths[lowerKey] || paths[upperKey] || paths[0]);
+}
+
 // Export functions for external use
 window.ShowcaseAnimations = {
     initShowcase: initShowcaseAnimations,
@@ -422,5 +540,9 @@ window.ShowcaseAnimations = {
     createIrregularSplatter: createIrregularSplatter,
     createNoisyRevealPath: createNoisyRevealPath,
     getSplatterSeed: getSplatterSeed,
-    enhancedSplatterReveal: enhancedSplatterReveal
+    enhancedSplatterReveal: enhancedSplatterReveal,
+    preCalculateSplatterPaths: preCalculateSplatterPaths,
+    getPreCalculatedPath: getPreCalculatedPath,
+    generateSharedNoisePattern: generateSharedNoisePattern,
+    coordinatesToCSS: coordinatesToCSS
 }; 

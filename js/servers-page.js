@@ -603,18 +603,20 @@ function initBloodsplatterAnimation() {
     // Get unique seed for this splatter
     const seed = getSplatterSeed('server-title-splatter');
     
+    // Paths will be lazily calculated when animation starts
+    
     // Initial state - completely hidden with noise pattern
-    const initialPath = createNoisyRevealPath(0, config.centerX, config.centerY, seed);
+    const initialPath = getPreCalculatedServerPath(0, config.centerX, config.centerY, seed);
     gsap.set(img, {
         clipPath: initialPath
     });
     
-    // Create the main splatter reveal animation with noise
+    // Create the main splatter reveal animation with pre-calculated paths
     tl.to(img, {
         duration: config.duration,
         ease: config.ease,
         onUpdate: function() {
-            // Create organic noise-based reveal
+            // Use pre-calculated paths for much better performance
             const progress = this.progress();
             const maxProgress = 150; // Go well beyond 100% to ensure full PNG reveal
             
@@ -622,8 +624,8 @@ function initBloodsplatterAnimation() {
             const pulse = Math.sin(progress * Math.PI * 1.2) * 2;
             const adjustedProgress = Math.min(maxProgress, Math.max(0, (progress * maxProgress) + pulse));
             
-            // Generate the noisy reveal path
-            const noisyPath = createNoisyRevealPath(adjustedProgress, config.centerX, config.centerY, seed);
+            // Use pre-calculated path lookup instead of real-time generation
+            const noisyPath = getPreCalculatedServerPath(adjustedProgress, config.centerX, config.centerY, seed);
             img.style.clipPath = noisyPath;
         }
     });
@@ -727,4 +729,118 @@ function getSplatterSeed(splatterType) {
         'server-title-splatter': 15.34 // Updated seed for edge-based animation
     };
     return seeds[splatterType] || Math.random() * 100;
+}
+
+// Ultra-optimized server path cache with compressed storage
+const serverPathCache = new Map();
+const serverNoisePatterns = new Map();
+
+// Generate shared noise pattern for server splatters
+function generateServerNoisePattern(seed, points = 24) {
+    const cacheKey = `server-noise-${seed}-${points}`;
+    if (serverNoisePatterns.has(cacheKey)) {
+        return serverNoisePatterns.get(cacheKey);
+    }
+    
+    const pattern = [];
+    for (let i = 0; i < points; i++) {
+        const angle = (i / points) * Math.PI * 2;
+        // Simplified dual-wave noise for better performance
+        const wave1 = Math.sin(angle * 2.5 + seed) * 0.7;
+        const wave2 = Math.sin(angle * 5.2 + seed * 2) * 0.3;
+        pattern.push(wave1 + wave2);
+    }
+    
+    serverNoisePatterns.set(cacheKey, pattern);
+    return pattern;
+}
+
+// Generate optimized server coordinate points
+function generateServerOptimizedPoints(progress, centerX, centerY, noisePattern) {
+    const points = noisePattern.length;
+    const baseRadius = progress;
+    const maxVariation = 0.35;
+    const coordinates = [];
+    
+    for (let i = 0; i < points; i++) {
+        const angle = (i / points) * Math.PI * 2;
+        const progressFactor = Math.min(1, progress / 80);
+        const radiusVariation = 1 + (noisePattern[i] * maxVariation * progressFactor);
+        const radius = Math.max(5, baseRadius * radiusVariation);
+        
+        const x = Math.max(0, Math.min(100, centerX + Math.cos(angle) * (radius * 0.9)));
+        const y = Math.max(0, Math.min(100, centerY + Math.sin(angle) * (radius * 0.9)));
+        
+        coordinates.push(x, y);
+    }
+    
+    return coordinates;
+}
+
+// Convert server coordinate array to CSS polygon string
+function serverCoordinatesToCSS(coordinates) {
+    let path = 'polygon(';
+    for (let i = 0; i < coordinates.length; i += 2) {
+        path += `${coordinates[i].toFixed(1)}% ${coordinates[i + 1].toFixed(1)}%`;
+        if (i < coordinates.length - 2) path += ', ';
+    }
+    path += ')';
+    return path;
+}
+
+// Ultra-optimized server pre-calculation
+function preCalculateServerSplatterPaths(centerX, centerY, seed) {
+    const cacheKey = `${centerX}-${centerY}-${seed}`;
+    if (serverPathCache.has(cacheKey)) {
+        return serverPathCache.get(cacheKey);
+    }
+    
+    const noisePattern = generateServerNoisePattern(seed, 24); // 50% fewer points
+    const paths = {};
+    
+    // Pre-calculate paths for progress values from 0 to 150 in steps of 6 (50% fewer calculations)
+    for (let progress = 0; progress <= 150; progress += 6) {
+        paths[progress] = generateServerOptimizedPoints(progress, centerX, centerY, noisePattern);
+    }
+    
+    serverPathCache.set(cacheKey, paths);
+    return paths;
+}
+
+// Get pre-calculated server path with linear interpolation
+function getPreCalculatedServerPath(progress, centerX, centerY, seed) {
+    const cacheKey = `${centerX}-${centerY}-${seed}`;
+    const paths = serverPathCache.get(cacheKey);
+    
+    if (!paths) {
+        // Lazy initialization - only calculate when needed
+        preCalculateServerSplatterPaths(centerX, centerY, seed);
+        return getPreCalculatedServerPath(progress, centerX, centerY, seed);
+    }
+    
+    const adjustedProgress = Math.max(0, Math.min(150, progress));
+    const lowerKey = Math.floor(adjustedProgress / 6) * 6;
+    const upperKey = Math.min(150, lowerKey + 6);
+    
+    // Use exact match if available
+    if (paths[adjustedProgress]) {
+        return serverCoordinatesToCSS(paths[adjustedProgress]);
+    }
+    
+    // Linear interpolation between two nearest points for smoother animation
+    if (paths[lowerKey] && paths[upperKey] && lowerKey !== upperKey) {
+        const factor = (adjustedProgress - lowerKey) / (upperKey - lowerKey);
+        const lowerCoords = paths[lowerKey];
+        const upperCoords = paths[upperKey];
+        const interpolated = [];
+        
+        for (let i = 0; i < lowerCoords.length; i++) {
+            interpolated[i] = lowerCoords[i] + (upperCoords[i] - lowerCoords[i]) * factor;
+        }
+        
+        return serverCoordinatesToCSS(interpolated);
+    }
+    
+    // Fallback to nearest neighbor
+    return serverCoordinatesToCSS(paths[lowerKey] || paths[upperKey] || paths[0]);
 } 
