@@ -310,13 +310,23 @@
         flex-direction: column;
         text-align: left;
         gap: 20px;
+        overflow: hidden;
     }
     
     .help-box::before {
         width: 100%;
         top: auto;
         bottom: 0;
-        background: radial-gradient(circle at bottom, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+        background: radial-gradient(circle at bottom, rgba(255, 0, 0, 0.5) 0%, transparent 70%);
+    }
+    
+    .help-box::after {
+        width: 500px;
+        height: 500px;
+        top: 80%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: url('../images/textures/bloodsplatter-mobile-helpbox.png') center/contain no-repeat;
     }
     
     .help-text-container {
