@@ -19,23 +19,22 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Video Lazy Loading and Performance Optimization
-// Utilizes Intersection Observer API for efficient video loading
+// Enhanced Video Management with Vanilla-LazyLoad
+// Combines Vanilla-LazyLoad with custom video optimization features
 
-class VideoLazyLoader {
+class EnhancedVideoManager {
     constructor() {
-        this.videos = [];
-        this.loadedVideos = new Set();
+        this.currentlyPlayingVideo = null;
         this.activeVideos = new Set();
-        this.currentlyPlayingVideo = null; // Track currently playing video for single playback
-        this.intersectionObserver = null;
-        this.visibilityObserver = null;
+        this.loadedVideos = new Set();
+        this.lazyLoadInstance = null;
+        this.memoryMonitorInterval = null;
         
         this.init();
     }
 
     init() {
-        // Wait for DOM to be ready
+        // Wait for DOM and Vanilla-LazyLoad to be ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.setup());
         } else {
@@ -44,184 +43,253 @@ class VideoLazyLoader {
     }
 
     setup() {
-        // Find all lazy-loading videos
-        this.videos = Array.from(document.querySelectorAll('.lazy-video'));
-        
-        if (this.videos.length === 0) {
+        // Check if Vanilla-LazyLoad is available
+        if (typeof LazyLoad === 'undefined') {
+            console.error('Vanilla-LazyLoad not found. Please include the library.');
             return;
         }
 
-        // Create intersection observer for loading videos when they enter viewport
-        this.createIntersectionObserver();
-        
-        // Create visibility observer for pausing/playing videos based on visibility
-        this.createVisibilityObserver();
-        
-        // Create special observer for landing video
-        this.createLandingVideoObserver();
-        
-        // Observe all videos
-        this.videos.forEach(video => {
-            this.intersectionObserver.observe(video);
-            
-            // Use special observer for landing video, regular for showcase videos
-            if (video.classList.contains('landing-background-video')) {
-                this.landingVideoObserver.observe(video);
-                // Prioritize loading the landing video immediately
-                this.loadVideo(video);
-            } else {
-                this.visibilityObserver.observe(video);
+        // Initialize Vanilla-LazyLoad with video-optimized settings
+        this.lazyLoadInstance = new LazyLoad({
+            elements_selector: '.lazy-video',
+            threshold: 0,
+            rootMargin: '200px 0px',
+            callback_loading: (element) => {
+                console.log('Loading video:', element.dataset.src);
+                element.classList.add('video-loading');
+            },
+            callback_loaded: (element) => {
+                console.log('Video loaded:', element.dataset.src);
+                this.handleVideoLoaded(element);
+            },
+            callback_error: (element) => {
+                console.warn('Video loading failed:', element.dataset.src);
+                element.classList.add('video-error');
+            },
+            callback_enter: (element) => {
+                // Video entered viewport
+                this.handleVideoEnterViewport(element);
+            },
+            callback_exit: (element) => {
+                // Video left viewport
+                this.handleVideoExitViewport(element);
             }
         });
 
-        // Add performance monitoring
-        this.addPerformanceMonitoring();
+        // Set up visibility observers for play/pause control
+        this.setupVideoVisibilityControl();
         
-        console.log(`Video Lazy Loader initialized with ${this.videos.length} videos`);
+        // Start performance monitoring
+        this.startPerformanceMonitoring();
+        
+        const videoCount = document.querySelectorAll('.lazy-video').length;
+        console.log(`Enhanced Video Manager initialized with ${videoCount} videos using Vanilla-LazyLoad`);
     }
 
-    createIntersectionObserver() {
-        // Observer for loading videos when they come into view
-        this.intersectionObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && !this.loadedVideos.has(entry.target)) {
-                    this.loadVideo(entry.target);
-                }
-            });
-        }, {
-            // Load video when it's 200px away from entering viewport
-            rootMargin: '200px 0px',
-            threshold: 0
-        });
+    handleVideoLoaded(video) {
+        this.loadedVideos.add(video);
+        video.classList.remove('video-loading');
+        video.classList.add('video-loaded');
+        
+        // Check if video is in viewport and should start playing
+        const rect = video.getBoundingClientRect();
+        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+        
+        if (isVisible) {
+            // Delay to ensure video is fully ready
+            setTimeout(() => {
+                this.playVideo(video);
+            }, 100);
+        }
     }
 
-    createVisibilityObserver() {
-        // Observer for playing/pausing videos based on visibility
-        this.visibilityObserver = new IntersectionObserver((entries) => {
+    handleVideoEnterViewport(video) {
+        // Video is entering viewport - prepare for playback if loaded
+        if (this.loadedVideos.has(video)) {
+            setTimeout(() => {
+                this.playVideo(video);
+            }, 100);
+        }
+    }
+
+    handleVideoExitViewport(video) {
+        // Video left viewport - pause unless it's the landing background video
+        if (!video.classList.contains('landing-background-video')) {
+            this.pauseVideo(video);
+        }
+    }
+
+    setupVideoVisibilityControl() {
+        // Most Visible Video tracking system
+        this.videoVisibilityTracker = new Map();
+        this.mostVisibleVideo = null;
+        this.updateMostVisibleTimeout = null;
+
+        // Enhanced visibility observer with multiple thresholds for precise tracking
+        const playbackObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 const video = entry.target;
                 
                 if (entry.isIntersecting) {
-                    // Video is visible - play if loaded
-                    if (this.loadedVideos.has(video)) {
-                        this.playVideo(video);
+                    // Update visibility ratio for this video
+                    this.videoVisibilityTracker.set(video, entry.intersectionRatio);
+                    
+                    // Add visual class when substantially visible
+                    if (entry.intersectionRatio >= 0.6) {
+                        video.closest('.showcase-item')?.classList.add('in-view');
+                    } else {
+                        video.closest('.showcase-item')?.classList.remove('in-view');
                     }
                 } else {
-                    // Video is not visible - pause to save resources
-                    // Exception: Don't pause landing background video as it's always meant to be playing
-                    if (!video.classList.contains('landing-background-video')) {
-                        this.pauseVideo(video);
+                    // Remove from tracking when not intersecting
+                    this.videoVisibilityTracker.delete(video);
+                    video.closest('.showcase-item')?.classList.remove('in-view');
+                    
+                    // If this was the most visible video, clear it
+                    if (this.mostVisibleVideo === video) {
+                        this.mostVisibleVideo = null;
                     }
                 }
+                
+                // Update which video should be playing based on visibility
+                this.debouncedUpdateMostVisible();
             });
         }, {
-            // Trigger when 25% of video is visible for showcase videos
-            // Landing video gets different treatment with larger threshold
-            rootMargin: '50px',
-            threshold: 0.25
+            threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], // Multiple thresholds for precise visibility tracking
+            rootMargin: '50px'
         });
-    }
 
-    createLandingVideoObserver() {
-        // Special observer for landing background video
-        // This ensures the landing video stays playing when visible and pauses when completely out of view
-        this.landingVideoObserver = new IntersectionObserver((entries) => {
+        // Special observer for landing video (simpler logic)
+        const landingObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 const video = entry.target;
-                
                 if (entry.isIntersecting) {
-                    // Landing video is visible - ensure it's playing
                     if (this.loadedVideos.has(video)) {
                         this.playVideo(video);
                     }
                 } else {
-                    // Landing video is completely out of view - pause to save resources
                     this.pauseVideo(video);
                 }
             });
         }, {
-            // Only pause when completely out of view
-            rootMargin: '0px',
-            threshold: 0
+            threshold: 0,
+            rootMargin: '0px'
         });
-    }
 
-    async loadVideo(video) {
-        if (this.loadedVideos.has(video)) {
-            return;
-        }
-
-        try {
-            // Mark as loading
-            video.classList.add('video-loading');
-            
-            // Get the video source from data-src
-            const dataSrc = video.getAttribute('data-src');
-            const source = video.querySelector('source');
-            
-            if (dataSrc) {
-                // Set the actual src attributes
-                video.src = dataSrc;
-                if (source) {
-                    source.src = dataSrc;
-                }
-                
-                // Load the video
-                await this.preloadVideo(video);
-                
-                // Mark as loaded
-                this.loadedVideos.add(video);
-                video.classList.remove('video-loading');
-                video.classList.add('video-loaded');
-                
-                // Start playing if in viewport
-                const rect = video.getBoundingClientRect();
-                const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
-                
-                if (isVisible) {
-                    this.playVideo(video);
-                }
-                
-                console.log(`Video loaded: ${dataSrc}`);
+        // Observe all videos with appropriate observer
+        document.querySelectorAll('.lazy-video').forEach(video => {
+            if (video.classList.contains('landing-background-video')) {
+                landingObserver.observe(video);
+            } else {
+                playbackObserver.observe(video);
             }
-        } catch (error) {
-            console.warn(`Failed to load video: ${video.getAttribute('data-src')}`, error);
-            video.classList.remove('video-loading');
-            video.classList.add('video-error');
+        });
+
+        // Add scroll-based recalculation for smoother most visible video detection
+        this.setupScrollBasedVisibilityUpdate();
+    }
+
+    // Function to determine and play the most visible video
+    updateMostVisibleVideo() {
+        let highestRatio = 0;
+        let targetVideo = null;
+        let bestCenterDistance = Infinity;
+        
+        const viewportCenter = window.innerHeight / 2;
+        
+        // Find the video with the highest visibility ratio (with tie-breaker for center proximity)
+        this.videoVisibilityTracker.forEach((ratio, video) => {
+            if (ratio > 0.1 && video.readyState >= 2) { // Only consider videos that are somewhat visible and loaded
+                const showcaseItem = video.closest('.showcase-item');
+                if (showcaseItem) {
+                    const rect = showcaseItem.getBoundingClientRect();
+                    const elementCenter = rect.top + (rect.height / 2);
+                    const distanceFromCenter = Math.abs(viewportCenter - elementCenter);
+                    
+                    // Prefer higher visibility ratio, but if ratios are close (within 0.1), prefer center proximity
+                    if (ratio > highestRatio || (Math.abs(ratio - highestRatio) <= 0.1 && distanceFromCenter < bestCenterDistance)) {
+                        highestRatio = ratio;
+                        targetVideo = video;
+                        bestCenterDistance = distanceFromCenter;
+                    }
+                }
+            }
+        });
+        
+        // Only play if visibility is substantial (at least 30%)
+        if (targetVideo && highestRatio >= 0.3) {
+            if (this.mostVisibleVideo !== targetVideo) {
+                // Pause the previously most visible video
+                if (this.mostVisibleVideo) {
+                    this.pauseVideo(this.mostVisibleVideo);
+                }
+                
+                // Play the new most visible video
+                this.mostVisibleVideo = targetVideo;
+                this.playVideo(targetVideo);
+                
+                // Debug logging
+                console.log(`Playing most visible video (${Math.round(highestRatio * 100)}% visible)`);
+            }
+        } else {
+            // No video is sufficiently visible, pause current if any
+            if (this.mostVisibleVideo) {
+                this.pauseVideo(this.mostVisibleVideo);
+                this.mostVisibleVideo = null;
+            }
         }
     }
 
-    preloadVideo(video) {
-        return new Promise((resolve, reject) => {
-            // Set up event listeners
-            const onLoadedData = () => {
-                cleanup();
-                resolve();
-            };
-            
-            const onError = (error) => {
-                cleanup();
-                reject(error);
-            };
-            
-            const cleanup = () => {
-                video.removeEventListener('loadeddata', onLoadedData);
-                video.removeEventListener('error', onError);
-            };
-            
-            // Add event listeners
-            video.addEventListener('loadeddata', onLoadedData, { once: true });
-            video.addEventListener('error', onError, { once: true });
-            
-            // Start loading
-            video.load();
-            
-            // Timeout after 10 seconds
-            setTimeout(() => {
-                cleanup();
-                reject(new Error('Video load timeout'));
-            }, 10000);
-        });
+    // Debounced update function to prevent excessive calculations
+    debouncedUpdateMostVisible() {
+        clearTimeout(this.updateMostVisibleTimeout);
+        this.updateMostVisibleTimeout = setTimeout(() => {
+            this.updateMostVisibleVideo();
+        }, 50);
+    }
+
+    setupScrollBasedVisibilityUpdate() {
+        let scrollUpdateTimeout = null;
+        
+        const onScroll = () => {
+            clearTimeout(scrollUpdateTimeout);
+            scrollUpdateTimeout = setTimeout(() => {
+                // Recalculate visibility ratios during scroll for more responsive video switching
+                if (this.videoVisibilityTracker.size > 0) {
+                    // Force update visibility ratios by manually checking each tracked video
+                    this.videoVisibilityTracker.forEach((ratio, video) => {
+                        const showcaseItem = video.closest('.showcase-item');
+                        if (showcaseItem) {
+                            const rect = showcaseItem.getBoundingClientRect();
+                            const viewportHeight = window.innerHeight;
+                            
+                            // Calculate precise intersection ratio
+                            const visibleTop = Math.max(0, rect.top);
+                            const visibleBottom = Math.min(viewportHeight, rect.bottom);
+                            const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+                            const elementHeight = rect.height;
+                            const newRatio = elementHeight > 0 ? visibleHeight / elementHeight : 0;
+                            
+                            // Update tracking with new ratio
+                            if (newRatio > 0) {
+                                this.videoVisibilityTracker.set(video, newRatio);
+                            } else {
+                                this.videoVisibilityTracker.delete(video);
+                            }
+                        }
+                    });
+                    
+                    this.debouncedUpdateMostVisible();
+                }
+            }, 100); // Update during scroll every 100ms
+        };
+        
+        // Listen for scroll events to ensure most visible video is always playing
+        window.addEventListener('scroll', onScroll, { passive: true });
+        
+        // Store reference for cleanup
+        this.scrollHandler = onScroll;
+        this.scrollUpdateTimeout = scrollUpdateTimeout;
     }
 
     playVideo(video) {
@@ -229,7 +297,7 @@ class VideoLazyLoader {
             return;
         }
 
-        // SINGLE VIDEO PLAYBACK: Pause currently playing video before starting new one
+        // Single video playback policy - pause currently playing video
         if (this.currentlyPlayingVideo && this.currentlyPlayingVideo !== video) {
             this.pauseVideo(this.currentlyPlayingVideo);
         }
@@ -241,24 +309,23 @@ class VideoLazyLoader {
                 playPromise
                     .then(() => {
                         this.activeVideos.add(video);
-                        this.currentlyPlayingVideo = video; // Set as currently playing
+                        this.currentlyPlayingVideo = video;
                         video.classList.add('video-playing');
+                        console.log('Video playing:', video.dataset.src || video.src);
                     })
                     .catch(error => {
                         console.warn('Video play failed:', error);
-                        // Reset currentlyPlayingVideo on failure
                         if (this.currentlyPlayingVideo === video) {
                             this.currentlyPlayingVideo = null;
                         }
                     });
             } else {
                 this.activeVideos.add(video);
-                this.currentlyPlayingVideo = video; // Set as currently playing
+                this.currentlyPlayingVideo = video;
                 video.classList.add('video-playing');
             }
         } catch (error) {
             console.warn('Video play error:', error);
-            // Reset currentlyPlayingVideo on error
             if (this.currentlyPlayingVideo === video) {
                 this.currentlyPlayingVideo = null;
             }
@@ -275,7 +342,6 @@ class VideoLazyLoader {
             this.activeVideos.delete(video);
             video.classList.remove('video-playing');
             
-            // Clear currently playing video if this is the one being paused
             if (this.currentlyPlayingVideo === video) {
                 this.currentlyPlayingVideo = null;
             }
@@ -284,45 +350,31 @@ class VideoLazyLoader {
         }
     }
 
-    addPerformanceMonitoring() {
-        // Monitor network conditions and adjust loading behavior
-        if ('connection' in navigator) {
-            const connection = navigator.connection;
-            
-            // Adjust loading strategy based on connection
-            if (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
-                // On slow connections, increase the intersection margin to load earlier
-                this.intersectionObserver.disconnect();
-                this.createIntersectionObserver();
-            }
-            
-            // Listen for connection changes
-            connection.addEventListener('change', () => {
-                console.log(`Connection changed: ${connection.effectiveType}`);
-            });
-        }
-
-        // Monitor memory usage if available - improved memory management
+    startPerformanceMonitoring() {
+        // Monitor memory usage and network conditions
         if ('memory' in performance) {
-            setInterval(() => {
+            this.memoryMonitorInterval = setInterval(() => {
                 const memory = performance.memory;
                 const memoryUsageRatio = memory.usedJSHeapSize / memory.totalJSHeapSize;
                 
                 if (memoryUsageRatio > 0.9) {
                     console.warn('High memory usage detected, pausing non-visible videos');
                     this.pauseAllNonVisibleVideos();
-                } else if (memoryUsageRatio > 0.8) {
-                    console.warn('Moderate memory usage detected, pausing currently playing video if not in view');
-                    // More aggressive memory management - pause current video if not fully visible
-                    if (this.currentlyPlayingVideo) {
-                        const rect = this.currentlyPlayingVideo.getBoundingClientRect();
-                        const isFullyVisible = rect.top >= 0 && rect.bottom <= window.innerHeight;
-                        if (!isFullyVisible) {
-                            this.pauseVideo(this.currentlyPlayingVideo);
-                        }
+                } else if (memoryUsageRatio > 0.8 && this.currentlyPlayingVideo) {
+                    const rect = this.currentlyPlayingVideo.getBoundingClientRect();
+                    const isFullyVisible = rect.top >= 0 && rect.bottom <= window.innerHeight;
+                    if (!isFullyVisible) {
+                        this.pauseVideo(this.currentlyPlayingVideo);
                     }
                 }
-            }, 8000); // Check every 8 seconds for better responsiveness
+            }, 10000);
+        }
+
+        // Monitor network conditions
+        if ('connection' in navigator) {
+            navigator.connection.addEventListener('change', () => {
+                console.log(`Network changed: ${navigator.connection.effectiveType}`);
+            });
         }
     }
 
@@ -337,72 +389,110 @@ class VideoLazyLoader {
         });
     }
 
-    // Public methods for manual control
-    forceLoadVideo(videoElement) {
-        if (videoElement && videoElement.classList.contains('lazy-video')) {
-            this.loadVideo(videoElement);
+    // Public API methods for compatibility
+    forceLoadVideo(video) {
+        if (video && video.classList.contains('lazy-video')) {
+            // Use Vanilla-LazyLoad's load method
+            if (this.lazyLoadInstance) {
+                this.lazyLoadInstance.load(video);
+            }
         }
     }
 
     getStats() {
         return {
-            totalVideos: this.videos.length,
+            totalVideos: document.querySelectorAll('.lazy-video').length,
             loadedVideos: this.loadedVideos.size,
-            activeVideos: this.activeVideos.size
+            activeVideos: this.activeVideos.size,
+            currentlyPlaying: this.currentlyPlayingVideo ? 1 : 0
         };
     }
 
+    getCurrentlyPlayingVideo() {
+        return this.currentlyPlayingVideo;
+    }
+
+    // Debug methods for most visible video system
+    getMostVisibleVideoStats() {
+        const stats = [];
+        this.videoVisibilityTracker.forEach((ratio, video) => {
+            const showcaseItem = video.closest('.showcase-item');
+            const index = showcaseItem ? Array.from(document.querySelectorAll('.showcase-item')).indexOf(showcaseItem) + 1 : 'unknown';
+            stats.push({
+                video: `Video ${index}`,
+                visibility: `${Math.round(ratio * 100)}%`,
+                isPlaying: video === this.mostVisibleVideo,
+                readyState: video.readyState,
+                src: video.dataset.src || video.src
+            });
+        });
+        return stats.sort((a, b) => parseFloat(b.visibility) - parseFloat(a.visibility));
+    }
+
+    getMostVisibleVideo() {
+        return this.mostVisibleVideo;
+    }
+
     destroy() {
-        // Clean up observers
-        if (this.intersectionObserver) {
-            this.intersectionObserver.disconnect();
-        }
-        if (this.visibilityObserver) {
-            this.visibilityObserver.disconnect();
-        }
-        if (this.landingVideoObserver) {
-            this.landingVideoObserver.disconnect();
+        if (this.lazyLoadInstance) {
+            this.lazyLoadInstance.destroy();
         }
         
-        // Pause all active videos
+        if (this.memoryMonitorInterval) {
+            clearInterval(this.memoryMonitorInterval);
+        }
+
+        // Clean up most visible video tracking
+        if (this.updateMostVisibleTimeout) {
+            clearTimeout(this.updateMostVisibleTimeout);
+        }
+
+        if (this.scrollUpdateTimeout) {
+            clearTimeout(this.scrollUpdateTimeout);
+        }
+
+        if (this.scrollHandler) {
+            window.removeEventListener('scroll', this.scrollHandler);
+        }
+
+        if (this.videoVisibilityTracker) {
+            this.videoVisibilityTracker.clear();
+        }
+        
         this.activeVideos.forEach(video => {
             video.pause();
         });
         
-        // Clear sets and references
         this.loadedVideos.clear();
         this.activeVideos.clear();
         this.currentlyPlayingVideo = null;
-    }
-
-    // Public method to get currently playing video
-    getCurrentlyPlayingVideo() {
-        return this.currentlyPlayingVideo;
+        this.mostVisibleVideo = null;
     }
 }
 
 // Initialize when DOM is ready
-let videoLazyLoader;
+let enhancedVideoManager;
 
 document.addEventListener('DOMContentLoaded', () => {
-    videoLazyLoader = new VideoLazyLoader();
+    enhancedVideoManager = new EnhancedVideoManager();
 });
 
-// Export for global access
+// Export for global access - maintain compatibility with existing code
 window.VideoLazyLoader = {
-    getInstance: () => videoLazyLoader,
-    forceLoadVideo: (video) => videoLazyLoader?.forceLoadVideo(video),
-    getStats: () => videoLazyLoader?.getStats() || { totalVideos: 0, loadedVideos: 0, activeVideos: 0 },
-    getCurrentlyPlayingVideo: () => videoLazyLoader?.getCurrentlyPlayingVideo() || null,
-    playVideo: (video) => videoLazyLoader?.playVideo(video),
-    pauseVideo: (video) => videoLazyLoader?.pauseVideo(video)
+    getInstance: () => enhancedVideoManager,
+    forceLoadVideo: (video) => enhancedVideoManager?.forceLoadVideo(video),
+    getStats: () => enhancedVideoManager?.getStats() || { totalVideos: 0, loadedVideos: 0, activeVideos: 0 },
+    getCurrentlyPlayingVideo: () => enhancedVideoManager?.getCurrentlyPlayingVideo() || null,
+    playVideo: (video) => enhancedVideoManager?.playVideo(video),
+    pauseVideo: (video) => enhancedVideoManager?.pauseVideo(video),
+    // Debug methods for most visible video system
+    getMostVisibleVideoStats: () => enhancedVideoManager?.getMostVisibleVideoStats() || [],
+    getMostVisibleVideo: () => enhancedVideoManager?.getMostVisibleVideo() || null
 };
 
-// Handle page visibility changes to pause all videos when tab is not active
+// Handle page visibility changes
 document.addEventListener('visibilitychange', () => {
-    if (videoLazyLoader) {
-        if (document.hidden) {
-            videoLazyLoader.pauseAllNonVisibleVideos();
-        }
+    if (enhancedVideoManager && document.hidden) {
+        enhancedVideoManager.pauseAllNonVisibleVideos();
     }
 }); 
