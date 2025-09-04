@@ -1,14 +1,24 @@
 .features-container {
     position: relative;
     margin-top: 120px;
-    padding: 0;
+    padding: 60px 0;
     width: 100%;
     max-width: 100%;
     margin-left: auto;
     margin-right: auto;
     overflow: visible;
     z-index: 5;
+    background: linear-gradient(to bottom, 
+        transparent 0%, 
+        transparent 10%, 
+        rgba(0, 0, 0, 0.3) 15%, 
+        rgba(0, 0, 0, 0.5) 25%, 
+        rgba(0, 0, 0, 0.5) 70%, 
+        rgba(0, 0, 0, 0.3) 85%, 
+        transparent 95%, 
+        transparent 100%);
 }
+
 
 .features-content {
     max-width: 100%;
@@ -98,6 +108,7 @@
     overflow: hidden;
     transform: translateZ(0);
     will-change: backdrop-filter;
+    text-align: left;
 }
 
 /* Fallback for browsers that don't support backdrop-filter */
@@ -146,15 +157,14 @@
     display: flex;
     align-items: center;
     margin-bottom: 8px;
-    gap: 10px;
-    justify-content: space-between;
+    gap: 8px;
+    justify-content: flex-start;
 }
 
 .feature-title {
     font-size: 1.1rem;
     font-weight: 700;
     text-transform: uppercase;
-    flex: 1;
     color: #ffffff;
 }
 
