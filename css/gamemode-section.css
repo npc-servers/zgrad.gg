@@ -258,6 +258,78 @@
     z-index: 1;
 }
 
+/* Lazy loading states for Swiper videos - using VideoLazyLoader classes */
+.gamemode-video.video-loading {
+    opacity: 0;
+    transform: scale(1.05);
+    transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+}
+
+.gamemode-video.video-loaded {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.gamemode-video.video-error {
+    opacity: 0.3;
+    background: linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333),
+                linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+}
+
+/* Loading indicator overlay for lazy videos */
+.gamemode-video-container:has(.video-loading)::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #ffffff;
+    animation: lazy-loading-spin 1s ease-in-out infinite;
+    z-index: 10;
+    pointer-events: none;
+}
+
+@keyframes lazy-loading-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Hide loading indicator when video is loaded */
+.gamemode-video-container:has(.video-loaded)::after,
+.gamemode-video-container:has(.video-error)::after {
+    display: none;
+}
+
+/* Fallback for browsers that don't support :has() */
+.gamemode-video-container .video-loaded ~ .loading-indicator,
+.gamemode-video-container .video-error ~ .loading-indicator {
+    display: none;
+}
+
+/* Fallback loading indicator for older browsers */
+.gamemode-video-container.video-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #ffffff;
+    animation: lazy-loading-spin 1s ease-in-out infinite;
+    z-index: 10;
+    pointer-events: none;
+}
+
 .gamemode-video-container::before {
     content: '';
     position: absolute;
@@ -300,6 +372,19 @@
 
 .gamemode-video.fade-in {
     opacity: 1;
+}
+
+/* Enhanced fade transitions for lazy-loaded videos */
+.gamemode-video.video-loaded.fade-in {
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+}
+
+.gamemode-video.video-loaded.fade-out {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
 }
 
 .gamemode-video-container:hover {
@@ -365,6 +450,13 @@
             0 0 12px rgba(0, 0, 0, 0.3);
         transform: scale(1);
     }
+    
+    /* Disable loading animation on touch devices for performance */
+    .gamemode-video-container:has(.video-loading)::after,
+    .gamemode-video-container.video-loading::after {
+        animation: none;
+        opacity: 0.7;
+    }
 }
 
 /* Swiper Slide Styles */
@@ -384,8 +476,8 @@
 }
 
 .gamemode-swiper {
-    opacity: 0;
-    transform: translateY(50px);
+    opacity: 1; /* Always visible - no initial hiding */
+    transform: translateY(0); /* No initial transform */
     will-change: transform, opacity;
 }
 
@@ -525,6 +617,15 @@
     
     .gamemode-video {
         border-radius: 8px;
+    }
+    
+    /* Smaller loading indicator on mobile */
+    .gamemode-video-container:has(.video-loading)::after,
+    .gamemode-video-container.video-loading::after {
+        width: 30px;
+        height: 30px;
+        margin: -15px 0 0 -15px;
+        border-width: 2px;
     }
     
     .bloodsplatter-decoration-header-center img {
