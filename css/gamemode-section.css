@@ -9,6 +9,7 @@
     margin-right: auto;
     overflow: visible;
     z-index: 4;
+    isolation: isolate; /* Create new stacking context */
     background: linear-gradient(to bottom, 
         transparent 0%, 
         transparent 5%, 
@@ -38,16 +39,18 @@
 .gamemode-container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 60px; /* More padding for bloodframes */
     position: relative;
-    z-index: 5;
+    z-index: 1;
+    overflow: visible; /* Prevent container cutoff */
 }
 
 .gamemode-header {
     text-align: center;
     margin-bottom: 60px;
     position: relative;
-    z-index: 6;
+    z-index: 1; /* Lower than swiper */
+    isolation: isolate; /* Create isolated stacking context */
 }
 
 /* Blood splatter decoration for header */
@@ -57,13 +60,14 @@
     left: 50%;
     transform: translate(-50%, -50%);
     flex-shrink: 0;
-    z-index: -1; /* Behind all content */
+    z-index: -1; /* Behind all header content */
     pointer-events: none;
     overflow: visible;
+    contain: layout; /* Contain the decoration */
 }
 
 .bloodsplatter-decoration-header-center img {
-    height: 500px;
+    height: 500px; /* Restored to original size */
     width: auto;
     object-fit: contain;
     position: relative;
@@ -72,6 +76,8 @@
     clip-path: polygon(50% 50%); /* Start completely hidden at center */
     transition: none; /* Disable default transitions for GSAP control */
     will-change: clip-path, transform, filter;
+    mask: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 20%, rgba(0,0,0,0.6) 45%, rgba(0,0,0,0.2) 65%, rgba(0,0,0,0) 80%);
+    -webkit-mask: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 20%, rgba(0,0,0,0.6) 45%, rgba(0,0,0,0.2) 65%, rgba(0,0,0,0) 80%);
 }
 
 .gamemode-main-title {
@@ -83,7 +89,7 @@
     letter-spacing: 1px;
     line-height: 1.2;
     position: relative;
-    z-index: 2; /* Above bloodsplatter */
+    z-index: 2; /* Above bloodsplatter within header */
     -webkit-text-stroke: 0.5px rgba(180, 180, 180, 0.3);
     text-shadow: 
         /* Light stroke effect using multiple shadows */
@@ -106,7 +112,7 @@
     max-width: 800px;
     margin: 0 auto;
     position: relative;
-    z-index: 2; /* Above bloodsplatter */
+    z-index: 2; /* Above bloodsplatter within header */
     -webkit-text-stroke: 0.5px rgba(180, 180, 180, 0.3);
     text-shadow: 
         /* Light stroke effect using multiple shadows */
@@ -120,20 +126,66 @@
         0 0 12px rgba(0, 0, 0, 0.3);
 }
 
-.gamemode-showcase {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    align-items: center;
-    min-height: 500px;
+/* Swiper Container */
+.gamemode-swiper {
+    width: 100%;
+    max-width: 900px;
+    height: 500px;
+    margin: 40px auto;
     position: relative;
-    z-index: 7; /* Higher than header to ensure it's above bloodsplatter */
+    z-index: 5; /* Above header but not excessive */
+    overflow: visible;
+    padding: 0 20px; /* Prevent cutoff on sides */
+    box-sizing: border-box;
+    isolation: isolate; /* Force new stacking context */
 }
 
-.gamemode-info {
-    padding: 20px 0;
-    z-index: 2;
-    position: relative;
+/* Force Swiper internal elements to allow overflow */
+.gamemode-swiper .swiper-wrapper {
+    overflow: visible !important;
+    transform-style: preserve-3d;
+}
+
+.gamemode-swiper .swiper-slide {
+    overflow: visible !important;
+    transform-style: preserve-3d;
+}
+
+/* Ensure Swiper container doesn't clip decorations */
+.gamemode-swiper.swiper {
+    overflow: visible !important;
+}
+
+.gamemode-swiper .swiper-wrapper {
+    overflow: visible !important;
+}
+
+.gamemode-swiper .swiper-slide {
+    overflow: visible !important;
+}
+
+/* Allow bloodframe decorations to show but keep video clipped */
+.gamemode-video-container {
+    overflow: visible !important;
+}
+
+.gamemode-video {
+    overflow: hidden !important;
+    border-radius: 12px;
+}
+
+/* Gamemode Overlay Styles */
+.gamemode-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent 0%, rgba(0, 0, 0, 0.7) 40%, rgba(0, 0, 0, 0.9) 100%);
+    padding: 60px 30px 30px 30px;
+    border-radius: 0 0 12px 12px;
+    z-index: 3;
+    pointer-events: none;
+    text-align: left; /* Left align overlay content */
 }
 
 .gamemode-title {
@@ -181,16 +233,29 @@
 .gamemode-video-container {
     position: relative;
     border-radius: 12px;
-    overflow: visible;
+    overflow: visible; /* Allow bloodframe decorations */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.1);
     aspect-ratio: 16/9;
-    min-height: 350px;
+    height: 100%;
+    width: 100%;
     transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     transform: translateY(0) scale(1);
+    z-index: 1; /* Above slide background */
+    margin: 0 auto; /* Center within slide */
+}
+
+.gamemode-video {
     width: 100%;
-    z-index: 2;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: opacity 0.6s ease-in-out;
+    position: relative;
+    z-index: 1;
 }
 
 .gamemode-video-container::before {
@@ -209,6 +274,8 @@
     border-radius: 25px;
     pointer-events: none;
     transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    will-change: transform, filter;
+    /* This decoration extends outside the container but won't be clipped by Swiper overflow:visible */
 }
 
 .gamemode-video-container:hover::before {
@@ -241,7 +308,7 @@
     border-color: rgba(255, 0, 0, 0.9);
 }
 
-.gamemode-showcase:hover .gamemode-title {
+.gamemode-video-container:hover .gamemode-overlay .gamemode-title {
     text-shadow: 
         0 0 5px rgba(255, 71, 87, 0.8),
         0 0 10px rgba(255, 71, 87, 0.6),
@@ -251,33 +318,30 @@
     transform: scale(1.02);
 }
 
-/* Progress indicators */
-.gamemode-progress {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 40px;
-    z-index: 6;
-    position: relative;
+/* Swiper Pagination */
+.gamemode-swiper .swiper-pagination {
+    position: relative !important;
+    margin-top: 30px;
+    bottom: auto !important;
+    z-index: 11;
 }
 
-.progress-dot {
+.gamemode-swiper .swiper-pagination-bullet {
     width: 12px;
     height: 12px;
-    border-radius: 50%;
     background: rgba(255, 255, 255, 0.3);
-    cursor: pointer;
-    transition: all 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    opacity: 1;
 }
 
-.progress-dot.active {
+.gamemode-swiper .swiper-pagination-bullet-active {
     background: #ffffff;
     transform: scale(1.2);
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
-.progress-dot:hover {
+.gamemode-swiper .swiper-pagination-bullet:hover {
     background: rgba(255, 255, 255, 0.6);
     transform: scale(1.1);
 }
@@ -290,7 +354,7 @@
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     }
     
-    .gamemode-showcase:hover .gamemode-title {
+    .gamemode-video-container:hover .gamemode-overlay .gamemode-title {
         text-shadow: 
             -0.5px -0.5px 0 rgba(180, 180, 180, 0.3),
             0.5px -0.5px 0 rgba(180, 180, 180, 0.3),
@@ -303,18 +367,25 @@
     }
 }
 
+/* Swiper Slide Styles */
+.gamemode-swiper .swiper-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
 /* Initial animation states */
 .gamemode-main-title,
-.gamemode-description,
-.gamemode-title,
-.gamemode-subtitle {
+.gamemode-description {
     opacity: 0;
     transform: translateY(30px);
     will-change: transform, opacity;
 }
 
-.gamemode-video-container {
-    transform: translateY(50px) scale(0.95);
+.gamemode-swiper {
+    opacity: 0;
+    transform: translateY(50px);
     will-change: transform, opacity;
 }
 
@@ -325,21 +396,19 @@
         padding: 0 15px;
     }
     
-    .gamemode-showcase {
-        gap: 40px;
-        min-height: 450px;
+    .gamemode-swiper {
+        max-width: 100%;
+        height: 450px;
+        padding: 0 15px;
+        margin: 30px auto;
     }
     
-    .gamemode-title {
+    .gamemode-overlay .gamemode-title {
         font-size: 2.5rem;
     }
     
-    .gamemode-subtitle {
+    .gamemode-overlay .gamemode-subtitle {
         font-size: 1.1rem;
-    }
-    
-    .gamemode-video-container {
-        min-height: 320px;
     }
     
     .gamemode-video-container::before {
@@ -360,22 +429,10 @@
         padding: 60px 0 100px 0;
     }
     
-    .gamemode-showcase {
-        grid-template-columns: 1fr;
-        gap: 30px;
-        min-height: auto;
-    }
-    
-    .gamemode-info {
-        text-align: center;
-        order: 1;
-        padding: 10px 0;
-    }
-    
-    .gamemode-video-container {
-        order: 2;
-        min-height: 280px;
-        margin-bottom: 20px;
+    .gamemode-swiper {
+        height: 400px;
+        padding: 0 10px;
+        margin: 25px auto;
     }
     
     .gamemode-video-container::before {
@@ -386,14 +443,19 @@
         border-radius: 20px;
     }
     
-    .gamemode-subtitle {
-        max-width: 100%;
-        margin: 0 auto;
+    .gamemode-overlay {
+        text-align: left;
+        padding: 50px 20px 25px 20px;
     }
     
-    .gamemode-title {
+    .gamemode-overlay .gamemode-subtitle {
+        max-width: 100%;
+        margin: 0;
+    }
+    
+    .gamemode-overlay .gamemode-title {
         font-size: 2.2rem;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
     }
     
     .bloodsplatter-decoration-header-center img {
@@ -426,24 +488,30 @@
         max-width: 100%;
     }
     
-    .gamemode-showcase {
-        gap: 25px;
+    .gamemode-swiper {
+        height: 320px;
+        padding: 0 5px;
+        margin: 20px auto;
     }
     
-    .gamemode-title {
+    .gamemode-overlay .gamemode-title {
         font-size: 1.8rem;
         margin-bottom: 15px;
         line-height: 1.2;
     }
     
-    .gamemode-subtitle {
+    .gamemode-overlay .gamemode-subtitle {
         font-size: 1rem;
         line-height: 1.5;
         max-width: 100%;
     }
     
+    .gamemode-overlay {
+        padding: 40px 15px 20px 15px;
+        text-align: left;
+    }
+    
     .gamemode-video-container {
-        min-height: 250px;
         border-radius: 8px;
     }
     
@@ -460,15 +528,14 @@
     }
     
     .bloodsplatter-decoration-header-center img {
-        height: 350px;
+        height: 300px;
     }
     
-    .gamemode-progress {
-        margin-top: 30px;
-        gap: 10px;
+    .gamemode-swiper .swiper-pagination {
+        margin-top: 20px;
     }
     
-    .progress-dot {
+    .gamemode-swiper .swiper-pagination-bullet {
         width: 10px;
         height: 10px;
     }
@@ -498,24 +565,28 @@
         line-height: 1.4;
     }
     
-    .gamemode-showcase {
-        gap: 20px;
+    .gamemode-swiper {
+        height: 280px;
     }
     
-    .gamemode-title {
+    .gamemode-overlay .gamemode-title {
         font-size: 1.5rem;
         margin-bottom: 12px;
         line-height: 1.1;
         letter-spacing: 0.5px;
     }
     
-    .gamemode-subtitle {
+    .gamemode-overlay .gamemode-subtitle {
         font-size: 0.95rem;
         line-height: 1.4;
     }
     
+    .gamemode-overlay {
+        padding: 30px 12px 15px 12px;
+        text-align: left;
+    }
+    
     .gamemode-video-container {
-        min-height: 200px;
         border-radius: 6px;
     }
     
@@ -532,15 +603,14 @@
     }
     
     .bloodsplatter-decoration-header-center img {
-        height: 300px;
+        height: 350px;
     }
     
-    .gamemode-progress {
-        margin-top: 25px;
-        gap: 8px;
+    .gamemode-swiper .swiper-pagination {
+        margin-top: 15px;
     }
     
-    .progress-dot {
+    .gamemode-swiper .swiper-pagination-bullet {
         width: 8px;
         height: 8px;
     }
@@ -556,17 +626,22 @@
         font-size: 0.9rem;
     }
     
-    .gamemode-title {
+    .gamemode-swiper {
+        height: 240px;
+    }
+    
+    .gamemode-overlay .gamemode-title {
         font-size: 1.3rem;
         letter-spacing: 0.3px;
     }
     
-    .gamemode-subtitle {
+    .gamemode-overlay .gamemode-subtitle {
         font-size: 0.9rem;
     }
     
-    .gamemode-video-container {
-        min-height: 180px;
+    .gamemode-overlay {
+        padding: 25px 10px 12px 10px;
+        text-align: left;
     }
     
     .gamemode-video-container::before {
@@ -587,9 +662,9 @@
         max-width: 1600px;
     }
     
-    .gamemode-showcase {
-        gap: 80px;
-        min-height: 550px;
+    .gamemode-swiper {
+        max-width: 1100px;
+        height: 600px;
     }
     
     .gamemode-main-title {
@@ -601,17 +676,17 @@
         max-width: 900px;
     }
     
-    .gamemode-title {
+    .gamemode-overlay .gamemode-title {
         font-size: 3.5rem;
     }
     
-    .gamemode-subtitle {
+    .gamemode-overlay .gamemode-subtitle {
         font-size: 1.3rem;
         max-width: 600px;
     }
     
-    .gamemode-video-container {
-        min-height: 450px;
+    .gamemode-overlay {
+        padding: 80px 40px 40px 40px;
     }
     
     .bloodsplatter-decoration-header-center img {
