@@ -126,42 +126,18 @@
         0 0 12px rgba(0, 0, 0, 0.3);
 }
 
-/* Swiper Container */
-.gamemode-swiper {
-    width: 100%;
-    max-width: 900px;
-    height: 500px;
-    margin: 40px auto;
+/* Gamemode Cards Grid */
+.gamemode-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 60px;
+    margin-top: 40px;
+    padding: 0 20px;
+}
+
+.gamemode-card {
     position: relative;
-    z-index: 5; /* Above header but not excessive */
     overflow: visible;
-    padding: 0 20px; /* Prevent cutoff on sides */
-    box-sizing: border-box;
-    isolation: isolate; /* Force new stacking context */
-}
-
-/* Force Swiper internal elements to allow overflow */
-.gamemode-swiper .swiper-wrapper {
-    overflow: visible !important;
-    transform-style: preserve-3d;
-}
-
-.gamemode-swiper .swiper-slide {
-    overflow: visible !important;
-    transform-style: preserve-3d;
-}
-
-/* Ensure Swiper container doesn't clip decorations */
-.gamemode-swiper.swiper {
-    overflow: visible !important;
-}
-
-.gamemode-swiper .swiper-wrapper {
-    overflow: visible !important;
-}
-
-.gamemode-swiper .swiper-slide {
-    overflow: visible !important;
 }
 
 /* Allow bloodframe decorations to show but keep video clipped */
@@ -403,35 +379,6 @@
     transform: scale(1.02);
 }
 
-/* Swiper Pagination */
-.gamemode-swiper .swiper-pagination {
-    position: relative !important;
-    margin-top: 30px;
-    bottom: auto !important;
-    z-index: 11;
-}
-
-.gamemode-swiper .swiper-pagination-bullet {
-    width: 12px;
-    height: 12px;
-    background: rgba(255, 255, 255, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-    opacity: 1;
-}
-
-.gamemode-swiper .swiper-pagination-bullet-active {
-    background: #ffffff;
-    transform: scale(1.2);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-}
-
-.gamemode-swiper .swiper-pagination-bullet:hover {
-    background: rgba(255, 255, 255, 0.6);
-    transform: scale(1.1);
-}
-
-
 /* Touch device optimizations */
 @media (hover: none) and (pointer: coarse) {
     .gamemode-video-container:hover {
@@ -468,13 +415,6 @@
 }
 
 /* Initial animation states */
-.gamemode-main-title,
-.gamemode-description {
-    opacity: 0;
-    transform: translateY(30px);
-    will-change: transform, opacity;
-}
-
 .gamemode-swiper {
     opacity: 1; /* Always visible - no initial hiding */
     transform: translateY(0); /* No initial transform */
@@ -488,11 +428,10 @@
         padding: 0 15px;
     }
     
-    .gamemode-swiper {
-        max-width: 100%;
-        height: 450px;
+    .gamemode-cards {
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 40px;
         padding: 0 15px;
-        margin: 30px auto;
     }
     
     .gamemode-overlay .gamemode-title {
@@ -521,10 +460,10 @@
         padding: 60px 0 100px 0;
     }
     
-    .gamemode-swiper {
-        height: 400px;
+    .gamemode-cards {
+        grid-template-columns: 1fr;
+        gap: 50px;
         padding: 0 10px;
-        margin: 25px auto;
     }
     
     .gamemode-video-container::before {
@@ -580,10 +519,8 @@
         max-width: 100%;
     }
     
-    .gamemode-swiper {
-        height: 320px;
-        padding: 0 5px;
-        margin: 20px auto;
+    .gamemode-cards {
+        gap: 40px;
     }
     
     .gamemode-overlay .gamemode-title {
@@ -666,8 +603,8 @@
         line-height: 1.4;
     }
     
-    .gamemode-swiper {
-        height: 280px;
+    .gamemode-cards {
+        gap: 30px;
     }
     
     .gamemode-overlay .gamemode-title {
@@ -727,8 +664,8 @@
         font-size: 0.9rem;
     }
     
-    .gamemode-swiper {
-        height: 240px;
+    .gamemode-cards {
+        gap: 30px;
     }
     
     .gamemode-overlay .gamemode-title {
@@ -763,9 +700,9 @@
         max-width: 1600px;
     }
     
-    .gamemode-swiper {
-        max-width: 1100px;
-        height: 600px;
+    .gamemode-cards {
+        grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+        gap: 80px;
     }
     
     .gamemode-main-title {
