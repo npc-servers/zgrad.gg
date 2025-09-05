@@ -563,276 +563,56 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize join guide popup system
     initJoinGuidePopup();
     
-    // Initialize bloodsplatter animation
+    // Initialize bloodsplatter animation using unified system
     initBloodsplatterAnimation();
 });
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
 
-// Bloodsplatter Animation System for Servers Page
+// Bloodsplatter Animation System for Servers Page - Now using unified system
 function initBloodsplatterAnimation() {
-    const serverTitleSplatter = document.querySelector('.server-title-splatter');
-    if (!serverTitleSplatter) return;
-    
-    const img = serverTitleSplatter.querySelector('img');
-    if (!img) return;
-    
-    // Configuration for server title splatter
-    const config = {
-        centerX: 5, // Far left edge
-        centerY: 15, // Upper edge
-        duration: 0.6,
-        delay: 0.2,
-        ease: "power3.out"
-    };
-    
-    // Create the reveal animation timeline
-    const tl = gsap.timeline({
-        paused: true
-    });
-    
-    // Get unique seed for this splatter
-    const seed = getSplatterSeed('server-title-splatter');
-    
-    // Paths will be lazily calculated when animation starts
-    
-    // Initial state - completely hidden with noise pattern
-    const initialPath = getPreCalculatedServerPath(0, config.centerX, config.centerY, seed);
-    gsap.set(img, {
-        clipPath: initialPath
-    });
-    
-    // Create the main splatter reveal animation with pre-calculated paths
-    tl.to(img, {
-        duration: config.duration,
-        ease: config.ease,
-        onUpdate: function() {
-            // Use pre-calculated paths for much better performance
-            const progress = this.progress();
-            const maxProgress = 150; // Go well beyond 100% to ensure full PNG reveal
-            
-            // Add subtle pulsing to make it more dynamic
-            const pulse = Math.sin(progress * Math.PI * 1.2) * 2;
-            const adjustedProgress = Math.min(maxProgress, Math.max(0, (progress * maxProgress) + pulse));
-            
-            // Use pre-calculated path lookup instead of real-time generation
-            const noisyPath = getPreCalculatedServerPath(adjustedProgress, config.centerX, config.centerY, seed);
-            img.style.clipPath = noisyPath;
-        }
-    });
-    
-    // Create ScrollTrigger for the splatter - trigger immediately when page loads
-    ScrollTrigger.create({
-        trigger: serverTitleSplatter,
-        start: "top 95%",
-        markers: false,
-        onEnter: () => {
-            // Add delay and play animation
-            gsap.delayedCall(config.delay, () => {
-                tl.play();
-                serverTitleSplatter.classList.add('bloodsplatter-revealed');
+    // Check if the unified bloodsplatter system is available
+    if (typeof window.BloodsplatterAnimations !== 'undefined') {
+        // Add server-title-splatter configuration to unified system if it doesn't exist
+        const customConfig = {
+            centerX: 5, // Far left edge
+            centerY: 15, // Upper edge
+            duration: 0.6,
+            delay: 0.2,
+            ease: "power3.out"
+        };
+        
+        // Add configuration if it doesn't exist
+        window.BloodsplatterAnimations.addSplatterConfig('server-title-splatter', customConfig, 15.34);
+        
+        // Initialize using unified system
+        window.BloodsplatterAnimations.initBloodsplatterAnimations(['.server-title-splatter'], {
+            triggerStart: "top 95%",
+            triggerActions: "play none none none"
+        });
+        
+        // Also trigger immediately on page load (for users already at top) - custom logic for servers page
+        const serverTitleSplatter = document.querySelector('.server-title-splatter');
+        if (serverTitleSplatter) {
+            gsap.delayedCall(0.7, () => { // Delay slightly longer than the config delay
+                if (!serverTitleSplatter.classList.contains('bloodsplatter-revealed')) {
+                    // Find the timeline and play it
+                    const tl = window.BloodsplatterAnimations.createBloodsplatterAnimation(serverTitleSplatter, 'server-title-splatter');
+                    if (tl) {
+                        tl.play();
+                        serverTitleSplatter.classList.add('bloodsplatter-revealed');
+                    }
+                }
             });
-        },
-        id: 'server-title-splatter'
-    });
-    
-    // Also trigger immediately on page load (for users already at top)
-    gsap.delayedCall(config.delay + 0.5, () => {
-        if (!serverTitleSplatter.classList.contains('bloodsplatter-revealed')) {
-            tl.play();
-            serverTitleSplatter.classList.add('bloodsplatter-revealed');
         }
-    });
+    } else {
+        console.error('BloodsplatterAnimations not loaded! Make sure bloodsplatter-animations.js is included.');
+    }
 }
 
-// Advanced noise-based splatter edge generator with smooth curves
-function createNoisyRevealPath(progress, centerX, centerY, seed = 0) {
-    const points = 48; // Many points for smooth curves
-    const baseRadius = progress;
-    const maxVariation = 0.35; // Reduced chaos for smoother edges
-    let path = 'polygon(';
-    
-    // Improved noise function with multiple octaves for smoother variation
-    function smoothNoise(x, offset = 0) {
-        // Primary wave (large features)
-        const wave1 = Math.sin(x * 2.5 + offset + seed) * 0.6;
-        // Secondary wave (medium features)  
-        const wave2 = Math.sin(x * 5.2 + offset * 1.7 + seed * 2) * 0.3;
-        // Tertiary wave (fine details)
-        const wave3 = Math.sin(x * 8.1 + offset * 2.3 + seed * 3) * 0.1;
-        
-        return wave1 + wave2 + wave3;
-    }
-    
-    // Generate smooth points with interpolation
-    const rawPoints = [];
-    for (let i = 0; i < points; i++) {
-        const angle = (i / points) * Math.PI * 2;
-        
-        // Generate smooth noise-based radius variation
-        const noiseValue = smoothNoise(i * 0.4, angle);
-        
-        // Progressive variation - less chaos at small sizes, more at larger
-        const progressFactor = Math.min(1, progress / 80);
-        const radiusVariation = 1 + (noiseValue * maxVariation * progressFactor);
-        // Allow very small radius for initial state, but ensure minimum of 0.5 to avoid invisible points
-        const radius = Math.max(0.5, baseRadius * radiusVariation);
-        
-        // Calculate point position with better scaling
-        const x = centerX + Math.cos(angle) * (radius * 0.9); // Less aggressive scaling
-        const y = centerY + Math.sin(angle) * (radius * 0.9);
-        
-        rawPoints.push({ x, y });
-    }
-    
-    // Smooth the points using simple averaging
-    const smoothedPoints = [];
-    for (let i = 0; i < rawPoints.length; i++) {
-        const prev = rawPoints[(i - 1 + rawPoints.length) % rawPoints.length];
-        const curr = rawPoints[i];
-        const next = rawPoints[(i + 1) % rawPoints.length];
-        
-        // Simple smoothing - average with neighbors
-        const smoothX = (prev.x * 0.15 + curr.x * 0.7 + next.x * 0.15);
-        const smoothY = (prev.y * 0.15 + curr.y * 0.7 + next.y * 0.15);
-        
-        // Clamp to safe bounds with some overflow allowance
-        const clampedX = Math.max(-10, Math.min(110, smoothX));
-        const clampedY = Math.max(-10, Math.min(110, smoothY));
-        
-        smoothedPoints.push({ x: clampedX, y: clampedY });
-    }
-    
-    // Build the polygon path
-    for (let i = 0; i < smoothedPoints.length; i++) {
-        const point = smoothedPoints[i];
-        path += `${point.x}% ${point.y}%`;
-        if (i < smoothedPoints.length - 1) path += ', ';
-    }
-    
-    path += ')';
-    return path;
-}
-
-// Generate unique seed for server title splatter
-function getSplatterSeed(splatterType) {
-    const seeds = {
-        'server-title-splatter': 15.34 // Updated seed for edge-based animation
-    };
-    return seeds[splatterType] || Math.random() * 100;
-}
-
-// Ultra-optimized server path cache with compressed storage
-const serverPathCache = new Map();
-const serverNoisePatterns = new Map();
-
-// Generate shared noise pattern for server splatters
-function generateServerNoisePattern(seed, points = 24) {
-    const cacheKey = `server-noise-${seed}-${points}`;
-    if (serverNoisePatterns.has(cacheKey)) {
-        return serverNoisePatterns.get(cacheKey);
-    }
-    
-    const pattern = [];
-    for (let i = 0; i < points; i++) {
-        const angle = (i / points) * Math.PI * 2;
-        // Simplified dual-wave noise for better performance
-        const wave1 = Math.sin(angle * 2.5 + seed) * 0.7;
-        const wave2 = Math.sin(angle * 5.2 + seed * 2) * 0.3;
-        pattern.push(wave1 + wave2);
-    }
-    
-    serverNoisePatterns.set(cacheKey, pattern);
-    return pattern;
-}
-
-// Generate optimized server coordinate points
-function generateServerOptimizedPoints(progress, centerX, centerY, noisePattern) {
-    const points = noisePattern.length;
-    const baseRadius = progress;
-    const maxVariation = 0.35;
-    const coordinates = [];
-    
-    for (let i = 0; i < points; i++) {
-        const angle = (i / points) * Math.PI * 2;
-        const progressFactor = Math.min(1, progress / 80);
-        const radiusVariation = 1 + (noisePattern[i] * maxVariation * progressFactor);
-        const radius = Math.max(5, baseRadius * radiusVariation);
-        
-        const x = Math.max(0, Math.min(100, centerX + Math.cos(angle) * (radius * 0.9)));
-        const y = Math.max(0, Math.min(100, centerY + Math.sin(angle) * (radius * 0.9)));
-        
-        coordinates.push(x, y);
-    }
-    
-    return coordinates;
-}
-
-// Convert server coordinate array to CSS polygon string
-function serverCoordinatesToCSS(coordinates) {
-    let path = 'polygon(';
-    for (let i = 0; i < coordinates.length; i += 2) {
-        path += `${coordinates[i].toFixed(1)}% ${coordinates[i + 1].toFixed(1)}%`;
-        if (i < coordinates.length - 2) path += ', ';
-    }
-    path += ')';
-    return path;
-}
-
-// Ultra-optimized server pre-calculation
-function preCalculateServerSplatterPaths(centerX, centerY, seed) {
-    const cacheKey = `${centerX}-${centerY}-${seed}`;
-    if (serverPathCache.has(cacheKey)) {
-        return serverPathCache.get(cacheKey);
-    }
-    
-    const noisePattern = generateServerNoisePattern(seed, 24); // 50% fewer points
-    const paths = {};
-    
-    // Pre-calculate paths for progress values from 0 to 150 in steps of 6 (50% fewer calculations)
-    for (let progress = 0; progress <= 150; progress += 6) {
-        paths[progress] = generateServerOptimizedPoints(progress, centerX, centerY, noisePattern);
-    }
-    
-    serverPathCache.set(cacheKey, paths);
-    return paths;
-}
-
-// Get pre-calculated server path with linear interpolation
-function getPreCalculatedServerPath(progress, centerX, centerY, seed) {
-    const cacheKey = `${centerX}-${centerY}-${seed}`;
-    const paths = serverPathCache.get(cacheKey);
-    
-    if (!paths) {
-        // Lazy initialization - only calculate when needed
-        preCalculateServerSplatterPaths(centerX, centerY, seed);
-        return getPreCalculatedServerPath(progress, centerX, centerY, seed);
-    }
-    
-    const adjustedProgress = Math.max(0, Math.min(150, progress));
-    const lowerKey = Math.floor(adjustedProgress / 6) * 6;
-    const upperKey = Math.min(150, lowerKey + 6);
-    
-    // Use exact match if available
-    if (paths[adjustedProgress]) {
-        return serverCoordinatesToCSS(paths[adjustedProgress]);
-    }
-    
-    // Linear interpolation between two nearest points for smoother animation
-    if (paths[lowerKey] && paths[upperKey] && lowerKey !== upperKey) {
-        const factor = (adjustedProgress - lowerKey) / (upperKey - lowerKey);
-        const lowerCoords = paths[lowerKey];
-        const upperCoords = paths[upperKey];
-        const interpolated = [];
-        
-        for (let i = 0; i < lowerCoords.length; i++) {
-            interpolated[i] = lowerCoords[i] + (upperCoords[i] - lowerCoords[i]) * factor;
-        }
-        
-        return serverCoordinatesToCSS(interpolated);
-    }
-    
-    // Fallback to nearest neighbor
-    return serverCoordinatesToCSS(paths[lowerKey] || paths[upperKey] || paths[0]);
-} 
+// =============================================================================
+// BLOODSPLATTER SYSTEM REMOVED - NOW USING UNIFIED SYSTEM
+// =============================================================================
+// All bloodsplatter-related functions have been moved to bloodsplatter-animations.js
+// The servers page now uses the unified system for ZERO real-time calculations.

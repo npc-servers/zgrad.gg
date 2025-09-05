@@ -173,42 +173,9 @@ class GamemodeSection {
             }
         );
 
-        // Initialize blood splatter animation
-        this.initGamemodeBloodsplatterReveal();
+        // Blood splatter animation is now handled by the showcase animation system
     }
 
-    initGamemodeBloodsplatterReveal() {
-        const splatterElement = document.querySelector('.bloodsplatter-decoration-header-center');
-        const img = splatterElement?.querySelector('img');
-        
-        if (!img) return;
-
-        const tl = gsap.timeline({ paused: true });
-        
-        gsap.set(img, {
-            clipPath: 'polygon(50% 50%)'
-        });
-
-        tl.to(img, {
-            duration: 0.8,
-            ease: "power3.out",
-            onUpdate: function() {
-                const progress = this.progress();
-                const radius = Math.min(100, progress * 120);
-                img.style.clipPath = `circle(${radius}% at 50% 50%)`;
-            }
-        });
-
-        ScrollTrigger.create({
-            trigger: '.gamemode-header',
-            start: "top 80%",
-            onEnter: () => {
-                gsap.delayedCall(0.3, () => {
-                    tl.play();
-                });
-            }
-        });
-    }
 
     // Handle tab visibility
     handleVisibilityChange() {
