@@ -328,7 +328,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('hostingNotificationClicked', 'true');
                 
                 // Optional: You can add analytics tracking here
-                console.log('Affiliate button clicked - Physgun referral');
             });
         }
         
@@ -372,7 +371,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     // Track copy action
                     localStorage.setItem('hostingNotificationCodeCopied', 'true');
-                    console.log('Discount code copied to clipboard:', codeText);
                     
                 } catch (err) {
                     console.error('Failed to copy code:', err);
@@ -437,7 +435,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('mobileAffiliateAdClicked', 'true');
                 
                 // Optional: You can add analytics tracking here
-                console.log('Mobile affiliate button clicked - Physgun referral');
             });
         }
         
@@ -481,7 +478,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     // Track copy action
                     localStorage.setItem('mobileAffiliateCodeCopied', 'true');
-                    console.log('Mobile discount code copied to clipboard:', codeText);
                     
                 } catch (err) {
                     console.error('Failed to copy mobile code:', err);
@@ -522,7 +518,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Track popup opened
             localStorage.setItem('joinGuidePopupOpened', 'true');
-            console.log('Join Guide popup opened');
         });
         
         // Close popup when close button is clicked
@@ -533,7 +528,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Track popup closed
             localStorage.setItem('joinGuidePopupClosed', 'true');
-            console.log('Join Guide popup closed');
         });
         
         // Close popup when backdrop is clicked
@@ -544,7 +538,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Track popup closed via backdrop
             localStorage.setItem('joinGuidePopupClosedViaBackdrop', 'true');
-            console.log('Join Guide popup closed via backdrop');
         });
         
         // Close popup when Escape key is pressed
@@ -555,7 +548,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Track popup closed via escape key
                 localStorage.setItem('joinGuidePopupClosedViaEscape', 'true');
-                console.log('Join Guide popup closed via escape key');
             }
         });
         

@@ -284,7 +284,6 @@ function initializeFooterEvents() {
         link.addEventListener('click', function(e) {
             const trackName = this.getAttribute('data-track');
             // If you have analytics, you can implement tracking here
-            console.log(`Tracked click on: ${trackName}`);
         });
     });
     

@@ -125,7 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const redirectToSteam = (status) => {
         if (status.online) {
             const steamUrl = `steam://connect/${currentServer.ip}:${currentServer.port}`;
-            console.log(`Redirecting to: ${steamUrl}`);
             window.location.href = steamUrl;
         }
     };

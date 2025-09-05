@@ -542,7 +542,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 // Debug logging (can be removed in production)
-                console.log(`Playing most visible video (${Math.round(highestRatio * 100)}% visible)`);
             }
         } else {
             // No video is sufficiently visible, pause current if any

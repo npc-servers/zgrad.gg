@@ -1,8 +1,297 @@
 // Main JavaScript file for shared functionality
 
+// GSAP Performance Optimizer & Best Practices Implementation
+// Following GSAP v3 official best practices: https://gsap.com/docs/v3
+
+// Ensure plugins are registered only once
+if (typeof gsap !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+}
+
+/**
+ * GSAP Performance & Memory Manager
+ * Implements GSAP best practices for optimal performance
+ */
+class GSAPManager {
+    constructor() {
+        this.timelines = new Map();
+        this.scrollTriggers = new Map();
+        this.isInitialized = false;
+    }
+
+    initialize() {
+        if (this.isInitialized) return;
+        
+        this.setupGlobalSettings();
+        this.setupAutoCleanup();
+        this.isInitialized = true;
+    }
+
+    /**
+     * Apply GSAP global settings for optimal performance
+     */
+    setupGlobalSettings() {
+        if (typeof gsap === 'undefined') return;
+
+        // Set global GSAP settings for better performance
+        gsap.config({
+            // Disable auto-sleeping for more predictable performance
+            autoSleep: 60,
+            // Use consistent units
+            units: {left: "px", top: "px", rotation: "deg"}
+        });
+
+        // Configure ScrollTrigger defaults
+        if (typeof ScrollTrigger !== 'undefined') {
+            ScrollTrigger.defaults({
+                toggleActions: "play none none reverse", // Most common pattern
+                markers: false // Always false in production
+            });
+
+            // Optimize ScrollTrigger performance
+            ScrollTrigger.config({
+                limitCallbacks: true, // Improve scroll performance
+                autoRefreshEvents: "visibilitychange,DOMContentLoaded,load"
+            });
+        }
+    }
+
+    /**
+     * Create a managed timeline with automatic cleanup
+     */
+    createTimeline(id, config = {}) {
+        if (this.timelines.has(id)) {
+            console.warn(`Timeline '${id}' already exists. Cleaning up previous instance.`);
+            this.killTimeline(id);
+        }
+
+        // Add autoRemoveChildren for better memory management
+        const optimizedConfig = {
+            ...config,
+            autoRemoveChildren: true, // GSAP best practice for memory
+            smoothChildTiming: true   // Better timing coordination
+        };
+
+        const timeline = gsap.timeline(optimizedConfig);
+        this.timelines.set(id, timeline);
+        
+        return timeline;
+    }
+
+    /**
+     * Create a managed ScrollTrigger with automatic cleanup
+     */
+    createScrollTrigger(id, config) {
+        if (this.scrollTriggers.has(id)) {
+            console.warn(`ScrollTrigger '${id}' already exists. Cleaning up previous instance.`);
+            this.killScrollTrigger(id);
+        }
+
+        if (typeof ScrollTrigger === 'undefined') {
+            console.error('ScrollTrigger plugin not available');
+            return null;
+        }
+
+        // Enhance config with performance optimizations
+        const optimizedConfig = {
+            ...config,
+            id: id, // Ensure ID is set for easy retrieval
+            refreshPriority: config.refreshPriority || 0
+        };
+
+        const scrollTrigger = ScrollTrigger.create(optimizedConfig);
+        this.scrollTriggers.set(id, scrollTrigger);
+        
+        return scrollTrigger;
+    }
+
+    /**
+     * Batch create multiple ScrollTriggers efficiently
+     */
+    batchScrollTriggers(triggers) {
+        const created = [];
+        
+        // Use ScrollTrigger.batch for multiple elements when appropriate
+        triggers.forEach(({ id, config }) => {
+            const trigger = this.createScrollTrigger(id, config);
+            if (trigger) created.push(trigger);
+        });
+
+        // Optimize by refreshing once after all are created
+        if (created.length > 0) {
+            ScrollTrigger.refresh();
+        }
+
+        return created;
+    }
+
+    /**
+     * Kill and clean up a specific timeline
+     */
+    killTimeline(id) {
+        const timeline = this.timelines.get(id);
+        if (timeline) {
+            timeline.kill();
+            this.timelines.delete(id);
+        }
+    }
+
+    /**
+     * Kill and clean up a specific ScrollTrigger
+     */
+    killScrollTrigger(id) {
+        const scrollTrigger = this.scrollTriggers.get(id);
+        if (scrollTrigger) {
+            scrollTrigger.kill(true); // Kill and revert
+            this.scrollTriggers.delete(id);
+        }
+    }
+
+    /**
+     * Clean up all managed animations
+     */
+    killAll() {
+        // Kill all managed timelines
+        this.timelines.forEach((timeline, id) => {
+            timeline.kill();
+        });
+        this.timelines.clear();
+
+        // Kill all managed ScrollTriggers
+        this.scrollTriggers.forEach((trigger, id) => {
+            trigger.kill(true);
+        });
+        this.scrollTriggers.clear();
+
+        // Force refresh after cleanup
+        if (typeof ScrollTrigger !== 'undefined') {
+            ScrollTrigger.refresh();
+        }
+    }
+
+    /**
+     * Get performance stats
+     */
+    getStats() {
+        return {
+            activeTimelines: this.timelines.size,
+            activeScrollTriggers: this.scrollTriggers.size,
+            totalScrollTriggers: typeof ScrollTrigger !== 'undefined' ? ScrollTrigger.getAll().length : 0
+        };
+    }
+
+    /**
+     * Setup automatic cleanup on page unload
+     */
+    setupAutoCleanup() {
+        // Clean up on page unload
+        window.addEventListener('beforeunload', () => {
+            this.killAll();
+        });
+
+        // Clean up on navigation in SPAs
+        window.addEventListener('popstate', () => {
+            this.killAll();
+        });
+
+        // Monitor memory usage and clean up if needed
+        if ('memory' in performance) {
+            setInterval(() => {
+                const memory = performance.memory;
+                const memoryUsageRatio = memory.usedJSHeapSize / memory.totalJSHeapSize;
+                
+                if (memoryUsageRatio > 0.85) {
+                    console.warn('🚨 High memory usage detected. Consider reducing GSAP animations.');
+                }
+            }, 30000); // Check every 30 seconds
+        }
+    }
+
+    /**
+     * Safe refresh of ScrollTrigger instances
+     */
+    refreshScrollTriggers(safe = true) {
+        if (typeof ScrollTrigger !== 'undefined') {
+            ScrollTrigger.refresh(safe);
+        }
+    }
+
+    /**
+     * Optimize existing animations by converting to timelines
+     */
+    optimizeExistingAnimations() {
+        // This would analyze existing tweens and suggest timeline optimizations
+        // Implementation would depend on specific use cases
+    }
+}
+
+// Create global instance
+window.GSAPManager = new GSAPManager();
+
+// Auto-initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        window.GSAPManager.initialize();
+    });
+} else {
+    window.GSAPManager.initialize();
+}
+
+// Export for module systems
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = GSAPManager;
+}
+
+/**
+ * Utility functions for common GSAP patterns
+ */
+window.GSAPUtils = {
+    /**
+     * Create fade in animation with standard timing
+     */
+    fadeIn(elements, duration = 0.6, stagger = 0.1) {
+        return gsap.fromTo(elements, 
+            { opacity: 0, y: 30 },
+            { 
+                opacity: 1, 
+                y: 0, 
+                duration,
+                ease: "power2.out",
+                stagger: stagger > 0 ? stagger : 0
+            }
+        );
+    },
+
+    /**
+     * Create fade out animation with standard timing
+     */
+    fadeOut(elements, duration = 0.4) {
+        return gsap.to(elements, {
+            opacity: 0,
+            y: -20,
+            duration,
+            ease: "power2.out"
+        });
+    },
+
+    /**
+     * Create scale hover effect
+     */
+    setupHoverScale(elements, scale = 1.05, duration = 0.3) {
+        elements.forEach(element => {
+            element.addEventListener('mouseenter', () => {
+                gsap.to(element, { scale, duration, ease: "power2.out" });
+            });
+            
+            element.addEventListener('mouseleave', () => {
+                gsap.to(element, { scale: 1, duration, ease: "power2.out" });
+            });
+        });
+    }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize any global functionality here
-    console.log('ZGrad.gg website loaded');
     
     // Add smooth scrolling for all anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -55,11 +344,9 @@ class EnhancedVideoManager {
             threshold: 0,
             rootMargin: '200px 0px',
             callback_loading: (element) => {
-                console.log('Loading video:', element.dataset.src);
                 element.classList.add('video-loading');
             },
             callback_loaded: (element) => {
-                console.log('Video loaded:', element.dataset.src);
                 this.handleVideoLoaded(element);
             },
             callback_error: (element) => {
@@ -83,7 +370,6 @@ class EnhancedVideoManager {
         this.startPerformanceMonitoring();
         
         const videoCount = document.querySelectorAll('.lazy-video').length;
-        console.log(`Enhanced Video Manager initialized with ${videoCount} videos using Vanilla-LazyLoad`);
     }
 
     handleVideoLoaded(video) {
@@ -229,7 +515,6 @@ class EnhancedVideoManager {
                 this.playVideo(targetVideo);
                 
                 // Debug logging
-                console.log(`Playing most visible video (${Math.round(highestRatio * 100)}% visible)`);
             }
         } else {
             // No video is sufficiently visible, pause current if any
@@ -311,7 +596,6 @@ class EnhancedVideoManager {
                         this.activeVideos.add(video);
                         this.currentlyPlayingVideo = video;
                         video.classList.add('video-playing');
-                        console.log('Video playing:', video.dataset.src || video.src);
                     })
                     .catch(error => {
                         console.warn('Video play failed:', error);
@@ -373,7 +657,6 @@ class EnhancedVideoManager {
         // Monitor network conditions
         if ('connection' in navigator) {
             navigator.connection.addEventListener('change', () => {
-                console.log(`Network changed: ${navigator.connection.effectiveType}`);
             });
         }
     }
@@ -392,10 +675,38 @@ class EnhancedVideoManager {
     // Public API methods for compatibility
     forceLoadVideo(video) {
         if (video && video.classList.contains('lazy-video')) {
-            // Use Vanilla-LazyLoad's load method
-            if (this.lazyLoadInstance) {
+            // Use Vanilla-LazyLoad's static load method (v16+ API)
+            if (typeof LazyLoad !== 'undefined' && LazyLoad.load) {
+                // Use static method with settings from our instance if available
+                const settings = this.lazyLoadInstance ? {
+                    threshold: 0,
+                    rootMargin: '200px 0px'
+                } : {};
+                
+                LazyLoad.load(video, settings);
+            } else if (this.lazyLoadInstance && this.lazyLoadInstance.load) {
+                // Fallback for older versions that still have instance load method
                 this.lazyLoadInstance.load(video);
+            } else {
+                console.warn('LazyLoad.load method not available, trying manual load');
+                // Manual fallback if LazyLoad methods aren't available
+                this.manuallyLoadVideo(video);
             }
+        }
+    }
+
+    // Manual fallback method for loading videos
+    manuallyLoadVideo(video) {
+        if (!video) return;
+        
+        const source = video.querySelector('source[data-src]');
+        if (source && source.dataset.src) {
+            source.src = source.dataset.src;
+            video.src = source.dataset.src;
+            video.load();
+            
+            // Mark as loaded
+            this.handleVideoLoaded(video);
         }
     }
 

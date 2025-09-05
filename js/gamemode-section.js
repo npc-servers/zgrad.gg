@@ -36,12 +36,15 @@ class GamemodeSection {
         ];
         this.isTransitioning = false;
         this.autoRotateTimeout = null;
-        this.autoRotateDelay = 6000; // 6 seconds
+        this.autoRotateDelay = 6000; // 6 seconds - fallback timer
         this.isPaused = false;
         this.currentVideoElement = null;
         this.sectionObserver = null;
         this.memoryMonitorInterval = null;
         this.isVisible = false;
+        this.videoPlayStartTime = null;
+        this.waitingForVideoComplete = false;
+        this.videoCompleteTimeout = null;
         
         this.init();
     }
@@ -69,7 +72,6 @@ class GamemodeSection {
             return;
         }
 
-        console.log('Working with existing video element structure');
 
         // Instead of creating a pool, we'll update the existing video's source
         // This maintains compatibility with the global VideoLazyLoader system
@@ -83,7 +85,6 @@ class GamemodeSection {
         this.currentVideoElement.classList.remove('fade-out');
         this.currentVideoElement.classList.add('fade-in');
         
-        console.log('Video system initialized with existing HTML structure');
     }
 
     updateVideoSource(gamemodeIndex) {
@@ -98,7 +99,6 @@ class GamemodeSection {
             return;
         }
 
-        console.log(`Updating video source to: ${gamemode.video}`);
 
         // Update the source element
         const source = this.currentVideoElement.querySelector('source');
@@ -121,7 +121,6 @@ class GamemodeSection {
         // Force the video to reload with new source
         this.currentVideoElement.load();
         
-        console.log(`Video source updated and reloaded: ${gamemode.video}`);
     }
 
     loadInitialVideo() {
@@ -130,7 +129,6 @@ class GamemodeSection {
             return;
         }
 
-        console.log('Loading initial gamemode video with Vanilla-LazyLoad...');
         
         // Ensure video is visible from the start
         this.currentVideoElement.style.opacity = '1';
@@ -139,11 +137,7 @@ class GamemodeSection {
         
         // Use the enhanced VideoLazyLoader system (now powered by Vanilla-LazyLoad)
         if (window.VideoLazyLoader && window.VideoLazyLoader.forceLoadVideo) {
-            console.log('Using Enhanced Video Manager with Vanilla-LazyLoad');
             window.VideoLazyLoader.forceLoadVideo(this.currentVideoElement);
-            
-            // The system will automatically handle playing when ready and visible
-            console.log('Video loading initiated through Enhanced Video Manager');
         } else {
             console.warn('Enhanced Video Manager not available, using direct loading fallback');
             this.playVideoDirectly(this.currentVideoElement);
@@ -156,11 +150,9 @@ class GamemodeSection {
             return;
         }
         
-        console.log('Attempting to play video directly:', video.getAttribute('data-gamemode-index'));
         
         const source = video.querySelector('source');
         if (source && source.dataset.src) {
-            console.log('Setting video src:', source.dataset.src);
             
             // Set the actual src
             source.src = source.dataset.src;
@@ -173,23 +165,17 @@ class GamemodeSection {
             
             // Add loading progress
             video.addEventListener('loadstart', () => {
-                console.log('Video started loading');
+                // Video started loading
             }, { once: true });
             
             video.addEventListener('loadedmetadata', () => {
-                console.log('Video metadata loaded');
+                // Video metadata loaded
             }, { once: true });
             
             // Try to play when loaded
             video.addEventListener('loadeddata', () => {
-                console.log('Video data loaded, attempting to play');
-                video.play().then(() => {
-                    console.log('✅ Video playing successfully!');
-                }).catch(error => {
+                video.play().catch(error => {
                     console.warn('❌ Video autoplay failed:', error);
-                    console.log('Video element:', video);
-                    console.log('Video readyState:', video.readyState);
-                    console.log('Video networkState:', video.networkState);
                 });
             }, { once: true });
             
@@ -197,8 +183,6 @@ class GamemodeSection {
             video.load();
         } else {
             console.error('No source element or data-src found on video');
-            console.log('Video element:', video);
-            console.log('Source element:', source);
         }
     }
 
@@ -208,7 +192,52 @@ class GamemodeSection {
             entries.forEach(entry => {
                 this.isVisible = entry.isIntersecting;
                 if (entry.isIntersecting) {
+                    // Section came back into view - resume auto-rotation and video playback
                     this.resumeAutoRotate();
+                    
+                    // Resume video playback if video is ready and loaded
+                    if (this.currentVideoElement) {
+                        // Use a small delay to ensure the video is properly set up
+                        setTimeout(() => {
+                            if (this.currentVideoElement.readyState >= 2) { // HAVE_CURRENT_DATA or higher
+                                if (window.VideoLazyLoader && window.VideoLazyLoader.playVideo) {
+                                    window.VideoLazyLoader.playVideo(this.currentVideoElement);
+                                } else {
+                                    try {
+                                        this.currentVideoElement.play().catch(error => {
+                                            console.warn('❌ Failed to resume gamemode video:', error);
+                                        });
+                                    } catch (e) {
+                                        console.warn('Failed to resume video when section came into view:', e);
+                                    }
+                                }
+                            } else if (this.currentVideoElement.readyState < 2) {
+                                // Video isn't ready yet, try to force load it
+                                if (window.VideoLazyLoader && window.VideoLazyLoader.forceLoadVideo) {
+                                    window.VideoLazyLoader.forceLoadVideo(this.currentVideoElement);
+                                }
+                                
+                                // Listen for when it becomes ready
+                                const onCanPlay = () => {
+                                    this.currentVideoElement.play().catch(error => {
+                                        console.warn('❌ Failed to resume gamemode video after loading:', error);
+                                    });
+                                    this.currentVideoElement.removeEventListener('canplay', onCanPlay);
+                                };
+                                this.currentVideoElement.addEventListener('canplay', onCanPlay, { once: true });
+                                
+                                // Fallback timeout in case canplay doesn't fire
+                                setTimeout(() => {
+                                    this.currentVideoElement.removeEventListener('canplay', onCanPlay);
+                                    if (this.currentVideoElement.readyState >= 2) {
+                                        this.currentVideoElement.play().catch(error => {
+                                            console.warn('❌ Fallback resume failed:', error);
+                                        });
+                                    }
+                                }, 2000);
+                            }
+                        }, 100);
+                    }
                 } else {
                     this.pauseAutoRotate();
                     // Pause current video when section is not visible using global system
@@ -252,7 +281,6 @@ class GamemodeSection {
     }
 
     handleMemoryPressure() {
-        console.log('High memory usage detected, optimizing gamemode section');
         
         // Pause auto-rotation temporarily
         this.pauseAutoRotate();
@@ -273,16 +301,13 @@ class GamemodeSection {
     bindEvents() {
         // Progress dot click events
         const progressDots = document.querySelectorAll('.progress-dot');
-        console.log('Found progress dots:', progressDots.length);
         progressDots.forEach((dot, index) => {
             dot.addEventListener('click', (e) => {
-                console.log('Progress dot clicked:', index);
                 e.preventDefault();
                 e.stopPropagation();
                 if (!this.isTransitioning) {
                     this.goToGamemode(index);
                 } else {
-                    console.log('Transition in progress, ignoring click');
                 }
             });
         });
@@ -322,28 +347,23 @@ class GamemodeSection {
     }
 
     goToGamemode(index) {
-        console.log('goToGamemode called with index:', index, 'currentIndex:', this.currentIndex, 'isTransitioning:', this.isTransitioning);
         
         if (index === this.currentIndex) {
-            console.log('Same index, ignoring');
             return;
         }
         
         if (this.isTransitioning) {
-            console.log('Already transitioning, ignoring');
             return;
         }
 
         this.isTransitioning = true;
         const gamemode = this.gamemodes[index];
-        console.log('Switching to gamemode:', gamemode.title);
         
         // Update content with fade transition
         this.updateContent(gamemode, () => {
             this.currentIndex = index;
             this.updateProgressDots();
             this.isTransitioning = false;
-            console.log('Gamemode transition completed');
         });
     }
 
@@ -358,19 +378,23 @@ class GamemodeSection {
         // Fade out current content
         const elementsToFade = [titleElement, subtitleElement];
         
-        // Animate text and video elements out
-        gsap.to(elementsToFade, {
-            opacity: 0,
-            y: -20,
-            duration: 0.3,
-            ease: "power2.out"
-        });
-
-        gsap.to(this.currentVideoElement, {
-            opacity: 0,
-            duration: 0.3,
-            ease: "power2.out",
-            onComplete: () => {
+        // Use a single timeline for better performance and control
+        const transitionTimeline = gsap.timeline();
+        
+        // Fade out animations (parallel)
+        transitionTimeline
+            .to(elementsToFade, {
+                opacity: 0,
+                y: -20,
+                duration: 0.3,
+                ease: "power2.out"
+            })
+            .to(this.currentVideoElement, {
+                opacity: 0,
+                duration: 0.3,
+                ease: "power2.out"
+            }, "<") // Start at the same time as text fade out
+            .call(() => {
                 // Update text content
                 titleElement.textContent = gamemode.title;
                 subtitleElement.textContent = gamemode.description;
@@ -392,7 +416,6 @@ class GamemodeSection {
                 // Wait for video to be ready, then play
                 const onVideoReady = () => {
                     this.currentVideoElement.play().then(() => {
-                        console.log('✅ New gamemode video playing successfully');
                     }).catch(error => {
                         console.warn('❌ New gamemode video autoplay failed:', error);
                     });
@@ -409,29 +432,34 @@ class GamemodeSection {
                     // Fallback timeout in case canplay doesn't fire
                     setTimeout(onVideoReady, 1000);
                 }
-                
-                // Fade in video
-                gsap.to(this.currentVideoElement, {
-                    opacity: 1,
-                    duration: 0.4,
+            })
+            // Fade in video
+            .to(this.currentVideoElement, {
+                opacity: 1,
+                duration: 0.4,
+                ease: "power2.out"
+            }, "+=0.1")
+            // Animate text elements in
+            .fromTo(elementsToFade, 
+                { opacity: 0, y: 20 },
+                { 
+                    opacity: 1, 
+                    y: 0, 
+                    duration: 0.4, 
                     ease: "power2.out",
-                    delay: 0.1
-                });
-                
-                // Animate text elements in
-                gsap.fromTo(elementsToFade, 
-                    { opacity: 0, y: 20 },
-                    { 
-                        opacity: 1, 
-                        y: 0, 
-                        duration: 0.4, 
-                        ease: "power2.out",
-                        delay: 0.2,
-                        onComplete: callback
+                    onComplete: () => {
+                        if (callback) callback();
+                        
+                        // Restart video completion tracking for the new video
+                        if (!this.isPaused && this.isVisible) {
+                            setTimeout(() => {
+                                this.waitForVideoCompleteAndRotate();
+                            }, 500); // Give video time to start playing
+                        }
                     }
-                );
-            }
-        });
+                },
+                "+=0.1"
+            );
     }
 
 
@@ -443,32 +471,83 @@ class GamemodeSection {
     }
 
     startAutoRotate() {
-        // Optimized auto-rotation using requestAnimationFrame for better performance
-        const autoRotateLoop = () => {
-            if (!this.isPaused && !this.isTransitioning && this.isVisible) {
-                const nextIndex = (this.currentIndex + 1) % this.gamemodes.length;
-                this.goToGamemode(nextIndex);
-            }
-            
-            // Schedule next rotation only if not paused
-            if (!this.isPaused) {
-                this.autoRotateTimeout = setTimeout(() => {
-                    requestAnimationFrame(autoRotateLoop);
-                }, this.autoRotateDelay);
-            }
-        };
+        this.waitForVideoCompleteAndRotate();
+    }
+
+    waitForVideoCompleteAndRotate() {
+        if (this.isPaused || this.isTransitioning || !this.isVisible) {
+            return;
+        }
+
+        if (!this.currentVideoElement) {
+            this.scheduleNextRotation(this.autoRotateDelay);
+            return;
+        }
+
+        // Set up video completion tracking
+        this.setupVideoCompletionTracking();
+    }
+
+    setupVideoCompletionTracking() {
+        const video = this.currentVideoElement;
         
-        // Start the loop
+        if (!video || video.readyState < 1) {
+            this.scheduleNextRotation(this.autoRotateDelay);
+            return;
+        }
+
+        // Clear any existing timeout
+        if (this.videoCompleteTimeout) {
+            clearTimeout(this.videoCompleteTimeout);
+        }
+
+        // Record when video started playing (or assume it's playing now)
+        this.videoPlayStartTime = Date.now();
+        this.waitingForVideoComplete = true;
+
+
+        // Wait for video to complete one full cycle
+        if (video.duration && !isNaN(video.duration)) {
+            const videoDuration = Math.ceil(video.duration * 1000); // Convert to milliseconds
+            const actualDelay = Math.max(videoDuration, 3000); // At least 3 seconds minimum
+            
+            this.scheduleNextRotation(actualDelay);
+        } else {
+            // Video duration not available, use fallback
+            this.scheduleNextRotation(this.autoRotateDelay);
+        }
+    }
+
+    scheduleNextRotation(delay) {
+        // Clear existing timeout
+        if (this.autoRotateTimeout) {
+            clearTimeout(this.autoRotateTimeout);
+        }
+
+        
         this.autoRotateTimeout = setTimeout(() => {
-            requestAnimationFrame(autoRotateLoop);
-        }, this.autoRotateDelay);
+            requestAnimationFrame(() => {
+                if (!this.isPaused && !this.isTransitioning && this.isVisible) {
+                    const nextIndex = (this.currentIndex + 1) % this.gamemodes.length;
+                    this.goToGamemode(nextIndex);
+                } else {
+                }
+            });
+        }, delay);
     }
 
     pauseAutoRotate() {
         this.isPaused = true;
+        this.waitingForVideoComplete = false;
+        
         if (this.autoRotateTimeout) {
             clearTimeout(this.autoRotateTimeout);
             this.autoRotateTimeout = null;
+        }
+        
+        if (this.videoCompleteTimeout) {
+            clearTimeout(this.videoCompleteTimeout);
+            this.videoCompleteTimeout = null;
         }
     }
 
@@ -476,31 +555,24 @@ class GamemodeSection {
         if (!this.isPaused) return; // Already running
         
         this.isPaused = false;
+        this.waitingForVideoComplete = false;
         
-        // Restart auto-rotation
-        const autoRotateLoop = () => {
-            if (!this.isPaused && !this.isTransitioning && this.isVisible) {
-                const nextIndex = (this.currentIndex + 1) % this.gamemodes.length;
-                this.goToGamemode(nextIndex);
-            }
-            
-            if (!this.isPaused) {
-                this.autoRotateTimeout = setTimeout(() => {
-                    requestAnimationFrame(autoRotateLoop);
-                }, this.autoRotateDelay);
-            }
-        };
-        
-        this.autoRotateTimeout = setTimeout(() => {
-            requestAnimationFrame(autoRotateLoop);
-        }, this.autoRotateDelay);
+        // Restart video-duration-aware auto-rotation
+        this.waitForVideoCompleteAndRotate();
     }
 
     stopAutoRotate() {
         this.isPaused = true;
+        this.waitingForVideoComplete = false;
+        
         if (this.autoRotateTimeout) {
             clearTimeout(this.autoRotateTimeout);
             this.autoRotateTimeout = null;
+        }
+        
+        if (this.videoCompleteTimeout) {
+            clearTimeout(this.videoCompleteTimeout);
+            this.videoCompleteTimeout = null;
         }
     }
 
@@ -510,16 +582,27 @@ class GamemodeSection {
         
         gsap.registerPlugin(ScrollTrigger);
         
-        // Create master timeline for header animations
-        const headerTimeline = gsap.timeline({
-            scrollTrigger: {
-                trigger: '.gamemode-section',
-                start: 'top 80%',
-                end: 'top 20%',
-                toggleActions: 'play none none reverse',
-                once: true // Prevent re-triggering for better performance
-            }
-        });
+        // Use GSAP Manager for better memory management and cleanup
+        const headerTimeline = window.GSAPManager ? 
+            window.GSAPManager.createTimeline('gamemode-header-timeline', {
+                scrollTrigger: {
+                    trigger: '.gamemode-section',
+                    start: 'top 80%',
+                    end: 'top 20%',
+                    toggleActions: 'play none none reverse',
+                    once: true // Prevent re-triggering for better performance
+                }
+            }) :
+            gsap.timeline({
+                scrollTrigger: {
+                    trigger: '.gamemode-section',
+                    start: 'top 80%',
+                    end: 'top 20%',
+                    toggleActions: 'play none none reverse',
+                    once: true,
+                    id: 'gamemode-section-header'
+                }
+            });
         
         // Batch header animations
         headerTimeline
@@ -533,16 +616,27 @@ class GamemodeSection {
                 "-=0.6" // Overlap animations
             );
         
-        // Create master timeline for showcase animations
-        const showcaseTimeline = gsap.timeline({
-            scrollTrigger: {
-                trigger: '.gamemode-showcase',
-                start: 'top 80%',
-                end: 'top 20%',
-                toggleActions: 'play none none reverse',
-                once: true // Prevent re-triggering
-            }
-        });
+        // Use GSAP Manager for better memory management and cleanup
+        const showcaseTimeline = window.GSAPManager ? 
+            window.GSAPManager.createTimeline('gamemode-showcase-timeline', {
+                scrollTrigger: {
+                    trigger: '.gamemode-showcase',
+                    start: 'top 80%',
+                    end: 'top 20%',
+                    toggleActions: 'play none none reverse',
+                    once: true // Prevent re-triggering
+                }
+            }) :
+            gsap.timeline({
+                scrollTrigger: {
+                    trigger: '.gamemode-showcase',
+                    start: 'top 80%',
+                    end: 'top 20%',
+                    toggleActions: 'play none none reverse',
+                    once: true,
+                    id: 'gamemode-section-showcase'
+                }
+            });
         
         // Batch showcase animations
         showcaseTimeline
@@ -663,7 +757,6 @@ class GamemodeSection {
             titleElement.textContent = gamemode.title;
             subtitleElement.textContent = gamemode.description;
             this.updateProgressDots();
-            console.log('Initial gamemode text initialized');
         }
         
         // Video initialization is now handled by loadInitialVideo() called from initializeVideoPool()
@@ -698,35 +791,63 @@ class GamemodeSection {
             }
         }
         
-        // Clean up ScrollTrigger instances
-        if (typeof ScrollTrigger !== 'undefined') {
-            ScrollTrigger.getAll().forEach(trigger => {
-                if (trigger.trigger && trigger.trigger.closest('.gamemode-section')) {
-                    trigger.kill();
-                }
+        // Enhanced cleanup using GSAP Manager when available
+        if (window.GSAPManager) {
+            // Clean up managed timelines and ScrollTriggers
+            const gamemodeAnimations = [
+                'gamemode-header-timeline',
+                'gamemode-showcase-timeline'
+            ];
+            
+            gamemodeAnimations.forEach(id => {
+                window.GSAPManager.killTimeline(id);
             });
+            
+            // Clean up bloodsplatter ScrollTrigger if managed
+            window.GSAPManager.killScrollTrigger('bloodsplatter-gamemode-header');
+            
+            // Force refresh
+            window.GSAPManager.refreshScrollTriggers(true);
+        } else {
+            // Fallback to manual cleanup
+            if (typeof ScrollTrigger !== 'undefined') {
+                const gamemodeScrollTriggers = [
+                    'bloodsplatter-gamemode-header',
+                    'gamemode-section-header',
+                    'gamemode-section-showcase'
+                ];
+                
+                gamemodeScrollTriggers.forEach(id => {
+                    const trigger = ScrollTrigger.getById(id);
+                    if (trigger) {
+                        trigger.kill(true);
+                    }
+                });
+                
+                ScrollTrigger.getAll().forEach(trigger => {
+                    if (trigger.trigger && trigger.trigger.closest('.gamemode-section')) {
+                        trigger.kill(true);
+                    }
+                });
+                
+                ScrollTrigger.refresh();
+            }
         }
         
-        console.log('Gamemode section cleaned up');
     }
 }
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM loaded, initializing gamemode section...');
     
     // Wait for VideoLazyLoader to be available for proper integration
     const initGamemodeSection = () => {
         const gamemodeSection = document.querySelector('.gamemode-section');
-        console.log('Gamemode section found:', !!gamemodeSection);
         
         if (gamemodeSection) {
-            console.log('Creating GamemodeSection instance...');
             window.gamemodeSection = new GamemodeSection();
             window.gamemodeSection.initializeFirstGamemode();
-            console.log('GamemodeSection initialized');
         } else {
-            console.log('No gamemode section found in DOM');
         }
     };
     
@@ -736,7 +857,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const waitForVideoLoader = () => {
         if (window.VideoLazyLoader || attempts >= maxAttempts) {
-            console.log('VideoLazyLoader ready:', !!window.VideoLazyLoader);
             initGamemodeSection();
         } else {
             attempts++;

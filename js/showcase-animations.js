@@ -298,6 +298,32 @@ function initBloodsplatterAnimations() {
                 gsap.delayedCall(config.delay, () => {
                     tl.play();
                     element.classList.add('bloodsplatter-revealed');
+                    
+                    // Special handling for bloodsplatter-decoration-left - reveal description content
+                    if (splatterType === 'bloodsplatter-decoration-left') {
+                        const descriptionTitle = document.querySelector('.description-title');
+                        const descriptionText = document.querySelector('.description-text');
+                        
+                        if (descriptionTitle) {
+                            gsap.to(descriptionTitle, { 
+                                duration: 0.7, 
+                                opacity: 1, 
+                                y: 0, 
+                                ease: 'power3.out',
+                                delay: 0.2 // Small delay after bloodsplatter starts
+                            });
+                        }
+                        
+                        if (descriptionText) {
+                            gsap.to(descriptionText, { 
+                                duration: 0.8, 
+                                opacity: 1, 
+                                y: 0, 
+                                ease: 'power3.out',
+                                delay: 0.4 // Slightly delayed after the title
+                            });
+                        }
+                    }
                 });
             },
             id: `bloodsplatter-${splatterType}-${index}`
@@ -601,7 +627,13 @@ function initTitleRevealAnimations() {
     const featuresList = document.querySelector('.features-list');
 
     // Set initial states
-    gsap.set([homigradSmall, homigradLarge, playerCount, descriptionTitle, descriptionText, featuresTitle], {
+    gsap.set([homigradSmall, homigradLarge, playerCount, featuresTitle], {
+        opacity: 0,
+        y: 30
+    });
+
+    // Set initial states for description elements (will be animated with bloodsplatter)
+    gsap.set([descriptionTitle, descriptionText], {
         opacity: 0,
         y: 30
     });
@@ -614,11 +646,12 @@ function initTitleRevealAnimations() {
             markers: false,
             onEnter: () => {
                 // Animate homigrad elements sequentially
-                gsap.to(homigradSmall, { duration: 0.6, opacity: 1, y: 0, ease: 'power3.out' });
-                gsap.to(homigradLarge, { duration: 0.8, opacity: 1, y: 0, ease: 'power3.out', delay: 0.3 });
-                gsap.to(playerCount, { duration: 0.6, opacity: 1, y: 0, ease: 'power3.out', delay: 0.2 });
-                gsap.to(descriptionTitle, { duration: 0.7, opacity: 1, y: 0, ease: 'power3.out', delay: 0.4 });
-                gsap.to(descriptionText, { duration: 0.8, opacity: 1, y: 0, ease: 'power3.out', delay: 0.6 });
+                // Use a single timeline for better performance instead of individual tweens
+                const homigradAnimationTl = gsap.timeline();
+                homigradAnimationTl
+                    .to(homigradSmall, { duration: 0.6, opacity: 1, y: 0, ease: 'power3.out' })
+                    .to(playerCount, { duration: 0.6, opacity: 1, y: 0, ease: 'power3.out' }, "-=0.4")
+                    .to(homigradLarge, { duration: 0.8, opacity: 1, y: 0, ease: 'power3.out' }, "-=0.3");
             }
         }
     });

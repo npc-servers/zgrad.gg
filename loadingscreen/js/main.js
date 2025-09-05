@@ -28,7 +28,6 @@ function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemo
             maxPlayers: maxplayers,
             gamemode: gamemode
         };
-        console.log("Current server info stored:", currentServerInfo);
         
         // Refresh server list to apply the filter
         if (serverListElement) {
@@ -88,7 +87,6 @@ function SetStatusChanged(status) {
  */
 function startTestMode() {
     isTest = true;
-    console.log("Starting test mode");
 
     GameDetails("Test Server", "test.server.com", "gm_construct", "32", "76561198000000000", "sandbox");
 
@@ -314,7 +312,6 @@ function initializeUI() {
     totalPlayersCountElement = document.getElementById('totalPlayersCount');
     backgroundElement = document.querySelector('.background');
     
-    console.log("UI initialized");
     
     // Start the UI update loop
     updateUI();
@@ -512,7 +509,6 @@ function setRandomBackground(isInitial) {
         backgroundElement.style.backgroundImage = 'url(' + randomBackground + ')';
     }
     
-    console.log("Background set to:", randomBackground);
 }
 
 /**
@@ -524,7 +520,6 @@ function startBackgroundRotation() {
         return;
     }
     
-    console.log("Starting background rotation");
     
     // Set random background immediately (no transition)
     setRandomBackground(true);
@@ -562,7 +557,6 @@ var currentServerInfo = null;
 function initializeServerList() {
     if (!serverListElement) return;
     
-    console.log("Initializing server list");
     
     // Start fetching server data immediately
     fetchAllServerStatus();
@@ -622,7 +616,6 @@ function fetchServerStatus(server) {
 function fetchAllServerStatus() {
     if (!serverListElement) return;
     
-    console.log("Fetching server status for all servers");
     
     // Get all servers first to fetch their status
     var serverPromises = config.servers.map(function(server) {
@@ -645,7 +638,6 @@ function fetchAllServerStatus() {
                 // Check if this server matches the one the user is joining
                 var isSameServer = server.ip === currentServerInfo.ip && server.port === currentServerInfo.port;
                 if (isSameServer) {
-                    console.log("Filtering out current server:", server.title);
                     return false;
                 }
             }
@@ -751,7 +743,6 @@ function createServerElement(serverStatus) {
  * Initialize the loading system
  */
 document.addEventListener("DOMContentLoaded", function() {
-    console.log("Loading system initialized");
     
     // Initialize UI elements
     setTimeout(initializeUI, 100);
