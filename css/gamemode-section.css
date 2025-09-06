@@ -71,8 +71,7 @@
     width: auto;
     object-fit: contain;
     position: relative;
-    opacity: 0.4;
-    filter: saturate(1.3) contrast(1.2);
+    opacity: 0.8;
     /* Initial clip-path is now handled by showcase animation system */
     transition: none; /* Disable default transitions for GSAP control */
     will-change: clip-path, transform, filter;
