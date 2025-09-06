@@ -579,18 +579,10 @@
         padding: 0 15px 40px 15px;
     }
     
-    
+    /* Hide navigation arrows on mobile */
     .gamemode-swiper .swiper-button-next,
     .gamemode-swiper .swiper-button-prev {
-        width: 40px;
-        height: 40px;
-        top: calc(50% - 15px); /* Slight adjustment for pagination space */
-        margin-top: -20px;
-    }
-    
-    .gamemode-swiper .swiper-button-next:after,
-    .gamemode-swiper .swiper-button-prev:after {
-        font-size: 14px;
+        display: none;
     }
     
     .gamemode-swiper .swiper-pagination {
@@ -687,18 +679,10 @@
         padding: 0 10px 30px 10px;
     }
     
-    
+    /* Hide navigation arrows on mobile */
     .gamemode-swiper .swiper-button-next,
     .gamemode-swiper .swiper-button-prev {
-        width: 35px;
-        height: 35px;
-        top: calc(50% - 10px); /* Slight adjustment for pagination space */
-        margin-top: -17px;
-    }
-    
-    .gamemode-swiper .swiper-button-next:after,
-    .gamemode-swiper .swiper-button-prev:after {
-        font-size: 12px;
+        display: none;
     }
     
     .gamemode-swiper .swiper-pagination {
@@ -840,6 +824,10 @@
     position: relative;
     margin-top: 40px;
     bottom: auto;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .gamemode-swiper .swiper-pagination-bullet {
