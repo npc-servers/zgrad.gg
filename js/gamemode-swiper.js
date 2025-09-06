@@ -545,6 +545,24 @@ function initSwiperAnimations() {
                 }
             }
         );
+
+        // Animate red gradient background reveal with swiper
+        gsap.fromTo('.gamemode-gradient-bg', 
+            {
+                opacity: 0
+            },
+            {
+                opacity: 1,
+                duration: 1.2,
+                ease: 'power2.out',
+                delay: 0.8,
+                scrollTrigger: {
+                    trigger: '.gamemode-swiper',
+                    start: 'top 80%',
+                    toggleActions: 'play none none none'
+                }
+            }
+        );
         
         // Animate slide content on change
         if (gamemodeSwiper) {

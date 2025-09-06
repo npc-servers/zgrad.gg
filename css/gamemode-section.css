@@ -36,6 +36,19 @@
     pointer-events: none;
 }
 
+.gamemode-gradient-bg {
+    position: absolute;
+    top: 30%;
+    left: 0;
+    right: 0;
+    bottom: 20%;
+    background: radial-gradient(ellipse 70% 50% at center 40%, rgba(220, 38, 38, 0.12) 0%, rgba(220, 38, 38, 0.06) 40%, rgba(220, 38, 38, 0.02) 70%, transparent 100%);
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+    will-change: opacity;
+}
+
 .gamemode-container {
     max-width: 1400px;
     margin: 0 auto;
