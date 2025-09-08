@@ -102,12 +102,12 @@ function initGamemodeSwiper() {
         // Effects
         effect: 'slide',
         
-        // Autoplay (optional)
-        autoplay: {
-            delay: 5000,
-            disableOnInteraction: true,
-            pauseOnMouseEnter: true,
-        },
+        // Autoplay disabled to prevent infinite loops
+        // autoplay: {
+        //     delay: 5000,
+        //     disableOnInteraction: true,
+        //     pauseOnMouseEnter: true,
+        // },
         
         // Lazy loading
         lazy: {
@@ -123,33 +123,15 @@ function initGamemodeSwiper() {
                 // Preload videos for initial visible slides
                 preloadVisibleVideos(this);
                 
-                // Handle initial video
-                handleSlideChange(this);
-                
                 // Integrate with GSAP animations
                 initSwiperAnimations();
             },
             
-            slideChange: function() {
-                // Preload videos for newly visible slides
+            slideChangeTransitionEnd: function() {
+                // Only handle video changes after transition is complete
+                console.log('✅ Slide transition ended');
                 preloadVisibleVideos(this);
                 handleSlideChange(this);
-            },
-            
-            slideChangeTransitionStart: function() {
-                // Don't pause videos during transition - let playVideo handle it
-                console.log('🔄 Slide transition started');
-            },
-            
-            slideChangeTransitionEnd: function() {
-                // Play only the new active video after transition
-                const activeSlide = this.slides[this.activeIndex];
-                const video = activeSlide?.querySelector('.gamemode-video');
-                console.log('✅ Slide transition ended, video:', video?.dataset.src);
-                if (video) {
-                    currentVideoElement = video;
-                    playVideo(video);
-                }
             },
             
             touchStart: function() {
@@ -176,29 +158,15 @@ function initGamemodeSwiper() {
     // Setup intersection observer for performance
     setupIntersectionObserver();
     
-    // Force initial video load and play after a short delay
+    // Initialize first video after a short delay
     setTimeout(() => {
         console.log('🚀 Initializing first video...');
         if (gamemodeSwiper && gamemodeSwiper.slides) {
-            const activeSlide = gamemodeSwiper.slides[gamemodeSwiper.activeIndex];
-            const video = activeSlide?.querySelector('.gamemode-video');
-            console.log('🎯 Found initial video:', video);
-            console.log('📁 Video data-src:', video?.dataset.src);
-            
-            if (video) {
-                console.log('📥 Force loading initial video:', video.dataset.src);
-                loadVideo(video);
-                
-                // Try to play after loading
-                setTimeout(() => {
-                    console.log('🎬 Attempting to play initial video');
-                    playVideo(video);
-                }, 1000);
-            }
+            handleSlideChange(gamemodeSwiper);
         } else {
             console.warn('⚠️ Swiper or slides not found during initialization');
         }
-    }, 500);
+    }, 1000);
 }
 
 function generateSwiperSlides() {
@@ -270,7 +238,15 @@ function preloadVisibleVideos(swiper) {
     });
 }
 
+let lastActiveIndex = -1;
+
 function handleSlideChange(swiper) {
+    // Prevent handling the same slide multiple times
+    if (swiper.activeIndex === lastActiveIndex) {
+        return;
+    }
+    lastActiveIndex = swiper.activeIndex;
+    
     const activeSlide = swiper.slides[swiper.activeIndex];
     const video = activeSlide?.querySelector('.gamemode-video');
     
@@ -278,7 +254,10 @@ function handleSlideChange(swiper) {
     console.log('📹 Active video element:', video);
     console.log('🎬 Video src:', video?.src || video?.dataset.src);
     
-    if (video) {
+    // Pause all other videos first
+    pauseAllVideos();
+    
+    if (video && video !== currentVideoElement) {
         // Load video if not already loaded
         if (!video.src && video.dataset.src) {
             console.log('📥 Loading video for slide change');
@@ -292,17 +271,15 @@ function handleSlideChange(swiper) {
         setTimeout(() => {
             console.log('🎯 Playing video after slide change');
             playVideo(video);
-        }, 200);
-    } else {
-        console.warn('⚠️ No video found in active slide');
+        }, 300);
     }
 }
 
 function pauseAllVideos() {
-    // Pause all gamemode videos except the one we're about to play
+    // Pause all gamemode videos except the current one
     const allVideos = document.querySelectorAll('.gamemode-video');
     allVideos.forEach(video => {
-        if (video.classList.contains('video-playing') || !video.paused) {
+        if (video !== currentVideoElement && (video.classList.contains('video-playing') || !video.paused)) {
             pauseVideo(video);
         }
     });
