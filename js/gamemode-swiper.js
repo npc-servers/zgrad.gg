@@ -415,13 +415,6 @@ function playVideoDirectly(video) {
 function pauseVideo(video) {
     if (!video) return;
     
-    // Use existing video manager if available
-    if (window.VideoLazyLoader && window.VideoLazyLoader.pauseVideo) {
-        window.VideoLazyLoader.pauseVideo(video);
-        return;
-    }
-    
-    // Fallback manual pause
     try {
         video.pause();
         video.classList.remove('video-playing');
@@ -461,17 +454,32 @@ function setupIntersectionObserver() {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 // Swiper is visible, allow autoplay
+                console.log('🎮 Gamemode swiper entered viewport');
                 if (gamemodeSwiper && gamemodeSwiper.autoplay) {
                     gamemodeSwiper.autoplay.start();
                 }
+                
+                // Resume video playback for active slide
+                setTimeout(() => {
+                    if (gamemodeSwiper && gamemodeSwiper.slides) {
+                        const activeSlide = gamemodeSwiper.slides[gamemodeSwiper.activeIndex];
+                        const video = activeSlide?.querySelector('.gamemode-video');
+                        if (video) {
+                            console.log('▶️ Resuming video playback for visible swiper');
+                            currentVideoElement = video; // Re-establish the current video
+                            playVideo(video);
+                        }
+                    }
+                }, 100);
             } else {
-                // Swiper is not visible, pause autoplay and videos
+                // Swiper is not visible, pause autoplay and ALL gamemode videos
+                console.log('🎮 Gamemode swiper left viewport - pausing all videos');
                 if (gamemodeSwiper && gamemodeSwiper.autoplay) {
                     gamemodeSwiper.autoplay.stop();
                 }
-                if (currentVideoElement) {
-                    pauseVideo(currentVideoElement);
-                }
+                
+                // Pause all gamemode videos using the vanilla lazy load system
+                pauseAllGamemodeVideos();
             }
         });
     }, {
@@ -480,6 +488,23 @@ function setupIntersectionObserver() {
     });
     
     observer.observe(swiperContainer);
+}
+
+function pauseAllGamemodeVideos() {
+    // Get all gamemode videos and pause them (for when swiper goes out of view)
+    const allGamemodeVideos = document.querySelectorAll('.gamemode-video');
+    
+    allGamemodeVideos.forEach(video => {
+        if (!video.paused) {
+            console.log('⏸️ Pausing gamemode video (out of view):', video.src || video.dataset.src);
+            pauseVideo(video);
+        }
+    });
+    
+    // Clear current video reference since swiper is out of view
+    if (currentVideoElement) {
+        currentVideoElement = null;
+    }
 }
 
 function initSwiperAnimations() {
@@ -598,6 +623,34 @@ window.GamemodeSwiper = {
     resumeAutoplay: () => gamemodeSwiper?.autoplay?.start(),
     getCurrentSlide: () => gamemodeSwiper?.activeIndex,
     getTotalSlides: () => gamemodeSwiper?.slides?.length || 0,
+    pauseAllVideos: () => pauseAllGamemodeVideos(),
+    getCurrentVideo: () => currentVideoElement,
+    playCurrentVideo: () => {
+        if (currentVideoElement) {
+            playVideo(currentVideoElement);
+        }
+    },
+    // Debug methods
+    getVideoStates: () => {
+        const videos = document.querySelectorAll('.gamemode-video');
+        const states = [];
+        videos.forEach((video, index) => {
+            states.push({
+                index,
+                src: video.src || video.dataset.src,
+                paused: video.paused,
+                hasVideoPlaying: video.classList.contains('video-playing'),
+                readyState: video.readyState,
+                isCurrentVideo: video === currentVideoElement
+            });
+        });
+        return states;
+    },
+    testPause: () => {
+        console.log('🧪 Testing pause function...');
+        pauseAllGamemodeVideos();
+        console.log('🧪 Video states after pause:', window.GamemodeSwiper.getVideoStates());
+    },
     destroy: () => {
         if (gamemodeSwiper) {
             gamemodeSwiper.destroy(true, true);
@@ -609,15 +662,36 @@ window.GamemodeSwiper = {
 // Handle page visibility changes
 document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
-        if (currentVideoElement) {
-            pauseVideo(currentVideoElement);
-        }
+        console.log('📱 Page hidden - pausing all gamemode videos');
+        // Pause all gamemode videos when page is hidden
+        pauseAllGamemodeVideos();
+        
         if (gamemodeSwiper && gamemodeSwiper.autoplay) {
             gamemodeSwiper.autoplay.stop();
         }
     } else {
-        if (gamemodeSwiper && gamemodeSwiper.autoplay) {
-            gamemodeSwiper.autoplay.start();
+        console.log('📱 Page visible - checking swiper visibility');
+        // Only resume if swiper is actually visible
+        const swiperContainer = document.querySelector('.gamemode-swiper');
+        if (swiperContainer) {
+            const rect = swiperContainer.getBoundingClientRect();
+            const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+            
+            if (isVisible) {
+                console.log('📱 Swiper is visible - resuming autoplay and video');
+                if (gamemodeSwiper && gamemodeSwiper.autoplay) {
+                    gamemodeSwiper.autoplay.start();
+                }
+                
+                // Resume current video if available
+                if (gamemodeSwiper && gamemodeSwiper.slides) {
+                    const activeSlide = gamemodeSwiper.slides[gamemodeSwiper.activeIndex];
+                    const video = activeSlide?.querySelector('.gamemode-video');
+                    if (video && video.paused) {
+                        playVideo(video);
+                    }
+                }
+            }
         }
     }
 });

@@ -138,6 +138,35 @@
         0 0 10px rgba(114, 137, 218, 0.5),
         2px 2px 4px rgba(0, 0, 0, 0.8);
     -webkit-text-stroke: 0.5px rgba(180, 180, 180, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+}
+
+.discord-title-icon {
+    width: 60px;
+    height: auto;
+    fill: #7289da;
+    transform: rotate(-15deg);
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 0 10px rgba(114, 137, 218, 0.4));
+    animation: discordIconFloat 4s ease-in-out infinite;
+}
+
+.discord-title:hover .discord-title-icon {
+    transform: rotate(-15deg) scale(1.1);
+    filter: drop-shadow(0 0 15px rgba(114, 137, 218, 0.6));
+}
+
+@keyframes discordIconFloat {
+    0%, 100% {
+        transform: rotate(-15deg) translateY(0px);
+    }
+    50% {
+        transform: rotate(-15deg) translateY(-5px);
+    }
 }
 
 /* Removed title underline */
@@ -270,8 +299,17 @@
         text-align: center;
     }
     
+    .discord-text-content {
+        align-items: center;
+    }
+    
     .discord-title {
         font-size: 2.5rem;
+        gap: 15px;
+    }
+    
+    .discord-title-icon {
+        width: 50px;
     }
     
     .discord-image {
@@ -292,9 +330,21 @@
         gap: 40px;
     }
     
+    .discord-text-content {
+        align-items: center;
+    }
+    
     .discord-title {
         font-size: 2rem;
         text-align: center;
+        justify-content: center;
+        gap: 15px;
+        white-space: nowrap;
+        flex-wrap: nowrap;
+    }
+    
+    .discord-title-icon {
+        width: 45px;
     }
     
     .discord-member-count {
@@ -310,10 +360,13 @@
     
     .discord-reasons {
         gap: 15px;
+        align-items: center;
     }
     
     .discord-reason {
         padding: 12px 0;
+        justify-content: center;
+        text-align: center;
     }
     
     .reason-icon {
@@ -324,6 +377,7 @@
     
     .reason-text {
         font-size: 15px;
+        text-align: center;
     }
     
     .discord-join-button {
@@ -346,8 +400,21 @@
         gap: 30px;
     }
     
+    .discord-text-content {
+        align-items: center;
+    }
+    
     .discord-title {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
+        justify-content: center;
+        gap: 10px;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+        flex-wrap: nowrap;
+    }
+    
+    .discord-title-icon {
+        width: 40px;
     }
     
     .discord-member-count {
@@ -423,15 +490,58 @@
         animation: none;
     }
     
+    .discord-title-icon {
+        animation: none;
+    }
+    
     .discord-image-3d,
     .discord-image,
     .discord-join-button,
     .discord-reason,
-    .reason-icon {
+    .reason-icon,
+    .discord-title-icon {
         transition: none;
     }
     
     .discord-image-3d:hover .discord-image {
         transform: scale(1.02);
+    }
+    
+    .discord-title:hover .discord-title-icon {
+        transform: rotate(-15deg);
+    }
+}
+
+/* Extra small screens - ensure title always fits on one line */
+@media (max-width: 360px) {
+    .discord-title {
+        font-size: 1.3rem;
+        gap: 8px;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+        flex-wrap: nowrap;
+    }
+    
+    .discord-title-icon {
+        width: 35px;
+    }
+    
+    .discord-member-count {
+        font-size: 0.85rem;
+    }
+}
+
+/* Ultra small screens - aggressive scaling */
+@media (max-width: 280px) {
+    .discord-title {
+        font-size: 1.1rem;
+        gap: 6px;
+        letter-spacing: 0.2px;
+        white-space: nowrap;
+        flex-wrap: nowrap;
+    }
+    
+    .discord-title-icon {
+        width: 30px;
     }
 }
