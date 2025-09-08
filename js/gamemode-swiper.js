@@ -539,8 +539,8 @@ function initSwiperAnimations() {
                 ease: 'power2.out',
                 delay: 0.6,
                 scrollTrigger: {
-                    trigger: '.gamemode-swiper',
-                    start: 'top 80%',
+                    trigger: '.gamemode-header',
+                    start: 'top 85%',
                     toggleActions: 'play none none none'
                 }
             }
@@ -557,8 +557,8 @@ function initSwiperAnimations() {
                 ease: 'power2.out',
                 delay: 0.8,
                 scrollTrigger: {
-                    trigger: '.gamemode-swiper',
-                    start: 'top 80%',
+                    trigger: '.gamemode-header',
+                    start: 'top 85%',
                     toggleActions: 'play none none none'
                 }
             }
