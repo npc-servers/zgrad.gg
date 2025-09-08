@@ -68,7 +68,7 @@ const footerConfig = {
     
     // Company information
     company: {
-        name: 'ZMOD, DBA ZGRAD',
+        name: 'ZMOD, LLC',
         logo: 'images/logos/zgrad-logo-clean.png',
         logoAlt: 'ZGrad.gg Logo'
     }
