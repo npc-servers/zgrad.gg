@@ -307,6 +307,11 @@ function handleHashNavigation() {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+    // Add GMod class to body if GMod client is detected
+    if (isGModClient()) {
+        document.body.classList.add('gmod-client');
+    }
+    
     generateSubtitleHTML();
     generateRulesHTML();
     generateFooterHTML();

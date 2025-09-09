@@ -6,35 +6,39 @@
     background-color: var(--dark-bg);
     overflow-x: hidden;
     overflow-y: auto;
+}
+
+/* Hide scrollbars ONLY for GMod clients */
+body.gmod-client .rules-page {
     /* Hide scrollbar for webkit browsers */
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* Internet Explorer 10+ */
 }
 
-.rules-page::-webkit-scrollbar {
+body.gmod-client .rules-page::-webkit-scrollbar {
     width: 0;
     height: 0;
     display: none;
 }
 
-/* Hide scrollbars on body and html for rules page while keeping scrollable */
-body:has(.rules-page) {
+/* Hide scrollbars on body and html for rules page while keeping scrollable - GMod only */
+body.gmod-client:has(.rules-page) {
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
 
-body:has(.rules-page)::-webkit-scrollbar {
+body.gmod-client:has(.rules-page)::-webkit-scrollbar {
     width: 0;
     height: 0;
     display: none;
 }
 
-html:has(.rules-page) {
+html:has(body.gmod-client .rules-page) {
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
 
-html:has(.rules-page)::-webkit-scrollbar {
+html:has(body.gmod-client .rules-page)::-webkit-scrollbar {
     width: 0;
     height: 0;
     display: none;
