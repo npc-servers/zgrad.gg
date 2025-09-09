@@ -9,53 +9,53 @@ const rulesConfig = {
     rules: [
         {
             id: 1,
-            title: "NO CHEATING OR EXPLOITING",
-            description: "The use of cheats, hacks, exploits, or any third-party software that provides an unfair advantage is strictly prohibited. This includes but is not limited to aimbots, wallhacks, speed hacks, and exploiting map glitches. Players caught cheating will receive an immediate permanent ban."
+            title: "NO OFFENSIVE LANGUAGE",
+            description: "Slurs, dogwhistles, or any other hate speech is not allowed."
         },
         {
             id: 2,
-            title: "RESPECT ALL PLAYERS",
-            description: "Treat all players with respect regardless of their skill level, background, or beliefs. Harassment, discrimination, hate speech, or targeted toxicity will not be tolerated. This includes offensive usernames, spray images, or voice communications."
+            title: "NO POLITICS & SENSITIVE SUBJECTS",
+            description: "Absolutely no politics or sensitive subjects are allowed. Politics, wars, mass shootings, etc. should not be discussed."
         },
         {
             id: 3,
             title: "NO RANDOM DEATH MATCHING (RDM)",
-            description: "Do not kill other players without a valid reason. In TTT, you must have evidence or witness suspicious behavior before eliminating someone. Killing innocents without cause disrupts gameplay and will result in punishment."
+            description: "RDM happens, but excessive RDM, targeting players, or revenge killing is not allowed."
         },
         {
             id: 4,
-            title: "NO GHOSTING OR METAGAMING",
-            description: "Do not share information about the game state through external means (Discord, Steam chat, etc.) while dead or spectating. This includes revealing traitor identities, calling out locations, or providing any information that gives living players an unfair advantage."
+            title: "RESPECT ALL PLAYERS",
+            description: "Treat everyone with respect. Excessive Harassment, hate speech, and personal attacks will not be tolerated."
         },
         {
             id: 5,
-            title: "FOLLOW STAFF INSTRUCTIONS",
-            description: "Always comply with instructions from server staff members. If you disagree with a punishment or decision, appeal it through proper channels rather than arguing in-game. Disrespecting or ignoring staff will result in additional penalties."
+            title: "NO EXPLOITING OR CHEATING",
+            description: "Do not exploit bugs or glitches- report them on the Discord. Cheating will result in a global ban from all servers."
         },
         {
             id: 6,
-            title: "NO SPAMMING OR FLOODING",
-            description: "Avoid excessive use of voice chat, text chat, or game sounds. This includes mic spamming, chat flooding, sound board abuse, and playing music through your microphone. Keep communications relevant to gameplay."
+            title: "STAY INBOUNDS",
+            description: "Do not abuse mechanics to get out of bounds on maps."
         },
         {
             id: 7,
-            title: "PLAY YOUR ROLE PROPERLY",
-            description: "Each role in TTT has specific objectives. Traitors should work to eliminate innocents, Detectives should investigate and lead, and Innocents should survive and identify threats. Deliberately playing against your role's objectives is not allowed."
+            title: "NO GREIFING",
+            description: "Avoid behavior that disrupts the game experience for others. Refrain from excessive mic spam, punching players without valid reason, or other forms of disruptive gameplay."
         },
         {
             id: 8,
-            title: "NO CAMPING OR DELAYING",
-            description: "Avoid excessive camping in one location or intentionally delaying rounds. Keep the game moving and engaging for all players. If you're the last player alive, actively participate rather than hiding indefinitely."
+            title: "NO METAGAMING",
+            description: "Do not use knowledge gained from out-of-character sources (Private Voice-chats/Direct Messages) to influence your in-game decisions."
         },
         {
             id: 9,
-            title: "REPORT VIOLATIONS PROPERLY",
-            description: "Use the proper channels to report rule violations. This includes in-game reporting systems, Discord tickets, or contacting staff directly. Provide evidence when possible and avoid taking justice into your own hands."
+            title: "VOTE ABUSE",
+            description: "Voting should not be abused. Voting (votesmiting, etc) should only be used against a player for a legitimate rule break. Votes need to have a proper reason. Do not leave them blank, and do not write something unserious. If you abuse this system, this permission will be revoked."
         },
         {
             id: 10,
-            title: "HAVE FUN AND BE SPORTSMAN-LIKE",
-            description: "Remember that games are meant to be enjoyable for everyone. Be a good sport whether you win or lose, congratulate good plays, and help create a positive gaming environment for the entire community."
+            title: "HAVE FUN AND DON'T BE A DICK",
+            description: "Remember that games are meant to be enjoyed by everyone. If you're not having fun, leave and take a break."
         }
     ],
     footer: {
