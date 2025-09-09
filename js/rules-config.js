@@ -113,7 +113,7 @@ function generateRulesHTML() {
         if (!isGMod) {
             const copyButton = document.createElement('button');
             copyButton.className = 'rule-copy-button';
-            copyButton.innerHTML = '🔗';
+            copyButton.innerHTML = '<img src="images/icons/paperclip.svg" alt="Copy link">';
             copyButton.title = 'Copy link to this rule';
             copyButton.setAttribute('aria-label', `Copy link to rule ${rule.id}`);
             
@@ -242,12 +242,12 @@ function generateFooterHTML() {
 // Utility functions for clipboard functionality
 function showCopyFeedback(button) {
     const originalContent = button.innerHTML;
-    button.innerHTML = '✓';
-    button.style.color = '#4CAF50';
+    button.innerHTML = '<img src="images/icons/check.svg" alt="Copied">';
+    button.style.filter = 'brightness(0) saturate(100%) invert(64%) sepia(88%) saturate(3207%) hue-rotate(90deg) brightness(96%) contrast(80%)'; // Green filter
     
     setTimeout(() => {
         button.innerHTML = originalContent;
-        button.style.color = '';
+        button.style.filter = '';
     }, 2000);
 }
 

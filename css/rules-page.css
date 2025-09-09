@@ -291,6 +291,13 @@ html:has(body.gmod-client .rules-page)::-webkit-scrollbar {
     margin-left: 12px;
 }
 
+.rule-copy-button img {
+    width: 14px;
+    height: 14px;
+    filter: brightness(0) saturate(100%) invert(100%); /* White color */
+    transition: var(--transition);
+}
+
 .rule-copy-button:hover {
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.4);
