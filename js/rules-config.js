@@ -59,7 +59,7 @@ const rulesConfig = {
         }
     ],
     footer: {
-        text: "Violations of these rules may result in warnings, temporary bans, or permanent bans depending on severity and frequency. Staff reserve the right to make judgment calls on situations not explicitly covered by these rules.",
+        text: "Violations of these rules may result in warnings, temporary bans, or permanent bans depending on severity and frequency. Staff reserve the right to make judgment calls on situations not explicitly covered by these rules. By playing on our servers, you agree to our <a href=\"#\" target=\"_blank\" rel=\"noopener\" class=\"inline-link\">Terms of Service</a>, <a href=\"#\" target=\"_blank\" rel=\"noopener\" class=\"inline-link\">Privacy Policy</a>, and <a href=\"#\" target=\"_blank\" rel=\"noopener\" class=\"inline-link\">Universal Community Guidelines</a>.",
         links: [
             {
                 text: "Appeal a Ban",
@@ -181,7 +181,14 @@ function isGModClient() {
 // Function to generate footer HTML
 function generateFooterHTML() {
     const rulesFooterLinks = document.querySelector('.rules-footer-links');
+    const rulesFooterText = document.querySelector('.rules-footer-text');
+    
     if (!rulesFooterLinks) return;
+
+    // Update footer text with HTML content
+    if (rulesFooterText) {
+        rulesFooterText.innerHTML = rulesConfig.footer.text;
+    }
 
     // Clear existing content
     rulesFooterLinks.innerHTML = '';
@@ -195,6 +202,11 @@ function generateFooterHTML() {
 
     // Generate footer links
     rulesConfig.footer.links.forEach(link => {
+        // Skip "Appeal a Ban" link for GMod clients
+        if (isGMod && link.text === "Appeal a Ban") {
+            return;
+        }
+        
         const linkElement = document.createElement('a');
         linkElement.href = link.url;
         linkElement.textContent = link.text;
