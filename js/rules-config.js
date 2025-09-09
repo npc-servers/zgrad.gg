@@ -158,9 +158,8 @@ function generateSubtitleHTML() {
 
     const isGMod = isGModClient();
 
-    // Only show subtitle boxes for GMod clients
     if (isGMod) {
-        // Generate subtitle boxes
+        // Generate subtitle boxes for GMod clients
         rulesConfig.subtitle.forEach(item => {
             const subtitleBox = document.createElement('div');
             subtitleBox.className = 'rules-subtitle-box';
@@ -168,8 +167,11 @@ function generateSubtitleHTML() {
             rulesSubtitle.appendChild(subtitleBox);
         });
     } else {
-        // Hide the subtitle container for non-GMod users
-        rulesSubtitle.style.display = 'none';
+        // Show single subtitle box for non-GMod users
+        const subtitleBox = document.createElement('div');
+        subtitleBox.className = 'rules-subtitle-box';
+        subtitleBox.textContent = 'Rules to follow while playing on ZGRAD';
+        rulesSubtitle.appendChild(subtitleBox);
     }
 }
 
