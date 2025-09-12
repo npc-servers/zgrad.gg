@@ -196,16 +196,39 @@
     background: rgba(114, 137, 218, 0.05);
     border-radius: 16px;
     border: 1px solid rgba(114, 137, 218, 0.15);
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
     position: relative;
     backdrop-filter: blur(10px);
     overflow: hidden;
+    will-change: transform, background-color, border-color;
+}
+
+.discord-reason::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(114, 137, 218, 0.2) 0%, rgba(114, 137, 218, 0) 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    opacity: 0;
+    transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), height 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    pointer-events: none;
 }
 
 
 .discord-reason:hover {
     background: rgba(114, 137, 218, 0.12);
     border-color: rgba(114, 137, 218, 0.3);
+}
+
+.discord-reason:hover::before {
+    width: 250%;
+    height: 250%;
+    opacity: 1;
 }
 
 
@@ -219,7 +242,7 @@
     background: linear-gradient(135deg, rgba(114, 137, 218, 0.2), rgba(90, 108, 181, 0.15));
     border-radius: 16px;
     border: 2px solid rgba(114, 137, 218, 0.25);
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
     flex-shrink: 0;
     box-shadow: 
         0 4px 12px rgba(114, 137, 218, 0.1),
@@ -237,12 +260,17 @@
     height: 100%;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .discord-reason:hover .reason-icon {
     background: linear-gradient(135deg, rgba(114, 137, 218, 0.3), rgba(90, 108, 181, 0.25));
     border-color: rgba(114, 137, 218, 0.4);
+    transform: scale(1.1) rotate(5deg) !important;
+}
+
+.discord-reason:hover .reason-text {
+    transform: translateX(2px) !important;
 }
 
 
@@ -254,6 +282,7 @@
     position: relative;
     z-index: 1;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
 }
 
 /* Discord Join Button - Matching Help Box Style */

@@ -66,7 +66,7 @@ class DiscordSection {
                 trigger: this.section,
                 start: "top 80%",
                 end: "bottom 20%",
-                toggleActions: "play none none reverse",
+                toggleActions: "play none none none",
                 onEnter: () => {
                     this.isVisible = true;
                     this.animationsTriggered = true;
@@ -154,10 +154,14 @@ class DiscordSection {
         }, 400);
         
         this.reasons.forEach((reason, index) => {
-            reason.style.transition = `all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) ${0.6 + (index * 0.1)}s`;
+            reason.style.transition = `opacity 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) ${0.6 + (index * 0.1)}s, transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) ${0.6 + (index * 0.1)}s`;
             setTimeout(() => {
                 reason.style.opacity = '1';
                 reason.style.transform = 'translateX(0)';
+                // Clear the inline transition after animation completes to allow CSS hover effects
+                setTimeout(() => {
+                    reason.style.transition = '';
+                }, 100);
             }, 600 + (index * 100));
         });
         
@@ -168,43 +172,8 @@ class DiscordSection {
     }
     
     setupInteractions() {
-        // Enhanced hover effects for reasons
-        this.reasons.forEach(reason => {
-            const icon = reason.querySelector('.reason-icon');
-            const text = reason.querySelector('.reason-text');
-            
-            reason.addEventListener('mouseenter', () => {
-                if (typeof gsap !== 'undefined') {
-                    gsap.to(icon, {
-                        duration: 0.3,
-                        scale: 1.2,
-                        rotation: 5,
-                        ease: "back.out(1.7)"
-                    });
-                    gsap.to(text, {
-                        duration: 0.3,
-                        x: 5,
-                        ease: "power2.out"
-                    });
-                }
-            });
-            
-            reason.addEventListener('mouseleave', () => {
-                if (typeof gsap !== 'undefined') {
-                    gsap.to(icon, {
-                        duration: 0.3,
-                        scale: 1,
-                        rotation: 0,
-                        ease: "power2.out"
-                    });
-                    gsap.to(text, {
-                        duration: 0.3,
-                        x: 0,
-                        ease: "power2.out"
-                    });
-                }
-            });
-        });
+        // Remove JavaScript hover animations to prevent conflicts with CSS
+        // Let CSS handle all hover effects for discord reasons
         
         // Enhanced button interactions
         if (this.joinButton) {
