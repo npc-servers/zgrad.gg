@@ -513,7 +513,7 @@ const webstorePerkData = [
     {
         icon: '💬',
         title: 'DISCORD FEATURES',
-        description: 'Get a custom role with a fancy color and icon, and exclusive chats with sneak peaks of future content!',
+        description: 'Get a custom role with a fancy color and icon, and exclusive chats with sneak peeks of future content!',
         image: 'images/fittr.png',
         alt: 'Discord Features',
         caption: 'Supporter only chats!!'
