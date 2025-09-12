@@ -511,7 +511,7 @@ const webstorePerkData = [
         caption: 'A server slot, just for you!'
     },
     {
-        icon: '🌐',
+        icon: '💬',
         title: 'DISCORD FEATURES',
         description: 'Get a custom role with a fancy color and icon, and exclusive chats with sneak peaks of future content!',
         image: 'images/fittr.png',
