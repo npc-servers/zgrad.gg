@@ -126,6 +126,72 @@
     z-index: 2;
 }
 
+/* Initial states for entrance animations */
+.discord-title,
+.discord-reason,
+.discord-join-button,
+.discord-image-3d {
+    opacity: 0;
+    transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.discord-title {
+    transform: translateY(50px) scale(0.9);
+}
+
+.discord-reason {
+    transform: translateX(-30px);
+}
+
+.discord-join-button {
+    transform: translateY(30px) scale(0.95);
+}
+
+.discord-image-3d {
+    transform: scale(0.8) rotateY(-15deg);
+}
+
+/* Visible states */
+.discord-section.animated .discord-title,
+.discord-section.animated .discord-reason,
+.discord-section.animated .discord-join-button,
+.discord-section.animated .discord-image-3d {
+    opacity: 1;
+}
+
+.discord-section.animated .discord-title {
+    transform: translateY(0) scale(1);
+}
+
+.discord-section.animated .discord-reason {
+    transform: translateX(0);
+}
+
+.discord-section.animated .discord-join-button {
+    transform: translateY(0) scale(1);
+}
+
+.discord-section.animated .discord-image-3d {
+    transform: scale(1) rotateY(0deg);
+}
+
+/* Staggered animation delays for reasons */
+.discord-section.animated .discord-reason:nth-child(1) {
+    transition-delay: 0.1s;
+}
+
+.discord-section.animated .discord-reason:nth-child(2) {
+    transition-delay: 0.2s;
+}
+
+.discord-section.animated .discord-reason:nth-child(3) {
+    transition-delay: 0.3s;
+}
+
+.discord-section.animated .discord-reason:nth-child(4) {
+    transition-delay: 0.4s;
+}
+
 .discord-title {
     font-size: 3rem;
     font-weight: 700;
@@ -285,52 +351,68 @@
     transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
 }
 
-/* Discord Join Button - Matching Help Box Style */
+/* Discord Join Button - Discord Brand Colors with Standard Button Structure */
 .discord-join-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(to bottom, #7289da, #5a6cb5);
-    color: #ffffff;
-    font-size: 16px;
-    font-weight: 600;
-    padding: 12px 24px;
+    background-color: rgba(114, 137, 218, 0.15);
+    color: #f5f5f5;
+    border: 1px solid rgba(114, 137, 218, 0.3);
     border-radius: 6px;
-    border: none;
-    text-transform: uppercase;
+    padding: 0.7rem 1.8rem;
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(114, 137, 218, 0.3);
-    letter-spacing: 0.5px;
+    transition: all 0.2s ease-in-out;
     text-decoration: none;
     position: relative;
-    z-index: 1;
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 15px rgba(114, 137, 218, 0.2);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    min-width: fit-content;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     width: fit-content;
     gap: 8px;
+    font-family: 'Oxanium', sans-serif;
 }
 
-.discord-join-button::before {
+.discord-join-button::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, #8599e4, #6f81d3);
-    z-index: -1;
-    transition: opacity 0.3s ease;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, rgba(114, 137, 218, 0.4) 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
     opacity: 0;
+    transition: transform 0.3s, opacity 0.5s;
 }
 
 .discord-join-button:hover {
+    background-color: rgba(114, 137, 218, 0.2);
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(114, 137, 218, 0.4);
-    color: #ffffff;
+    box-shadow: 0 6px 20px rgba(114, 137, 218, 0.3);
+    border-color: rgba(114, 137, 218, 0.5);
+    color: #7289da;
 }
 
-.discord-join-button:hover::before {
-    opacity: 1;
+.discord-join-button:active {
+    transform: translateY(0);
+}
+
+.discord-join-button:active::after {
+    transform: scale(0, 0);
+    opacity: 0.3;
+    transition: 0s;
 }
 
 .discord-join-button svg {
@@ -447,8 +529,8 @@
     }
     
     .discord-join-button {
-        font-size: 16px;
-        padding: 16px 32px;
+        font-size: 1rem;
+        padding: 0.7rem 1.8rem;
         align-self: center;
     }
 }
@@ -518,8 +600,8 @@
     }
     
     .discord-join-button {
-        font-size: 15px;
-        padding: 14px 28px;
+        font-size: 0.9rem;
+        padding: 0.6rem 1.5rem;
         width: 100%;
         max-width: 280px;
     }
