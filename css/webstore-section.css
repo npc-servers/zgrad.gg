@@ -177,7 +177,10 @@
     text-transform: uppercase;
     line-height: 1.1;
     margin: 0;
-    color: #ffffff;
+    background: linear-gradient(135deg, #ffffff 0%, #ffffff 40%, #ff8c00 70%, #ff4500 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.25), 0 0 15px rgba(255, 255, 255, 0.1);
     position: relative;
 }
@@ -192,7 +195,10 @@
     z-index: -1;
     filter: blur(6px);
     opacity: 0.25;
-    color: rgba(255, 255, 255, 0.7);
+    background: linear-gradient(135deg, #ffffff 0%, #ffffff 40%, #ff8c00 70%, #ff4500 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .webstore-description {
@@ -233,7 +239,6 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     perspective: 1000px;
     transform-style: preserve-3d;
@@ -312,7 +317,7 @@
 
 /* Webstore Image Caption */
 .webstore-image-caption {
-    text-align: left;
+    text-align: center;
     margin-top: 15px;
     padding: 0 20px;
     width: 100%;
@@ -320,6 +325,10 @@
     color: rgba(245, 245, 245, 0.8);
     font-weight: 400;
     line-height: 1.4;
+    min-height: 2.8em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Webstore Features */

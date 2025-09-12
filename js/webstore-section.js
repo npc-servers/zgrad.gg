@@ -279,11 +279,7 @@ function initWebstoreAnimations() {
                     duration: 0.3,
                     ease: "power2.out"
                 });
-                gsap.to(description, {
-                    x: 5,
-                    duration: 0.3,
-                    ease: "power2.out"
-                });
+                // Removed rightward movement animation for description
             });
 
             perk.addEventListener('mouseleave', () => {
@@ -298,11 +294,7 @@ function initWebstoreAnimations() {
                     duration: 0.3,
                     ease: "power2.out"
                 });
-                gsap.to(description, {
-                    x: 0,
-                    duration: 0.3,
-                    ease: "power2.out"
-                });
+                // Removed rightward movement animation for description
             });
         });
 
@@ -517,11 +509,7 @@ function initWebstoreCycling() {
                     duration: 0.3,
                     ease: "power2.out"
                 });
-                gsap.to(description, {
-                    x: 0,
-                    duration: 0.3,
-                    ease: "power2.out"
-                });
+                // Removed rightward movement animation for description
             }
         });
         
@@ -546,11 +534,7 @@ function initWebstoreCycling() {
                     duration: 0.3,
                     ease: "power2.out"
                 });
-                gsap.to(description, {
-                    x: 5,
-                    duration: 0.3,
-                    ease: "power2.out"
-                });
+                // Removed rightward movement animation for description
             }
         }
         
