@@ -60,9 +60,10 @@
 
 .webstore-header {
     text-align: center;
+    margin-top: 120px;
     margin-bottom: 60px;
     position: relative;
-    z-index: 1;
+    z-index: 2;
     isolation: isolate;
 }
 
@@ -79,6 +80,22 @@
     contain: layout;
 }
 
+/* Bloody line decoration for top of section */
+.bloodsplatter-decoration-webstore-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    flex-shrink: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: visible;
+    contain: layout;
+    opacity: 0;
+}
+
 .bloodsplatter-decoration-webstore img {
     height: 500px;
     width: auto;
@@ -91,12 +108,58 @@
     -webkit-mask: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 20%, rgba(0,0,0,0.6) 45%, rgba(0,0,0,0.2) 65%, rgba(0,0,0,0) 80%);
 }
 
+.bloodsplatter-decoration-webstore-top img {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+    position: relative;
+    opacity: 0.7;
+    transition: none;
+    will-change: transform, filter;
+    mask: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0.9) 50%, rgba(0,0,0,0.6) 70%, rgba(0,0,0,0.3) 85%, rgba(0,0,0,0) 100%);
+    -webkit-mask: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0.9) 50%, rgba(0,0,0,0.6) 70%, rgba(0,0,0,0.3) 85%, rgba(0,0,0,0) 100%);
+    transform: translateY(-20px);
+}
+
 .webstore-text {
     margin-bottom: 20px;
     text-align: center;
     padding: 0 2%;
     position: relative;
     z-index: 1;
+}
+
+/* Dollar Splatter Background */
+.dollar-splatter-background {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.08;
+    will-change: transform;
+}
+
+.dollar-splatter-background img {
+    height: 800px;
+    width: auto;
+    object-fit: contain;
+    filter: blur(1px);
+}
+
+/* Dollar Float Animation */
+@keyframes dollarBackgroundFloat {
+    0%, 100% {
+        transform: translate(-50%, -50%) rotate(-15deg) scale(1);
+    }
+    50% {
+        transform: translate(-50%, -50%) rotate(-12deg) scale(1.05);
+    }
+}
+
+.dollar-splatter-background {
+    animation: dollarBackgroundFloat 8s ease-in-out infinite;
 }
 
 .webstore-small {
@@ -133,15 +196,27 @@
 }
 
 .webstore-description {
-    font-size: 1.1rem;
+    font-size: 1.3rem;
+    font-weight: 700;
     color: var(--text-color);
     text-align: center;
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto 20px auto;
     opacity: 0.9;
-    line-height: 1.6;
+    line-height: 1.7;
     position: relative;
     z-index: 1;
+    -webkit-text-stroke: 0.5px rgba(180, 180, 180, 0.3);
+    text-shadow: 
+        /* Light stroke effect using multiple shadows */
+        -0.5px -0.5px 0 rgba(180, 180, 180, 0.3),
+        0.5px -0.5px 0 rgba(180, 180, 180, 0.3),
+        -0.5px 0.5px 0 rgba(180, 180, 180, 0.3),
+        0.5px 0.5px 0 rgba(180, 180, 180, 0.3),
+        /* Black drop shadow */
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 6px rgba(0, 0, 0, 0.6),
+        0 0 12px rgba(0, 0, 0, 0.3);
 }
 
 .webstore-content {
@@ -386,68 +461,60 @@
 
 /* Webstore Button */
 .webstore-button-container {
-    text-align: center;
+    text-align: left;
 }
 
 .webstore-visit-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--accent-color) 0%, #c0762f 100%);
+    background-color: rgba(255,107,0,0.25);
     color: #ffffff;
-    font-size: 1.1rem;
-    font-weight: 700;
-    padding: 16px 32px;
+    border: 2px solid rgba(255,107,0,0.6);
     border-radius: 8px;
-    border: none;
-    text-transform: uppercase;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 700;
     cursor: pointer;
-    text-decoration: none;
     position: relative;
-    z-index: 1;
     overflow: hidden;
-    transition: all 0.3s ease;
-    gap: 12px;
-    letter-spacing: 1px;
-    box-shadow: 
-        0 4px 15px rgba(231, 143, 60, 0.3),
-        0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.webstore-visit-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #f0a04b 0%, #d1823a 100%);
-    z-index: -1;
-    transition: opacity 0.3s ease;
-    opacity: 0;
+    transition: all 0.2s ease-in-out;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 160px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(255,107,0,0.3), inset 0 0 10px rgba(255,107,0,0.1);
+    text-shadow: 0 0 8px rgba(255,107,0,0.5);
 }
 
 .webstore-visit-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 
-        0 8px 25px rgba(231, 143, 60, 0.4),
-        0 4px 15px rgba(0, 0, 0, 0.3);
     color: #ffffff;
+    background-color: rgba(255,107,0,0.4);
+    border-color: rgba(255,107,0,0.8);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(255,107,0,0.5), inset 0 0 15px rgba(255,107,0,0.2);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    text-shadow: 0 0 12px rgba(255,107,0,0.8);
 }
 
-.webstore-visit-button:hover::before {
-    opacity: 1;
-}
-
-.webstore-visit-button svg {
+.webstore-visit-button svg,
+.webstore-visit-button .store-icon {
     width: 20px;
     height: 20px;
     stroke: currentColor;
     transition: transform 0.3s ease;
+    margin-left: 6px;
+    vertical-align: middle;
 }
 
-.webstore-visit-button:hover svg {
-    transform: translateX(3px);
+.webstore-visit-button:hover svg,
+.webstore-visit-button:hover .store-icon {
+    transform: scale(1.1) !important;
 }
 
 /* Large screens - make image even bigger */
@@ -485,8 +552,35 @@
         text-align: center;
     }
     
-    .webstore-image {
-        max-width: 500px;
+    .webstore-image-container {
+        display: none;
+    }
+    
+    .webstore-description {
+        font-size: 1.15rem;
+        max-width: 100%;
+    }
+    
+    .bloodsplatter-decoration-webstore-top img {
+        height: 150px;
+    }
+    
+    .webstore-header {
+        margin-top: 100px;
+    }
+    
+    .dollar-splatter-background {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-15deg);
+    }
+    
+    .dollar-splatter-background img {
+        height: 700px;
+    }
+    
+    .webstore-button-container {
+        text-align: center;
     }
 }
 
@@ -503,16 +597,28 @@
         font-size: 3.5rem;
     }
     
-    .webstore-small {
-        font-size: 1.4rem;
+    .webstore-description {
+        font-size: 1.05rem;
     }
     
     .webstore-features-title {
         font-size: 1.8rem;
     }
     
-    .webstore-image {
-        max-width: 400px;
+    .bloodsplatter-decoration-webstore-top img {
+        height: 120px;
+    }
+    
+    .webstore-header {
+        margin-top: 80px;
+    }
+    
+    .webstore-image-container {
+        display: none;
+    }
+    
+    .webstore-button-container {
+        text-align: center;
     }
     
     .webstore-image-caption {
@@ -540,6 +646,16 @@
     .perk-description {
         font-size: 0.9rem;
     }
+    
+    .dollar-splatter-background {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-15deg);
+    }
+    
+    .dollar-splatter-background img {
+        height: 600px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -566,6 +682,14 @@
     
     .webstore-features-title {
         font-size: 1.6rem;
+    }
+    
+    .bloodsplatter-decoration-webstore-top img {
+        height: 100px;
+    }
+    
+    .webstore-header {
+        margin-top: 60px;
     }
     
     .webstore-image {
@@ -597,6 +721,16 @@
         max-width: 280px;
     }
     
+    .dollar-splatter-background {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-15deg);
+    }
+    
+    .dollar-splatter-background img {
+        height: 500px;
+    }
+    
     /* Disable animations and 3D effects on mobile for performance */
     .webstore-character {
         animation: none;
@@ -616,7 +750,15 @@
     }
     
     .webstore-image-container {
-        perspective: none;
+        display: none;
+    }
+    
+    .webstore-button-container {
+        text-align: center;
+    }
+    
+    .dollar-splatter-background {
+        animation: none; /* Disable animations on mobile */
     }
 }
 
@@ -668,6 +810,10 @@
     .webstore-character:hover .webstore-image {
         transform: scale(1.02);
     }
+    
+    .dollar-splatter-background {
+        animation: none; /* Disable dollar splatter animations */
+    }
 }
 
 /* Extra small screens */
@@ -683,6 +829,16 @@
     .webstore-features-title {
         font-size: 1.4rem;
     }
+    
+    .dollar-splatter-background {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-15deg);
+    }
+    
+    .dollar-splatter-background img {
+        height: 450px;
+    }
 }
 
 /* Ultra small screens */
@@ -693,5 +849,15 @@
     
     .webstore-small {
         font-size: 0.9rem;
+    }
+    
+    .dollar-splatter-background {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-15deg);
+    }
+    
+    .dollar-splatter-background img {
+        height: 400px;
     }
 }

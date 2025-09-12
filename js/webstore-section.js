@@ -12,16 +12,16 @@ function initWebstoreAnimations() {
     if (typeof gsap !== 'undefined' && gsap.registerPlugin) {
         gsap.registerPlugin(ScrollTrigger);
 
-        // Animate webstore header text (only once)
-        gsap.fromTo('.webstore-small', 
+        // Animate bloody line decoration (only once)
+        gsap.fromTo('.bloodsplatter-decoration-webstore-top', 
             {
                 opacity: 0,
-                y: 30
+                y: -30
             },
             {
                 opacity: 1,
                 y: 0,
-                duration: 0.8,
+                duration: 1,
                 ease: "power3.out",
                 scrollTrigger: {
                     trigger: '.webstore-section',
@@ -31,6 +31,50 @@ function initWebstoreAnimations() {
                 }
             }
         );
+
+        gsap.fromTo('.bloodsplatter-decoration-webstore-top img', 
+            {
+                opacity: 0,
+                y: -20
+            },
+            {
+                opacity: 0.7,
+                y: 0,
+                duration: 1,
+                ease: "power3.out",
+                scrollTrigger: {
+                    trigger: '.webstore-section',
+                    start: 'top 80%',
+                    end: 'bottom 20%',
+                    toggleActions: 'play none none none'
+                }
+            }
+        );
+
+        // Animate dollar splatter background (only once)
+        gsap.fromTo('.dollar-splatter-background', 
+            {
+                opacity: 0,
+                scale: 0.8,
+                rotation: -25
+            },
+            {
+                opacity: 0.08,
+                scale: 1,
+                rotation: -15,
+                duration: 1.2,
+                delay: 0.3,
+                ease: "power3.out",
+                scrollTrigger: {
+                    trigger: '.webstore-section',
+                    start: 'top 80%',
+                    end: 'bottom 20%',
+                    toggleActions: 'play none none none'
+                }
+            }
+        );
+
+        // Animate webstore header text (only once)
 
         gsap.fromTo('.webstore-large', 
             {
@@ -43,7 +87,7 @@ function initWebstoreAnimations() {
                 y: 0,
                 scale: 1,
                 duration: 1,
-                delay: 0.2,
+                delay: 0.1,
                 ease: "power3.out",
                 scrollTrigger: {
                     trigger: '.webstore-section',
@@ -74,49 +118,53 @@ function initWebstoreAnimations() {
             }
         );
 
-        // Animate webstore character image
-        gsap.fromTo('.webstore-character', 
-            {
-                opacity: 0,
-                x: 50,
-                scale: 0.8
-            },
-            {
-                opacity: 1,
-                x: 0,
-                scale: 1,
-                duration: 1,
-                delay: 0.6,
-                ease: "power3.out",
-                scrollTrigger: {
-                    trigger: '.webstore-content',
-                    start: 'top 85%',
-                    end: 'bottom 20%',
-                    toggleActions: 'play none none none'
+        // Animate webstore character image (only on desktop)
+        if (window.innerWidth > 992) {
+            gsap.fromTo('.webstore-character', 
+                {
+                    opacity: 0,
+                    x: 50,
+                    scale: 0.8
+                },
+                {
+                    opacity: 1,
+                    x: 0,
+                    scale: 1,
+                    duration: 1,
+                    delay: 0.6,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: '.webstore-content',
+                        start: 'top 85%',
+                        end: 'bottom 20%',
+                        toggleActions: 'play none none none'
+                    }
                 }
-            }
-        );
+            );
+        }
 
-        // Animate webstore image caption
-        gsap.fromTo('.webstore-image-caption', 
-            {
-                opacity: 0,
-                y: 20
-            },
-            {
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                delay: 1.2,
-                ease: "power3.out",
-                scrollTrigger: {
-                    trigger: '.webstore-content',
-                    start: 'top 85%',
-                    end: 'bottom 20%',
-                    toggleActions: 'play none none none'
+        // Animate webstore image caption (only on desktop)
+        if (window.innerWidth > 992) {
+            gsap.fromTo('.webstore-image-caption', 
+                {
+                    opacity: 0,
+                    y: 20
+                },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    delay: 1.2,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: '.webstore-content',
+                        start: 'top 85%',
+                        end: 'bottom 20%',
+                        toggleActions: 'play none none none'
+                    }
                 }
-            }
-        );
+            );
+        }
 
         // Animate features title
         gsap.fromTo('.webstore-features-title', 
