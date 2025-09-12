@@ -225,6 +225,31 @@ function initWebstoreAnimations() {
                 duration: 0.6,
                 ease: "power3.out"
             }, "-=0.2"
+        ).fromTo('.webstore-coming-soon', 
+            {
+                opacity: 0,
+                y: 30,
+                scale: 0.95
+            },
+            {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                duration: 0.8,
+                ease: "power3.out"
+            }, "-=0.1"
+        ).fromTo('.coming-soon-item', 
+            {
+                opacity: 0,
+                x: -30
+            },
+            {
+                opacity: 1,
+                x: 0,
+                duration: 0.4,
+                stagger: 0.1,
+                ease: "power2.out"
+            }, "-=0.4"
         );
 
         // Add parallax effect to webstore character
@@ -420,7 +445,7 @@ const webstoreObserver = new IntersectionObserver((entries) => {
 
 // Observe webstore elements when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    const webstoreElements = document.querySelectorAll('.webstore-perk, .webstore-character');
+    const webstoreElements = document.querySelectorAll('.webstore-perk, .webstore-character, .coming-soon-item');
     webstoreElements.forEach(el => webstoreObserver.observe(el));
 });
 
@@ -451,36 +476,81 @@ document.addEventListener('click', function(e) {
     }
 });
 
+// Define complete perk data - this will generate both the perk list and cycling content
+const webstorePerkData = [
+    {
+        icon: '👔',
+        title: 'CUSTOM PLAYERMODELS',
+        description: 'Get access to Fittr, our in-house playermodel loader. Use any model you want from the Workshop!',
+        image: 'images/fittr.png',
+        alt: 'Custom Playermodel',
+        caption: 'Our system, Fittr. Use any model you want!'
+    },
+    {
+        icon: '🗳️',
+        title: 'HIGHER VOTING POWER',
+        description: 'Get higher voting power, so the map you want wins more often!',
+        image: 'images/fittr.png',
+        alt: 'Higher Voting Power',
+        caption: 'Higher voting power, so the map you want wins more often!'
+    },
+    {
+        icon: '🎨',
+        title: 'STAND OUT IN CHAT',
+        description: 'Exclusive name glow, customizable chat tag, colored chat formatting, GIF embeds, and an icon corresponding to your rank!',
+        image: 'images/fittr.png',
+        alt: 'Vanity Features',
+        caption: 'Stand out from the white names!'
+    },
+    {
+        icon: '🔒',
+        title: 'RESERVED SLOT',
+        description: 'Always have a slot in the server, even if it\'s full!',
+        image: 'images/fittr.png',
+        alt: 'Reserved Slot',
+        caption: 'A server slot, just for you!'
+    },
+    {
+        icon: '🌐',
+        title: 'DISCORD FEATURES',
+        description: 'Get a custom role with a fancy color and icon, and exclusive chats with sneak peaks of future content!',
+        image: 'images/fittr.png',
+        alt: 'Discord Features',
+        caption: 'Supporter only chats!!'
+    }
+];
+
+function generateWebstorePerks() {
+    const perksList = document.querySelector('.webstore-perks-list');
+    if (!perksList) return;
+    
+    // Clear existing perks
+    perksList.innerHTML = '';
+    
+    // Generate perks from data
+    webstorePerkData.forEach((perk, index) => {
+        const perkElement = document.createElement('div');
+        perkElement.className = 'webstore-perk';
+        perkElement.innerHTML = `
+            <div class="perk-icon">${perk.icon}</div>
+            <div class="perk-content">
+                <div class="perk-title">${perk.title}</div>
+                <div class="perk-description">${perk.description}</div>
+            </div>
+        `;
+        perksList.appendChild(perkElement);
+    });
+}
+
 function initWebstoreCycling() {
+    // Generate perks first
+    generateWebstorePerks();
+    
     const perks = document.querySelectorAll('.webstore-perk');
     const webstoreImage = document.getElementById('webstore-image');
     const webstoreCaption = document.getElementById('webstore-caption');
     
     if (!perks.length || !webstoreImage || !webstoreCaption) return;
-    
-    // Define content for each perk
-    const perkData = [
-        {
-            image: 'images/fittr.png',
-            alt: 'Exclusive Weapons',
-            caption: 'Exclusive weapons - Access to unique weapons and equipment not available to regular players'
-        },
-        {
-            image: 'images/fittr.png', // You can replace with different images
-            alt: 'Character Customizations',
-            caption: 'Customizations - Unlock unique character skins, models, and cosmetic items'
-        },
-        {
-            image: 'images/fittr.png', // You can replace with different images
-            alt: 'VIP Access',
-            caption: 'VIP Access - Priority queue access and exclusive VIP server privileges'
-        },
-        {
-            image: 'images/fittr.png', // You can replace with different images
-            alt: 'Support Development',
-            caption: 'Support Development - Help fund server hosting and new feature development'
-        }
-    ];
     
     let currentIndex = 0;
     let cyclingInterval;
@@ -545,9 +615,9 @@ function initWebstoreCycling() {
                 duration: 0.3,
                 ease: "power2.out",
                 onComplete: () => {
-                    webstoreImage.src = perkData[index].image;
-                    webstoreImage.alt = perkData[index].alt;
-                    webstoreCaption.textContent = perkData[index].caption;
+                    webstoreImage.src = webstorePerkData[index].image;
+                    webstoreImage.alt = webstorePerkData[index].alt;
+                    webstoreCaption.textContent = webstorePerkData[index].caption;
                     
                     gsap.to([webstoreImage, webstoreCaption], {
                         opacity: 1,
@@ -557,9 +627,9 @@ function initWebstoreCycling() {
                 }
             });
         } else {
-            webstoreImage.src = perkData[index].image;
-            webstoreImage.alt = perkData[index].alt;
-            webstoreCaption.textContent = perkData[index].caption;
+            webstoreImage.src = webstorePerkData[index].image;
+            webstoreImage.alt = webstorePerkData[index].alt;
+            webstoreCaption.textContent = webstorePerkData[index].caption;
         }
     }
     
