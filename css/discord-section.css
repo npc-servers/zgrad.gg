@@ -202,30 +202,12 @@
     overflow: hidden;
 }
 
-.discord-reason::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: linear-gradient(to bottom, #7289da, #5a6cb5);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
 
 .discord-reason:hover {
-    transform: translateY(-4px);
     background: rgba(114, 137, 218, 0.12);
     border-color: rgba(114, 137, 218, 0.3);
-    box-shadow: 
-        0 12px 32px rgba(114, 137, 218, 0.15),
-        0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
-.discord-reason:hover::before {
-    opacity: 1;
-}
 
 .reason-icon {
     font-size: 28px;
@@ -261,15 +243,8 @@
 .discord-reason:hover .reason-icon {
     background: linear-gradient(135deg, rgba(114, 137, 218, 0.3), rgba(90, 108, 181, 0.25));
     border-color: rgba(114, 137, 218, 0.4);
-    transform: scale(1.05) rotate(5deg);
-    box-shadow: 
-        0 8px 20px rgba(114, 137, 218, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
-.discord-reason:hover .reason-icon::before {
-    opacity: 1;
-}
 
 .reason-text {
     font-size: 17px;
@@ -374,8 +349,8 @@
         width: 50px;
     }
     
-    .discord-image {
-        max-width: 650px;
+    .discord-image-container {
+        display: none;
     }
 }
 
@@ -416,8 +391,8 @@
     
     /* Title underline removed */
     
-    .discord-image {
-        max-width: 500px;
+    .discord-image-container {
+        display: none;
     }
     
     .discord-reasons {
