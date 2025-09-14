@@ -127,11 +127,23 @@ function initGamemodeSwiper() {
                 initSwiperAnimations();
             },
             
-            slideChangeTransitionEnd: function() {
-                // Only handle video changes after transition is complete
-                console.log('✅ Slide transition ended');
+            slideChange: function() {
+                // Handle video changes immediately when slide changes
+                console.log('🔄 Slide changing...');
                 preloadVisibleVideos(this);
                 handleSlideChange(this);
+            },
+            
+            slideChangeTransitionEnd: function() {
+                // Ensure video is playing after transition is complete
+                console.log('✅ Slide transition ended');
+                // Double-check that the video is playing
+                const activeSlide = this.slides[this.activeIndex];
+                const video = activeSlide?.querySelector('.gamemode-video');
+                if (video && video.paused && currentVideoElement === video) {
+                    console.log('🔄 Video paused after transition, restarting...');
+                    setTimeout(() => playVideo(video), 100);
+                }
             },
             
             touchStart: function() {
@@ -157,6 +169,9 @@ function initGamemodeSwiper() {
     
     // Setup intersection observer for performance
     setupIntersectionObserver();
+    
+    // Setup navigation click handlers for immediate video response
+    setupNavigationHandlers();
     
     // Initialize first video after a short delay
     setTimeout(() => {
@@ -257,21 +272,31 @@ function handleSlideChange(swiper) {
     // Pause all other videos first
     pauseAllVideos();
     
-    if (video && video !== currentVideoElement) {
+    if (video) {
         // Load video if not already loaded
         if (!video.src && video.dataset.src) {
             console.log('📥 Loading video for slide change');
             loadVideo(video);
+            
+            // Wait for video to load before playing
+            video.addEventListener('loadeddata', function() {
+                console.log('📊 Video loaded, now playing');
+                currentVideoElement = video;
+                playVideo(video);
+            }, { once: true });
+        } else {
+            // Video is already loaded, play immediately
+            currentVideoElement = video;
+            
+            // Play the active video with a small delay to ensure smooth transition
+            setTimeout(() => {
+                console.log('🎯 Playing video after slide change');
+                playVideo(video);
+            }, 200);
         }
-        
-        // Update current video reference
-        currentVideoElement = video;
-        
-        // Play the active video with a small delay
-        setTimeout(() => {
-            console.log('🎯 Playing video after slide change');
-            playVideo(video);
-        }, 300);
+    } else {
+        console.warn('⚠️ No video found in active slide');
+        currentVideoElement = null;
     }
 }
 
@@ -421,6 +446,52 @@ function setupVideoManagement() {
             }
         });
     });
+}
+
+function setupNavigationHandlers() {
+    // Add click handlers to navigation buttons and pagination for immediate video response
+    const nextButton = document.querySelector('.gamemode-swiper .swiper-button-next');
+    const prevButton = document.querySelector('.gamemode-swiper .swiper-button-prev');
+    const pagination = document.querySelector('.gamemode-swiper .swiper-pagination');
+    
+    if (nextButton) {
+        nextButton.addEventListener('click', function() {
+            console.log('➡️ Next button clicked');
+            // Force immediate slide change handling after a short delay
+            setTimeout(() => {
+                if (gamemodeSwiper) {
+                    handleSlideChange(gamemodeSwiper);
+                }
+            }, 100);
+        });
+    }
+    
+    if (prevButton) {
+        prevButton.addEventListener('click', function() {
+            console.log('⬅️ Previous button clicked');
+            // Force immediate slide change handling after a short delay
+            setTimeout(() => {
+                if (gamemodeSwiper) {
+                    handleSlideChange(gamemodeSwiper);
+                }
+            }, 100);
+        });
+    }
+    
+    if (pagination) {
+        pagination.addEventListener('click', function(e) {
+            // Check if clicked element is a pagination bullet
+            if (e.target.classList.contains('swiper-pagination-bullet')) {
+                console.log('🔘 Pagination bullet clicked');
+                // Force immediate slide change handling after a short delay
+                setTimeout(() => {
+                    if (gamemodeSwiper) {
+                        handleSlideChange(gamemodeSwiper);
+                    }
+                }, 100);
+            }
+        });
+    }
 }
 
 function setupIntersectionObserver() {
