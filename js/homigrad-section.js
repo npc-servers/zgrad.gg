@@ -319,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Features data array with all the necessary information
     const featuresData = [
         {
-            title: "Realistic Physics",
+            title: "Ragdoll Physics",
             description: "Throw, break and pick up objects, get crushed by heavy objects, and use your body as a weapon.",
             icon: `<svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M7 17v-2h6q-.35-.425-.562-.925T12.1 13H9v-2h3.1q.125-.575.338-1.075T13 9H3V7h14q2.075 0 3.538 1.463T22 12t-1.463 3.538T17 17zm10-2q1.25 0 2.125-.875T20 12t-.875-2.125T17 9t-2.125.875T14 12t.875 2.125T17 15M2 13v-2h6v2zm1 4v-2h3v2z"/></svg>`
         },
@@ -343,17 +343,7 @@ document.addEventListener('DOMContentLoaded', function() {
             description: "Constantly evolving content and mechanics keep the gameplay fresh and exciting.",
             icon: `<svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M4.25 18.3q-.95-1.125-1.525-2.475T2 13h2.05q.15 1.075.55 2.063T5.65 16.9zM2 11q.2-1.475.75-2.825T4.25 5.7l1.4 1.4Q5 7.95 4.6 8.938T4.05 11zm8.95 10.95q-1.475-.15-2.812-.712T5.65 19.75l1.4-1.45q.875.65 1.85 1.075t2.05.575zM7.1 5.7L5.65 4.25q1.175-.925 2.525-1.488T11 2.05v2q-1.075.15-2.062.575T7.1 5.7m5.85 16.25v-2q1.1-.15 2.088-.562T16.9 18.3l1.45 1.45q-1.175.95-2.537 1.5t-2.863.7m4-16.25q-.875-.65-1.875-1.075T13 4.05v-2q1.475.15 2.838.713T18.35 4.25zm2.8 12.6l-1.4-1.4q.65-.85 1.05-1.837T19.95 13H22q-.2 1.475-.75 2.825t-1.5 2.475m.2-7.3q-.15-1.075-.55-2.062T18.35 7.1l1.4-1.4q.95 1.125 1.525 2.475T22 11zm-8.925 6v-6.175l-2.6 2.6L7.025 12l5-5l5 5l-1.425 1.4l-2.575-2.575V17z"/></svg>`
         },
-        // Additional features can be easily added here
-        {
-            title: "Community Driven",
-            description: "Player feedback shapes the development and future of Homigrad.",
-            icon: `<svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                    <circle cx="9" cy="7" r="4"/>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                </svg>`
-        }
+
     ];
 
     const featuresContent = document.querySelector('.features-content');
