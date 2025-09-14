@@ -490,7 +490,7 @@ const webstorePerkData = [
         icon: '🗳️',
         title: 'HIGHER VOTING POWER',
         description: 'Get higher voting power, so the map you want wins more often!',
-        image: 'images/fittr.png',
+        image: 'images/placeholder.png',
         alt: 'Higher Voting Power',
         caption: 'Higher voting power, so the map you want wins more often!'
     },
@@ -498,7 +498,7 @@ const webstorePerkData = [
         icon: '🎨',
         title: 'STAND OUT IN CHAT',
         description: 'Exclusive name glow, customizable chat tag, colored chat formatting, GIF embeds, and an icon corresponding to your rank!',
-        image: 'images/fittr.png',
+        image: 'images/placeholder.png',
         alt: 'Vanity Features',
         caption: 'Stand out from the white names!'
     },
@@ -506,7 +506,7 @@ const webstorePerkData = [
         icon: '🔒',
         title: 'RESERVED SLOT',
         description: 'Always have a slot in the server, even if it\'s full!',
-        image: 'images/fittr.png',
+        image: 'images/placeholder.png',
         alt: 'Reserved Slot',
         caption: 'A server slot, just for you!'
     },
@@ -514,7 +514,7 @@ const webstorePerkData = [
         icon: '💬',
         title: 'DISCORD FEATURES',
         description: 'Get a custom role with a fancy color and icon, and exclusive chats with sneak peeks of future content!',
-        image: 'images/fittr.png',
+        image: 'images/discord-supporter-only.png',
         alt: 'Discord Features',
         caption: 'Supporter only chats!!'
     }
