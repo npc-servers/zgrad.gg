@@ -28,15 +28,26 @@
     left: 20px;
     right: 20px;
     height: 150px;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
     border-radius: 12px;
     z-index: 2;
     pointer-events: none;
-    border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    overflow: visible;
+    overflow: hidden;
+}
+
+.guide-hero-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: inherit;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(2px);
+    z-index: -1;
 }
 
 .guide-hero-bg::after {
