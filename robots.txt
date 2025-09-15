@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://zgrad.gg/sitemap.xml
+
+# Disallow connection pages and loading screen (as requested)
+Disallow: /connect/us1.html
+Disallow: /connect/us2.html
+Disallow: /connect/us3.html
+Disallow: /connect/us4.html
+Disallow: /loadingscreen/
+
+# Allow important pages
+Allow: /
+Allow: /servers.html
+Allow: /rules.html
+Allow: /guides/
+
+# Crawl-delay (optional)
+Crawl-delay: 1

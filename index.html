@@ -4,7 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="origin-when-cross-origin">
-    <title>We Are ZGRAD</title>
+    
+    <!-- SEO Meta Tags -->
+    <title>Home</title>
+    <meta name="description" content="Join ZGRAD, the Homigrad network. Experience the most chaotic gamemode in Garry's Mod.">
+    <meta name="keywords" content="ZGRAD, Homigrad, Garry's Mod, GMod, gaming servers, multiplayer, gaming">
+    <meta name="author" content="ZGRAD">
+    <link rel="canonical" href="https://zgrad.gg/">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="css/main.css" as="style">
+    <link rel="preload" href="css/landing-section.css" as="style">
+    <link rel="preload" href="images/logos/zgrad-logo.png" as="image">
+    <link rel="preload" href="videos/background.webm" as="video" type="video/webm">
+    
+    <!-- DNS Prefetch for External Resources -->
+    <link rel="dns-prefetch" href="//unpkg.com">
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="//discord.gg">
+    <link rel="dns-prefetch" href="//store.npcz.gg">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Home">
+    <meta property="og:description" content="Join ZGRAD, the Homigrad network. Experience the most chaotic gamemode in Garry's Mod.">
+    <meta property="og:image" content="https://zgrad.gg/images/logos/zgrad-logo.png">
+    <meta property="og:url" content="https://zgrad.gg/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="ZGRAD">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Home">
+    <meta name="twitter:description" content="Join ZGRAD, the Homigrad network. Experience the most chaotic gamemode in Garry's Mod.">
+    <meta name="twitter:image" content="https://zgrad.gg/images/logos/zgrad-logo.png">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/landing-section.css">
     <link rel="stylesheet" href="css/homigrad-section.css">
@@ -21,8 +55,40 @@
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "ZGRAD",
+        "alternateName": "ZGRAD Network",
+        "description": "Premium Homigrad gaming network with custom Garry's Mod servers featuring tactical combat, custom weapons, and medical systems.",
+        "url": "https://zgrad.gg",
+        "logo": "https://zgrad.gg/images/logos/zgrad-logo.png",
+        "sameAs": [
+            "https://discord.gg/npc",
+            "https://www.tiktok.com/@zgradhomigrad",
+            "https://www.youtube.com/@zgradhomigrad",
+            "https://www.instagram.com/zgradhomigrad/",
+            "https://store.npcz.gg"
+        ],
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer support",
+            "availableLanguage": "English",
+            "url": "https://discord.gg/npc"
+        },
+        "offers": {
+            "@type": "Offer",
+            "category": "Gaming Services",
+            "description": "Premium gaming ranks and exclusive perks for Homigrad servers"
+        }
+    }
+    </script>
+    
 </head>
 <body>
+    <main>
     <section class="landing-section">
         <video class="landing-background-video lazy-video" autoplay muted loop preload="none" playsinline data-src="videos/background.webm">
             <source data-src="videos/background.webm" type="video/webm">
@@ -88,17 +154,17 @@
     <section class="homigrad-section">
         <div class="homigrad-text">
             <div class="homigrad-small">WE RUN</div>
-            <div class="homigrad-large" data-text="HOMIGRAD">HOMIGRAD</div>
+                <h1 class="homigrad-large" data-text="HOMIGRAD">HOMIGRAD</h1>
         </div>
         <div class="player-count">
             <span id="totalPlayers">0/0</span> players
         </div>
         <div class="homigrad-content">
             <div class="bloodsplatter-decoration-left">
-                <img src="images/textures/bloodsplatter2.png" alt="Blood Splatter 2">
+                <img src="images/textures/bloodsplatter2.png" alt="Homigrad blood splatter decoration">
             </div>
             <div class="homigrad-description">
-                <div class="description-title">CHAOS AT ITS FINEST</div>
+                <h2 class="description-title">CHAOS AT ITS FINEST</h2>
                 <div class="description-text">
                     Homigrad combines the best from Garry's mod: gunplay, physics, and player interaction, to create one of the funniest and most chaotic gamemodes in the community. Imagine TTT on crack!
                 </div>
@@ -107,9 +173,9 @@
         <div class="features-container">
             <div class="features-content">
                 <div class="features-title-container">
-                    <div class="features-title">SO, SO MANY FEATURES</div>
+                    <h2 class="features-title">SO, SO MANY FEATURES</h2>
                     <div class="bloodsplatter-decoration-right">
-                        <img src="images/textures/bloodsplatter1.png" alt="Blood Splatter 1">
+                        <img src="images/textures/bloodsplatter1.png" alt="Gaming features blood splatter decoration">
                     </div>
                 </div>
                 <div class="features-list" id="features-list">
@@ -119,11 +185,11 @@
             <div class="feature-showcases">
                 <div class="showcase-item">
                     <div class="bloodsplatter-decoration-ragdoll">
-                        <img src="images/textures/bloodsplatter3.png" alt="Blood Splatter 3">
+                        <img src="images/textures/bloodsplatter3.png" alt="Ragdoll climbing blood splatter decoration">
                     </div>
                     <div class="showcase-content">
                         <div class="showcase-text">
-                            <div class="showcase-title">RAGDOLL CLIMBING</div>
+                            <h3 class="showcase-title">RAGDOLL CLIMBING</h3>
                             <div class="showcase-description">Scale up buildings, grab, tackle, and drag people, grab onto objects, and even shoot while climbing or mid-air, Max Payne style!</div>
                         </div>
                         <div class="showcase-video">
@@ -135,11 +201,11 @@
                 </div>
                 <div class="showcase-item">
                     <div class="bloodsplatter-decoration-medical">
-                        <img src="images/textures/bloodsplatter5.png" alt="Blood Splatter 5">
+                        <img src="images/textures/bloodsplatter5.png" alt="Medical system blood splatter decoration">
                     </div>
                     <div class="showcase-content">
                         <div class="showcase-text">
-                            <div class="showcase-title">MEDICAL SYSTEM</div>
+                            <h3 class="showcase-title">MEDICAL SYSTEM</h3>
                             <div class="showcase-description">Getting hurt has consequences. You can bleed out, get knocked out, and die if you don't banadage wounds or get blood bags. CPR can be used to revive people, but it's not always successful.</div>
                         </div>
                         <div class="showcase-video">
@@ -151,11 +217,11 @@
                 </div>
                 <div class="showcase-item">
                     <div class="bloodsplatter-decoration-gore">
-                        <img src="images/textures/bloodsplatter6.png" alt="Blood Splatter 6">
+                        <img src="images/textures/bloodsplatter6.png" alt="Gore system blood splatter decoration">
                     </div>
                     <div class="showcase-content">
                         <div class="showcase-text">
-                            <div class="showcase-title">GORE</div>
+                            <h3 class="showcase-title">GORE</h3>
                             <div class="showcase-description">Getting shot can rip off limbs, and falling from a high place can explode you on impact. Losing a limb isn't a death sentence, but it can be a major disadvantage.</div>
                         </div>
                         <div class="showcase-video">
@@ -167,11 +233,11 @@
                 </div>
                 <div class="showcase-item">
                     <div class="bloodsplatter-decoration-cw">
-                        <img src="images/textures/bloodsplatter-cw.png" alt="Blood Splatter CW">
+                        <img src="images/textures/bloodsplatter-cw.png" alt="Custom weapons blood splatter decoration">
                     </div>
                     <div class="showcase-content">
                         <div class="showcase-text">
-                            <div class="showcase-title">CUSTOM WEAPONS</div>
+                            <h3 class="showcase-title">CUSTOM WEAPONS</h3>
                             <div class="showcase-description">Utilize our arsenal of 40+ firearms and 20+ melee weapons to wreak havoc on other players. In our upcoming update, expreience completely custom animated weapons with thirdperson animations, customization, and gun skins!</div>
                         </div>
                         <div class="showcase-video">
@@ -183,11 +249,11 @@
                 </div>
                 <div class="showcase-item">
                     <div class="bloodsplatter-decoration-classes">
-                        <img src="images/textures/bloodsplatter-classes.png" alt="Blood Splatter Classes">
+                        <img src="images/textures/bloodsplatter-classes.png" alt="Character classes blood splatter decoration">
                     </div>
                     <div class="showcase-content">
                         <div class="showcase-text">
-                            <div class="showcase-title">CLASSES</div>
+                            <h3 class="showcase-title">CLASSES</h3>
                             <div class="showcase-description">Our gamemodes have classes! We've created more than a dozen custom classes, each with their own unique equipment.</div>
                         </div>
                         <div class="showcase-video">
@@ -213,9 +279,9 @@
         <div class="gamemode-container">
             <div class="gamemode-header">
                 <div class="bloodsplatter-decoration-header-center">
-                    <img src="images/textures/bloodsplatter-gm.png" alt="Blood Splatter Header">
+                    <img src="images/textures/bloodsplatter-gm.png" alt="Gamemode section blood splatter decoration">
                 </div>
-                <div class="gamemode-main-title">HOMIGRAD'S BREAD AND BUTTER: GAMEMODES</div>
+                <h2 class="gamemode-main-title">HOMIGRAD'S BREAD AND BUTTER: GAMEMODES</h2>
                 <div class="gamemode-description">
                     Gamemodes are core to Homigrad. We've created more than a dozen custom gamemodes, each with their own unique mechanics and features.
                 </div>
@@ -249,7 +315,7 @@
         <div class="webstore-container">
             <div class="webstore-header">
                 <div class="webstore-text">
-                    <div class="webstore-large" data-text="SUPPORT US">SUPPORT US</div>
+                    <h2 class="webstore-large" data-text="SUPPORT US">SUPPORT US</h2>
                 </div>
                 <div class="webstore-description">
                     Unlock exclusive content and support the development of ZGRAD's Homigrad servers. Every purchase helps us maintain high-quality gameplay and develop new features.
@@ -258,7 +324,7 @@
             
             <div class="webstore-content">
                 <div class="webstore-features">
-                    <div class="webstore-features-title">EXCLUSIVE PERKS</div>
+                    <h3 class="webstore-features-title">EXCLUSIVE PERKS</h3>
                     <div class="webstore-perks-list">
                         <!-- Perks will be dynamically generated by JavaScript -->
                     </div>
@@ -285,7 +351,7 @@
             
             <!-- Coming Soon Section -->
             <div class="webstore-coming-soon">
-                <div class="coming-soon-title">COMING SOON FOR SUPPORTERS</div>
+                <h3 class="coming-soon-title">COMING SOON FOR SUPPORTERS</h3>
                 <div class="coming-soon-items">
                     <div class="coming-soon-item">
                         <div class="coming-soon-icon">🎯</div>
@@ -334,12 +400,12 @@
                     </div>
                 </div>
                 <div class="discord-text-content">
-                    <div class="discord-title">
+                    <h2 class="discord-title">
                         JOIN OUR DISCORD
                         <svg class="discord-title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127.14 96.36" fill="currentColor">
                             <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/>
                         </svg>
-                    </div>
+                    </h2>
                     <div class="discord-member-count">6700+ MEMBERS</div>
                     <div class="discord-reasons">
                         <div class="discord-reason">
@@ -378,7 +444,7 @@
     <section class="help-section">
         <div class="help-container">
             <div class="help-section-content">
-                <div class="help-title">NEED HELP?</div>
+                <h2 class="help-title">NEED HELP?</h2>
                 <div class="help-box">
                     <div class="help-text-container">
                         <div class="help-text">Need to report a player, or appeal your ban?</div>
@@ -406,9 +472,6 @@
             </div>
         </div>
     </section>
-
-    <main class="main-content">
-        <!-- Main content of the page will go here -->
     </main>
 
     <!-- Footer -->
