@@ -11,8 +11,11 @@ var currentStatus = "Initializing...";
 
 /**
  * GMod Called Functions - Core loading functionality only
+ * These functions are bound to the window object for GMod to call
  */
-function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
+
+// Bind GameDetails to window for GMod compatibility
+window.GameDetails = function(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
     isGmod = true;
     console.log("GameDetails called:", { servername, serverurl, mapname, maxplayers, steamid, gamemode });
     
@@ -34,52 +37,88 @@ function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemo
             fetchAllServerStatus();
         }
     }
+};
+
+// Bind SetFilesTotal to window for GMod compatibility
+window.SetFilesTotal = function(total) {
+    totalCalled = true;
+    totalFiles = total;
+    console.log("SetFilesTotal called:", total);
+    
+    // Reset percentage when total files is set
+    percentage = 0;
+    currentDownloadingFile = "";
+    currentStatus = "Initializing downloads...";
+};
+
+// Bind SetFilesNeeded to window for GMod compatibility
+window.SetFilesNeeded = function(needed) {
+    if (totalCalled && totalFiles > 0) {
+        var calculatedPercentage = Math.round(((totalFiles - needed) / totalFiles) * 100);
+        percentage = Math.max(0, Math.min(100, calculatedPercentage));
+        console.log("SetFilesNeeded called:", needed, "files remaining, Percentage:", percentage);
+    }
+};
+
+// Bind DownloadingFile to window for GMod compatibility
+window.DownloadingFile = function(fileName) {
+    // Clean up the filename and store it
+    if (fileName) {
+        currentDownloadingFile = fileName;
+        console.log("DownloadingFile called:", fileName);
+        
+        // Update status to show we're actively downloading
+        if (!currentStatus || currentStatus === "Initializing..." || currentStatus === "Initializing downloads...") {
+            currentStatus = "Downloading files...";
+        }
+    }
+};
+
+// Bind SetStatusChanged to window for GMod compatibility
+window.SetStatusChanged = function(status) {
+    console.log("SetStatusChanged called:", status);
+    currentStatus = status;
+    
+    // Clear downloading file when status changes to indicate we're not downloading files anymore
+    if (status && (
+        status.includes("Workshop Complete") || 
+        status.includes("Client info sent") || 
+        status.includes("Starting Lua") ||
+        status.includes("Lua") ||
+        status.includes("Complete")
+    )) {
+        currentDownloadingFile = "";
+        
+        // Set appropriate percentage based on status
+        if (status.includes("Workshop Complete")) {
+            percentage = Math.max(percentage, 85);
+        } else if (status.includes("Client info sent")) {
+            percentage = Math.max(percentage, 95);
+        } else if (status.includes("Starting Lua") || status.includes("Lua")) {
+            percentage = Math.max(percentage, 100);
+        }
+    }
+};
+
+// Keep the old function names for backward compatibility and internal use
+function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
+    window.GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode);
 }
 
 function SetFilesTotal(total) {
-    totalCalled = true;
-    totalFiles = total;
-    console.log("SetFilesTotal:", total);
+    window.SetFilesTotal(total);
 }
 
 function SetFilesNeeded(needed) {
-    if (totalCalled) {
-        var calculatedPercentage = 100 - Math.round((needed / totalFiles) * 100);
-        percentage = Math.round(Math.max(0, Math.min(100, calculatedPercentage)));
-        console.log("SetFilesNeeded:", needed, "Percentage:", percentage);
-    }
+    window.SetFilesNeeded(needed);
 }
 
 function DownloadingFile(filename) {
-    // Clean up the filename
-    filename = filename.replace("'", "").replace("?", "");
-    currentDownloadingFile = filename;
-    console.log("DownloadingFile:", filename);
+    window.DownloadingFile(filename);
 }
 
 function SetStatusChanged(status) {
-    console.log("SetStatusChanged:", status);
-    currentStatus = status;
-    
-    // Update loading percentage based on status
-    if (status === "Workshop Complete" || status.indexOf("Workshop Complete") !== -1) {
-        allow_increment = false;
-        percentage = Math.round(80);
-        console.log("Workshop Complete - Percentage:", percentage);
-    } else if (status === "Client info sent!" || status.indexOf("Client info sent") !== -1) {
-        allow_increment = false;
-        percentage = Math.round(95);
-        console.log("Client info sent - Percentage:", percentage);
-    } else if (status === "Starting Lua..." || status.indexOf("Starting Lua") !== -1) {
-        allow_increment = false;
-        percentage = Math.round(100);
-        console.log("Starting Lua - Percentage:", percentage);
-    } else {
-        if (allow_increment) {
-            percentage = Math.round(percentage + 1);
-        }
-        console.log("Status update - Percentage:", percentage);
-    }
+    window.SetStatusChanged(status);
 }
 
 /**
@@ -104,7 +143,17 @@ function startTestMode() {
         "sound/ambient/combat_music.mp3",
         "models/player/terrorist.mdl",
         "materials/models/player/terrorist_body.vtf",
-        "lua/weapons/weapon_ak47.lua"
+        "lua/weapons/weapon_ak47.lua",
+        "materials/models/props/barrel01.vmt",
+        "sound/weapons/pistol/pistol_fire.wav",
+        "models/props_c17/chair01.mdl",
+        "lua/autorun/server/init.lua",
+        "materials/sprites/glow01.vmt",
+        "sound/ambient/atmosphere/forest_ambience.wav",
+        "models/player/combine_soldier.mdl",
+        "materials/models/player/combine_soldier_body.vtf",
+        "lua/entities/weapon_base/shared.lua",
+        "materials/effects/water_splash.vmt"
     ];
     
     var testInterval = setInterval(function() {
@@ -112,24 +161,33 @@ function startTestMode() {
             needed = needed - 1;
             SetFilesNeeded(needed);
             
-            // Use realistic filenames
+            // Use realistic filenames with proper timing
             var fileIndex = (totalTestFiles - needed) % testFiles.length;
             DownloadingFile(testFiles[fileIndex]);
             
             // Add status changes at specific points
             if (needed === 20) {
                 SetStatusChanged("Workshop Complete");
-                currentDownloadingFile = ""; // Clear file when status changes
+                // Clear file when status changes
+                setTimeout(function() {
+                    currentDownloadingFile = "";
+                }, 200);
             } else if (needed === 5) {
                 SetStatusChanged("Client info sent!");
-                currentDownloadingFile = ""; // Clear file when status changes
+                // Clear file when status changes
+                setTimeout(function() {
+                    currentDownloadingFile = "";
+                }, 200);
             } else if (needed === 0) {
                 SetStatusChanged("Starting Lua...");
-                currentDownloadingFile = ""; // Clear file when status changes
+                // Clear file when status changes
+                setTimeout(function() {
+                    currentDownloadingFile = "";
+                }, 200);
                 clearInterval(testInterval);
             }
         }
-    }, 150);
+    }, 200); // Slightly slower to better show file names
 
     SetStatusChanged("Loading workshop content...");
 }
@@ -385,19 +443,24 @@ function getCurrentStatus() {
         return "Loading super-fast bundled Lua!";
     }
     
-    // If we have a specific status from GMod, use that
-    if (currentStatus === "Starting Lua..." || 
-        currentStatus === "Client info sent!" || 
-        currentStatus === "Workshop Complete") {
-        return currentStatus;
+    // If we have a specific status from GMod, use that (but only if we're not actively downloading)
+    if (currentStatus && currentStatus !== "" && (!currentDownloadingFile || currentDownloadingFile === "")) {
+        // Check for important status messages that should be displayed
+        if (currentStatus.includes("Starting Lua") || 
+            currentStatus.includes("Client info sent") || 
+            currentStatus.includes("Workshop Complete") ||
+            currentStatus.includes("Lua") ||
+            currentStatus.includes("Complete")) {
+            return currentStatus;
+        }
     }
     
-    // If we're downloading a file, show that
+    // If we're actively downloading a file, show that with priority
     if (currentDownloadingFile && currentDownloadingFile !== "") {
         // Clean up filename for display
         var displayName = currentDownloadingFile;
         
-        // Remove path prefixes
+        // Remove common path prefixes to show just the filename
         if (displayName.includes("/")) {
             displayName = displayName.split("/").pop();
         }
@@ -405,12 +468,54 @@ function getCurrentStatus() {
             displayName = displayName.split("\\").pop();
         }
         
-        // Truncate very long filenames
-        if (displayName.length > 30) {
-            displayName = displayName.substring(0, 27) + "...";
+        // Handle different file types with appropriate icons/descriptions
+        var fileExtension = displayName.split('.').pop().toLowerCase();
+        var fileTypeDescription = "";
+        
+        switch (fileExtension) {
+            case 'mdl':
+                fileTypeDescription = "Model";
+                break;
+            case 'vmt':
+            case 'vtf':
+                fileTypeDescription = "Texture";
+                break;
+            case 'wav':
+            case 'mp3':
+            case 'ogg':
+                fileTypeDescription = "Sound";
+                break;
+            case 'lua':
+                fileTypeDescription = "Script";
+                break;
+            case 'bsp':
+                fileTypeDescription = "Map";
+                break;
+            case 'phy':
+                fileTypeDescription = "Physics";
+                break;
+            case 'ani':
+                fileTypeDescription = "Animation";
+                break;
+            default:
+                fileTypeDescription = "File";
         }
         
-        return "Downloading: " + displayName;
+        // Truncate very long filenames but keep extension
+        if (displayName.length > 35) {
+            var nameWithoutExt = displayName.substring(0, displayName.lastIndexOf('.'));
+            var ext = displayName.substring(displayName.lastIndexOf('.'));
+            if (nameWithoutExt.length > 30) {
+                displayName = nameWithoutExt.substring(0, 27) + "..." + ext;
+            }
+        }
+        
+        return "Downloading " + fileTypeDescription + ": " + displayName;
+    }
+    
+    // Show current status if we have one and no file is downloading
+    if (currentStatus && currentStatus !== "" && currentStatus !== "Initializing..." && currentStatus !== "Initializing downloads...") {
+        return currentStatus;
     }
     
     // Fallback to percentage-based status
@@ -418,10 +523,10 @@ function getCurrentStatus() {
         return "Starting Lua...";
     } else if (percentage >= 95) {
         return "Client info sent!";
-    } else if (percentage >= 80) {
+    } else if (percentage >= 85) {
         return "Workshop Complete";
     } else if (percentage > 0) {
-        return currentStatus || "Loading workshop content...";
+        return "Downloading workshop content...";
     } else {
         return "Initializing...";
     }
