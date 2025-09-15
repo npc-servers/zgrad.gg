@@ -203,7 +203,7 @@
     z-index: 10;
     max-width: 800px;
     margin: 0 auto 40px auto;
-    padding: 20px 40px 80px;
+    padding: 20px 40px 40px;
     background-color: rgba(20, 20, 20, 0.85);
     border-radius: 16px;
     backdrop-filter: blur(12px);
@@ -432,7 +432,7 @@
     
     .guide-content {
         margin: 0 20px 40px;
-        padding: 20px 30px 60px;
+        padding: 20px 30px 30px;
     }
 }
 
@@ -457,7 +457,7 @@
     
     .guide-content {
         margin: 0 15px 30px;
-        padding: 20px 20px 50px;
+        padding: 20px 20px 30px;
     }
     
     .guide-content h1 {
@@ -520,7 +520,7 @@
     
     .guide-content {
         margin: 0 10px 20px;
-        padding: 15px 15px 40px;
+        padding: 15px 15px 25px;
     }
     
     .guide-content h1 {
