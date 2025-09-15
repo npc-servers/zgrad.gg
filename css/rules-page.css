@@ -71,7 +71,7 @@ html:has(body.gmod-client .rules-page)::-webkit-scrollbar {
     -webkit-mask: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0) 80%);
 }
 
-/* GMod fallback for blood splatter - use opacity fade instead of mask */
+/* GMod fallback for blood splatter - use same approach as loading screen */
 body.gmod-client .rules-splatter {
     mask: none;
     -webkit-mask: none;
@@ -83,16 +83,21 @@ body.gmod-client .rules-splatter::after {
     position: absolute;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to bottom, 
-        rgba(0,0,0,0) 0%, 
-        rgba(0,0,0,0) 30%, 
-        rgba(0,0,0,0.2) 50%, 
-        rgba(0,0,0,0.5) 70%, 
-        rgba(0,0,0,0.8) 90%, 
-        rgba(0,0,0,1) 100%
-    );
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(to bottom, transparent 0%, transparent 30%, rgba(0,0,0,0.1) 45%, rgba(0,0,0,0.3) 55%, rgba(0,0,0,0.6) 65%, rgba(0,0,0,0.8) 75%, rgba(0,0,0,0.95) 90%, rgba(0,0,0,1) 100%);
+    background-size: 100% 100%;
+    background-position: center top;
+    background-repeat: no-repeat;
+    mask: url('../images/textures/rules-splatter.png');
+    -webkit-mask: url('../images/textures/rules-splatter.png');
+    mask-size: cover;
+    -webkit-mask-size: cover;
+    mask-position: center top;
+    -webkit-mask-position: center top;
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
     pointer-events: none;
 }
 
@@ -522,6 +527,266 @@ body.gmod-client .footer-link {
     box-shadow: 0 2px 8px rgba(255, 0, 0, 0.4);
 }
 
+
+/* High Resolution Scaling - 1920p and above */
+@media (min-width: 1920px) and (min-height: 1080px) {
+    .rules-splatter {
+        width: 120vw;
+        height: 600px;
+    }
+    
+    .rules-title-text {
+        font-size: clamp(6.5rem, 7vw, 7rem);
+    }
+    
+    .rules-subtitle-box {
+        font-size: clamp(1.1rem, 1.2vw, 1.2rem);
+        padding: 10px 20px;
+        border-radius: 10px;
+    }
+    
+    .rules-container {
+        padding: 25px 50px 50px;
+        max-width: 1200px;
+    }
+    
+    .rule-item {
+        padding: 25px;
+        margin-bottom: 25px;
+        border-radius: 15px;
+    }
+    
+    .rule-title {
+        font-size: clamp(1.6rem, 1.8vw, 1.8rem);
+    }
+    
+    .rule-description {
+        font-size: clamp(1.1rem, 1.2vw, 1.2rem);
+        line-height: 1.8;
+    }
+    
+    .rule-copy-button {
+        padding: 8px 10px;
+        font-size: clamp(15px, 1vw, 16px);
+        margin-left: 15px;
+        border-radius: 8px;
+    }
+    
+    .rule-copy-button img {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .rules-footer {
+        padding: 50px 25px 80px;
+    }
+    
+    .rules-footer-text {
+        font-size: clamp(1rem, 1.1vw, 1.1rem);
+        margin-bottom: 40px;
+    }
+    
+    .footer-link {
+        padding: 0.8rem 2rem;
+        font-size: clamp(1.1rem, 1.2vw, 1.2rem);
+        border-radius: 8px;
+    }
+}
+
+/* 2K and 1440p scaling */
+@media (min-width: 2560px) and (min-height: 1440px) {
+    .rules-splatter {
+        width: 130vw;
+        height: 750px;
+    }
+    
+    .rules-title-text {
+        font-size: clamp(8rem, 8.5vw, 8.5rem);
+    }
+    
+    .rules-subtitle-box {
+        font-size: clamp(1.3rem, 1.4vw, 1.4rem);
+        padding: 12px 24px;
+        border-radius: 12px;
+    }
+    
+    .rules-container {
+        padding: 30px 60px 60px;
+        max-width: 1400px;
+    }
+    
+    .rule-item {
+        padding: 30px;
+        margin-bottom: 30px;
+        border-radius: 18px;
+    }
+    
+    .rule-title {
+        font-size: clamp(2rem, 2.2vw, 2.2rem);
+    }
+    
+    .rule-description {
+        font-size: clamp(1.3rem, 1.4vw, 1.4rem);
+        line-height: 1.8;
+    }
+    
+    .rule-copy-button {
+        padding: 10px 12px;
+        font-size: clamp(17px, 1.2vw, 18px);
+        margin-left: 18px;
+        border-radius: 10px;
+    }
+    
+    .rule-copy-button img {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .rules-footer {
+        padding: 60px 30px 100px;
+    }
+    
+    .rules-footer-text {
+        font-size: clamp(1.2rem, 1.3vw, 1.3rem);
+        margin-bottom: 50px;
+    }
+    
+    .footer-link {
+        padding: 1rem 2.4rem;
+        font-size: clamp(1.3rem, 1.4vw, 1.4rem);
+        border-radius: 10px;
+    }
+}
+
+/* Ultra-wide and 4K scaling */
+@media (min-width: 3440px) and (min-height: 1440px) {
+    .rules-splatter {
+        width: 140vw;
+        height: 900px;
+    }
+    
+    .rules-title-text {
+        font-size: 10rem;
+    }
+    
+    .rules-subtitle-box {
+        font-size: 1.6rem;
+        padding: 15px 30px;
+        border-radius: 15px;
+    }
+    
+    .rules-container {
+        padding: 40px 80px 80px;
+        max-width: 1600px;
+    }
+    
+    .rule-item {
+        padding: 40px;
+        margin-bottom: 40px;
+        border-radius: 24px;
+    }
+    
+    .rule-title {
+        font-size: 2.6rem;
+    }
+    
+    .rule-description {
+        font-size: 1.6rem;
+        line-height: 1.9;
+    }
+    
+    .rule-copy-button {
+        padding: 12px 15px;
+        font-size: 20px;
+        margin-left: 20px;
+        border-radius: 12px;
+    }
+    
+    .rule-copy-button img {
+        width: 22px;
+        height: 22px;
+    }
+    
+    .rules-footer {
+        padding: 80px 40px 120px;
+    }
+    
+    .rules-footer-text {
+        font-size: 1.5rem;
+        margin-bottom: 60px;
+    }
+    
+    .footer-link {
+        padding: 1.2rem 2.8rem;
+        font-size: 1.6rem;
+        border-radius: 12px;
+    }
+}
+
+/* 8K and extreme high resolution scaling */
+@media (min-width: 7680px) and (min-height: 4320px) {
+    .rules-splatter {
+        width: 160vw;
+        height: 1200px;
+    }
+    
+    .rules-title-text {
+        font-size: 16rem;
+    }
+    
+    .rules-subtitle-box {
+        font-size: 2.8rem;
+        padding: 24px 48px;
+        border-radius: 24px;
+    }
+    
+    .rules-container {
+        padding: 80px 120px 120px;
+        max-width: 2400px;
+    }
+    
+    .rule-item {
+        padding: 60px;
+        margin-bottom: 60px;
+        border-radius: 36px;
+    }
+    
+    .rule-title {
+        font-size: 4.2rem;
+    }
+    
+    .rule-description {
+        font-size: 2.6rem;
+        line-height: 2;
+    }
+    
+    .rule-copy-button {
+        padding: 18px 24px;
+        font-size: 32px;
+        margin-left: 30px;
+        border-radius: 18px;
+    }
+    
+    .rule-copy-button img {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .rules-footer {
+        padding: 120px 60px 180px;
+    }
+    
+    .rules-footer-text {
+        font-size: 2.4rem;
+        margin-bottom: 90px;
+    }
+    
+    .footer-link {
+        padding: 1.8rem 4.2rem;
+        font-size: 2.6rem;
+        border-radius: 18px;
+    }
+}
 
 /* Responsive Design */
 @media (max-width: 1400px) {
