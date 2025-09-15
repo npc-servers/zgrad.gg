@@ -494,18 +494,6 @@ body.gmod-client .footer-link {
         height: 600px;
     }
     
-    .rules-container::before {
-        left: -150px;
-        width: 250px;
-        background-size: 125px;
-    }
-    
-    .rules-container::after {
-        right: -150px;
-        width: 250px;
-        background-size: 125px;
-    }
-    
     .rules-title-text {
         font-size: clamp(6.5rem, 7vw, 7rem);
     }
@@ -569,18 +557,6 @@ body.gmod-client .footer-link {
     .rules-splatter {
         width: 130vw;
         height: 750px;
-    }
-    
-    .rules-container::before {
-        left: -180px;
-        width: 300px;
-        background-size: 150px;
-    }
-    
-    .rules-container::after {
-        right: -180px;
-        width: 300px;
-        background-size: 150px;
     }
     
     .rules-title-text {
@@ -648,18 +624,6 @@ body.gmod-client .footer-link {
         height: 900px;
     }
     
-    .rules-container::before {
-        left: -220px;
-        width: 360px;
-        background-size: 180px;
-    }
-    
-    .rules-container::after {
-        right: -220px;
-        width: 360px;
-        background-size: 180px;
-    }
-    
     .rules-title-text {
         font-size: 10rem;
     }
@@ -723,18 +687,6 @@ body.gmod-client .footer-link {
     .rules-splatter {
         width: 160vw;
         height: 1200px;
-    }
-    
-    .rules-container::before {
-        left: -300px;
-        width: 500px;
-        background-size: 250px;
-    }
-    
-    .rules-container::after {
-        right: -300px;
-        width: 500px;
-        background-size: 250px;
     }
     
     .rules-title-text {
