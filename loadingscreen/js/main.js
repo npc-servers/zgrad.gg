@@ -337,10 +337,12 @@ function updateUI() {
             loadingPercentage.setAttribute('data-percentage', percentage + '%');
             
             // Calculate when the progress bar actually covers the text
-            // Text is positioned at 8px from left, and we need to account for text width
+            // Get the actual left position from CSS custom property or computed styles
             var progressContainer = loadingPercentage.parentElement;
             var containerWidth = progressContainer.offsetWidth;
-            var textPosition = 8; // 8px from left
+            var containerComputedStyle = window.getComputedStyle(progressContainer);
+            var customPropertyValue = containerComputedStyle.getPropertyValue('--percentage-left').trim();
+            var textPosition = customPropertyValue ? parseInt(customPropertyValue) : 8; // Fallback to 8px if not set
             var textWidth = loadingPercentage.offsetWidth;
             var textEndPosition = textPosition + textWidth;
             

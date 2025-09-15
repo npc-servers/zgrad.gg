@@ -487,8 +487,10 @@ body, html {
 /* Loading progress section */
 .loading-progress {
     width: 100%;
-    max-width: 500px;
     margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* Progress bar container */
@@ -601,7 +603,7 @@ body, html {
 
 .percentage {
     position: absolute;
-    left: 8px;
+    left: var(--percentage-left, 8px);
     top: 50%;
     transform: translateY(-50%);
     font-weight: bold;
@@ -644,6 +646,7 @@ body, html {
         width: min(625px, 40vw);
         height: 30px;
         border-radius: 15px;
+        --percentage-left: 10px;
     }
     
     .progress-bar {
@@ -652,7 +655,6 @@ body, html {
     
     .percentage {
         font-size: clamp(1rem, 1.1vw, 1.1rem);
-        left: 10px;
     }
     
     .percentage::after {
@@ -804,6 +806,7 @@ body, html {
         width: min(750px, 45vw);
         height: 36px;
         border-radius: 18px;
+        --percentage-left: 12px;
     }
     
     .progress-bar {
@@ -812,7 +815,6 @@ body, html {
     
     .percentage {
         font-size: clamp(1.2rem, 1.3vw, 1.3rem);
-        left: 12px;
     }
     
     .percentage::after {
@@ -964,6 +966,7 @@ body, html {
         width: 900px;
         height: 42px;
         border-radius: 21px;
+        --percentage-left: 15px;
     }
     
     .progress-bar {
@@ -972,7 +975,6 @@ body, html {
     
     .percentage {
         font-size: 1.5rem;
-        left: 15px;
     }
     
     .percentage::after {
@@ -1042,6 +1044,7 @@ body, html {
         width: 1500px;
         height: 72px;
         border-radius: 36px;
+        --percentage-left: 24px;
     }
     
     .progress-bar {
@@ -1050,7 +1053,6 @@ body, html {
     
     .percentage {
         font-size: 2.5rem;
-        left: 24px;
     }
     
     .percentage::after {
@@ -1232,11 +1234,11 @@ body, html {
     
     .progress-bar-container {
         width: 400px;
+        --percentage-left: 6px;
     }
     
     .percentage {
         font-size: 0.8rem;
-        left: 6px;
     }
     
     .percentage::after {
@@ -1308,6 +1310,7 @@ body, html {
     
     .progress-bar-container {
         width: 320px;
+        --percentage-left: 4px;
     }
     
     .blood-splatter {
@@ -1340,7 +1343,6 @@ body, html {
     
     .percentage {
         font-size: 0.75rem;
-        left: 4px;
     }
     
     .percentage::after {
