@@ -202,7 +202,7 @@ function generateFooterHTML() {
         rulesFooterLinks.classList.add('gmod-client');
     }
 
-    // Generate footer links
+        // Generate footer links
     rulesConfig.footer.links.forEach(link => {
         // Skip "Appeal a Ban" link for GMod clients
         if (isGMod && link.text === "Appeal a Ban") {
@@ -211,28 +211,20 @@ function generateFooterHTML() {
         
         const linkElement = document.createElement('a');
         linkElement.href = link.url;
-        linkElement.textContent = link.text;
         
-        if (isGMod) {
-            // For GMod clients, use a more link-like appearance
-            linkElement.className = 'footer-link gmod-link';
-            // Ensure links work properly in GMod's browser
-            if (link.target === '_blank') {
-                linkElement.rel = 'noopener';
-                linkElement.target = '_blank';
-                // For external links in GMod, we might want to handle them specially
-                linkElement.addEventListener('click', function(e) {
-                    // Let the browser handle the link normally
-                    // GMod's browser should open external links in Steam overlay
-                });
-            }
+        // For GMod clients, show the actual Discord link instead of "Join Discord"
+        if (isGMod && link.text === "Join Discord") {
+            linkElement.textContent = link.url;
         } else {
-            // For regular browsers, keep the existing button-style links
-            linkElement.className = 'footer-link';
-            if (link.target === '_blank') {
-                linkElement.rel = 'noopener';
-                linkElement.target = '_blank';
-            }
+            linkElement.textContent = link.text;
+        }
+        
+        // Use the same button style for both GMod and regular web
+        linkElement.className = 'footer-link';
+        
+        if (link.target === '_blank') {
+            linkElement.rel = 'noopener';
+            linkElement.target = '_blank';
         }
         
         rulesFooterLinks.appendChild(linkElement);

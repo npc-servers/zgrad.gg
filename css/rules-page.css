@@ -485,24 +485,6 @@ body.gmod-client .footer-link {
     color: var(--text-color);
 }
 
-/* GMod-specific link styles */
-.gmod-link {
-    background: transparent !important;
-    border: 2px solid #ff0000 !important;
-    color: #ff0000 !important;
-    text-decoration: underline;
-    font-weight: 600;
-    transition: var(--transition);
-}
-
-.gmod-link:hover {
-    background: rgba(255, 0, 0, 0.1) !important;
-    color: #fff !important;
-    text-decoration: none;
-    border-color: #fff !important;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(255, 0, 0, 0.4);
-}
 
 
 /* High Resolution Scaling - 1920p and above */

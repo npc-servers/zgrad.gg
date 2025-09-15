@@ -8,6 +8,42 @@
     overflow-y: auto;
 }
 
+/* Hide scrollbars ONLY for GMod clients */
+body.gmod-client .guide-page {
+    /* Hide scrollbar for webkit browsers */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+body.gmod-client .guide-page::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+/* Hide scrollbars on body and html for guide page while keeping scrollable - GMod only */
+body.gmod-client {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+body.gmod-client::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+html.gmod-client {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+html.gmod-client::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+
 .guide-page::after {
     content: '';
     position: absolute;
@@ -195,6 +231,11 @@
 
 .back-button:hover .back-arrow {
     transform: translateX(-3px);
+}
+
+/* Hide back button for GMod clients */
+body.gmod-client .guide-nav {
+    display: none;
 }
 
 /* Content Area */
@@ -403,6 +444,290 @@
     background: rgba(76, 175, 80, 0.2);
     border-color: rgba(76, 175, 80, 0.4);
     color: #4caf50;
+}
+
+/* High Resolution Scaling - 1920p and above */
+@media (min-width: 1920px) and (min-height: 1080px) {
+    .guide-title {
+        font-size: clamp(4.5rem, 5vw, 5rem);
+    }
+    
+    .guide-subtitle {
+        font-size: clamp(1.3rem, 1.4vw, 1.4rem);
+    }
+    
+    .guide-header {
+        padding: 0 50px 40px;
+        margin-top: 140px;
+    }
+    
+    .guide-hero-bg {
+        height: 180px;
+        top: 25px;
+        left: 25px;
+        right: 25px;
+    }
+    
+    .guide-content {
+        max-width: 1000px;
+        padding: 30px 50px 50px;
+        margin: 0 auto 50px auto;
+    }
+    
+    .guide-content h1 {
+        font-size: clamp(2.8rem, 3vw, 3rem);
+    }
+    
+    .guide-content h2 {
+        font-size: clamp(2.2rem, 2.4vw, 2.4rem);
+    }
+    
+    .guide-content h3 {
+        font-size: clamp(1.7rem, 1.8vw, 1.8rem);
+    }
+    
+    .guide-content p {
+        font-size: clamp(1.1rem, 1.2vw, 1.2rem);
+        line-height: 1.7;
+    }
+    
+    .step-card {
+        padding: 30px;
+        margin: 30px 0;
+    }
+    
+    .step-title {
+        font-size: clamp(1.5rem, 1.6vw, 1.6rem);
+    }
+    
+    .step-description {
+        font-size: clamp(1.1rem, 1.2vw, 1.2rem);
+        line-height: 1.7;
+    }
+    
+    .back-button {
+        padding: 0.8rem 2rem;
+        font-size: clamp(1.1rem, 1.2vw, 1.2rem);
+        border-radius: 8px;
+    }
+    
+    .back-arrow {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+/* 2K and 1440p scaling */
+@media (min-width: 2560px) and (min-height: 1440px) {
+    .guide-title {
+        font-size: clamp(5.5rem, 6vw, 6rem);
+    }
+    
+    .guide-subtitle {
+        font-size: clamp(1.5rem, 1.6vw, 1.6rem);
+    }
+    
+    .guide-header {
+        padding: 0 60px 50px;
+        margin-top: 160px;
+    }
+    
+    .guide-hero-bg {
+        height: 220px;
+        top: 30px;
+        left: 30px;
+        right: 30px;
+    }
+    
+    .guide-content {
+        max-width: 1200px;
+        padding: 40px 60px 60px;
+        margin: 0 auto 60px auto;
+    }
+    
+    .guide-content h1 {
+        font-size: clamp(3.5rem, 3.8vw, 3.8rem);
+    }
+    
+    .guide-content h2 {
+        font-size: clamp(2.8rem, 3vw, 3rem);
+    }
+    
+    .guide-content h3 {
+        font-size: clamp(2.1rem, 2.2vw, 2.2rem);
+    }
+    
+    .guide-content p {
+        font-size: clamp(1.3rem, 1.4vw, 1.4rem);
+        line-height: 1.8;
+    }
+    
+    .step-card {
+        padding: 40px;
+        margin: 40px 0;
+    }
+    
+    .step-title {
+        font-size: clamp(1.8rem, 1.9vw, 1.9rem);
+    }
+    
+    .step-description {
+        font-size: clamp(1.3rem, 1.4vw, 1.4rem);
+        line-height: 1.8;
+    }
+    
+    .back-button {
+        padding: 1rem 2.4rem;
+        font-size: clamp(1.3rem, 1.4vw, 1.4rem);
+        border-radius: 10px;
+    }
+    
+    .back-arrow {
+        width: 22px;
+        height: 22px;
+    }
+}
+
+/* Ultra-wide and 4K scaling */
+@media (min-width: 3440px) and (min-height: 1440px) {
+    .guide-title {
+        font-size: 7rem;
+    }
+    
+    .guide-subtitle {
+        font-size: 1.8rem;
+    }
+    
+    .guide-header {
+        padding: 0 80px 60px;
+        margin-top: 180px;
+    }
+    
+    .guide-hero-bg {
+        height: 260px;
+        top: 40px;
+        left: 40px;
+        right: 40px;
+    }
+    
+    .guide-content {
+        max-width: 1400px;
+        padding: 50px 80px 80px;
+        margin: 0 auto 80px auto;
+    }
+    
+    .guide-content h1 {
+        font-size: 4.5rem;
+    }
+    
+    .guide-content h2 {
+        font-size: 3.5rem;
+    }
+    
+    .guide-content h3 {
+        font-size: 2.6rem;
+    }
+    
+    .guide-content p {
+        font-size: 1.6rem;
+        line-height: 1.9;
+    }
+    
+    .step-card {
+        padding: 50px;
+        margin: 50px 0;
+    }
+    
+    .step-title {
+        font-size: 2.2rem;
+    }
+    
+    .step-description {
+        font-size: 1.6rem;
+        line-height: 1.9;
+    }
+    
+    .back-button {
+        padding: 1.2rem 2.8rem;
+        font-size: 1.6rem;
+        border-radius: 12px;
+    }
+    
+    .back-arrow {
+        width: 26px;
+        height: 26px;
+    }
+}
+
+/* 8K and extreme high resolution scaling */
+@media (min-width: 7680px) and (min-height: 4320px) {
+    .guide-title {
+        font-size: 12rem;
+    }
+    
+    .guide-subtitle {
+        font-size: 3rem;
+    }
+    
+    .guide-header {
+        padding: 0 120px 100px;
+        margin-top: 300px;
+    }
+    
+    .guide-hero-bg {
+        height: 400px;
+        top: 60px;
+        left: 60px;
+        right: 60px;
+    }
+    
+    .guide-content {
+        max-width: 2000px;
+        padding: 80px 120px 120px;
+        margin: 0 auto 120px auto;
+    }
+    
+    .guide-content h1 {
+        font-size: 7.5rem;
+    }
+    
+    .guide-content h2 {
+        font-size: 6rem;
+    }
+    
+    .guide-content h3 {
+        font-size: 4.5rem;
+    }
+    
+    .guide-content p {
+        font-size: 2.6rem;
+        line-height: 2;
+    }
+    
+    .step-card {
+        padding: 80px;
+        margin: 80px 0;
+    }
+    
+    .step-title {
+        font-size: 3.6rem;
+    }
+    
+    .step-description {
+        font-size: 2.6rem;
+        line-height: 2;
+    }
+    
+    .back-button {
+        padding: 1.8rem 4.2rem;
+        font-size: 2.6rem;
+        border-radius: 18px;
+    }
+    
+    .back-arrow {
+        width: 40px;
+        height: 40px;
+    }
 }
 
 /* Responsive Design */
