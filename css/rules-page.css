@@ -71,19 +71,29 @@ html:has(body.gmod-client .rules-page)::-webkit-scrollbar {
     -webkit-mask: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0) 80%);
 }
 
-/* GMod fallback for blood splatter - remove mask for better compatibility */
+/* GMod fallback for blood splatter - use opacity fade instead of mask */
 body.gmod-client .rules-splatter {
     mask: none;
     -webkit-mask: none;
-    opacity: 0.8;
+    background: url('../images/textures/rules-splatter.png') center top/cover no-repeat;
+}
+
+body.gmod-client .rules-splatter::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: linear-gradient(to bottom, 
         rgba(0,0,0,0) 0%, 
-        rgba(0,0,0,0.1) 20%, 
-        rgba(0,0,0,0.3) 40%, 
-        rgba(0,0,0,0.5) 60%, 
-        rgba(0,0,0,0.7) 80%, 
-        rgba(0,0,0,0.8) 100%
-    ), url('../images/textures/rules-splatter.png') center top/cover no-repeat;
+        rgba(0,0,0,0) 30%, 
+        rgba(0,0,0,0.2) 50%, 
+        rgba(0,0,0,0.5) 70%, 
+        rgba(0,0,0,0.8) 90%, 
+        rgba(0,0,0,1) 100%
+    );
+    pointer-events: none;
 }
 
 .rules-title {
