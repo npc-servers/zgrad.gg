@@ -455,7 +455,7 @@ body, html {
 
 /* Main logo */
 .main-logo {
-    max-width: 400px;
+    max-width: min(400px, 25vw);
     height: auto;
     filter: drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.8));
     transition: transform 0.3s ease;
@@ -465,12 +465,12 @@ body, html {
 
 /* Smaller subtext */
 .subtext {
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 1.2vw, 1.2rem);
     margin-bottom: 1rem;
     opacity: 0.9;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
     transition: opacity 0.5s ease-in-out;
-    max-width: 500px;
+    max-width: min(500px, 35vw);
     margin-left: auto;
     margin-right: auto;
 }
@@ -493,7 +493,7 @@ body, html {
 
 /* Progress bar container */
 .progress-bar-container {
-    width: 500px;
+    width: min(500px, 35vw);
     height: 24px;
     background: rgba(0, 0, 0, 0.6);
     border-radius: 12px;
@@ -628,7 +628,566 @@ body, html {
     opacity: 0.9;
 }
 
-/* Responsive design */
+/* High resolution scaling - 1440p and above */
+/* 2K and 1440p scaling */
+@media (min-width: 1920px) and (min-height: 1080px) {
+    .main-logo {
+        max-width: min(500px, 26vw);
+    }
+    
+    .subtext {
+        font-size: clamp(1.3rem, 1.5vw, 1.5rem);
+        max-width: min(650px, 40vw);
+    }
+    
+    .progress-bar-container {
+        width: min(625px, 40vw);
+        height: 30px;
+        border-radius: 15px;
+    }
+    
+    .progress-bar {
+        border-radius: 15px;
+    }
+    
+    .percentage {
+        font-size: clamp(1rem, 1.1vw, 1.1rem);
+        left: 10px;
+    }
+    
+    .percentage::after {
+        font-size: clamp(1rem, 1.1vw, 1.1rem);
+    }
+    
+    .loading-info {
+        font-size: clamp(1.1rem, 1.3vw, 1.3rem);
+    }
+    
+    .advert-title {
+        font-size: clamp(2.8rem, 3.2vw, 3.2rem);
+    }
+    
+    .advert-subtext {
+        font-size: clamp(1.2rem, 1.4vw, 1.4rem);
+        max-width: min(750px, 45vw);
+    }
+    
+    .advert-section {
+        height: 150px;
+    }
+    
+    .blood-splatter {
+        width: min(1500px, 85vw);
+        height: min(1125px, 64vw);
+    }
+    
+    .social-media-section {
+        top: 25px;
+        left: 25px;
+    }
+    
+    .social-media-container {
+        padding: 15px 20px;
+        gap: 20px;
+        border-radius: 10px;
+    }
+    
+    .social-link {
+        padding: 8px 10px;
+        font-size: clamp(1rem, 1.1vw, 1.1rem);
+        gap: 12px;
+        border-radius: 8px;
+    }
+    
+    .social-icon {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .powered-by-section {
+        top: 25px;
+        right: 25px;
+    }
+    
+    .powered-by-container {
+        padding: 15px 20px;
+        gap: 8px;
+        border-radius: 10px;
+    }
+    
+    .powered-by-text {
+        font-size: clamp(1rem, 1.1vw, 1.1rem);
+    }
+    
+    .zmod-logo {
+        height: 30px;
+    }
+    
+    .zmod-text {
+        font-size: clamp(1rem, 1.1vw, 1.1rem);
+    }
+    
+    .server-list-section {
+        max-width: min(375px, 25vw);
+        width: min(375px, 25vw);
+        right: 25px;
+    }
+    
+    .server-list-container {
+        padding: 25px;
+        border-radius: 15px;
+    }
+    
+    .server-list-title {
+        font-size: clamp(1.4rem, 1.6vw, 1.6rem);
+        margin-bottom: 10px;
+    }
+    
+    .total-players-count {
+        font-size: clamp(0.8rem, 0.9vw, 0.9rem);
+        margin-bottom: 20px;
+    }
+    
+    .server-list {
+        gap: 15px;
+    }
+    
+    .loading-screen-server-item {
+        padding: 15px;
+        border-radius: 10px;
+    }
+    
+    .loading-screen-server-logo {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .loading-screen-server-name {
+        font-size: clamp(1.1rem, 1.3vw, 1.3rem);
+    }
+    
+    .loading-screen-server-players {
+        font-size: clamp(1rem, 1.1vw, 1.1rem);
+    }
+    
+    .loading-screen-server-gamemode {
+        font-size: clamp(0.9rem, 1vw, 1rem);
+    }
+    
+    .loading-screen-server-offline {
+        font-size: clamp(1rem, 1.1vw, 1.1rem);
+    }
+    
+    .server-list-footer {
+        margin-top: 20px;
+        padding-top: 15px;
+        font-size: clamp(0.85rem, 0.95vw, 0.95rem);
+    }
+    
+    .blood-splatter-bar {
+        height: 100px;
+    }
+}
+
+@media (min-width: 2560px) and (min-height: 1440px) {
+    /* Scale up main elements for very high resolutions */
+    .main-logo {
+        max-width: min(600px, 28vw);
+    }
+    
+    .subtext {
+        font-size: clamp(1.6rem, 1.8vw, 1.8rem);
+        max-width: min(800px, 45vw);
+    }
+    
+    .progress-bar-container {
+        width: min(750px, 45vw);
+        height: 36px;
+        border-radius: 18px;
+    }
+    
+    .progress-bar {
+        border-radius: 18px;
+    }
+    
+    .percentage {
+        font-size: clamp(1.2rem, 1.3vw, 1.3rem);
+        left: 12px;
+    }
+    
+    .percentage::after {
+        font-size: clamp(1.2rem, 1.3vw, 1.3rem);
+    }
+    
+    .loading-info {
+        font-size: clamp(1.4rem, 1.5vw, 1.5rem);
+    }
+    
+    .advert-title {
+        font-size: clamp(3.5rem, 3.8vw, 3.8rem);
+    }
+    
+    .advert-subtext {
+        font-size: clamp(1.5rem, 1.6vw, 1.6rem);
+        max-width: min(900px, 50vw);
+    }
+    
+    .advert-section {
+        height: 180px;
+    }
+    
+    .blood-splatter {
+        width: min(1800px, 90vw);
+        height: min(1350px, 68vw);
+    }
+    
+    .social-media-section {
+        top: 30px;
+        left: 30px;
+    }
+    
+    .social-media-container {
+        padding: 18px 24px;
+        gap: 24px;
+        border-radius: 12px;
+    }
+    
+    .social-link {
+        padding: 9px 12px;
+        font-size: clamp(1.2rem, 1.3vw, 1.3rem);
+        gap: 15px;
+        border-radius: 9px;
+    }
+    
+    .social-icon {
+        width: 27px;
+        height: 27px;
+    }
+    
+    .powered-by-section {
+        top: 30px;
+        right: 30px;
+    }
+    
+    .powered-by-container {
+        padding: 18px 24px;
+        gap: 9px;
+        border-radius: 12px;
+    }
+    
+    .powered-by-text {
+        font-size: clamp(1.2rem, 1.3vw, 1.3rem);
+    }
+    
+    .zmod-logo {
+        height: 36px;
+    }
+    
+    .zmod-text {
+        font-size: clamp(1.2rem, 1.3vw, 1.3rem);
+    }
+    
+    .server-list-section {
+        max-width: min(450px, 28vw);
+        width: min(450px, 28vw);
+        right: 30px;
+    }
+    
+    .server-list-container {
+        padding: 30px;
+        border-radius: 18px;
+    }
+    
+    .server-list-title {
+        font-size: clamp(1.7rem, 1.8vw, 1.8rem);
+        margin-bottom: 12px;
+    }
+    
+    .total-players-count {
+        font-size: clamp(0.9rem, 1vw, 1rem);
+        margin-bottom: 24px;
+    }
+    
+    .server-list {
+        gap: 18px;
+    }
+    
+    .loading-screen-server-item {
+        padding: 18px;
+        border-radius: 12px;
+    }
+    
+    .loading-screen-server-logo {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .loading-screen-server-name {
+        font-size: clamp(1.4rem, 1.5vw, 1.5rem);
+    }
+    
+    .loading-screen-server-players {
+        font-size: clamp(1.2rem, 1.3vw, 1.3rem);
+    }
+    
+    .loading-screen-server-gamemode {
+        font-size: clamp(1.1rem, 1.2vw, 1.2rem);
+    }
+    
+    .loading-screen-server-offline {
+        font-size: clamp(1.2rem, 1.3vw, 1.3rem);
+    }
+    
+    .server-list-footer {
+        margin-top: 24px;
+        padding-top: 18px;
+        font-size: clamp(1rem, 1.1vw, 1.1rem);
+    }
+    
+    .blood-splatter-bar {
+        height: 120px;
+    }
+}
+
+/* Ultra-wide and 4K scaling */
+@media (min-width: 3440px) and (min-height: 1440px) {
+    .main-logo {
+        max-width: 700px;
+    }
+    
+    .subtext {
+        font-size: 2.2rem;
+        max-width: 1000px;
+    }
+    
+    .progress-bar-container {
+        width: 900px;
+        height: 42px;
+        border-radius: 21px;
+    }
+    
+    .progress-bar {
+        border-radius: 21px;
+    }
+    
+    .percentage {
+        font-size: 1.5rem;
+        left: 15px;
+    }
+    
+    .percentage::after {
+        font-size: 1.5rem;
+    }
+    
+    .loading-info {
+        font-size: 1.8rem;
+    }
+    
+    .advert-title {
+        font-size: 4.5rem;
+    }
+    
+    .advert-subtext {
+        font-size: 1.9rem;
+        max-width: 1100px;
+    }
+    
+    .blood-splatter {
+        width: 2100px;
+        height: 1575px;
+    }
+    
+    .server-list-section {
+        max-width: 520px;
+        width: 520px;
+    }
+    
+    .server-list-container {
+        padding: 35px;
+    }
+    
+    .server-list-title {
+        font-size: 2.1rem;
+    }
+    
+    .total-players-count {
+        font-size: 1.2rem;
+    }
+    
+    .loading-screen-server-name {
+        font-size: 1.7rem;
+    }
+    
+    .loading-screen-server-players {
+        font-size: 1.5rem;
+    }
+    
+    .loading-screen-server-gamemode {
+        font-size: 1.4rem;
+    }
+}
+
+/* 8K and extreme high resolution scaling */
+@media (min-width: 7680px) and (min-height: 4320px) {
+    .main-logo {
+        max-width: 1200px;
+    }
+    
+    .subtext {
+        font-size: 3.5rem;
+        max-width: 1600px;
+    }
+    
+    .progress-bar-container {
+        width: 1500px;
+        height: 72px;
+        border-radius: 36px;
+    }
+    
+    .progress-bar {
+        border-radius: 36px;
+    }
+    
+    .percentage {
+        font-size: 2.5rem;
+        left: 24px;
+    }
+    
+    .percentage::after {
+        font-size: 2.5rem;
+    }
+    
+    .loading-info {
+        font-size: 3rem;
+    }
+    
+    .advert-title {
+        font-size: 7.5rem;
+    }
+    
+    .advert-subtext {
+        font-size: 3.2rem;
+        max-width: 1800px;
+    }
+    
+    .advert-section {
+        height: 300px;
+    }
+    
+    .blood-splatter {
+        width: 3600px;
+        height: 2700px;
+    }
+    
+    .social-media-section {
+        top: 60px;
+        left: 60px;
+    }
+    
+    .social-media-container {
+        padding: 36px 48px;
+        gap: 48px;
+        border-radius: 24px;
+    }
+    
+    .social-link {
+        padding: 18px 24px;
+        font-size: 2.2rem;
+        gap: 30px;
+        border-radius: 18px;
+    }
+    
+    .social-icon {
+        width: 54px;
+        height: 54px;
+    }
+    
+    .powered-by-section {
+        top: 60px;
+        right: 60px;
+    }
+    
+    .powered-by-container {
+        padding: 36px 48px;
+        gap: 18px;
+        border-radius: 24px;
+    }
+    
+    .powered-by-text {
+        font-size: 2.2rem;
+    }
+    
+    .zmod-logo {
+        height: 72px;
+    }
+    
+    .zmod-text {
+        font-size: 2.2rem;
+    }
+    
+    .server-list-section {
+        max-width: 900px;
+        width: 900px;
+        right: 60px;
+    }
+    
+    .server-list-container {
+        padding: 60px;
+        border-radius: 36px;
+    }
+    
+    .server-list-title {
+        font-size: 3.6rem;
+        margin-bottom: 24px;
+    }
+    
+    .total-players-count {
+        font-size: 2rem;
+        margin-bottom: 48px;
+    }
+    
+    .server-list {
+        gap: 36px;
+    }
+    
+    .loading-screen-server-item {
+        padding: 36px;
+        border-radius: 24px;
+    }
+    
+    .loading-screen-server-logo {
+        width: 72px;
+        height: 72px;
+    }
+    
+    .loading-screen-server-name {
+        font-size: 3rem;
+    }
+    
+    .loading-screen-server-players {
+        font-size: 2.6rem;
+    }
+    
+    .loading-screen-server-gamemode {
+        font-size: 2.4rem;
+    }
+    
+    .loading-screen-server-offline {
+        font-size: 2.6rem;
+    }
+    
+    .server-list-footer {
+        margin-top: 48px;
+        padding-top: 36px;
+        font-size: 2rem;
+    }
+    
+    .blood-splatter-bar {
+        height: 200px;
+    }
+}
+
+/* Responsive design for smaller screens */
 @media (max-width: 768px) {
     .main-logo {
         max-width: 300px;
