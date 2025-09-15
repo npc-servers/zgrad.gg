@@ -440,7 +440,7 @@ function getCurrentStatus() {
     // Check for gluapack in current status or downloading file
     if ((currentStatus && currentStatus.toLowerCase().includes("gluapack")) ||
         (currentDownloadingFile && currentDownloadingFile.toLowerCase().includes("gluapack"))) {
-        return "Loading super-fast bundled Lua!";
+        return "Downloading super-fast bundled lua";
     }
     
     // If we have a specific status from GMod, use that (but only if we're not actively downloading)
