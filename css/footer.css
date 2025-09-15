@@ -108,9 +108,11 @@
     color: #999999;
     text-decoration: none;
     transition: var(--transition);
-    display: block;
+    display: inline-block;
     font-size: 14px;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+    width: auto;
+    padding: 0;
 }
 
 .footer-links a:hover {
@@ -299,6 +301,7 @@
     
     .footer-links a {
         text-align: center;
+        display: inline-block;
     }
     
     .footer-logo {
