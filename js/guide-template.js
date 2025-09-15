@@ -1,5 +1,8 @@
 // Guide Page JavaScript
 document.addEventListener('DOMContentLoaded', function() {
+    // Detect GMod client and add appropriate classes
+    initGModDetection();
+    
     // Initialize smooth scrolling for anchor links
     initSmoothScrolling();
     
@@ -12,6 +15,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize back button functionality
     initBackButton();
 });
+
+// GMod client detection
+function initGModDetection() {
+    const isGMod = navigator.userAgent.toLowerCase().includes('gmod');
+    
+    if (isGMod) {
+        document.body.classList.add('gmod-client');
+        document.documentElement.classList.add('gmod-client');
+    }
+}
 
 function initSmoothScrolling() {
     // Add smooth scrolling to all anchor links within the page
