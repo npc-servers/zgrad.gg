@@ -4,28 +4,22 @@
  */
 
 const footerConfig = {
-    // Default navigation links
-    navigation: [
+    // OVERVIEW category links
+    overview: [
         { href: 'index.html', text: 'Home' },
         { href: 'servers.html', text: 'Servers' },
-        { href: 'https://store.npcz.gg', text: 'Webstore', track: 'webstore' },
-        { href: 'https://discord.gg/npc', text: 'Discord', track: 'discord' }
+        { href: 'rules.html', text: 'Rules' },
+        { href: 'https://discord.gg/npc', text: 'Discord', track: 'discord' },
+        { href: 'https://store.npcz.gg', text: 'Webstore', track: 'webstore' }
     ],
     
-    // Default server links
-    servers: [
-        { href: 'servers.html#homigrad', text: 'Homigrad' },
-        { href: 'servers.html#minigames', text: 'Minigames' },
-        { href: 'servers.html#creative', text: 'Creative' },
-        { href: 'servers.html#events', text: 'Events' }
-    ],
-    
-    // Default support links
-    support: [
+    // ZMOD category links
+    zmod: [
         { href: 'https://discord.gg/npc', text: 'Help & Support' },
-        { href: 'https://discord.gg/npc', text: 'Report a Player' },
-        { href: 'https://discord.gg/npc', text: 'Ban Appeals' },
-        { href: 'https://discord.gg/npc', text: 'Contact Us' }
+        { href: 'guides/player-report.html', text: 'Report a Player' },
+        { href: 'guides/ban-appeal.html', text: 'Ban Appeals' },
+        { href: 'mailto:charity@npcz.gg', text: 'Contact Us' },
+        { href: 'https://zmod.gg?ref=zgrad', text: 'ZMOD.GG' }
     ],
     
     // Default legal links
@@ -118,10 +112,8 @@ function createFooterHTML(config = {}) {
                 ${createPoweredByLink(config)}
             </div>
             
-            ${createNavigationColumn(config)}
-            ${createServersColumn(config)}
-            ${createSupportColumn(config)}
-            ${createAdditionalColumns(config)}
+            ${createOverviewColumn(config)}
+            ${createZmodColumn(config)}
             
             <div class="footer-bottom">
                 <div class="footer-bottom-left">
@@ -142,16 +134,16 @@ function createFooterHTML(config = {}) {
 }
 
 /**
- * Creates the navigation column HTML
+ * Creates the overview column HTML
  * @param {Object} config - Optional configuration to override defaults
- * @returns {string} HTML for the navigation column
+ * @returns {string} HTML for the overview column
  */
-function createNavigationColumn(config = {}) {
-    const links = config.navigation || footerConfig.navigation;
+function createOverviewColumn(config = {}) {
+    const links = config.overview || footerConfig.overview;
     
     return `
         <div class="footer-column">
-            <h3>Navigation</h3>
+            <h3>OVERVIEW</h3>
             <ul class="footer-links">
                 ${links.map(link => createLinkHTML(link)).join('')}
             </ul>
@@ -160,34 +152,16 @@ function createNavigationColumn(config = {}) {
 }
 
 /**
- * Creates the servers column HTML
+ * Creates the ZMOD column HTML
  * @param {Object} config - Optional configuration to override defaults
- * @returns {string} HTML for the servers column
+ * @returns {string} HTML for the ZMOD column
  */
-function createServersColumn(config = {}) {
-    const links = config.servers || footerConfig.servers;
+function createZmodColumn(config = {}) {
+    const links = config.zmod || footerConfig.zmod;
     
     return `
         <div class="footer-column">
-            <h3>Servers</h3>
-            <ul class="footer-links">
-                ${links.map(link => createLinkHTML(link)).join('')}
-            </ul>
-        </div>
-    `;
-}
-
-/**
- * Creates the support column HTML
- * @param {Object} config - Optional configuration to override defaults
- * @returns {string} HTML for the support column
- */
-function createSupportColumn(config = {}) {
-    const links = config.support || footerConfig.support;
-    
-    return `
-        <div class="footer-column">
-            <h3>Support</h3>
+            <h3>ZMOD</h3>
             <ul class="footer-links">
                 ${links.map(link => createLinkHTML(link)).join('')}
             </ul>

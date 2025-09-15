@@ -73,9 +73,10 @@
 }
 
 .footer-column {
-    flex: 1 0 200px;
+    flex: 1 0 300px;
     margin-bottom: 30px;
-    padding: 0 15px;
+    padding: 0 20px;
+    max-width: 400px;
 }
 
 .footer-column h3 {
@@ -274,7 +275,7 @@
     transition: fill 0.3s ease;
 }
 
-@media (max-width: 925px) {
+@media (max-width: 768px) {
     .footer-container {
         flex-direction: column;
     }
@@ -283,6 +284,7 @@
         flex: 0 0 100%;
         margin-bottom: 25px;
         text-align: center;
+        max-width: none;
     }
     
     .footer-column h3 {
@@ -319,6 +321,13 @@
 
     .powered-by-zmod {
         margin-top: 15px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .footer-column {
+        flex: 1 0 250px;
+        padding: 0 15px;
     }
 }
 
