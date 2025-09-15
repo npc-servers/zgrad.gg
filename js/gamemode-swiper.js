@@ -8,46 +8,88 @@ document.addEventListener('DOMContentLoaded', function() {
 // Gamemode data structure
 const gamemodeData = [
     {
-        id: 'ttt-classic',
-        title: 'TTT CLASSIC',
-        subtitle: 'The original Trouble in Terrorist Town experience with enhanced physics and realistic damage systems.',
-        videoSrc: 'videos/shooting.webm',
-        features: ['Classic TTT Gameplay', 'Enhanced Physics', 'Realistic Damage', 'Detective Tools']
+        id: 'beast',
+        title: 'BEAST',
+        subtitle: 'Hunt or be hunted in this intense survival gamemode where one player becomes the ultimate predator.',
+        videoSrc: 'images/placeholder.png',
+        features: ['Asymmetric Gameplay', 'Hunter vs Prey', 'Survival Mechanics', 'Intense Action']
     },
     {
-        id: 'medical-system',
-        title: 'MEDICAL WARFARE',
-        subtitle: 'Advanced medical mechanics add depth to survival gameplay with wound treatment and CPR systems.',
-        videoSrc: 'videos/medical_demo1.webm',
-        features: ['Wound Treatment', 'CPR System', 'Medical Equipment', 'Health Conditions']
+        id: 'css',
+        title: 'CSS',
+        subtitle: 'Classic Counter-Strike Source gameplay with enhanced physics and realistic weapon mechanics.',
+        videoSrc: 'images/placeholder.png',
+        features: ['Classic CSS Gameplay', 'Enhanced Physics', 'Realistic Weapons', 'Tactical Combat']
     },
     {
-        id: 'ragdoll-physics',
-        title: 'RAGDOLL CLIMBING',
-        subtitle: 'Experience unprecedented realism with advanced ragdoll physics and environmental interaction.',
-        videoSrc: 'videos/climbing_demo1.webm',
-        features: ['Ragdoll Physics', 'Environmental Interaction', 'Realistic Movement', 'Body Climbing']
+        id: 'hide-and-seek',
+        title: 'HIDE AND SEEK',
+        subtitle: 'The ultimate game of cat and mouse with unique hiding mechanics and seeker abilities.',
+        videoSrc: 'images/placeholder.png',
+        features: ['Stealth Gameplay', 'Unique Hiding Spots', 'Seeker Abilities', 'Creative Strategies']
     },
     {
-        id: 'gore-system',
-        title: 'GORE WARFARE',
-        subtitle: 'Realistic gore and damage effects create intense, immersive combat experiences.',
-        videoSrc: 'videos/gore_demo1.webm',
-        features: ['Realistic Gore', 'Damage Effects', 'Visual Feedback', 'Immersive Combat']
+        id: 'hl2dm',
+        title: 'HL2DM',
+        subtitle: 'Half-Life 2 Deathmatch with enhanced physics, gravity gun mechanics, and intense combat.',
+        videoSrc: 'images/placeholder.png',
+        features: ['HL2 Deathmatch', 'Gravity Gun', 'Physics Combat', 'Classic Maps']
     },
     {
-        id: 'custom-weapons',
-        title: 'CUSTOM ARSENAL',
-        subtitle: 'Unique weapons with distinct mechanics offering different tactical advantages and playstyles.',
-        videoSrc: 'videos/weapon_demo1.webm',
-        features: ['Custom Weapons', 'Unique Mechanics', 'Tactical Advantages', 'Diverse Playstyles']
+        id: 'homicide',
+        title: 'HOMICIDE',
+        subtitle: 'A detective-style gamemode where players must solve murders and identify the killer.',
+        videoSrc: 'images/placeholder.png',
+        features: ['Detective Gameplay', 'Murder Mystery', 'Evidence Collection', 'Social Deduction']
     },
     {
-        id: 'class-system',
-        title: 'CLASS WARFARE',
-        subtitle: 'Specialized classes with unique abilities and equipment for strategic gameplay variety.',
-        videoSrc: 'videos/classes_demo1.webm',
-        features: ['Specialized Classes', 'Unique Abilities', 'Strategic Equipment', 'Varied Gameplay']
+        id: 'juggernaut',
+        title: 'JUGGERNAUT',
+        subtitle: 'One player becomes an unstoppable force while others work together to bring them down.',
+        videoSrc: 'images/placeholder.png',
+        features: ['Boss Battle', 'Team Coordination', 'Power Progression', 'Epic Confrontations']
+    },
+    {
+        id: 'riot',
+        title: 'RIOT',
+        subtitle: 'Chaotic large-scale battles with riot gear, crowd control, and explosive action.',
+        videoSrc: 'images/placeholder.png',
+        features: ['Large Scale Battles', 'Riot Gear', 'Crowd Control', 'Explosive Action']
+    },
+    {
+        id: 'brawl',
+        title: 'BRAWL',
+        subtitle: 'Close-quarters combat with melee weapons, fists, and brutal hand-to-hand fighting.',
+        videoSrc: 'images/placeholder.png',
+        features: ['Melee Combat', 'Hand-to-Hand', 'Brutal Fighting', 'Close Quarters']
+    },
+    {
+        id: 'gravity-gun-tdm',
+        title: 'GRAVITY GUN TDM',
+        subtitle: 'Team deathmatch focused on gravity gun mechanics and physics-based combat.',
+        videoSrc: 'images/placeholder.png',
+        features: ['Gravity Gun Focus', 'Team Deathmatch', 'Physics Combat', 'Creative Kills']
+    },
+    {
+        id: 'the-hidden',
+        title: 'THE HIDDEN',
+        subtitle: 'One player becomes an invisible predator while others hunt them down with special equipment.',
+        videoSrc: 'images/placeholder.png',
+        features: ['Invisible Predator', 'Special Equipment', 'Tense Atmosphere', 'Asymmetric Combat']
+    },
+    {
+        id: 'zombie-survival',
+        title: 'ZOMBIE SURVIVAL',
+        subtitle: 'Fight for survival against waves of zombies with limited resources and teamwork.',
+        videoSrc: 'images/placeholder.png',
+        features: ['Zombie Waves', 'Resource Management', 'Team Survival', 'Progressive Difficulty']
+    },
+    {
+        id: 'medieval-tdm',
+        title: 'MEDIEVAL TDM',
+        subtitle: 'Epic medieval warfare with swords, shields, and ancient combat mechanics.',
+        videoSrc: 'images/placeholder.png',
+        features: ['Medieval Weapons', 'Sword Combat', 'Shield Mechanics', 'Epic Battles']
     }
 ];
 
@@ -192,16 +234,12 @@ function generateSwiperSlides() {
         <div class="swiper-slide" data-gamemode="${gamemode.id}">
             <div class="gamemode-card">
                 <div class="gamemode-video-container">
-                    <video 
-                        class="gamemode-video lazy-video" 
-                        muted 
-                        loop 
-                        preload="metadata" 
-                        data-src="${gamemode.videoSrc}"
-                        playsinline
+                    <img 
+                        class="gamemode-image" 
+                        src="${gamemode.videoSrc}"
+                        alt="${gamemode.title}"
+                        loading="lazy"
                     >
-                        <source data-src="${gamemode.videoSrc}" type="video/webm">
-                    </video>
                     <div class="gamemode-overlay">
                         <div class="gamemode-title">${gamemode.title}</div>
                         <div class="gamemode-subtitle">${gamemode.subtitle}</div>
