@@ -212,9 +212,9 @@ function generateFooterHTML() {
         const linkElement = document.createElement('a');
         linkElement.href = link.url;
         
-        // For GMod clients, show the actual Discord link instead of "Join Discord"
+        // For GMod clients, show the Discord link without https://
         if (isGMod && link.text === "Join Discord") {
-            linkElement.textContent = link.url;
+            linkElement.textContent = link.url.replace('https://', '');
         } else {
             linkElement.textContent = link.text;
         }
