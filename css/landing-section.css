@@ -46,7 +46,8 @@ top:0;
 left:0;
 right:0;
 bottom:0;
-backdrop-filter:blur(2px);
+backdrop-filter:blur(8px);
+-webkit-backdrop-filter:blur(8px);
 z-index:1;
 pointer-events:none;
 }
@@ -58,9 +59,23 @@ top:0;
 left:0;
 right:0;
 bottom:0;
-background:url('../images/textures/cooltexturebetter.png') center/cover no-repeat;
+background: 
+    radial-gradient(ellipse at center, transparent 0%, transparent 30%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.6) 100%),
+    url('../images/textures/cooltexturebetter.png') center/cover no-repeat;
 opacity:0.2;
 z-index:2;
+}
+
+/* Vignette overlay */
+.landing-section .vignette-overlay {
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: radial-gradient(ellipse at center, transparent 0%, transparent 40%, rgba(0,0,0,0.4) 70%, rgba(0,0,0,0.8) 100%);
+z-index: 4;
+pointer-events: none;
 }
 
 /* Removed logo background */
