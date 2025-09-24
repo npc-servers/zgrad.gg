@@ -225,31 +225,6 @@ function initWebstoreAnimations() {
                 duration: 0.6,
                 ease: "power3.out"
             }, "-=0.2"
-        ).fromTo('.webstore-coming-soon', 
-            {
-                opacity: 0,
-                y: 30,
-                scale: 0.95
-            },
-            {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                duration: 0.8,
-                ease: "power3.out"
-            }, "-=0.1"
-        ).fromTo('.coming-soon-item', 
-            {
-                opacity: 0,
-                x: -30
-            },
-            {
-                opacity: 1,
-                x: 0,
-                duration: 0.4,
-                stagger: 0.1,
-                ease: "power2.out"
-            }, "-=0.4"
         );
 
         // Add parallax effect to webstore character
