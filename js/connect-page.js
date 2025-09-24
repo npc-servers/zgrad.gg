@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
             title: 'ZGRAD US4',
             suffix: 'US4',
             ip: '193.243.190.18',
-            port: 27050,
+            port: 27052,
             region: 'US',
             gamemode: 'Homicide Only'
         }
