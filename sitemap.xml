@@ -1,39 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://zgrad.gg/</loc>
-    <lastmod>2025-07-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://zgrad.gg/servers</loc>
-    <lastmod>2025-07-07</lastmod>
-    <changefreq>hourly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://zgrad.gg/socials</loc>
-    <lastmod>2025-07-07</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://zgrad.gg/rules</loc>
-    <lastmod>2025-07-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://zgrad.gg/store/connect</loc>
-    <lastmod>2025-07-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://zgrad.gg/discord/connect</loc>
-    <lastmod>2025-07-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+    
+    <!-- Homepage -->
+    <url>
+        <loc>https://zgrad.gg/</loc>
+        <lastmod>2024-12-19</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+        <image:image>
+            <image:loc>https://zgrad.gg/images/logos/zgrad-logo.png</image:loc>
+            <image:title>ZGRAD Logo</image:title>
+            <image:caption>ZGRAD Logo</image:caption>
+        </image:image>
+    </url>
+    
+    <!-- Servers Page -->
+    <url>
+        <loc>https://zgrad.gg/servers.html</loc>
+        <lastmod>2024-12-19</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.9</priority>
+    </url>
+    
+    <!-- Rules Page -->
+    <url>
+        <loc>https://zgrad.gg/rules.html</loc>
+        <lastmod>2024-12-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <!-- Ban Appeal Guide -->
+    <url>
+        <loc>https://zgrad.gg/guides/ban-appeal.html</loc>
+        <lastmod>2024-12-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+        <image:image>
+            <image:loc>https://zgrad.gg/images/guides/bg/appeal-ban.png</image:loc>
+            <image:title>Ban Appeal Guide</image:title>
+            <image:caption>How to Appeal a Ban on ZGRAD Servers</image:caption>
+        </image:image>
+    </url>
+    
+    <!-- Player Report Guide -->
+    <url>
+        <loc>https://zgrad.gg/guides/player-report.html</loc>
+        <lastmod>2024-12-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+        <image:image>
+            <image:loc>https://zgrad.gg/images/guides/bg/reporting-players.jpg</image:loc>
+            <image:title>Player Report Guide</image:title>
+            <image:caption>How to Report Players on ZGRAD Servers</image:caption>
+        </image:image>
+    </url>
+    
+    
 </urlset>

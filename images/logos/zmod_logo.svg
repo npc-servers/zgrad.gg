@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 612 612" xmlns:bx="https://boxy-svg.com" width="1024px" height="1024px"><defs><style>
+      .cls-1, .cls-2 {
+        stroke-width: 0px;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+    </style><bx:export><bx:file format="svg" href="#object-0" width="1181.31099496432" height="1024" path="zmod_logo_final.svg"/><bx:file format="svg" width="1024" height="1024" path="zmod_logo.svg"/><bx:file format="png" width="4096" height="4096" path="zmod_logo.png"/></bx:export></defs><path class="cls-1" d="m283.82,222.58c-27.64,35.02-55.28,70.04-83.04,105.21h-102.79c-10.93-14.22-22.01-28.64-33.4-43.45h113.5c49.9-62.56,99.66-124.97,149.96-188.04v292.25c.21.09.41.18.62.27,27.65-35.03,55.31-70.07,83.08-105.26h102.78c10.94,14.23,22.02,28.65,33.44,43.5h-113.78c-49.81,62.67-99.46,125.15-149.61,188.25V222.82c-.25-.08-.51-.16-.76-.24Z" id="object-0"/></svg>

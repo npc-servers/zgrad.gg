@@ -1,13 +1,21 @@
 User-agent: *
 Allow: /
-Sitemap: https://zgrad.gg/sitemap.xml 
 
-# Allow all bots to index the site
-User-agent: Googlebot
+# Sitemap
+Sitemap: https://zgrad.gg/sitemap.xml
+
+# Disallow connection pages and loading screen (as requested)
+Disallow: /connect/us1.html
+Disallow: /connect/us2.html
+Disallow: /connect/us3.html
+Disallow: /connect/us4.html
+Disallow: /loadingscreen/
+
+# Allow important pages
 Allow: /
-User-agent: Googlebot-Image
-Allow: /
-User-agent: Bingbot
-Allow: /
-User-agent: DuckDuckBot
-Allow: / 
+Allow: /servers.html
+Allow: /rules.html
+Allow: /guides/
+
+# Crawl-delay (optional)
+Crawl-delay: 1
