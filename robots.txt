@@ -4,12 +4,14 @@ Allow: /
 # Sitemap
 Sitemap: https://zgrad.gg/sitemap.xml
 
-# Disallow connection pages and loading screen (as requested)
-Disallow: /connect/us1.html
-Disallow: /connect/us2.html
-Disallow: /connect/us3.html
-Disallow: /connect/us4.html
+# Disallow connection pages and loading screen (internal pages)
+Disallow: /connect/
 Disallow: /loadingscreen/
+
+# Disallow source files and development files
+Disallow: /sourcefiles/
+Disallow: /*.css$
+Disallow: /*.js$
 
 # Allow important pages
 Allow: /
