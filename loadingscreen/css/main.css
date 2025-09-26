@@ -1,4 +1,5 @@
-/* Font loaded via preload in HTML head for better performance */
+/* Import Oxanium font */
+@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700;800&display=swap');
 
 /* Reset and base styles */
 * {

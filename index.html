@@ -18,11 +18,6 @@
     <link rel="preload" href="css/landing-section.css" as="style">
     <link rel="preload" href="images/logos/zgrad-logo.png" as="image">
     <link rel="preload" href="videos/background.webm" as="video" type="video/webm">
-    <!-- Preload Critical Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700&display=swap"></noscript>
     
     <!-- DNS Prefetch for External Resources -->
     <link rel="dns-prefetch" href="//unpkg.com">
@@ -44,27 +39,15 @@
     <meta name="twitter:title" content="Home">
     <meta name="twitter:description" content="ZGRAD - THE HOMIGRAD NETWORK. The most chaotic experience in Garry's Mod.">
     <meta name="twitter:image" content="https://zgrad.gg/images/logos/zgrad-logo.png">
-    <!-- Critical CSS loaded immediately -->
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/landing-section.css">
-    <!-- Non-critical CSS loaded asynchronously -->
-    <link rel="preload" href="css/homigrad-section.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="css/features-section.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="css/gamemode-section.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="css/webstore-section.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="css/discord-section.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="css/help-section.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="css/footer.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <!-- Fallback for non-JS users -->
-    <noscript>
-        <link rel="stylesheet" href="css/homigrad-section.css">
-        <link rel="stylesheet" href="css/features-section.css">
-        <link rel="stylesheet" href="css/gamemode-section.css">
-        <link rel="stylesheet" href="css/webstore-section.css">
-        <link rel="stylesheet" href="css/discord-section.css">
-        <link rel="stylesheet" href="css/help-section.css">
-        <link rel="stylesheet" href="css/footer.css">
-    </noscript>
+    <link rel="stylesheet" href="css/homigrad-section.css">
+    <link rel="stylesheet" href="css/features-section.css">
+    <link rel="stylesheet" href="css/gamemode-section.css">
+    <link rel="stylesheet" href="css/webstore-section.css">
+    <link rel="stylesheet" href="css/discord-section.css">
+    <link rel="stylesheet" href="css/help-section.css">
+    <link rel="stylesheet" href="css/footer.css">
     
     <!-- Lenis Smooth Scroll -->
     <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.11/dist/lenis.css">
@@ -113,7 +96,7 @@
         <div class="vignette-overlay"></div>
         <div class="landing-container">
             <div class="logo-container">
-                <img src="images/logos/zgrad-logo.png" alt="ZGrad.gg Logo" class="landing-logo" loading="eager">
+                <img src="images/logos/zgrad-logo.png" alt="ZGrad.gg Logo" class="landing-logo">
                 <div class="landing-subtitle">THE HOMIGRAD NETWORK</div>
                 <div class="landing-buttons-inline">
                     <a href="servers.html" class="landing-button landing-button-view-servers" id="viewServers">VIEW SERVERS
@@ -178,8 +161,8 @@
             <span id="totalPlayers">0/0</span> players
         </div>
         <div class="homigrad-content">
-                    <div class="bloodsplatter-decoration-left">
-                <img src="images/textures/bloodsplatter2.png" alt="Homigrad blood splatter decoration" loading="lazy">
+            <div class="bloodsplatter-decoration-left">
+                <img src="images/textures/bloodsplatter2.png" alt="Homigrad blood splatter decoration">
             </div>
             <div class="homigrad-description">
                 <h2 class="description-title">CHAOS AT ITS FINEST</h2>
@@ -193,7 +176,7 @@
                 <div class="features-title-container">
                     <h2 class="features-title">SO, SO MANY FEATURES</h2>
                     <div class="bloodsplatter-decoration-right">
-                        <img src="images/textures/bloodsplatter1.png" alt="Gaming features blood splatter decoration" loading="lazy">
+                        <img src="images/textures/bloodsplatter1.png" alt="Gaming features blood splatter decoration">
                     </div>
                 </div>
                 <div class="features-list" id="features-list">
@@ -203,7 +186,7 @@
             <div class="feature-showcases">
                 <div class="showcase-item">
                     <div class="bloodsplatter-decoration-ragdoll">
-                        <img src="images/textures/bloodsplatter3.png" alt="Ragdoll climbing blood splatter decoration" loading="lazy">
+                        <img src="images/textures/bloodsplatter3.png" alt="Ragdoll climbing blood splatter decoration">
                     </div>
                     <div class="showcase-content">
                         <div class="showcase-text">
@@ -219,7 +202,7 @@
                 </div>
                 <div class="showcase-item">
                     <div class="bloodsplatter-decoration-medical">
-                        <img src="images/textures/bloodsplatter5.png" alt="Medical system blood splatter decoration" loading="lazy">
+                        <img src="images/textures/bloodsplatter5.png" alt="Medical system blood splatter decoration">
                     </div>
                     <div class="showcase-content">
                         <div class="showcase-text">
@@ -235,7 +218,7 @@
                 </div>
                 <div class="showcase-item">
                     <div class="bloodsplatter-decoration-gore">
-                        <img src="images/textures/bloodsplatter6.png" alt="Gore system blood splatter decoration" loading="lazy">
+                        <img src="images/textures/bloodsplatter6.png" alt="Gore system blood splatter decoration">
                     </div>
                     <div class="showcase-content">
                         <div class="showcase-text">
@@ -251,7 +234,7 @@
                 </div>
                 <div class="showcase-item">
                     <div class="bloodsplatter-decoration-cw">
-                        <img src="images/textures/bloodsplatter-cw.png" alt="Custom weapons blood splatter decoration" loading="lazy">
+                        <img src="images/textures/bloodsplatter-cw.png" alt="Custom weapons blood splatter decoration">
                     </div>
                     <div class="showcase-content">
                         <div class="showcase-text">
@@ -267,7 +250,7 @@
                 </div>
                 <div class="showcase-item">
                     <div class="bloodsplatter-decoration-classes">
-                        <img src="images/textures/bloodsplatter-classes.png" alt="Character classes blood splatter decoration" loading="lazy">
+                        <img src="images/textures/bloodsplatter-classes.png" alt="Character classes blood splatter decoration">
                     </div>
                     <div class="showcase-content">
                         <div class="showcase-text">
@@ -297,7 +280,7 @@
         <div class="gamemode-container">
             <div class="gamemode-header">
                 <div class="bloodsplatter-decoration-header-center">
-                    <img src="images/textures/bloodsplatter-gm.png" alt="Gamemode section blood splatter decoration" loading="lazy">
+                    <img src="images/textures/bloodsplatter-gm.png" alt="Gamemode section blood splatter decoration">
                 </div>
                 <h2 class="gamemode-main-title">HOMIGRAD'S BREAD AND BUTTER: GAMEMODES</h2>
                 <div class="gamemode-description">
@@ -325,10 +308,10 @@
     <section class="webstore-section">
         <div class="webstore-gradient-bg"></div>
         <div class="dollar-splatter-background">
-            <img src="images/textures/dollar-splatter.png" alt="Dollar Splatter Background" loading="lazy">
+            <img src="images/textures/dollar-splatter.png" alt="Dollar Splatter Background">
         </div>
         <div class="bloodsplatter-decoration-webstore-top">
-            <img src="images/textures/bloody-line.png" alt="Bloody Line" loading="lazy">
+            <img src="images/textures/bloody-line.png" alt="Bloody Line">
         </div>
         <div class="webstore-container">
             <div class="webstore-header">
@@ -359,7 +342,7 @@
                 
                 <div class="webstore-image-container">
                     <div class="webstore-character">
-                        <img src="images/fittr.png" alt="Exclusive Weapons" class="webstore-image" id="webstore-image" loading="lazy">
+                        <img src="images/fittr.png" alt="Exclusive Weapons" class="webstore-image" id="webstore-image">
                     </div>
                     <div class="webstore-image-caption" id="webstore-caption">
                         Exclusive weapons - Access to unique weapons and equipment not available to regular players
@@ -376,7 +359,7 @@
             <div class="discord-content">
                 <div class="discord-image-container">
                     <div class="discord-image-3d">
-                        <img src="images/zmod-discord.jpg" alt="ZMOD Discord Community" class="discord-image" loading="lazy">
+                        <img src="images/zmod-discord.jpg" alt="ZMOD Discord Community" class="discord-image">
                     </div>
                 </div>
                 <div class="discord-text-content">
