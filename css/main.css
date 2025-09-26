@@ -1,6 +1,5 @@
 /* Reset and Global Styles */
-/* Import Oxium font */
-@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700&display=swap');
+/* Font loaded via preload in HTML head for better performance */
 
 * {
     margin: 0;
