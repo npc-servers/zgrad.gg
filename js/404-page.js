@@ -91,7 +91,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add some console easter egg
     console.log('%c404 - Page Not Found', 'color: #ff0000; font-size: 20px; font-weight: bold;');
-    console.log('%cThe page you\'re looking for has been lost in the chaos of Homigrad!', 'color: #ff6b00; font-size: 14px;');
     console.log('%cJoin our Discord: https://discord.gg/npc', 'color: #7289da; font-size: 12px;');
 });
 
