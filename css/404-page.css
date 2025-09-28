@@ -135,6 +135,7 @@
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    flex-direction: row-reverse;
 }
 
 .error-button:hover {
@@ -191,6 +192,9 @@
 .servers-icon,
 .discord-icon {
     transition: transform 0.3s ease;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
 }
 
 
