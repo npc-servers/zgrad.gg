@@ -10,14 +10,14 @@
     <meta name="description" content="Read ZGRAD's comprehensive server rules. Learn about our policies, prohibited behavior, and how to maintain a positive gaming environment.">
     <meta name="keywords" content="ZGRAD rules, server rules, community guidelines, gaming policies, Homigrad rules, Garry's Mod rules">
     <meta name="author" content="ZGRAD">
-    <link rel="canonical" href="https://zgrad.gg/rules.html">
+    <link rel="canonical" href="https://zgrad.gg/rules">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Server Rules">
     <meta property="og:description" content="Read ZGRAD's comprehensive server rules. Learn about our policies, prohibited behavior, and how to maintain a positive gaming environment.">
     <meta property="og:image" content="https://zgrad.gg/images/logos/zgrad-logo.png">
-    <meta property="og:url" content="https://zgrad.gg/rules.html">
+    <meta property="og:url" content="https://zgrad.gg/rules">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="ZGRAD">
     
@@ -26,6 +26,13 @@
     <meta name="twitter:title" content="Server Rules">
     <meta name="twitter:description" content="Read ZGRAD's comprehensive server rules. Learn about our policies, prohibited behavior, and how to maintain a positive gaming environment.">
     <meta name="twitter:image" content="https://zgrad.gg/images/logos/zgrad-logo.png">
+    <!-- Redirect rules.html to extensionless URL to prevent duplicate content -->
+    <script>
+        if (window.location.pathname === '/rules.html') {
+            window.location.replace(window.location.origin + '/rules');
+        }
+    </script>
+    
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/rules-page.css">
 

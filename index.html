@@ -89,6 +89,13 @@
     <!-- Metricool Tracking Script -->
     <script src="js/tracking.js"></script>
 
+    <!-- Redirect index.html to root to prevent duplicate content -->
+    <script>
+        if (window.location.pathname === '/index.html') {
+            window.location.replace(window.location.origin + '/');
+        }
+    </script>
+
 </head>
 <body>
     <main>
@@ -102,7 +109,7 @@
                 <img src="images/logos/zgrad-logo.png" alt="ZGrad.gg Logo" class="landing-logo">
                 <div class="landing-subtitle">THE HOMIGRAD NETWORK</div>
                 <div class="landing-buttons-inline">
-                    <a href="servers.html" class="landing-button landing-button-view-servers" id="viewServers">VIEW SERVERS
+                    <a href="servers" class="landing-button landing-button-view-servers" id="viewServers">VIEW SERVERS
                         <svg class="servers-icon" width="12" height="12" viewBox="0 0 12 12" fill="none">
                             <path d="M1 5.5L11 5.5M11 5.5L6.5 1M11 5.5L6.5 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
@@ -123,7 +130,7 @@
                 <div class="top-row">
                     <div class="start-playing-text" data-text="START PLAYING NOW">START PLAYING NOW</div>
                     <div class="landing-buttons-inline">
-                        <a href="servers.html" class="landing-button landing-button-view-servers" id="viewServers">VIEW SERVERS
+                        <a href="servers" class="landing-button landing-button-view-servers" id="viewServers">VIEW SERVERS
                             <svg class="servers-icon" width="12" height="12" viewBox="0 0 12 12" fill="none">
                                 <path d="M1 5.5L11 5.5M11 5.5L6.5 1M11 5.5L6.5 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
@@ -415,8 +422,8 @@
                     <div class="help-text-container">
                         <div class="help-text">Need to report a player, or appeal your ban?</div>
                         <div class="help-links">
-                            <a href="guides/player-report.html" class="help-subtext">LEARN TO MAKE REPORTS</a>
-                            <a href="guides/ban-appeal.html" class="help-subtext">LEARN TO APPEAL YOUR BAN</a>
+                            <a href="guides/player-report" class="help-subtext">LEARN TO MAKE REPORTS</a>
+                            <a href="guides/ban-appeal" class="help-subtext">LEARN TO APPEAL YOUR BAN</a>
                         </div>
                     </div>
                     <a href="https://discord.gg/npc" class="discord-help-button" rel="noopener" target="_blank">
@@ -427,7 +434,7 @@
                     </a>
                 </div>
                 <div class="guidelines-link-container">
-                    <a href="rules.html" class="guidelines-link">
+                    <a href="rules" class="guidelines-link">
                         VIEW SERVER RULES
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="arrow-icon">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
