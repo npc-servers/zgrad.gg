@@ -2,10 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
     
-    <!-- Homepage -->
     <url>
         <loc>https://zgrad.gg/</loc>
-        <lastmod>2024-12-19</lastmod>
+        <lastmod>2025-09-29</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
         <image:image>
@@ -14,27 +13,21 @@
             <image:caption>ZGRAD Logo</image:caption>
         </image:image>
     </url>
-    
-    <!-- Servers Page -->
     <url>
         <loc>https://zgrad.gg/servers</loc>
-        <lastmod>2024-12-19</lastmod>
+        <lastmod>2025-09-29</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
     </url>
-    
-    <!-- Rules Page -->
     <url>
         <loc>https://zgrad.gg/rules</loc>
-        <lastmod>2024-12-19</lastmod>
+        <lastmod>2025-09-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
-    
-    <!-- Ban Appeal Guide -->
     <url>
         <loc>https://zgrad.gg/guides/ban-appeal</loc>
-        <lastmod>2024-12-19</lastmod>
+        <lastmod>2025-09-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
         <image:image>
@@ -43,11 +36,9 @@
             <image:caption>How to Appeal a Ban on ZGRAD Servers</image:caption>
         </image:image>
     </url>
-    
-    <!-- Player Report Guide -->
     <url>
         <loc>https://zgrad.gg/guides/player-report</loc>
-        <lastmod>2024-12-19</lastmod>
+        <lastmod>2025-09-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
         <image:image>
@@ -56,6 +47,29 @@
             <image:caption>How to Report Players on ZGRAD Servers</image:caption>
         </image:image>
     </url>
-    
+    <url>
+        <loc>https://zgrad.gg/connect/us1</loc>
+        <lastmod>2025-09-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://zgrad.gg/connect/us2</loc>
+        <lastmod>2025-09-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://zgrad.gg/connect/us3</loc>
+        <lastmod>2025-09-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://zgrad.gg/connect/us4</loc>
+        <lastmod>2025-09-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
     
 </urlset>

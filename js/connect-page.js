@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Get server ID from URL path
     const path = window.location.pathname;
-    const serverMatch = path.match(/\/connect\/us(\d+)\.html/);
+    const serverMatch = path.match(/\/connect\/us(\d+)(?:\.html)?/);
     
     if (!serverMatch) {
         console.error('Could not determine server from URL:', path);

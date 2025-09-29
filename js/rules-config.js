@@ -63,12 +63,12 @@ const rulesConfig = {
         links: [
             {
                 text: "Appeal a Ban",
-                url: "guides/ban-appeal.html",
+                url: "guides/ban-appeal",
                 target: "_self"
             },
             {
                 text: "Report a Player", 
-                url: "guides/player-report.html",
+                url: "guides/player-report",
                 target: "_self"
             },
             {

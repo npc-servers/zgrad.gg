@@ -5,8 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="origin-when-cross-origin">
     <title>Connect to US1 - ZGRAD</title>
+    <link rel="canonical" href="https://zgrad.gg/connect/us1">
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/connect-page.css">
+
+    <!-- Redirect us1.html to extensionless URL to prevent duplicate content -->
+    <script>
+        if (window.location.pathname === '/connect/us1.html') {
+            window.location.replace(window.location.origin + '/connect/us1');
+        }
+    </script>
 
     <!-- Metricool Tracking Script -->
     <script src="../js/tracking.js"></script>
