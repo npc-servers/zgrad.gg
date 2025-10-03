@@ -68,6 +68,13 @@
     }
     </script>
     
+    <!-- Redirect store.html to extensionless URL to prevent duplicate content -->
+    <script>
+        if (window.location.pathname === '/store.html') {
+            window.location.replace(window.location.origin + '/store');
+        }
+    </script>
+    
     <!-- JavaScript Redirect (Backup) -->
     <script>
         window.location.replace("https://store.npcz.gg");

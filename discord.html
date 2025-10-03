@@ -51,6 +51,13 @@
     }
     </script>
     
+    <!-- Redirect discord.html to extensionless URL to prevent duplicate content -->
+    <script>
+        if (window.location.pathname === '/discord.html') {
+            window.location.replace(window.location.origin + '/discord');
+        }
+    </script>
+    
     <!-- JavaScript Redirect (Backup) -->
     <script>
         window.location.replace("https://discord.gg/npc");
