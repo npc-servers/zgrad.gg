@@ -44,6 +44,18 @@ const pages = [
         priority: '0.7'
     },
     {
+        loc: 'https://zgrad.gg/discord',
+        file: 'discord.html',
+        changefreq: 'monthly',
+        priority: '0.7'
+    },
+    {
+        loc: 'https://zgrad.gg/store',
+        file: 'store.html',
+        changefreq: 'monthly',
+        priority: '0.7'
+    },
+    {
         loc: 'https://zgrad.gg/guides/ban-appeal',
         file: 'guides/ban-appeal.html',
         changefreq: 'monthly',
@@ -72,25 +84,25 @@ const pages = [
     {
         loc: 'https://zgrad.gg/connect/us1',
         file: 'connect/us1.html',
-        changefreq: 'weekly',
+        changefreq: 'monthly',
         priority: '0.5'
     },
     {
         loc: 'https://zgrad.gg/connect/us2',
         file: 'connect/us2.html',
-        changefreq: 'weekly',
+        changefreq: 'monthly',
         priority: '0.5'
     },
     {
         loc: 'https://zgrad.gg/connect/us3',
         file: 'connect/us3.html',
-        changefreq: 'weekly',
+        changefreq: 'monthly',
         priority: '0.5'
     },
     {
         loc: 'https://zgrad.gg/connect/us4',
         file: 'connect/us4.html',
-        changefreq: 'weekly',
+        changefreq: 'monthly',
         priority: '0.5'
     }
 ];
