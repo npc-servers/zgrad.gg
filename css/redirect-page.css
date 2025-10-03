@@ -1,0 +1,114 @@
+/* Redirect Page Styles */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background: #1a1a1a;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;
+}
+
+.redirect-container {
+    padding: 2rem;
+}
+
+.redirect-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+.redirect-message {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: #cccccc;
+}
+
+.redirect-link {
+    display: inline-block;
+    padding: 1rem 2rem;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+/* Discord-specific styling */
+.redirect-link.discord {
+    background: #5865F2;
+}
+
+.redirect-link.discord:hover {
+    background: #4752C4;
+}
+
+/* Store-specific styling */
+.redirect-link.store {
+    background: #c62828;
+}
+
+.redirect-link.store:hover {
+    background: #b71c1c;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 2rem auto;
+}
+
+/* Discord spinner color */
+.spinner.discord {
+    border-top-color: #5865F2;
+}
+
+/* Store spinner color */
+.spinner.store {
+    border-top-color: #c62828;
+}
+
+@keyframes spin {
+    to { 
+        transform: rotate(360deg); 
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .redirect-title {
+        font-size: 1.5rem;
+    }
+    
+    .redirect-message {
+        font-size: 1rem;
+    }
+    
+    .redirect-link {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .redirect-container {
+        padding: 1rem;
+    }
+    
+    .redirect-title {
+        font-size: 1.2rem;
+    }
+    
+    .redirect-message {
+        font-size: 0.9rem;
+    }
+}
+
