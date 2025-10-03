@@ -26,6 +26,18 @@
         <priority>0.7</priority>
     </url>
     <url>
+        <loc>https://zgrad.gg/discord</loc>
+        <lastmod>2025-10-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://zgrad.gg/store</loc>
+        <lastmod>2025-10-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
         <loc>https://zgrad.gg/guides/ban-appeal</loc>
         <lastmod>2025-09-29</lastmod>
         <changefreq>monthly</changefreq>
