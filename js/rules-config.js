@@ -159,11 +159,29 @@ function generateSubtitleHTML() {
     const isGMod = isGModClient();
 
     if (isGMod) {
-        // Generate subtitle boxes for GMod clients
-        rulesConfig.subtitle.forEach(item => {
+        // Generate subtitle boxes for GMod clients with click handlers
+        const subtitleData = [
+            { text: 'discord.gg/npc', action: 'discord' },
+            { text: 'zgrad.gg', action: 'website' },
+            { text: 'store.npcz.gg', action: 'store' }
+        ];
+
+        subtitleData.forEach(item => {
             const subtitleBox = document.createElement('div');
-            subtitleBox.className = 'rules-subtitle-box';
-            subtitleBox.textContent = item;
+            subtitleBox.className = 'rules-subtitle-box clickable-box';
+            subtitleBox.textContent = item.text;
+            
+            // Add click handler to send message to parent window
+            subtitleBox.addEventListener('click', function() {
+                // Send message to parent window (which has access to Lua functions)
+                if (window.parent && window.parent !== window) {
+                    window.parent.postMessage({
+                        type: 'openURL',
+                        action: item.action
+                    }, '*');
+                }
+            });
+            
             rulesSubtitle.appendChild(subtitleBox);
         });
     } else {

@@ -148,6 +148,24 @@ body.gmod-client .rules-subtitle-box {
     -webkit-backdrop-filter: none;
 }
 
+/* Clickable subtitle boxes for GMod clients */
+body.gmod-client .rules-subtitle-box.clickable-box {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+body.gmod-client .rules-subtitle-box.clickable-box:hover {
+    background-color: rgba(20, 20, 20, 0.95);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+body.gmod-client .rules-subtitle-box.clickable-box:active {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
 .rules-subtitle-box:hover {
     background-color: rgba(0, 0, 0, 0.8);
     border-color: rgba(255, 255, 255, 0.2);
