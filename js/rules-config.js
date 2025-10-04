@@ -157,8 +157,11 @@ function generateSubtitleHTML() {
     rulesSubtitle.innerHTML = '';
 
     const isGMod = isGModClient();
+    console.log('[ZGRAD Rules] GMod client detected:', isGMod);
+    console.log('[ZGRAD Rules] User Agent:', navigator.userAgent);
 
     if (isGMod) {
+        console.log('[ZGRAD Rules] Generating clickable subtitle boxes');
         // Generate subtitle boxes for GMod clients with click handlers
         const subtitleData = [
             { text: 'discord.gg/npc', action: 'discord' },
@@ -173,17 +176,25 @@ function generateSubtitleHTML() {
             
             // Add click handler to send message to parent window
             subtitleBox.addEventListener('click', function() {
+                console.log('[ZGRAD Rules] Button clicked:', item.text, 'action:', item.action);
+                
                 // Send message to parent window (which has access to Lua functions)
                 if (window.parent && window.parent !== window) {
+                    console.log('[ZGRAD Rules] Sending postMessage to parent');
                     window.parent.postMessage({
                         type: 'openURL',
                         action: item.action
                     }, '*');
+                } else {
+                    console.log('[ZGRAD Rules] No parent window found or same window');
                 }
             });
             
             rulesSubtitle.appendChild(subtitleBox);
+            console.log('[ZGRAD Rules] Added clickable box:', item.text);
         });
+        
+        console.log('[ZGRAD Rules] Total subtitle boxes created:', subtitleData.length);
     } else {
         // Show single subtitle box for non-GMod users
         const subtitleBox = document.createElement('div');
