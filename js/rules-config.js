@@ -59,7 +59,7 @@ const rulesConfig = {
         }
     ],
     footer: {
-        text: "Violations of these rules may result in warnings, temporary bans, or permanent bans depending on severity and frequency. Staff reserve the right to make judgment calls on situations not explicitly covered by these rules. By playing on our servers, you agree to our <a href=\"#\" target=\"_blank\" rel=\"noopener\" class=\"inline-link\">Terms of Service</a>, <a href=\"#\" target=\"_blank\" rel=\"noopener\" class=\"inline-link\">Privacy Policy</a>, and <a href=\"#\" target=\"_blank\" rel=\"noopener\" class=\"inline-link\">Universal Community Guidelines</a>.",
+        text: "Violations of these rules may result in warnings, temporary bans, or permanent bans depending on severity and frequency. Staff reserve the right to make judgment calls on situations not explicitly covered by these rules. By playing on our servers, you agree to our <a href=\"https://zmod.gg/legal/guidelines\" target=\"_blank\" rel=\"noopener\" class=\"inline-link\">Platform Guidelines</a>.",
         links: [
             {
                 text: "Appeal a Ban",
