@@ -18,6 +18,7 @@ var currentStatus = "Initializing...";
 window.GameDetails = function(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
     isGmod = true;
     console.log("GameDetails called:", { servername, serverurl, mapname, maxplayers, steamid, gamemode });
+    console.log("Raw serverurl:", serverurl);
     
     // Store current server info to filter it out from the server list
     if (serverurl) {
@@ -33,6 +34,7 @@ window.GameDetails = function(servername, serverurl, mapname, maxplayers, steami
         };
         
         console.log("Current server info stored:", currentServerInfo);
+        console.log("Will filter out server with IP:", currentServerInfo.ip, "Port:", currentServerInfo.port);
         
         // Refresh server list to apply the filter (fetchAllServerStatus handles null check internally)
         fetchAllServerStatus();
@@ -738,18 +740,26 @@ function fetchAllServerStatus() {
         // Update the total player count display
         updateTotalPlayerCount(totalPlayers);
         
+        console.log("Current server info for filtering:", currentServerInfo);
+        console.log("Total servers before filtering:", serverStatuses.length);
+        
         // Filter out the current server if we have that information
         var serversToShow = serverStatuses.filter(function(serverStatus) {
             if (currentServerInfo) {
                 var server = serverStatus.server;
+                console.log("Checking server:", server.title, "IP:", server.ip, "Port:", server.port);
                 // Check if this server matches the one the user is joining
                 var isSameServer = server.ip === currentServerInfo.ip && server.port === currentServerInfo.port;
+                console.log("Is same server?", isSameServer, "(comparing", server.ip, "===", currentServerInfo.ip, "&&", server.port, "===", currentServerInfo.port, ")");
                 if (isSameServer) {
+                    console.log("Filtering out current server:", server.title);
                     return false;
                 }
             }
             return true;
         });
+        
+        console.log("Total servers after filtering:", serversToShow.length);
         
         // Sort servers by player count (highest to lowest)
         serversToShow.sort(function(a, b) {
