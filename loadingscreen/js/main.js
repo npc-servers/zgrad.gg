@@ -32,10 +32,10 @@ window.GameDetails = function(servername, serverurl, mapname, maxplayers, steami
             gamemode: gamemode
         };
         
-        // Refresh server list to apply the filter
-        if (serverListElement) {
-            fetchAllServerStatus();
-        }
+        console.log("Current server info stored:", currentServerInfo);
+        
+        // Refresh server list to apply the filter (fetchAllServerStatus handles null check internally)
+        fetchAllServerStatus();
     }
 };
 
