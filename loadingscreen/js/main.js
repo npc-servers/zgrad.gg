@@ -17,24 +17,15 @@ var currentStatus = "Initializing...";
 // Bind GameDetails to window for GMod compatibility
 window.GameDetails = function(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
     isGmod = true;
-    console.log("GameDetails called:", { servername, serverurl, mapname, maxplayers, steamid, gamemode });
-    console.log("Raw serverurl:", serverurl);
     
     // Store current server info to filter it out from the server list
-    if (serverurl) {
-        // Extract IP and port from serverurl (format is usually "ip:port")
-        var urlParts = serverurl.split(':');
+    if (servername) {
         currentServerInfo = {
-            ip: urlParts[0],
-            port: urlParts[1] ? parseInt(urlParts[1]) : 27015,
             name: servername,
             map: mapname,
             maxPlayers: maxplayers,
             gamemode: gamemode
         };
-        
-        console.log("Current server info stored:", currentServerInfo);
-        console.log("Will filter out server with IP:", currentServerInfo.ip, "Port:", currentServerInfo.port);
         
         // Refresh server list to apply the filter (fetchAllServerStatus handles null check internally)
         fetchAllServerStatus();
@@ -45,7 +36,6 @@ window.GameDetails = function(servername, serverurl, mapname, maxplayers, steami
 window.SetFilesTotal = function(total) {
     totalCalled = true;
     totalFiles = total;
-    console.log("SetFilesTotal called:", total);
     
     // Reset percentage when total files is set
     percentage = 0;
@@ -58,7 +48,6 @@ window.SetFilesNeeded = function(needed) {
     if (totalCalled && totalFiles > 0) {
         var calculatedPercentage = Math.round(((totalFiles - needed) / totalFiles) * 100);
         percentage = Math.max(0, Math.min(100, calculatedPercentage));
-        console.log("SetFilesNeeded called:", needed, "files remaining, Percentage:", percentage);
     }
 };
 
@@ -67,7 +56,6 @@ window.DownloadingFile = function(fileName) {
     // Clean up the filename and store it
     if (fileName) {
         currentDownloadingFile = fileName;
-        console.log("DownloadingFile called:", fileName);
         
         // Update status to show we're actively downloading
         if (!currentStatus || currentStatus === "Initializing..." || currentStatus === "Initializing downloads...") {
@@ -78,7 +66,6 @@ window.DownloadingFile = function(fileName) {
 
 // Bind SetStatusChanged to window for GMod compatibility
 window.SetStatusChanged = function(status) {
-    console.log("SetStatusChanged called:", status);
     currentStatus = status;
     
     // Clear downloading file when status changes to indicate we're not downloading files anymore
@@ -740,26 +727,26 @@ function fetchAllServerStatus() {
         // Update the total player count display
         updateTotalPlayerCount(totalPlayers);
         
-        console.log("Current server info for filtering:", currentServerInfo);
-        console.log("Total servers before filtering:", serverStatuses.length);
-        
         // Filter out the current server if we have that information
         var serversToShow = serverStatuses.filter(function(serverStatus) {
-            if (currentServerInfo) {
+            if (currentServerInfo && currentServerInfo.name) {
                 var server = serverStatus.server;
-                console.log("Checking server:", server.title, "IP:", server.ip, "Port:", server.port);
-                // Check if this server matches the one the user is joining
-                var isSameServer = server.ip === currentServerInfo.ip && server.port === currentServerInfo.port;
-                console.log("Is same server?", isSameServer, "(comparing", server.ip, "===", currentServerInfo.ip, "&&", server.port, "===", currentServerInfo.port, ")");
+                // Check if this server matches the one the user is joining by partial name match
+                // GMod sends various formats:
+                // - "ZGRAD US1 | Now Playing: TDM"
+                // - "NPCZ | Horde - discord.gg/npc"
+                // - "Map Sweepers Official Server | ZMOD.GG"
+                // - "ZBox | random words"
+                // Use case-insensitive matching and remove spaces for comparison
+                var gmodName = currentServerInfo.name.toLowerCase().replace(/\s+/g, '');
+                var configTitle = server.title.toLowerCase().replace(/\s+/g, '');
+                var isSameServer = gmodName.includes(configTitle) || configTitle.includes(gmodName);
                 if (isSameServer) {
-                    console.log("Filtering out current server:", server.title);
                     return false;
                 }
             }
             return true;
         });
-        
-        console.log("Total servers after filtering:", serversToShow.length);
         
         // Sort servers by player count (highest to lowest)
         serversToShow.sort(function(a, b) {
