@@ -65,8 +65,15 @@ window.SetFilesNeeded = function(needed) {
 window.DownloadingFile = function(fileName) {
     console.log("[LoadingScreen] DownloadingFile:", fileName);
     
-    // Decrement filesNeeded
-    filesNeeded = Math.max(0, filesNeeded - 1);
+    // Only decrement filesNeeded if we're in the actual file downloading phase
+    // (after SetFilesTotal has been called with a meaningful value)
+    // Don't decrement during workshop loading phase
+    if (totalCalled && totalFiles > 1) {
+        filesNeeded = Math.max(0, filesNeeded - 1);
+        console.log("[LoadingScreen] Decremented filesNeeded to:", filesNeeded);
+    } else {
+        console.log("[LoadingScreen] Ignoring DownloadingFile (workshop phase) - totalCalled:", totalCalled, "totalFiles:", totalFiles);
+    }
     
     // Clean up the filename and store it
     if (fileName) {
