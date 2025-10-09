@@ -18,11 +18,7 @@ var currentServerName = null;
 
 // Bind GameDetails to window for GMod compatibility
 window.GameDetails = function(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
-    console.log("[LoadingScreen] GameDetails called - GMod detected!");
-    console.log("[LoadingScreen] Server:", servername);
-    console.log("[LoadingScreen] URL:", serverurl);
-    console.log("[LoadingScreen] Map:", mapname);
-    console.log("[LoadingScreen] Gamemode:", gamemode);
+    console.log("[LoadingScreen] Joining server:", servername);
     
     isGmod = true;
     isTest = false; // Disable test mode if GMod loads
@@ -38,30 +34,22 @@ window.GameDetails = function(servername, serverurl, mapname, maxplayers, steami
 
 // Bind SetFilesTotal to window for GMod compatibility
 window.SetFilesTotal = function(total) {
-    console.log("[LoadingScreen] SetFilesTotal called with total:", total);
-    
     totalCalled = true;
     totalFiles = Math.max(1, total); // Ensure at least 1 to avoid division by zero
     filesNeeded = total; // Reset filesNeeded to match total
     currentDownloadingFile = "";
     
     updatePercentage();
-    
-    console.log("[LoadingScreen] Total files set to:", totalFiles);
 };
 
 // Bind SetFilesNeeded to window for GMod compatibility
 window.SetFilesNeeded = function(needed) {
-    console.log("[LoadingScreen] SetFilesNeeded called - needed:", needed, "total:", totalFiles);
-    
     filesNeeded = Math.max(0, needed);
     updatePercentage();
 };
 
 // Bind DownloadingFile to window for GMod compatibility
 window.DownloadingFile = function(fileName) {
-    console.log("[LoadingScreen] DownloadingFile:", fileName);
-    
     // Decrement filesNeeded
     filesNeeded = Math.max(0, filesNeeded - 1);
     
@@ -81,8 +69,6 @@ window.DownloadingFile = function(fileName) {
 
 // Bind SetStatusChanged to window for GMod compatibility
 window.SetStatusChanged = function(status) {
-    console.log("[LoadingScreen] SetStatusChanged:", status);
-    
     currentStatus = status;
     
     // Clear downloading file when status changes to indicate we're not downloading files anymore
@@ -94,7 +80,6 @@ window.SetStatusChanged = function(status) {
         status.includes("Complete")
     )) {
         currentDownloadingFile = "";
-        console.log("[LoadingScreen] Status indicates completion phase - clearing downloading file");
     }
     
     // Set percentage to 100% when sending client info (final step)
@@ -109,7 +94,6 @@ window.SetStatusChanged = function(status) {
  */
 function updatePercentage() {
     if (!totalCalled || totalFiles <= 0) {
-        console.warn("[LoadingScreen] Cannot calculate percentage - totalCalled:", totalCalled, "totalFiles:", totalFiles);
         return;
     }
     
@@ -119,9 +103,6 @@ function updatePercentage() {
     
     // Convert to percentage (0-100) and round
     percentage = Math.round(Math.max(0, Math.min(100, progress * 100)));
-    
-    console.log("[LoadingScreen] Progress updated:", percentage + "%", 
-        "(" + filesDownloaded + "/" + totalFiles + " files downloaded)");
 }
 
 // Keep the old function names for backward compatibility and internal use
@@ -636,10 +617,8 @@ function setRandomBackground(isInitial) {
  */
 function startBackgroundRotation() {
     if (!backgroundElement) {
-        console.error("Background element not found!");
         return;
     }
-    
     
     // Set random background immediately (no transition)
     setRandomBackground(true);
@@ -753,7 +732,6 @@ function fetchAllServerStatus() {
         // Filter out the current server if we have that information
         var serversToShow = serverStatuses.filter(function(serverStatus) {
             if (!currentServerName) {
-                console.log("[LoadingScreen] No currentServerName set, showing all servers");
                 return true;
             }
             
@@ -772,20 +750,14 @@ function fetchAllServerStatus() {
             var gmodTokens = gmodName.match(/[a-z0-9]+/g) || [];
             var configTokens = configTitle.match(/[a-z0-9]+/g) || [];
             
-            console.log("[LoadingScreen] Comparing server: " + server.title);
-            console.log("[LoadingScreen]   GMod Name: '" + currentServerName + "'");
-            console.log("[LoadingScreen]   GMod Tokens: [" + gmodTokens.join(", ") + "]");
-            console.log("[LoadingScreen]   Config Title: '" + server.title + "'");
-            console.log("[LoadingScreen]   Config Tokens: [" + configTokens.join(", ") + "]");
-            
             // Check if all config tokens are present in GMod tokens
             var isSameServer = configTokens.every(function(token) {
-                var found = gmodTokens.indexOf(token) !== -1;
-                console.log("[LoadingScreen]     Checking token '" + token + "': " + (found ? "FOUND" : "NOT FOUND"));
-                return found;
+                return gmodTokens.indexOf(token) !== -1;
             });
             
-            console.log("[LoadingScreen]   Result: " + (isSameServer ? "SAME SERVER (filter out)" : "DIFFERENT SERVER (show)"));
+            if (isSameServer) {
+                console.log("[LoadingScreen] Filtering out current server:", server.title);
+            }
             
             return !isSameServer;
         });
