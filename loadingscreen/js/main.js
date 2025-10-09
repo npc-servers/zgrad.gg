@@ -326,6 +326,42 @@ var config = {
             region: 'US',
             gamemode: 'Sandbox',
             logo: '../images/logos/npcz.png'
+        },
+        {
+            id: 'horde',
+            title: 'HORDE',
+            ip: '193.243.190.18',
+            port: 27065,
+            region: 'US',
+            gamemode: 'Horde',
+            logo: '../images/logos/npcz.png'
+        },
+        {
+            id: 'zbox',
+            title: 'ZBOX',
+            ip: '193.243.190.18',
+            port: 27017,
+            region: 'US',
+            gamemode: 'Sandbox',
+            logo: '../images/logos/npcz.png'
+        },
+        {
+            id: 'zscenario',
+            title: 'ZSCENARIO',
+            ip: '193.243.190.18',
+            port: 27018,
+            region: 'US',
+            gamemode: 'Scenario',
+            logo: '../images/logos/npcz.png'
+        },
+        {
+            id: 'mapsweepers',
+            title: 'MAPSWEEPERS',
+            ip: '193.243.190.18',
+            port: 27019,
+            region: 'US',
+            gamemode: 'Minesweeper',
+            logo: '../images/logos/npcz.png'
         }
     ]
 };
@@ -721,15 +757,25 @@ function fetchAllServerStatus() {
             }
             
             var server = serverStatus.server;
-            // Use case-insensitive partial matching since GMod sends various formats:
+            // Use case-insensitive token-based matching since GMod sends various formats:
             // - "ZGRAD.GG US1 | Now Playing: TDM"
             // - "NPCZ | Horde - discord.gg/npc"
             // - "Map Sweepers Official Server | ZMOD.GG"
             // - "ZBox | random words"
-            // Remove spaces and special characters for comparison
-            var gmodName = currentServerName.toLowerCase().replace(/[\s.\-_|]+/g, '');
-            var configTitle = server.title.toLowerCase().replace(/[\s.\-_|]+/g, '');
-            var isSameServer = gmodName.includes(configTitle) || configTitle.includes(gmodName);
+            
+            // Tokenize both names by splitting on special characters
+            var gmodName = currentServerName.toLowerCase();
+            var configTitle = server.title.toLowerCase();
+            
+            // Extract meaningful tokens (alphanumeric sequences)
+            var gmodTokens = gmodName.match(/[a-z0-9]+/g) || [];
+            var configTokens = configTitle.match(/[a-z0-9]+/g) || [];
+            
+            // Check if all config tokens are present in GMod tokens
+            var isSameServer = configTokens.every(function(token) {
+                return gmodTokens.indexOf(token) !== -1;
+            });
+            
             return !isSameServer;
         });
         
