@@ -719,13 +719,13 @@ function fetchAllServerStatus() {
             
             var server = serverStatus.server;
             // Use case-insensitive partial matching since GMod sends various formats:
-            // - "ZGRAD US1 | Now Playing: TDM"
+            // - "ZGRAD.GG US1 | Now Playing: TDM"
             // - "NPCZ | Horde - discord.gg/npc"
             // - "Map Sweepers Official Server | ZMOD.GG"
             // - "ZBox | random words"
-            // Remove spaces for comparison to handle "MAPSWEEPERS" vs "Map Sweepers"
-            var gmodName = currentServerName.toLowerCase().replace(/\s+/g, '');
-            var configTitle = server.title.toLowerCase().replace(/\s+/g, '');
+            // Remove spaces and special characters for comparison
+            var gmodName = currentServerName.toLowerCase().replace(/[\s.\-_|]+/g, '');
+            var configTitle = server.title.toLowerCase().replace(/[\s.\-_|]+/g, '');
             var isSameServer = gmodName.includes(configTitle) || configTitle.includes(gmodName);
             return !isSameServer;
         });
