@@ -30,6 +30,8 @@ window.GameDetails = function(servername, serverurl, mapname, maxplayers, steami
     // Store the server name for filtering
     if (servername) {
         currentServerName = servername;
+        console.log("[LoadingScreen] Current server name set to:", currentServerName);
+        
         currentServerInfo = {
             name: servername,
             map: mapname,
@@ -723,23 +725,27 @@ function fetchAllServerStatus() {
         
         // Filter out the current server if we have that information
         var serversToShow = serverStatuses.filter(function(serverStatus) {
-            if (currentServerInfo && currentServerInfo.name) {
-                var server = serverStatus.server;
-                // Check if this server matches the one the user is joining by partial name match
-                // GMod sends various formats:
-                // - "ZGRAD US1 | Now Playing: TDM"
-                // - "NPCZ | Horde - discord.gg/npc"
-                // - "Map Sweepers Official Server | ZMOD.GG"
-                // - "ZBox | random words"
-                // Use case-insensitive matching and remove spaces for comparison
-                var gmodName = currentServerInfo.name.toLowerCase().replace(/\s+/g, '');
-                var configTitle = server.title.toLowerCase().replace(/\s+/g, '');
-                var isSameServer = gmodName.includes(configTitle) || configTitle.includes(gmodName);
-                if (isSameServer) {
-                    return false;
-                }
+            if (!currentServerName) {
+                return true;
             }
-            return true;
+            
+            var server = serverStatus.server;
+            // Use case-insensitive partial matching since GMod sends various formats:
+            // - "ZGRAD US1 | Now Playing: TDM"
+            // - "NPCZ | Horde - discord.gg/npc"
+            // - "Map Sweepers Official Server | ZMOD.GG"
+            // - "ZBox | random words"
+            // Remove spaces for comparison to handle "MAPSWEEPERS" vs "Map Sweepers"
+            var gmodName = currentServerName.toLowerCase().replace(/\s+/g, '');
+            var configTitle = server.title.toLowerCase().replace(/\s+/g, '');
+            var isSameServer = gmodName.includes(configTitle) || configTitle.includes(gmodName);
+            
+            console.log("[LoadingScreen] Filtering check:", server.title);
+            console.log("[LoadingScreen]   GMod name (cleaned):", gmodName);
+            console.log("[LoadingScreen]   Config title (cleaned):", configTitle);
+            console.log("[LoadingScreen]   Is same server?", isSameServer);
+            
+            return !isSameServer;
         });
         
         // Sort servers by player count (highest to lowest)
