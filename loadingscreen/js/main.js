@@ -34,9 +34,21 @@ window.GameDetails = function(servername, serverurl, mapname, maxplayers, steami
 
 // Bind SetFilesTotal to window for GMod compatibility
 window.SetFilesTotal = function(total) {
+    console.log("[LoadingScreen] SetFilesTotal called with total:", total);
+    
+    var previousTotal = totalFiles;
     totalCalled = true;
     totalFiles = Math.max(1, total); // Ensure at least 1 to avoid division by zero
-    filesNeeded = total; // Reset filesNeeded to match total
+    
+    // Only reset filesNeeded if this is the first time or if we need to increase it
+    // This preserves progress made during workshop loading
+    if (previousTotal === 1 || filesNeeded > total) {
+        filesNeeded = total;
+        console.log("[LoadingScreen] Total files set to:", total);
+    } else {
+        console.log("[LoadingScreen] Preserving existing progress - filesNeeded:", filesNeeded, "totalFiles:", totalFiles);
+    }
+    
     currentDownloadingFile = "";
     
     updatePercentage();
@@ -44,12 +56,15 @@ window.SetFilesTotal = function(total) {
 
 // Bind SetFilesNeeded to window for GMod compatibility
 window.SetFilesNeeded = function(needed) {
+    console.log("[LoadingScreen] SetFilesNeeded called - needed:", needed, "total:", totalFiles);
     filesNeeded = Math.max(0, needed);
     updatePercentage();
 };
 
 // Bind DownloadingFile to window for GMod compatibility
 window.DownloadingFile = function(fileName) {
+    console.log("[LoadingScreen] DownloadingFile:", fileName);
+    
     // Decrement filesNeeded
     filesNeeded = Math.max(0, filesNeeded - 1);
     
@@ -120,7 +135,14 @@ function updatePercentage() {
     var progress = (filesDownloaded / totalFiles);
     
     // Convert to percentage (0-100) and round
-    percentage = Math.round(Math.max(0, Math.min(100, progress * 100)));
+    var newPercentage = Math.round(Math.max(0, Math.min(100, progress * 100)));
+    
+    // Only log if percentage changed
+    if (newPercentage !== percentage) {
+        console.log("[LoadingScreen] Progress updated:", newPercentage + "% (" + filesDownloaded + "/" + totalFiles + " files downloaded)");
+    }
+    
+    percentage = newPercentage;
 }
 
 // Keep the old function names for backward compatibility and internal use
