@@ -69,6 +69,7 @@ window.DownloadingFile = function(fileName) {
 
 // Bind SetStatusChanged to window for GMod compatibility
 window.SetStatusChanged = function(status) {
+    console.log("[LoadingScreen] SetStatusChanged:", status);
     currentStatus = status;
     
     // Clear downloading file when status changes to indicate we're not downloading files anymore
@@ -79,7 +80,24 @@ window.SetStatusChanged = function(status) {
         status.includes("Lua") ||
         status.includes("Complete")
     )) {
+        console.log("[LoadingScreen] Status indicates completion phase - clearing downloading file");
         currentDownloadingFile = "";
+    }
+    
+    // Parse workshop loading progress from status messages like "1/15 (1.8 GB) - Loading 'addon name'"
+    if (status && totalCalled) {
+        var progressMatch = status.match(/^(\d+)\/(\d+)\s*\(/);
+        if (progressMatch) {
+            var current = parseInt(progressMatch[1]);
+            var total = parseInt(progressMatch[2]);
+            
+            if (total > 0) {
+                // Update filesNeeded based on workshop progress
+                filesNeeded = Math.max(0, totalFiles - current);
+                console.log("[LoadingScreen] Parsed workshop progress:", current + "/" + total, "- filesNeeded now:", filesNeeded);
+                updatePercentage();
+            }
+        }
     }
     
     // Set percentage to 100% when sending client info (final step)
