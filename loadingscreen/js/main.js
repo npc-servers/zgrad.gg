@@ -1,254 +1,137 @@
 "use strict";
 
 var isGmod = false;
-var isTest = false;
-var totalFiles = 1;
-var filesNeeded = 1;
-var totalCalled = false;
+var totalFiles = 0;
+var filesNeeded = 0;
 var percentage = 0;
-var allow_increment = true;
 var currentDownloadingFile = "";
-var currentStatus = "Initializing...";
+var currentStatus = "";
 var currentServerName = null;
-var testModeInterval = null;
 
 /**
  * GMod Called Functions - Core loading functionality only
  * These functions are bound to the window object for GMod to call
+ * 
+ * Implementation follows the official Garry's Mod Wiki specification:
+ * https://wiki.facepunch.com/gmod/Loading_URL
  */
 
-// Bind GameDetails to window for GMod compatibility
-window.GameDetails = function(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
-    console.log("[LoadingScreen] Joining server:", servername);
-    
-    // Clear test mode if it was running
-    if (testModeInterval) {
-        console.log("[LoadingScreen] Stopping test mode - real GMod detected");
-        clearInterval(testModeInterval);
-        testModeInterval = null;
-    }
+/**
+ * Called at the start when the loading screen finishes loading all assets.
+ * @param {string} servername - Server's name (hostname convar)
+ * @param {string} serverurl - URL for the loading screen (sv_loadingurl convar)
+ * @param {string} mapname - The name of the map the server is playing
+ * @param {number} maxplayers - Maximum number of players (maxplayers convar)
+ * @param {string} steamid - 64-bit numeric Steam community ID of the client
+ * @param {string} gamemode - The gamemode the server is playing (gamemode convar)
+ * @param {number} volume - Value of player's 'snd_musicvolume' console variable (0 to 1)
+ * @param {string} language - Value of player's 'gmod_language' console variable (two letter code)
+ */
+window.GameDetails = function(servername, serverurl, mapname, maxplayers, steamid, gamemode, volume, language) {
+    console.log("[LoadingScreen] GameDetails received");
+    console.log("[LoadingScreen] Server:", servername);
+    console.log("[LoadingScreen] Map:", mapname);
+    console.log("[LoadingScreen] Gamemode:", gamemode);
+    console.log("[LoadingScreen] Max Players:", maxplayers);
     
     isGmod = true;
-    isTest = false;
     
-    // Reset state for real GMod loading
-    totalFiles = 1;
-    filesNeeded = 1;
-    totalCalled = false;
+    // Reset loading state
+    totalFiles = 0;
+    filesNeeded = 0;
     percentage = 0;
     currentDownloadingFile = "";
-    currentStatus = "Initializing...";
+    currentStatus = "";
     
-    // Store the server name for filtering
+    // Store the server name for filtering in server list
     if (servername) {
         currentServerName = servername;
         
-        // Refresh server list to apply the filter now that we know the current server
+        // Refresh server list to filter out the current server
         fetchAllServerStatus();
     }
 };
 
-// Bind SetFilesTotal to window for GMod compatibility
+/**
+ * Called at the start with the total number of files the client will download.
+ * @param {number} total - Total number of files to download
+ */
 window.SetFilesTotal = function(total) {
-    console.log("[LoadingScreen] SetFilesTotal called with total:", total);
+    console.log("[LoadingScreen] SetFilesTotal:", total);
     
-    var previousTotal = totalFiles;
-    totalCalled = true;
-    totalFiles = Math.max(1, total); // Ensure at least 1 to avoid division by zero
-    
-    // Only reset filesNeeded if this is the first time or if we need to increase it
-    // This preserves progress made during workshop loading
-    if (previousTotal === 1 || filesNeeded > total) {
-        filesNeeded = total;
-        console.log("[LoadingScreen] Total files set to:", total);
-    } else {
-        console.log("[LoadingScreen] Preserving existing progress - filesNeeded:", filesNeeded, "totalFiles:", totalFiles);
-    }
-    
-    currentDownloadingFile = "";
+    totalFiles = Math.max(0, total);
+    filesNeeded = totalFiles;
     
     updatePercentage();
 };
 
-// Bind SetFilesNeeded to window for GMod compatibility
+/**
+ * Called when the number of files remaining for the client to download changes.
+ * @param {number} needed - Number of files left to download
+ */
 window.SetFilesNeeded = function(needed) {
-    console.log("[LoadingScreen] SetFilesNeeded called - needed:", needed, "total:", totalFiles);
+    console.log("[LoadingScreen] SetFilesNeeded:", needed);
+    
     filesNeeded = Math.max(0, needed);
+    
     updatePercentage();
 };
 
-// Bind DownloadingFile to window for GMod compatibility
+/**
+ * Called when the client starts downloading a file.
+ * This is purely informational - just store and display the filename.
+ * GMod will call SetFilesNeeded separately to update the progress.
+ * @param {string} fileName - Full path and name of the file being downloaded
+ */
 window.DownloadingFile = function(fileName) {
     console.log("[LoadingScreen] DownloadingFile:", fileName);
     
-    // Only decrement filesNeeded if we're in the actual file downloading phase
-    // (after SetFilesTotal has been called with a meaningful value)
-    // Don't decrement during workshop loading phase
-    if (totalCalled && totalFiles > 1) {
-        filesNeeded = Math.max(0, filesNeeded - 1);
-        console.log("[LoadingScreen] Decremented filesNeeded to:", filesNeeded);
-    } else {
-        console.log("[LoadingScreen] Ignoring DownloadingFile (workshop phase) - totalCalled:", totalCalled, "totalFiles:", totalFiles);
-    }
-    
-    // Clean up the filename and store it
-    if (fileName) {
-        currentDownloadingFile = fileName;
-        
-        // Update status to show we're actively downloading
-        if (!currentStatus || currentStatus === "Initializing..." || currentStatus === "Initializing downloads...") {
-            currentStatus = "Downloading files...";
-        }
-    }
-    
-    // Update percentage after decrementing
-    updatePercentage();
+    // Simply store the current file being downloaded for display
+    currentDownloadingFile = fileName || "";
 };
 
-// Bind SetStatusChanged to window for GMod compatibility
+/**
+ * Called when the client's joining status changes.
+ * @param {string} status - Current joining status (e.g., "Starting Lua...")
+ */
 window.SetStatusChanged = function(status) {
     console.log("[LoadingScreen] SetStatusChanged:", status);
-    currentStatus = status;
     
-    // Clear downloading file when status changes to indicate we're not downloading files anymore
+    currentStatus = status || "";
+    
+    // Clear the downloading file display when we move past the downloading phase
     if (status && (
         status.includes("Workshop Complete") || 
         status.includes("Client info sent") || 
         status.includes("Starting Lua") ||
-        status.includes("Lua") ||
-        status.includes("Complete")
+        status.includes("Sending client info")
     )) {
-        console.log("[LoadingScreen] Status indicates completion phase - clearing downloading file");
         currentDownloadingFile = "";
-    }
-    
-    // Parse workshop loading progress from status messages like "1/15 (1.8 GB) - Loading 'addon name'"
-    if (status && totalCalled) {
-        var progressMatch = status.match(/^(\d+)\/(\d+)\s*\(/);
-        if (progressMatch) {
-            var current = parseInt(progressMatch[1]);
-            var total = parseInt(progressMatch[2]);
-            
-            if (total > 0) {
-                // Update filesNeeded based on workshop progress
-                filesNeeded = Math.max(0, totalFiles - current);
-                console.log("[LoadingScreen] Parsed workshop progress:", current + "/" + total, "- filesNeeded now:", filesNeeded);
-                updatePercentage();
-            }
-        }
-    }
-    
-    // Set percentage to 100% when sending client info (final step)
-    if (status && status.includes("Sending client info")) {
-        filesNeeded = 0;
-        updatePercentage();
     }
 };
 
 /**
- * Calculate and update the loading percentage (simple linear calculation)
+ * Calculate and update the loading percentage based on files downloaded.
  */
 function updatePercentage() {
-    if (!totalCalled || totalFiles <= 0) {
+    if (totalFiles <= 0) {
+        percentage = 0;
         return;
     }
     
-    // Simple calculation: how many files have been downloaded / total files
+    // Calculate progress: (downloaded / total) * 100
     var filesDownloaded = Math.max(0, totalFiles - filesNeeded);
-    var progress = (filesDownloaded / totalFiles);
+    var progress = filesDownloaded / totalFiles;
     
-    // Convert to percentage (0-100) and round
+    // Convert to percentage (0-100)
     var newPercentage = Math.round(Math.max(0, Math.min(100, progress * 100)));
     
-    // Only log if percentage changed
+    // Log only when percentage changes
     if (newPercentage !== percentage) {
-        console.log("[LoadingScreen] Progress updated:", newPercentage + "% (" + filesDownloaded + "/" + totalFiles + " files downloaded)");
+        console.log("[LoadingScreen] Progress:", newPercentage + "% (" + filesDownloaded + "/" + totalFiles + " files)");
     }
     
     percentage = newPercentage;
-}
-
-// Keep the old function names for backward compatibility and internal use
-function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
-    window.GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode);
-}
-
-function SetFilesTotal(total) {
-    window.SetFilesTotal(total);
-}
-
-function SetFilesNeeded(needed) {
-    window.SetFilesNeeded(needed);
-}
-
-function DownloadingFile(filename) {
-    window.DownloadingFile(filename);
-}
-
-function SetStatusChanged(status) {
-    window.SetStatusChanged(status);
-}
-
-/**
- * Test Mode - Simulate file loading for testing
- */
-function startTestMode() {
-    isTest = true;
-    
-    // Reset state for test mode
-    percentage = 0;
-
-    GameDetails("Test Server", "test.server.com", "gm_construct", "32", "76561198000000000", "sandbox");
-
-    var totalTestFiles = 100;
-    SetFilesTotal(totalTestFiles);
-
-    var testFiles = [
-        "materials/models/weapons/ak47/ak47_texture.vtf",
-        "sound/weapons/ak47/ak47_fire.wav", 
-        "models/weapons/w_ak47.mdl",
-        "materials/effects/muzzleflash.vmt",
-        "lua/autorun/client/hud_system.lua",
-        "materials/gui/health_icon.png",
-        "sound/ambient/combat_music.mp3",
-        "models/player/terrorist.mdl",
-        "materials/models/player/terrorist_body.vtf",
-        "lua/weapons/weapon_ak47.lua",
-        "materials/models/props/barrel01.vmt",
-        "sound/weapons/pistol/pistol_fire.wav",
-        "models/props_c17/chair01.mdl",
-        "lua/autorun/server/init.lua",
-        "materials/sprites/glow01.vmt",
-        "sound/ambient/atmosphere/forest_ambience.wav",
-        "models/player/combine_soldier.mdl",
-        "materials/models/player/combine_soldier_body.vtf",
-        "lua/entities/weapon_base/shared.lua",
-        "materials/effects/water_splash.vmt"
-    ];
-    
-    var currentFileIndex = 0;
-    
-    testModeInterval = setInterval(function() {
-        if (filesNeeded > 0 && currentFileIndex < totalTestFiles) {
-            // Use realistic filenames with proper timing
-            var fileIndex = currentFileIndex % testFiles.length;
-            DownloadingFile(testFiles[fileIndex]); // This will decrement filesNeeded
-            currentFileIndex++;
-            
-            // Add status changes at specific points
-            if (filesNeeded === 20) {
-                SetStatusChanged("Workshop Complete");
-            } else if (filesNeeded === 5) {
-                SetStatusChanged("Client info sent!");
-            } else if (filesNeeded === 0) {
-                SetStatusChanged("Starting Lua...");
-                clearInterval(testModeInterval);
-                testModeInterval = null;
-            }
-        }
-    }, 50);
-
-    SetStatusChanged("Loading workshop content...");
 }
 
 /**
@@ -525,69 +408,72 @@ function updateUI() {
 }
 
 /**
- * Get the current loading status based on percentage and state
+ * Get the current loading status to display to the user.
+ * Priority: Gluapack special case > Status changes > Currently downloading file > Fallback based on progress
  */
 function getCurrentStatus() {
-    if (!isGmod && !isTest) {
+    if (!isGmod) {
         return "Waiting for game...";
     }
     
-    // Check for gluapack in current status or downloading file
+    // Priority 1: Special handling for gluapack downloads
     if ((currentStatus && currentStatus.toLowerCase().includes("gluapack")) ||
         (currentDownloadingFile && currentDownloadingFile.toLowerCase().includes("gluapack"))) {
         return "Downloading super-fast bundled lua";
     }
     
-    // If we have a specific status from GMod, use that (but only if we're not actively downloading)
-    if (currentStatus && currentStatus !== "" && (!currentDownloadingFile || currentDownloadingFile === "")) {
-        // Check for important status messages that should be displayed
-        if (currentStatus.includes("Starting Lua") || 
-            currentStatus.includes("Client info sent") || 
-            currentStatus.includes("Workshop Complete") ||
-            currentStatus.includes("Lua") ||
-            currentStatus.includes("Complete")) {
-            return currentStatus;
-        }
-    }
-    
-    // If we're actively downloading a file, show that with priority
-    if (currentDownloadingFile && currentDownloadingFile !== "") {
-        // Clean up filename for display
-        var displayName = currentDownloadingFile;
-        
-        // Remove common path prefixes to show just the filename
-        if (displayName.includes("/")) {
-            displayName = displayName.split("/").pop();
-        }
-        if (displayName.includes("\\")) {
-            displayName = displayName.split("\\").pop();
-        }
-        
-        // Truncate very long filenames but keep extension
-        if (displayName.length > 35) {
-            var nameWithoutExt = displayName.substring(0, displayName.lastIndexOf('.'));
-            var ext = displayName.substring(displayName.lastIndexOf('.'));
-            if (nameWithoutExt.length > 30) {
-                displayName = nameWithoutExt.substring(0, 27) + "..." + ext;
-            }
-        }
-        
-        return "Downloading: " + displayName;
-    }
-    
-    // Show current status if we have one and no file is downloading
-    if (currentStatus && currentStatus !== "" && currentStatus !== "Initializing..." && currentStatus !== "Initializing downloads...") {
+    // Priority 2: Show GMod status updates when provided
+    // These are important messages like "Starting Lua...", "Workshop Complete", etc.
+    if (currentStatus && currentStatus !== "") {
         return currentStatus;
     }
     
-    // Fallback to simple status based on percentage
+    // Priority 3: Show currently downloading file
+    if (currentDownloadingFile && currentDownloadingFile !== "") {
+        var displayName = cleanupFileName(currentDownloadingFile);
+        return "Downloading: " + displayName;
+    }
+    
+    // Priority 4: Fallback to generic status based on progress
     if (percentage >= 100) {
-        return "Starting Lua...";
+        return "Complete!";
     } else if (percentage > 0) {
         return "Downloading files...";
     } else {
         return "Initializing...";
     }
+}
+
+/**
+ * Clean up a file path for display - extract filename and truncate if needed
+ */
+function cleanupFileName(filePath) {
+    var displayName = filePath;
+    
+    // Extract just the filename from the path
+    if (displayName.includes("/")) {
+        displayName = displayName.split("/").pop();
+    }
+    if (displayName.includes("\\")) {
+        displayName = displayName.split("\\").pop();
+    }
+    
+    // Truncate very long filenames but preserve the extension
+    if (displayName.length > 35) {
+        var lastDotIndex = displayName.lastIndexOf('.');
+        if (lastDotIndex !== -1) {
+            var nameWithoutExt = displayName.substring(0, lastDotIndex);
+            var ext = displayName.substring(lastDotIndex);
+            if (nameWithoutExt.length > 30) {
+                displayName = nameWithoutExt.substring(0, 27) + "..." + ext;
+            }
+        } else {
+            // No extension, just truncate
+            displayName = displayName.substring(0, 32) + "...";
+        }
+    }
+    
+    return displayName;
 }
 
 /**
@@ -928,18 +814,10 @@ document.addEventListener("DOMContentLoaded", function() {
     console.log("[LoadingScreen] ====================================");
     console.log("[LoadingScreen] ZGRAD Loading Screen Initialized");
     console.log("[LoadingScreen] Waiting for GMod callbacks...");
+    console.log("[LoadingScreen] Wiki-compliant implementation");
+    console.log("[LoadingScreen] https://wiki.facepunch.com/gmod/Loading_URL");
     console.log("[LoadingScreen] ====================================");
     
     // Initialize UI elements
     setTimeout(initializeUI, 100);
-    
-    // Auto-start test mode if not loaded by GMod after 2 seconds
-    setTimeout(function() {
-        if (!isGmod && !isTest) {
-            console.log("[LoadingScreen] No GMod detected after 2 seconds - starting TEST MODE");
-            startTestMode();
-        } else if (isGmod) {
-            console.log("[LoadingScreen] GMod detected - running in PRODUCTION MODE");
-        }
-    }, 2000);
 }); 
