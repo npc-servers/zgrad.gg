@@ -30,6 +30,9 @@ window.GameDetails = function(servername, serverurl, mapname, maxplayers, steami
     // Store the server name for filtering
     if (servername) {
         currentServerName = servername;
+        
+        // Refresh server list to apply the filter now that we know the current server
+        fetchAllServerStatus();
     }
 };
 
@@ -837,13 +840,13 @@ document.addEventListener("DOMContentLoaded", function() {
     // Initialize UI elements
     setTimeout(initializeUI, 100);
     
-    // Auto-start test mode if not loaded by GMod after 1 second
+    // Auto-start test mode if not loaded by GMod after 2 seconds
     setTimeout(function() {
         if (!isGmod && !isTest) {
-            console.log("[LoadingScreen] No GMod detected after 1 second - starting TEST MODE");
+            console.log("[LoadingScreen] No GMod detected after 2 seconds - starting TEST MODE");
             startTestMode();
         } else if (isGmod) {
             console.log("[LoadingScreen] GMod detected - running in PRODUCTION MODE");
         }
-    }, 1000);
+    }, 2000);
 }); 
