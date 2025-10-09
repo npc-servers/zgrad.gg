@@ -1,162 +1,209 @@
 "use strict";
 
-// ============================================================================
-// State Management
-// ============================================================================
+var isGmod = false;
+var isTest = false;
+var totalFiles = 1;
+var filesNeeded = 1;
+var totalCalled = false;
+var percentage = 0;
+var allow_increment = true;
+var currentDownloadingFile = "";
+var currentStatus = "Initializing...";
+var currentServerName = null;
+var testModeInterval = null;
 
-const STATE = {
-    isGmod: false,
-    isTest: false,
-    totalFiles: 1,
-    filesNeeded: 1,
-    totalCalled: false,
-    percentage: 0,
-    currentDownloadingFile: "",
-    currentStatus: "Initializing...",
-    currentServerName: null,
-    testModeInterval: null,
-    lastPercentage: 0,
-    lastStatus: ""
-};
+/**
+ * GMod Called Functions - Core loading functionality only
+ * These functions are bound to the window object for GMod to call
+ */
 
-// ============================================================================
-// GMod Callback Functions
-// ============================================================================
-
+// Bind GameDetails to window for GMod compatibility
 window.GameDetails = function(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
     console.log("[LoadingScreen] Joining server:", servername);
     
-    if (STATE.testModeInterval) {
+    // Clear test mode if it was running
+    if (testModeInterval) {
         console.log("[LoadingScreen] Stopping test mode - real GMod detected");
-        clearInterval(STATE.testModeInterval);
-        STATE.testModeInterval = null;
+        clearInterval(testModeInterval);
+        testModeInterval = null;
     }
     
-    Object.assign(STATE, {
-        isGmod: true,
-        isTest: false,
-        totalFiles: 1,
-        filesNeeded: 1,
-        totalCalled: false,
-        percentage: 0,
-        currentDownloadingFile: "",
-        currentStatus: "Initializing...",
-        currentServerName: servername || null
-    });
+    isGmod = true;
+    isTest = false;
     
+    // Reset state for real GMod loading
+    totalFiles = 1;
+    filesNeeded = 1;
+    totalCalled = false;
+    percentage = 0;
+    currentDownloadingFile = "";
+    currentStatus = "Initializing...";
+    
+    // Store the server name for filtering
     if (servername) {
+        currentServerName = servername;
+        
+        // Refresh server list to apply the filter now that we know the current server
         fetchAllServerStatus();
     }
 };
 
+// Bind SetFilesTotal to window for GMod compatibility
 window.SetFilesTotal = function(total) {
     console.log("[LoadingScreen] SetFilesTotal called with total:", total);
     
-    const previousTotal = STATE.totalFiles;
-    STATE.totalCalled = true;
-    STATE.totalFiles = Math.max(1, total);
+    var previousTotal = totalFiles;
+    totalCalled = true;
+    totalFiles = Math.max(1, total); // Ensure at least 1 to avoid division by zero
     
-    if (previousTotal === 1 || STATE.filesNeeded > total) {
-        STATE.filesNeeded = total;
+    // Only reset filesNeeded if this is the first time or if we need to increase it
+    // This preserves progress made during workshop loading
+    if (previousTotal === 1 || filesNeeded > total) {
+        filesNeeded = total;
         console.log("[LoadingScreen] Total files set to:", total);
     } else {
-        console.log("[LoadingScreen] Preserving existing progress - filesNeeded:", STATE.filesNeeded, "totalFiles:", STATE.totalFiles);
+        console.log("[LoadingScreen] Preserving existing progress - filesNeeded:", filesNeeded, "totalFiles:", totalFiles);
     }
     
-    STATE.currentDownloadingFile = "";
+    currentDownloadingFile = "";
+    
     updatePercentage();
 };
 
+// Bind SetFilesNeeded to window for GMod compatibility
 window.SetFilesNeeded = function(needed) {
-    console.log("[LoadingScreen] SetFilesNeeded called - needed:", needed, "total:", STATE.totalFiles);
-    STATE.filesNeeded = Math.max(0, needed);
+    console.log("[LoadingScreen] SetFilesNeeded called - needed:", needed, "total:", totalFiles);
+    filesNeeded = Math.max(0, needed);
     updatePercentage();
 };
 
+// Bind DownloadingFile to window for GMod compatibility
 window.DownloadingFile = function(fileName) {
     console.log("[LoadingScreen] DownloadingFile:", fileName);
     
-    if (STATE.totalCalled && STATE.totalFiles > 1) {
-        STATE.filesNeeded = Math.max(0, STATE.filesNeeded - 1);
-        console.log("[LoadingScreen] Decremented filesNeeded to:", STATE.filesNeeded);
+    // Only decrement filesNeeded if we're in the actual file downloading phase
+    // (after SetFilesTotal has been called with a meaningful value)
+    // Don't decrement during workshop loading phase
+    if (totalCalled && totalFiles > 1) {
+        filesNeeded = Math.max(0, filesNeeded - 1);
+        console.log("[LoadingScreen] Decremented filesNeeded to:", filesNeeded);
     } else {
-        console.log("[LoadingScreen] Ignoring DownloadingFile (workshop phase) - totalCalled:", STATE.totalCalled, "totalFiles:", STATE.totalFiles);
+        console.log("[LoadingScreen] Ignoring DownloadingFile (workshop phase) - totalCalled:", totalCalled, "totalFiles:", totalFiles);
     }
     
+    // Clean up the filename and store it
     if (fileName) {
-        STATE.currentDownloadingFile = fileName;
+        currentDownloadingFile = fileName;
         
-        if (!STATE.currentStatus || STATE.currentStatus === "Initializing..." || STATE.currentStatus === "Initializing downloads...") {
-            STATE.currentStatus = "Downloading files...";
+        // Update status to show we're actively downloading
+        if (!currentStatus || currentStatus === "Initializing..." || currentStatus === "Initializing downloads...") {
+            currentStatus = "Downloading files...";
         }
     }
     
+    // Update percentage after decrementing
     updatePercentage();
 };
 
+// Bind SetStatusChanged to window for GMod compatibility
 window.SetStatusChanged = function(status) {
     console.log("[LoadingScreen] SetStatusChanged:", status);
-    STATE.currentStatus = status;
+    currentStatus = status;
     
-    const completionKeywords = ["Workshop Complete", "Client info sent", "Starting Lua", "Lua", "Complete"];
-    if (status && completionKeywords.some(keyword => status.includes(keyword))) {
+    // Clear downloading file when status changes to indicate we're not downloading files anymore
+    if (status && (
+        status.includes("Workshop Complete") || 
+        status.includes("Client info sent") || 
+        status.includes("Starting Lua") ||
+        status.includes("Lua") ||
+        status.includes("Complete")
+    )) {
         console.log("[LoadingScreen] Status indicates completion phase - clearing downloading file");
-        STATE.currentDownloadingFile = "";
+        currentDownloadingFile = "";
     }
     
-    if (status && STATE.totalCalled) {
-        const progressMatch = status.match(/^(\d+)\/(\d+)\s*\(/);
+    // Parse workshop loading progress from status messages like "1/15 (1.8 GB) - Loading 'addon name'"
+    if (status && totalCalled) {
+        var progressMatch = status.match(/^(\d+)\/(\d+)\s*\(/);
         if (progressMatch) {
-            const current = parseInt(progressMatch[1], 10);
-            const total = parseInt(progressMatch[2], 10);
+            var current = parseInt(progressMatch[1]);
+            var total = parseInt(progressMatch[2]);
             
             if (total > 0) {
-                STATE.filesNeeded = Math.max(0, STATE.totalFiles - current);
-                console.log(`[LoadingScreen] Parsed workshop progress: ${current}/${total} - filesNeeded now: ${STATE.filesNeeded}`);
+                // Update filesNeeded based on workshop progress
+                filesNeeded = Math.max(0, totalFiles - current);
+                console.log("[LoadingScreen] Parsed workshop progress:", current + "/" + total, "- filesNeeded now:", filesNeeded);
                 updatePercentage();
             }
         }
     }
     
+    // Set percentage to 100% when sending client info (final step)
     if (status && status.includes("Sending client info")) {
-        STATE.filesNeeded = 0;
+        filesNeeded = 0;
         updatePercentage();
     }
 };
 
-// ============================================================================
-// Helper Functions
-// ============================================================================
-
+/**
+ * Calculate and update the loading percentage (simple linear calculation)
+ */
 function updatePercentage() {
-    if (!STATE.totalCalled || STATE.totalFiles <= 0) {
+    if (!totalCalled || totalFiles <= 0) {
         return;
     }
     
-    const filesDownloaded = Math.max(0, STATE.totalFiles - STATE.filesNeeded);
-    const progress = filesDownloaded / STATE.totalFiles;
-    const newPercentage = Math.round(Math.max(0, Math.min(100, progress * 100)));
+    // Simple calculation: how many files have been downloaded / total files
+    var filesDownloaded = Math.max(0, totalFiles - filesNeeded);
+    var progress = (filesDownloaded / totalFiles);
     
-    if (newPercentage !== STATE.percentage) {
-        console.log(`[LoadingScreen] Progress updated: ${newPercentage}% (${filesDownloaded}/${STATE.totalFiles} files downloaded)`);
-        STATE.percentage = newPercentage;
+    // Convert to percentage (0-100) and round
+    var newPercentage = Math.round(Math.max(0, Math.min(100, progress * 100)));
+    
+    // Only log if percentage changed
+    if (newPercentage !== percentage) {
+        console.log("[LoadingScreen] Progress updated:", newPercentage + "% (" + filesDownloaded + "/" + totalFiles + " files downloaded)");
     }
+    
+    percentage = newPercentage;
 }
 
-// ============================================================================
-// Test Mode
-// ============================================================================
+// Keep the old function names for backward compatibility and internal use
+function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
+    window.GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode);
+}
 
+function SetFilesTotal(total) {
+    window.SetFilesTotal(total);
+}
+
+function SetFilesNeeded(needed) {
+    window.SetFilesNeeded(needed);
+}
+
+function DownloadingFile(filename) {
+    window.DownloadingFile(filename);
+}
+
+function SetStatusChanged(status) {
+    window.SetStatusChanged(status);
+}
+
+/**
+ * Test Mode - Simulate file loading for testing
+ */
 function startTestMode() {
-    STATE.isTest = true;
-    STATE.percentage = 0;
+    isTest = true;
+    
+    // Reset state for test mode
+    percentage = 0;
 
-    window.GameDetails("Test Server", "test.server.com", "gm_construct", "32", "76561198000000000", "sandbox");
+    GameDetails("Test Server", "test.server.com", "gm_construct", "32", "76561198000000000", "sandbox");
 
-    const totalTestFiles = 100;
-    window.SetFilesTotal(totalTestFiles);
+    var totalTestFiles = 100;
+    SetFilesTotal(totalTestFiles);
 
-    const testFiles = [
+    var testFiles = [
         "materials/models/weapons/ak47/ak47_texture.vtf",
         "sound/weapons/ak47/ak47_fire.wav", 
         "models/weapons/w_ak47.mdl",
@@ -179,46 +226,50 @@ function startTestMode() {
         "materials/effects/water_splash.vmt"
     ];
     
-    let currentFileIndex = 0;
+    var currentFileIndex = 0;
     
-    STATE.testModeInterval = setInterval(() => {
-        if (STATE.filesNeeded > 0 && currentFileIndex < totalTestFiles) {
-            const fileIndex = currentFileIndex % testFiles.length;
-            window.DownloadingFile(testFiles[fileIndex]);
+    testModeInterval = setInterval(function() {
+        if (filesNeeded > 0 && currentFileIndex < totalTestFiles) {
+            // Use realistic filenames with proper timing
+            var fileIndex = currentFileIndex % testFiles.length;
+            DownloadingFile(testFiles[fileIndex]); // This will decrement filesNeeded
             currentFileIndex++;
             
-            if (STATE.filesNeeded === 20) {
-                window.SetStatusChanged("Workshop Complete");
-            } else if (STATE.filesNeeded === 5) {
-                window.SetStatusChanged("Client info sent!");
-            } else if (STATE.filesNeeded === 0) {
-                window.SetStatusChanged("Starting Lua...");
-                clearInterval(STATE.testModeInterval);
-                STATE.testModeInterval = null;
+            // Add status changes at specific points
+            if (filesNeeded === 20) {
+                SetStatusChanged("Workshop Complete");
+            } else if (filesNeeded === 5) {
+                SetStatusChanged("Client info sent!");
+            } else if (filesNeeded === 0) {
+                SetStatusChanged("Starting Lua...");
+                clearInterval(testModeInterval);
+                testModeInterval = null;
             }
         }
     }, 50);
 
-    window.SetStatusChanged("Loading workshop content...");
+    SetStatusChanged("Loading workshop content...");
 }
 
-// ============================================================================
-// UI Configuration & DOM Elements
-// ============================================================================
+/**
+ * UI Integration - Updates the visual loading screen elements
+ */
+var lastPercentage = 0;
+var lastStatus = "";
 
-const DOM = {
-    loadingBar: null,
-    loadingPercentage: null,
-    loadingStatus: null,
-    logoSubtext: null,
-    advertTitle: null,
-    advertSubtext: null,
-    serverListElement: null,
-    totalPlayersCountElement: null,
-    backgroundElement: null
-};
+// DOM elements
+var loadingBar = null;
+var loadingPercentage = null;
+var loadingStatus = null;
+var logoSubtext = null;
+var advertTitle = null;
+var advertSubtext = null;
+var serverListElement = null;
+var totalPlayersCountElement = null;
+var backgroundElement = null;
 
-const CONFIG = {
+// Configuration for rotating messages
+var config = {
     // Logo subtext messages (below the logo)
     logoSubtextMessages: [
         'Your feedback is important, make suggestions and vote on our Discord!',
@@ -360,25 +411,23 @@ const CONFIG = {
     ]
 };
 
-const ROTATION_STATE = {
-    currentLogoMessageIndex: 0,
-    currentAdvertMessageIndex: 0,
-    lastLogoMessageIndex: -1,
-    lastAdvertMessageIndex: -1,
-    lastBackgroundUrl: "",
-    logoSubtextRotationInterval: null,
-    advertRotationInterval: null,
-    backgroundRotationInterval: null
-};
+// Rotation state
+var currentLogoMessageIndex = 0;
+var currentAdvertMessageIndex = 0;
+var lastLogoMessageIndex = -1;
+var lastAdvertMessageIndex = -1;
+var lastBackgroundUrl = "";
+var logoSubtextRotationInterval = null;
+var advertRotationInterval = null;
+var backgroundRotationInterval = null;
 
-// ============================================================================
-// Utility Functions
-// ============================================================================
-
+/**
+ * Get a random index from an array, avoiding the last used index
+ */
 function getRandomIndex(arrayLength, lastIndex) {
     if (arrayLength <= 1) return 0;
     
-    let newIndex;
+    var newIndex;
     do {
         newIndex = Math.floor(Math.random() * arrayLength);
     } while (newIndex === lastIndex);
@@ -386,400 +435,510 @@ function getRandomIndex(arrayLength, lastIndex) {
     return newIndex;
 }
 
+/**
+ * Get a random background URL that's different from the last one
+ */
 function getRandomBackground() {
-    let availableBackgrounds = CONFIG.backgroundImages.filter(bg => bg !== ROTATION_STATE.lastBackgroundUrl);
-    
-    if (availableBackgrounds.length === 0) {
-        availableBackgrounds = CONFIG.backgroundImages;
-    }
-    
-    return availableBackgrounds[Math.floor(Math.random() * availableBackgrounds.length)];
-}
-
-function truncateFilename(filename, maxLength = 35, keepExtLength = 27) {
-    if (filename.length <= maxLength) return filename;
-    
-    const lastDotIndex = filename.lastIndexOf('.');
-    if (lastDotIndex === -1) return filename.substring(0, maxLength - 3) + '...';
-    
-    const nameWithoutExt = filename.substring(0, lastDotIndex);
-    const ext = filename.substring(lastDotIndex);
-    
-    if (nameWithoutExt.length > keepExtLength) {
-        return nameWithoutExt.substring(0, keepExtLength - 3) + '...' + ext;
-    }
-    
-    return filename;
-}
-
-// ============================================================================
-// UI Management
-// ============================================================================
-
-function initializeUI() {
-    Object.assign(DOM, {
-        loadingBar: document.getElementById('loadingBar'),
-        loadingPercentage: document.getElementById('loadingPercentage'),
-        loadingStatus: document.getElementById('loadingStatus'),
-        logoSubtext: document.getElementById('logoSubtext'),
-        advertTitle: document.querySelector('.advert-title'),
-        advertSubtext: document.querySelector('.advert-subtext'),
-        serverListElement: document.getElementById('loadingScreenServerList'),
-        totalPlayersCountElement: document.getElementById('totalPlayersCount'),
-        backgroundElement: document.querySelector('.background')
+    var availableBackgrounds = config.backgroundImages.filter(function(bg) {
+        return bg !== lastBackgroundUrl;
     });
     
+    if (availableBackgrounds.length === 0) {
+        availableBackgrounds = config.backgroundImages;
+    }
+    
+    var randomIndex = Math.floor(Math.random() * availableBackgrounds.length);
+    return availableBackgrounds[randomIndex];
+}
+
+/**
+ * Initialize UI elements when DOM is ready
+ */
+function initializeUI() {
+    loadingBar = document.getElementById('loadingBar');
+    loadingPercentage = document.getElementById('loadingPercentage');
+    loadingStatus = document.getElementById('loadingStatus');
+    logoSubtext = document.getElementById('logoSubtext');
+    advertTitle = document.querySelector('.advert-title');
+    advertSubtext = document.querySelector('.advert-subtext');
+    serverListElement = document.getElementById('loadingScreenServerList');
+    totalPlayersCountElement = document.getElementById('totalPlayersCount');
+    backgroundElement = document.querySelector('.background');
+    
+    
+    // Start the UI update loop
     updateUI();
+    
+    // Start message rotations
     startLogoSubtextRotation();
     startAdvertRotation();
     startBackgroundRotation();
+    
+    // Initialize server list
     initializeServerList();
 }
 
+/**
+ * Update the UI elements based on current loading state
+ */
 function updateUI() {
-    if (DOM.loadingBar && DOM.loadingPercentage && DOM.loadingStatus) {
-        if (STATE.lastPercentage !== STATE.percentage) {
-            STATE.lastPercentage = STATE.percentage;
-            DOM.loadingPercentage.textContent = `${STATE.percentage}%`;
-            DOM.loadingPercentage.setAttribute('data-percentage', `${STATE.percentage}%`);
+    if (loadingBar && loadingPercentage && loadingStatus) {
+        // Update percentage display and progress bar
+        if (lastPercentage !== percentage) {
+            lastPercentage = percentage;
+            loadingPercentage.textContent = percentage + '%';
+            loadingPercentage.setAttribute('data-percentage', percentage + '%');
             
-            const progressContainer = DOM.loadingPercentage.parentElement;
-            const containerWidth = progressContainer.offsetWidth;
-            const containerComputedStyle = window.getComputedStyle(progressContainer);
-            const customPropertyValue = containerComputedStyle.getPropertyValue('--percentage-left').trim();
-            const textPosition = customPropertyValue ? parseInt(customPropertyValue, 10) : 8;
-            const textWidth = DOM.loadingPercentage.offsetWidth;
+            // Calculate when the progress bar actually covers the text
+            // Get the actual left position from CSS custom property or computed styles
+            var progressContainer = loadingPercentage.parentElement;
+            var containerWidth = progressContainer.offsetWidth;
+            var containerComputedStyle = window.getComputedStyle(progressContainer);
+            var customPropertyValue = containerComputedStyle.getPropertyValue('--percentage-left').trim();
+            var textPosition = customPropertyValue ? parseInt(customPropertyValue) : 8; // Fallback to 8px if not set
+            var textWidth = loadingPercentage.offsetWidth;
+            var textEndPosition = textPosition + textWidth;
             
-            const currentProgressPixels = (STATE.percentage / 100) * containerWidth;
-            const textRevealPercentage = Math.max(0, Math.min(100, 
+            // Calculate the percentage when progress bar reaches the end of the text
+            var textCoveragePercentage = (textEndPosition / containerWidth) * 100;
+            
+            // Calculate how much of the text should be revealed based on current progress
+            var currentProgressPixels = (percentage / 100) * containerWidth;
+            var textRevealPercentage = Math.max(0, Math.min(100, 
                 ((currentProgressPixels - textPosition) / textWidth) * 100
             ));
             
-            DOM.loadingPercentage.style.setProperty('--progress-width', `${textRevealPercentage}%`);
-            DOM.loadingBar.style.width = `${STATE.percentage}%`;
+            loadingPercentage.style.setProperty('--progress-width', textRevealPercentage + '%');
+            loadingBar.style.width = percentage + '%';
         }
         
-        const currentStatus = getCurrentStatus();
-        if (STATE.lastStatus !== currentStatus) {
-            STATE.lastStatus = currentStatus;
-            DOM.loadingStatus.textContent = currentStatus;
+        // Update status text (this will be set by the SetStatusChanged function)
+        var currentStatus = getCurrentStatus();
+        if (lastStatus !== currentStatus) {
+            lastStatus = currentStatus;
+            loadingStatus.textContent = currentStatus;
         }
     }
     
+    // Continue updating
     requestAnimationFrame(updateUI);
 }
 
+/**
+ * Get the current loading status based on percentage and state
+ */
 function getCurrentStatus() {
-    if (!STATE.isGmod && !STATE.isTest) {
+    if (!isGmod && !isTest) {
         return "Waiting for game...";
     }
     
-    const statusLower = STATE.currentStatus?.toLowerCase() || "";
-    const fileLower = STATE.currentDownloadingFile?.toLowerCase() || "";
-    
-    if (statusLower.includes("gluapack") || fileLower.includes("gluapack")) {
+    // Check for gluapack in current status or downloading file
+    if ((currentStatus && currentStatus.toLowerCase().includes("gluapack")) ||
+        (currentDownloadingFile && currentDownloadingFile.toLowerCase().includes("gluapack"))) {
         return "Downloading super-fast bundled lua";
     }
     
-    const importantKeywords = ["Starting Lua", "Client info sent", "Workshop Complete", "Lua", "Complete"];
-    if (STATE.currentStatus && !STATE.currentDownloadingFile && 
-        importantKeywords.some(keyword => STATE.currentStatus.includes(keyword))) {
-        return STATE.currentStatus;
+    // If we have a specific status from GMod, use that (but only if we're not actively downloading)
+    if (currentStatus && currentStatus !== "" && (!currentDownloadingFile || currentDownloadingFile === "")) {
+        // Check for important status messages that should be displayed
+        if (currentStatus.includes("Starting Lua") || 
+            currentStatus.includes("Client info sent") || 
+            currentStatus.includes("Workshop Complete") ||
+            currentStatus.includes("Lua") ||
+            currentStatus.includes("Complete")) {
+            return currentStatus;
+        }
     }
     
-    if (STATE.currentDownloadingFile) {
-        let displayName = STATE.currentDownloadingFile.split(/[/\\]/).pop();
-        displayName = truncateFilename(displayName);
-        return `Downloading: ${displayName}`;
+    // If we're actively downloading a file, show that with priority
+    if (currentDownloadingFile && currentDownloadingFile !== "") {
+        // Clean up filename for display
+        var displayName = currentDownloadingFile;
+        
+        // Remove common path prefixes to show just the filename
+        if (displayName.includes("/")) {
+            displayName = displayName.split("/").pop();
+        }
+        if (displayName.includes("\\")) {
+            displayName = displayName.split("\\").pop();
+        }
+        
+        // Truncate very long filenames but keep extension
+        if (displayName.length > 35) {
+            var nameWithoutExt = displayName.substring(0, displayName.lastIndexOf('.'));
+            var ext = displayName.substring(displayName.lastIndexOf('.'));
+            if (nameWithoutExt.length > 30) {
+                displayName = nameWithoutExt.substring(0, 27) + "..." + ext;
+            }
+        }
+        
+        return "Downloading: " + displayName;
     }
     
-    if (STATE.currentStatus && 
-        STATE.currentStatus !== "Initializing..." && 
-        STATE.currentStatus !== "Initializing downloads...") {
-        return STATE.currentStatus;
+    // Show current status if we have one and no file is downloading
+    if (currentStatus && currentStatus !== "" && currentStatus !== "Initializing..." && currentStatus !== "Initializing downloads...") {
+        return currentStatus;
     }
     
-    if (STATE.percentage >= 100) return "Starting Lua...";
-    if (STATE.percentage > 0) return "Downloading files...";
-    return "Initializing...";
+    // Fallback to simple status based on percentage
+    if (percentage >= 100) {
+        return "Starting Lua...";
+    } else if (percentage > 0) {
+        return "Downloading files...";
+    } else {
+        return "Initializing...";
+    }
 }
 
-// ============================================================================
-// Message Rotation
-// ============================================================================
-
+/**
+ * Start the logo subtext rotation system
+ */
 function startLogoSubtextRotation() {
-    if (!DOM.logoSubtext) return;
+    if (!logoSubtext) return;
     
-    ROTATION_STATE.currentLogoMessageIndex = Math.floor(Math.random() * CONFIG.logoSubtextMessages.length);
-    ROTATION_STATE.lastLogoMessageIndex = ROTATION_STATE.currentLogoMessageIndex;
+    // Set initial random message
+    currentLogoMessageIndex = Math.floor(Math.random() * config.logoSubtextMessages.length);
+    lastLogoMessageIndex = currentLogoMessageIndex;
     updateLogoSubtextMessage();
     
-    ROTATION_STATE.logoSubtextRotationInterval = setInterval(() => {
-        ROTATION_STATE.currentLogoMessageIndex = getRandomIndex(
-            CONFIG.logoSubtextMessages.length, 
-            ROTATION_STATE.lastLogoMessageIndex
-        );
-        ROTATION_STATE.lastLogoMessageIndex = ROTATION_STATE.currentLogoMessageIndex;
+    // Start rotation interval
+    logoSubtextRotationInterval = setInterval(function() {
+        currentLogoMessageIndex = getRandomIndex(config.logoSubtextMessages.length, lastLogoMessageIndex);
+        lastLogoMessageIndex = currentLogoMessageIndex;
         updateLogoSubtextMessage();
-    }, CONFIG.logoSubtextInterval);
+    }, config.logoSubtextInterval);
 }
 
+/**
+ * Update the logo subtext message with no animation
+ */
 function updateLogoSubtextMessage() {
-    if (!DOM.logoSubtext) return;
-    DOM.logoSubtext.innerHTML = CONFIG.logoSubtextMessages[ROTATION_STATE.currentLogoMessageIndex];
+    if (!logoSubtext) return;
+    
+    // Simply change the message directly
+    logoSubtext.innerHTML = config.logoSubtextMessages[currentLogoMessageIndex];
 }
 
+/**
+ * Start the advert rotation system
+ */
 function startAdvertRotation() {
-    if (!DOM.advertTitle || !DOM.advertSubtext) return;
+    if (!advertTitle || !advertSubtext) return;
     
-    ROTATION_STATE.currentAdvertMessageIndex = Math.floor(Math.random() * CONFIG.advertMessages.length);
-    ROTATION_STATE.lastAdvertMessageIndex = ROTATION_STATE.currentAdvertMessageIndex;
+    // Set initial random message
+    currentAdvertMessageIndex = Math.floor(Math.random() * config.advertMessages.length);
+    lastAdvertMessageIndex = currentAdvertMessageIndex;
     updateAdvertMessage();
     
-    ROTATION_STATE.advertRotationInterval = setInterval(() => {
-        ROTATION_STATE.currentAdvertMessageIndex = getRandomIndex(
-            CONFIG.advertMessages.length, 
-            ROTATION_STATE.lastAdvertMessageIndex
-        );
-        ROTATION_STATE.lastAdvertMessageIndex = ROTATION_STATE.currentAdvertMessageIndex;
+    // Start rotation interval
+    advertRotationInterval = setInterval(function() {
+        currentAdvertMessageIndex = getRandomIndex(config.advertMessages.length, lastAdvertMessageIndex);
+        lastAdvertMessageIndex = currentAdvertMessageIndex;
         updateAdvertMessage();
-    }, CONFIG.advertInterval);
+    }, config.advertInterval);
 }
 
+/**
+ * Update the advert message with no animation
+ */
 function updateAdvertMessage() {
-    if (!DOM.advertTitle || !DOM.advertSubtext) return;
+    if (!advertTitle || !advertSubtext) return;
     
-    const currentAdvert = CONFIG.advertMessages[ROTATION_STATE.currentAdvertMessageIndex];
-    DOM.advertTitle.textContent = currentAdvert.title;
-    DOM.advertTitle.setAttribute('data-text', currentAdvert.title);
-    DOM.advertSubtext.textContent = currentAdvert.subtitle;
+    var currentAdvert = config.advertMessages[currentAdvertMessageIndex];
+    
+    // Update title and subtitle
+    advertTitle.textContent = currentAdvert.title;
+    advertTitle.setAttribute('data-text', currentAdvert.title);
+    advertSubtext.textContent = currentAdvert.subtitle;
 }
 
-// ============================================================================
-// Background Rotation
-// ============================================================================
-
+/**
+ * Set a random background immediately
+ */
 function setRandomBackground(isInitial) {
-    if (!DOM.backgroundElement) return;
+    if (!backgroundElement) return;
     
-    const randomBackground = getRandomBackground();
-    ROTATION_STATE.lastBackgroundUrl = randomBackground;
+    var randomBackground = getRandomBackground();
+    lastBackgroundUrl = randomBackground;
     
+    // Disable transition for initial load
     if (isInitial) {
-        DOM.backgroundElement.style.transition = 'none';
-        DOM.backgroundElement.style.backgroundImage = `url(${randomBackground})`;
+        backgroundElement.style.transition = 'none';
+        backgroundElement.style.backgroundImage = 'url(' + randomBackground + ')';
         
-        setTimeout(() => {
-            DOM.backgroundElement.style.transition = 'background-image 2s ease-in-out';
+        // Re-enable transition after a short delay
+        setTimeout(function() {
+            backgroundElement.style.transition = 'background-image 2s ease-in-out';
         }, 50);
     } else {
-        DOM.backgroundElement.style.backgroundImage = `url(${randomBackground})`;
+        backgroundElement.style.backgroundImage = 'url(' + randomBackground + ')';
     }
+    
 }
 
+/**
+ * Start the background rotation system
+ */
 function startBackgroundRotation() {
-    if (!DOM.backgroundElement) return;
+    if (!backgroundElement) {
+        return;
+    }
     
+    // Set random background immediately (no transition)
     setRandomBackground(true);
     
-    ROTATION_STATE.backgroundRotationInterval = setInterval(() => {
+    // Start rotation interval (with transitions)
+    backgroundRotationInterval = setInterval(function() {
         setRandomBackground(false);
-    }, CONFIG.backgroundInterval);
+    }, config.backgroundInterval);
 }
 
-// ============================================================================
-// Server Management
-// ============================================================================
-
-const SERVER_STATE = {
-    elements: new Map(),
-    updateInterval: null
-};
-
+/**
+ * Update the total player count display
+ */
 function updateTotalPlayerCount(totalPlayers) {
-    if (!DOM.totalPlayersCountElement) return;
+    if (!totalPlayersCountElement) return;
     
-    const numberElement = DOM.totalPlayersCountElement.querySelector('.total-players-number');
+    var numberElement = totalPlayersCountElement.querySelector('.total-players-number');
     if (numberElement) {
         numberElement.textContent = totalPlayers;
     }
 }
 
+/**
+ * Server Management Functions
+ */
+
+// Server status tracking
+var serverElements = new Map();
+var serverUpdateInterval = null;
+
+/**
+ * Initialize the server list
+ */
 function initializeServerList() {
-    if (!DOM.serverListElement) return;
+    if (!serverListElement) return;
     
+    
+    // Start fetching server data immediately
     fetchAllServerStatus();
-    SERVER_STATE.updateInterval = setInterval(fetchAllServerStatus, 30000);
-}
-
-async function fetchServerStatus(server) {
-    try {
-        const response = await fetch(
-            `https://gameserveranalytics.com/api/v2/query?game=source&ip=${server.ip}&port=${server.port}&type=info`
-        );
-        const serverInfo = await response.json();
-        
-        const status = {
-            online: false,
-            players: 0,
-            maxPlayers: 0,
-            map: 'Unknown',
-            gamemode: server.gamemode,
-            server: server
-        };
-
-        if (serverInfo && (serverInfo.status?.toLowerCase() === 'online' || serverInfo.players !== undefined)) {
-            status.online = true;
-            status.players = serverInfo.players || serverInfo.num_players || serverInfo.playercount || 0;
-            status.maxPlayers = serverInfo.maxplayers || serverInfo.max_players || serverInfo.maxclients || 32;
-            status.map = serverInfo.map || 'Unknown';
-            
-            const serverTitle = serverInfo.name || serverInfo.hostname || '';
-            const gamemodeMatch = serverTitle.match(/Now Playing:\s*([^|]+)/i);
-            if (gamemodeMatch) {
-                status.gamemode = gamemodeMatch[1].trim();
-            }
-        }
-
-        return status;
-    } catch (error) {
-        console.error(`Error fetching data for ${server.id}:`, error);
-        return { 
-            online: false, 
-            players: 0, 
-            maxPlayers: 32, 
-            map: 'Unknown',
-            gamemode: server.gamemode,
-            server: server 
-        };
-    }
-}
-
-async function fetchAllServerStatus() {
-    if (!DOM.serverListElement) return;
     
-    try {
-        const serverStatuses = await Promise.all(CONFIG.servers.map(fetchServerStatus));
+    // Set up periodic updates every 30 seconds
+    serverUpdateInterval = setInterval(fetchAllServerStatus, 30000);
+}
+
+/**
+ * Fetch server status from API
+ */
+function fetchServerStatus(server) {
+    return fetch("https://gameserveranalytics.com/api/v2/query?game=source&ip=" + server.ip + "&port=" + server.port + "&type=info")
+        .then(function(response) { return response.json(); })
+        .then(function(serverInfo) {
+            var status = {
+                online: false,
+                players: 0,
+                maxPlayers: 0,
+                map: 'Unknown',
+                gamemode: server.gamemode,
+                server: server
+            };
+
+            if (serverInfo && (serverInfo.status && serverInfo.status.toLowerCase() === 'online' || serverInfo.players !== undefined)) {
+                status.online = true;
+                status.players = serverInfo.players || serverInfo.num_players || serverInfo.playercount || 0;
+                status.maxPlayers = serverInfo.maxplayers || serverInfo.max_players || serverInfo.maxclients || 32;
+                status.map = serverInfo.map || 'Unknown';
+                
+                // Extract gamemode from server name if available
+                var serverTitle = serverInfo.name || serverInfo.hostname || '';
+                var gamemodeMatch = serverTitle.match(/Now Playing:\s*([^|]+)/i);
+                if (gamemodeMatch) {
+                    status.gamemode = gamemodeMatch[1].trim();
+                }
+            }
+
+            return status;
+        })
+        .catch(function(error) {
+            console.error("Error fetching data for " + server.id + ":", error);
+            return { 
+                online: false, 
+                players: 0, 
+                maxPlayers: 32, 
+                map: 'Unknown',
+                gamemode: server.gamemode,
+                server: server 
+            };
+        });
+}
+
+/**
+ * Fetch status for all servers
+ */
+function fetchAllServerStatus() {
+    if (!serverListElement) return;
+    
+    
+    // Get all servers first to fetch their status
+    var serverPromises = config.servers.map(function(server) {
+        return fetchServerStatus(server);
+    });
+    
+    Promise.all(serverPromises).then(function(serverStatuses) {
+        // Calculate total player count across all servers
+        var totalPlayers = serverStatuses.reduce(function(total, serverStatus) {
+            return total + (serverStatus.online ? serverStatus.players : 0);
+        }, 0);
         
-        const totalPlayers = serverStatuses.reduce((total, status) => 
-            total + (status.online ? status.players : 0), 0
-        );
-        
+        // Update the total player count display
         updateTotalPlayerCount(totalPlayers);
         
-        let serversToShow = serverStatuses.filter(serverStatus => {
-            if (!STATE.currentServerName) return true;
+        // Filter out the current server if we have that information
+        var serversToShow = serverStatuses.filter(function(serverStatus) {
+            if (!currentServerName) {
+                return true;
+            }
             
-            const gmodTokens = STATE.currentServerName.toLowerCase().match(/[a-z0-9]+/g) || [];
-            const configTokens = serverStatus.server.title.toLowerCase().match(/[a-z0-9]+/g) || [];
+            var server = serverStatus.server;
+            // Use case-insensitive token-based matching since GMod sends various formats:
+            // - "ZGRAD.GG US1 | Now Playing: TDM"
+            // - "NPCZ | Horde - discord.gg/npc"
+            // - "Map Sweepers Official Server | ZMOD.GG"
+            // - "ZBox | random words"
             
-            const isSameServer = configTokens.every(token => gmodTokens.includes(token));
+            // Tokenize both names by splitting on special characters
+            var gmodName = currentServerName.toLowerCase();
+            var configTitle = server.title.toLowerCase();
+            
+            // Extract meaningful tokens (alphanumeric sequences)
+            var gmodTokens = gmodName.match(/[a-z0-9]+/g) || [];
+            var configTokens = configTitle.match(/[a-z0-9]+/g) || [];
+            
+            // Check if all config tokens are present in GMod tokens
+            var isSameServer = configTokens.every(function(token) {
+                return gmodTokens.indexOf(token) !== -1;
+            });
             
             if (isSameServer) {
-                console.log("[LoadingScreen] Filtering out current server:", serverStatus.server.title);
+                console.log("[LoadingScreen] Filtering out current server:", server.title);
             }
             
             return !isSameServer;
         });
         
-        serversToShow.sort((a, b) => {
+        // Sort servers by player count (highest to lowest)
+        serversToShow.sort(function(a, b) {
+            // Online servers take priority over offline servers
             if (a.online && !b.online) return -1;
             if (!a.online && b.online) return 1;
+            
+            // If both are online or both are offline, sort by player count
             return b.players - a.players;
         });
         
+        // Limit to maximum 4 servers AFTER sorting
         serversToShow = serversToShow.slice(0, 4);
         
         if (serversToShow.length === 0) {
-            DOM.serverListElement.innerHTML = '<div class="server-loading">You\'re joining one of our servers!</div>';
+            // If all servers are filtered out, show a message
+            serverListElement.innerHTML = '<div class="server-loading">You\'re joining one of our servers!</div>';
             return;
         }
         
         updateServerList(serversToShow);
-    } catch (error) {
+    }).catch(function(error) {
         console.error("Error fetching server statuses:", error);
-    }
+    });
 }
 
+/**
+ * Update the server list display
+ */
 function updateServerList(serverStatuses) {
-    if (!DOM.serverListElement) return;
+    if (!serverListElement) return;
     
-    DOM.serverListElement.innerHTML = '';
+    // Clear loading message
+    serverListElement.innerHTML = '';
     
-    serverStatuses.forEach(serverStatus => {
-        const serverElement = createServerElement(serverStatus);
-        DOM.serverListElement.appendChild(serverElement);
+    serverStatuses.forEach(function(serverStatus) {
+        var serverElement = createServerElement(serverStatus);
+        serverListElement.appendChild(serverElement);
     });
     
-    const footerMessage = document.createElement('div');
+    // Add footer message
+    var footerMessage = document.createElement('div');
     footerMessage.className = 'server-list-footer';
     footerMessage.textContent = 'TYPE !SERVERS IN-GAME TO CONNECT TO OUR SERVERS!';
-    DOM.serverListElement.appendChild(footerMessage);
+    serverListElement.appendChild(footerMessage);
 }
 
+/**
+ * Create a server element
+ */
 function createServerElement(serverStatus) {
-    const { server, online, players, maxPlayers, gamemode, map } = serverStatus;
-    const playerPercentage = maxPlayers > 0 ? (players / maxPlayers) * 100 : 0;
+    var server = serverStatus.server;
+    var isOnline = serverStatus.online;
+    var playerCount = serverStatus.players;
+    var maxPlayers = serverStatus.maxPlayers;
+    var playerPercentage = maxPlayers > 0 ? (playerCount / maxPlayers) * 100 : 0;
     
-    let playerCountClass = '';
-    let serverCapacityClass = '';
-    
-    if (online) {
+    // Determine player count color classes and server capacity classes
+    var playerCountClass = '';
+    var serverCapacityClass = '';
+    if (isOnline) {
         if (playerPercentage >= 90) {
-            playerCountClass = serverCapacityClass = 'nearly-full';
+            playerCountClass = 'nearly-full';
+            serverCapacityClass = 'nearly-full';
         } else if (playerPercentage >= 70) {
-            playerCountClass = serverCapacityClass = 'getting-full';
+            playerCountClass = 'getting-full';
+            serverCapacityClass = 'getting-full';
         }
     } else {
         serverCapacityClass = 'offline';
     }
     
-    const serverDiv = document.createElement('div');
-    serverDiv.className = `loading-screen-server-item ${serverCapacityClass}`;
+    var serverDiv = document.createElement('div');
+    serverDiv.className = 'loading-screen-server-item ' + serverCapacityClass;
     serverDiv.setAttribute('data-server-id', server.id);
     
-    if (online) {
-        serverDiv.innerHTML = `
-            <div class="loading-screen-server-header">
-                <img src="${server.logo}" alt="${server.title} Logo" class="loading-screen-server-logo">
-                <div class="loading-screen-server-name">${server.title}</div>
-            </div>
-            <div class="loading-screen-server-players">
-                <span class="${playerCountClass}">${players}/${maxPlayers}</span> players online
-            </div>
-            <div class="loading-screen-server-gamemode">
-                Now Playing: <span>${gamemode}</span> <span style="color: #a8a8a8;">on</span> ${map}
-            </div>`;
+    if (isOnline) {
+        serverDiv.innerHTML = 
+            '<div class="loading-screen-server-header">' +
+                '<img src="' + server.logo + '" alt="' + server.title + ' Logo" class="loading-screen-server-logo">' +
+                '<div class="loading-screen-server-name">' + server.title + '</div>' +
+            '</div>' +
+            '<div class="loading-screen-server-players"><span class="' + playerCountClass + '">' + playerCount + '/' + maxPlayers + '</span> players online</div>' +
+            '<div class="loading-screen-server-gamemode">Now Playing: <span>' + serverStatus.gamemode + '</span> <span style="color: #a8a8a8;">on</span> ' + serverStatus.map + '</div>';
     } else {
-        serverDiv.innerHTML = `
-            <div class="loading-screen-server-header">
-                <img src="${server.logo}" alt="${server.title} Logo" class="loading-screen-server-logo">
-                <div class="loading-screen-server-name">${server.title}</div>
-            </div>
-            <div class="loading-screen-server-offline">Server is offline</div>`;
+        serverDiv.innerHTML = 
+            '<div class="loading-screen-server-header">' +
+                '<img src="' + server.logo + '" alt="' + server.title + ' Logo" class="loading-screen-server-logo">' +
+                '<div class="loading-screen-server-name">' + server.title + '</div>' +
+            '</div>' +
+            '<div class="loading-screen-server-offline">Server is offline</div>';
     }
     
     return serverDiv;
 }
 
-// ============================================================================
-// Initialization
-// ============================================================================
-
-document.addEventListener("DOMContentLoaded", () => {
+/**
+ * Initialize the loading system
+ */
+document.addEventListener("DOMContentLoaded", function() {
     console.log("[LoadingScreen] ====================================");
     console.log("[LoadingScreen] ZGRAD Loading Screen Initialized");
     console.log("[LoadingScreen] Waiting for GMod callbacks...");
     console.log("[LoadingScreen] ====================================");
     
+    // Initialize UI elements
     setTimeout(initializeUI, 100);
     
-    setTimeout(() => {
-        if (!STATE.isGmod && !STATE.isTest) {
+    // Auto-start test mode if not loaded by GMod after 2 seconds
+    setTimeout(function() {
+        if (!isGmod && !isTest) {
             console.log("[LoadingScreen] No GMod detected after 2 seconds - starting TEST MODE");
             startTestMode();
-        } else if (STATE.isGmod) {
+        } else if (isGmod) {
             console.log("[LoadingScreen] GMod detected - running in PRODUCTION MODE");
         }
     }, 2000);
