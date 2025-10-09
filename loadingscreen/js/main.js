@@ -30,17 +30,6 @@ window.GameDetails = function(servername, serverurl, mapname, maxplayers, steami
     // Store the server name for filtering
     if (servername) {
         currentServerName = servername;
-        console.log("[LoadingScreen] Current server name set to:", currentServerName);
-        
-        currentServerInfo = {
-            name: servername,
-            map: mapname,
-            maxPlayers: maxplayers,
-            gamemode: gamemode
-        };
-        
-        // Refresh server list to apply the filter (fetchAllServerStatus handles null check internally)
-        fetchAllServerStatus();
     }
 };
 
@@ -641,7 +630,6 @@ function updateTotalPlayerCount(totalPlayers) {
 // Server status tracking
 var serverElements = new Map();
 var serverUpdateInterval = null;
-var currentServerInfo = null;
 
 /**
  * Initialize the server list
@@ -739,12 +727,6 @@ function fetchAllServerStatus() {
             var gmodName = currentServerName.toLowerCase().replace(/\s+/g, '');
             var configTitle = server.title.toLowerCase().replace(/\s+/g, '');
             var isSameServer = gmodName.includes(configTitle) || configTitle.includes(gmodName);
-            
-            console.log("[LoadingScreen] Filtering check:", server.title);
-            console.log("[LoadingScreen]   GMod name (cleaned):", gmodName);
-            console.log("[LoadingScreen]   Config title (cleaned):", configTitle);
-            console.log("[LoadingScreen]   Is same server?", isSameServer);
-            
             return !isSameServer;
         });
         
