@@ -753,6 +753,7 @@ function fetchAllServerStatus() {
         // Filter out the current server if we have that information
         var serversToShow = serverStatuses.filter(function(serverStatus) {
             if (!currentServerName) {
+                console.log("[LoadingScreen] No currentServerName set, showing all servers");
                 return true;
             }
             
@@ -771,10 +772,20 @@ function fetchAllServerStatus() {
             var gmodTokens = gmodName.match(/[a-z0-9]+/g) || [];
             var configTokens = configTitle.match(/[a-z0-9]+/g) || [];
             
+            console.log("[LoadingScreen] Comparing server: " + server.title);
+            console.log("[LoadingScreen]   GMod Name: '" + currentServerName + "'");
+            console.log("[LoadingScreen]   GMod Tokens: [" + gmodTokens.join(", ") + "]");
+            console.log("[LoadingScreen]   Config Title: '" + server.title + "'");
+            console.log("[LoadingScreen]   Config Tokens: [" + configTokens.join(", ") + "]");
+            
             // Check if all config tokens are present in GMod tokens
             var isSameServer = configTokens.every(function(token) {
-                return gmodTokens.indexOf(token) !== -1;
+                var found = gmodTokens.indexOf(token) !== -1;
+                console.log("[LoadingScreen]     Checking token '" + token + "': " + (found ? "FOUND" : "NOT FOUND"));
+                return found;
             });
+            
+            console.log("[LoadingScreen]   Result: " + (isSameServer ? "SAME SERVER (filter out)" : "DIFFERENT SERVER (show)"));
             
             return !isSameServer;
         });
