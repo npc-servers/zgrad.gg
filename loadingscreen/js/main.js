@@ -10,6 +10,7 @@ var allow_increment = true;
 var currentDownloadingFile = "";
 var currentStatus = "Initializing...";
 var currentServerName = null;
+var testModeInterval = null;
 
 /**
  * GMod Called Functions - Core loading functionality only
@@ -20,8 +21,23 @@ var currentServerName = null;
 window.GameDetails = function(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
     console.log("[LoadingScreen] Joining server:", servername);
     
+    // Clear test mode if it was running
+    if (testModeInterval) {
+        console.log("[LoadingScreen] Stopping test mode - real GMod detected");
+        clearInterval(testModeInterval);
+        testModeInterval = null;
+    }
+    
     isGmod = true;
-    isTest = false; // Disable test mode if GMod loads
+    isTest = false;
+    
+    // Reset state for real GMod loading
+    totalFiles = 1;
+    filesNeeded = 1;
+    totalCalled = false;
+    percentage = 0;
+    currentDownloadingFile = "";
+    currentStatus = "Initializing...";
     
     // Store the server name for filtering
     if (servername) {
@@ -212,7 +228,7 @@ function startTestMode() {
     
     var currentFileIndex = 0;
     
-    var testInterval = setInterval(function() {
+    testModeInterval = setInterval(function() {
         if (filesNeeded > 0 && currentFileIndex < totalTestFiles) {
             // Use realistic filenames with proper timing
             var fileIndex = currentFileIndex % testFiles.length;
@@ -226,7 +242,8 @@ function startTestMode() {
                 SetStatusChanged("Client info sent!");
             } else if (filesNeeded === 0) {
                 SetStatusChanged("Starting Lua...");
-                clearInterval(testInterval);
+                clearInterval(testModeInterval);
+                testModeInterval = null;
             }
         }
     }, 50);
