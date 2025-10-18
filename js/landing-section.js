@@ -175,17 +175,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             </svg>`;
                     
                     if (isTabletOrMobile()) {
-                        // For mobile and tablet, merge the functionality of both buttons
-                        // Hide the original join button in mobile view via CSS
-                        
-                        // Make "VIEW SERVERS" button visible on mobile/tablet
+                        // For mobile and tablet, keep VIEW SERVERS button pointing to servers page
+                        // since users on mobile cannot connect directly to servers
                         viewServersButton.innerHTML = 'VIEW SERVERS';
-                        
-                        // Set link for VIEW SERVERS button to also go to the server with most players
-                        viewServersButton.href = selectedServer.link;
-                        
-                        // No need to update hidden elements on mobile/tablet
-                        // The elements are now hidden via CSS
+                        viewServersButton.href = 'servers';
                     } else {
                         // For desktop, show proper information on both buttons
                         viewServersButton.innerHTML = 'VIEW SERVERS';

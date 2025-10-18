@@ -1112,6 +1112,13 @@ position: relative;
         min-width: 100px;
     }
     
+    /* Hide icons on mobile */
+    .servers-icon,
+    .discord-icon,
+    .store-icon {
+        display: none;
+    }
+    
     .join-row {
         width: 100%;
         max-width: 600px;
