@@ -24,9 +24,10 @@ const footerConfig = {
     
     // Default legal links
     legal: [
-        { href: '#', text: 'Privacy Policy' },
-        { href: '#', text: 'Terms of Service' },
-        { href: '#', text: 'Store Terms of Service' }
+        { href: 'https://zmod.gg/privacy', text: 'Privacy Policy' },
+        { href: 'https://zmod.gg/tos', text: 'Terms of Service' },
+        { href: 'https://zmod.gg/legal/guidelines', text: 'Platform Guidelines' },
+        { href: 'https://zmod.gg/store/tos', text: 'Store Terms of Service' }
     ],
     
     // Default social media links
