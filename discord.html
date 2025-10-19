@@ -54,7 +54,21 @@
     <!-- Redirect discord.html to extensionless URL to prevent duplicate content -->
     <script>
         if (window.location.pathname === '/discord.html') {
-            window.location.replace(window.location.origin + '/discord');
+            // Only redirect on production, not on localhost or local development
+            var isLocalhost = window.location.hostname === 'localhost' || 
+                            window.location.hostname === '127.0.0.1' ||
+                            window.location.hostname.startsWith('192.168.') ||
+                            window.location.hostname.endsWith('.local');
+            
+            if (!isLocalhost) {
+                window.location.replace(window.location.origin + '/discord');
+            } else {
+                // On localhost, just redirect directly to Discord
+                window.location.replace("https://discord.gg/npc");
+            }
+        } else {
+            // Non-localhost redirect directly to Discord
+            window.location.replace("https://discord.gg/npc");
         }
     </script>
     

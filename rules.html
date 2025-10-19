@@ -29,7 +29,15 @@
     <!-- Redirect rules.html to extensionless URL to prevent duplicate content -->
     <script>
         if (window.location.pathname === '/rules.html') {
-            window.location.replace(window.location.origin + '/rules');
+            // Only redirect on production, not on localhost or local development
+            var isLocalhost = window.location.hostname === 'localhost' || 
+                            window.location.hostname === '127.0.0.1' ||
+                            window.location.hostname.startsWith('192.168.') ||
+                            window.location.hostname.endsWith('.local');
+            
+            if (!isLocalhost) {
+                window.location.replace(window.location.origin + '/rules');
+            }
         }
     </script>
     

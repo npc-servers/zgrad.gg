@@ -95,7 +95,15 @@
     <!-- Redirect index.html to root to prevent duplicate content -->
     <script>
         if (window.location.pathname === '/index.html') {
-            window.location.replace(window.location.origin + '/');
+            // Only redirect on production, not on localhost or local development
+            var isLocalhost = window.location.hostname === 'localhost' || 
+                            window.location.hostname === '127.0.0.1' ||
+                            window.location.hostname.startsWith('192.168.') ||
+                            window.location.hostname.endsWith('.local');
+            
+            if (!isLocalhost) {
+                window.location.replace(window.location.origin + '/');
+            }
         }
     </script>
 
@@ -106,10 +114,11 @@
         <div class="navbar-container">
             <ul class="navbar-nav">
                 <li class="nav-item"><a href="/" class="nav-link">HOME</a></li>
-                <li class="nav-item"><a href="/news" class="nav-link">NEWS</a></li>
-                <li class="nav-item"><a href="/game" class="nav-link">GAME</a></li>
-                <li class="nav-item"><a href="/faq" class="nav-link">FAQ</a></li>
-                <li class="nav-item"><a href="/partnership" class="nav-link">PARTNERSHIP</a></li>
+                <li class="nav-item"><a href="/servers" class="nav-link">SERVERS</a></li>
+                <li class="nav-item"><a href="https://store.npcz.gg" class="nav-link" target="_blank" rel="noopener">STORE</a></li>
+                <li class="nav-item"><a href="https://discord.gg/npc" class="nav-link" target="_blank" rel="noopener">DISCORD</a></li>
+                <li class="nav-item"><a href="/rules" class="nav-link">RULES</a></li>
+                <li class="nav-item"><a href="/#help-section" class="nav-link">HELP</a></li>
             </ul>
             
             <div class="navbar-divider"></div>
@@ -128,16 +137,9 @@
                     </a>
                 </li>
                 <li class="nav-social-item">
-                    <a href="https://www.facebook.com/zgradhomigrad" class="nav-social-link" aria-label="Facebook" target="_blank" rel="noopener">
+                    <a href="https://www.tiktok.com/@zgradhomigrad" class="nav-social-link" aria-label="TikTok" target="_blank" rel="noopener">
                         <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                        </svg>
-                    </a>
-                </li>
-                <li class="nav-social-item">
-                    <a href="https://twitter.com/zgradhomigrad" class="nav-social-link" aria-label="X (Twitter)" target="_blank" rel="noopener">
-                        <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.657l-5.223-6.826-5.974 6.826h-3.315l7.695-8.782L.754 2.25h6.844l4.866 6.232 5.879-6.232zM17.002 18.807h1.844L6.803 3.469H4.751z"/>
+                            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
                         </svg>
                     </a>
                 </li>
@@ -169,10 +171,11 @@
     <div class="mobile-menu">
         <ul class="navbar-nav">
             <li class="nav-item"><a href="/" class="nav-link">HOME</a></li>
-            <li class="nav-item"><a href="/news" class="nav-link">NEWS</a></li>
-            <li class="nav-item"><a href="/game" class="nav-link">GAME</a></li>
-            <li class="nav-item"><a href="/faq" class="nav-link">FAQ</a></li>
-            <li class="nav-item"><a href="/partnership" class="nav-link">PARTNERSHIP</a></li>
+            <li class="nav-item"><a href="/servers" class="nav-link">SERVERS</a></li>
+            <li class="nav-item"><a href="https://store.npcz.gg" class="nav-link" target="_blank" rel="noopener">STORE</a></li>
+            <li class="nav-item"><a href="https://discord.gg/npc" class="nav-link" target="_blank" rel="noopener">DISCORD</a></li>
+            <li class="nav-item"><a href="/rules" class="nav-link">RULES</a></li>
+            <li class="nav-item"><a href="/#help-section" class="nav-link">HELP</a></li>
         </ul>
         
         <div class="navbar-divider"></div>
@@ -191,16 +194,9 @@
                 </a>
             </li>
             <li class="nav-social-item">
-                <a href="https://www.facebook.com/zgradhomigrad" class="nav-social-link" aria-label="Facebook" target="_blank" rel="noopener">
+                <a href="https://www.tiktok.com/@zgradhomigrad" class="nav-social-link" aria-label="TikTok" target="_blank" rel="noopener">
                     <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                    </svg>
-                </a>
-            </li>
-            <li class="nav-social-item">
-                <a href="https://twitter.com/zgradhomigrad" class="nav-social-link" aria-label="X (Twitter)" target="_blank" rel="noopener">
-                    <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.657l-5.223-6.826-5.974 6.826h-3.315l7.695-8.782L.754 2.25h6.844l4.866 6.232 5.879-6.232zM17.002 18.807h1.844L6.803 3.469H4.751z"/>
+                        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
                     </svg>
                 </a>
             </li>
@@ -222,7 +218,7 @@
     </div>
     
     <main>
-    <section class="landing-section">
+    <section class="landing-section" id="home">
         <video class="landing-background-video lazy-video" autoplay muted loop preload="none" playsinline data-src="videos/background.webm">
             <source data-src="videos/background.webm" type="video/webm">
         </video>
@@ -537,7 +533,7 @@
     </section>
 
     <!-- Help Section -->
-    <section class="help-section">
+    <section class="help-section" id="help-section">
         <div class="help-container">
             <div class="help-section-content">
                 <h2 class="help-title">NEED HELP?</h2>

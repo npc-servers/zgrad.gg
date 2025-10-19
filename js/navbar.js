@@ -16,13 +16,13 @@ class NavbarManager {
 
     init() {
         // Highlight active nav link based on current page
-        this.updateActiveLink();
+        this.setActiveLink();
         
         // Listen for scroll events
         window.addEventListener('scroll', () => this.handleScroll(), { passive: true });
         
         // Listen for hash changes
-        window.addEventListener('hashchange', () => this.updateActiveLink());
+        window.addEventListener('hashchange', () => this.setActiveLink());
         
         // Add click handlers to nav links for smooth scrolling
         this.navLinks.forEach(link => {
@@ -39,9 +39,6 @@ class NavbarManager {
         mobileMenuLinks.forEach(link => {
             link.addEventListener('click', () => this.closeMobileMenu());
         });
-
-        // Update active link on page load
-        this.setActiveLink();
     }
 
     toggleMobileMenu() {
@@ -102,8 +99,8 @@ class NavbarManager {
         
         this.lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
         
-        // Update active link based on section visibility
-        this.updateActiveLink();
+        // Update active link based on current page
+        this.setActiveLink();
     }
 
     hideNavbar() {
@@ -147,31 +144,61 @@ class NavbarManager {
                 }
             }
         }
+    }
+
+    setActiveLink() {
+        // Get current page info
+        const currentPath = window.location.pathname;
+        const isIndex = currentPath === '/' || currentPath === '/index.html' || currentPath === '';
         
-        // Highlight HOME link when at top of page
-        if (scrollPosition < 200) {
+        // Remove active class from all links
+        this.navLinks.forEach(link => {
+            link.classList.remove('active');
+        });
+        
+        // If on index page, check which section to highlight
+        if (isIndex) {
+            // Check if scrolled to help section
+            const helpSection = document.getElementById('help-section');
+            if (helpSection) {
+                const helpRect = helpSection.getBoundingClientRect();
+                const isHelpInView = helpRect.top < window.innerHeight && helpRect.bottom > 0;
+                
+                if (isHelpInView) {
+                    // Show HELP as active
+                    const helpLink = document.querySelector('a[href="/#help-section"]');
+                    if (helpLink) {
+                        helpLink.classList.add('active');
+                    }
+                    return;
+                }
+            }
+            
+            // Otherwise show HOME as active
             const homeLink = document.querySelector('a[href="/"]');
             if (homeLink) {
                 homeLink.classList.add('active');
             }
+            return;
         }
-    }
-
-    setActiveLink() {
-        // Determine active link based on current URL
-        const currentPath = window.location.pathname;
         
-        this.navLinks.forEach(link => {
-            link.classList.remove('active');
-            const href = link.getAttribute('href');
-            
-            // Check if the link matches current path
-            if (href === '/' && (currentPath === '/' || currentPath === '/index.html')) {
-                link.classList.add('active');
-            } else if (href !== '/' && currentPath.includes(href)) {
-                link.classList.add('active');
+        // If on servers page, activate SERVERS
+        if (currentPath.includes('/servers')) {
+            const serversLink = document.querySelector('a[href="/servers"]');
+            if (serversLink) {
+                serversLink.classList.add('active');
             }
-        });
+            return;
+        }
+        
+        // If on rules page, activate RULES
+        if (currentPath.includes('/rules')) {
+            const rulesLink = document.querySelector('a[href="/rules"]');
+            if (rulesLink) {
+                rulesLink.classList.add('active');
+            }
+            return;
+        }
     }
 }
 
