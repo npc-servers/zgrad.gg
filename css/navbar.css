@@ -56,13 +56,13 @@
 }
 
 .nav-link:hover {
-    color: var(--accent-color);
+    color: #888888;
     border-bottom-color: transparent;
     background-color: transparent;
 }
 
 .nav-link.active {
-    color: var(--accent-color);
+    color: #ff0000;
     border-bottom-color: transparent;
 }
 
