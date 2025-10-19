@@ -42,6 +42,7 @@ body {
     line-height: 1.6;
     color: var(--text-color);
     background-color: var(--dark-bg);
+    padding-top: 80px; /* Add padding-top to accommodate the fixed navbar height */
 }
 
 a {
