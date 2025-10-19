@@ -244,8 +244,26 @@ var config = {
     backgroundImages: [
         '../../images/homigrad-render.png',
         '../../images/homigrad-render2.png',
-        '../../images/maps/zgr_harbor.png',
-        '../../images/maps/zgr_mineral.png',
+        '../../images/loadingscreen/bathroom.jpg',
+        '../../images/loadingscreen/bloody-mess.jpg',
+        '../../images/loadingscreen/eighteenth.jpg',
+        '../../images/loadingscreen/eigth.jpg',
+        '../../images/loadingscreen/fatboy.jpg',
+        '../../images/loadingscreen/fifth.JPG',
+        '../../images/loadingscreen/fourteenth.jpg',
+        '../../images/loadingscreen/homigrad-essence.jpg',
+        '../../images/loadingscreen/kill-room.jpg',
+        '../../images/loadingscreen/massacre.jpg',
+        '../../images/loadingscreen/ninth.JPG',
+        '../../images/loadingscreen/ptsd.jpg',
+        '../../images/loadingscreen/seventh.JPG',
+        '../../images/loadingscreen/sixth-no-branding.jpg',
+        '../../images/loadingscreen/sixth.jpg',
+        '../../images/loadingscreen/street-war.jpg',
+        '../../images/loadingscreen/thirteenth.jpg',
+        '../../images/loadingscreen/traitor.jpg',
+        '../../images/loadingscreen/twelth.jpg',
+        '../../images/loadingscreen/zgradded.jpg',
     ],
     
     // Rotation intervals (in milliseconds)
@@ -348,6 +366,34 @@ var lastBackgroundUrl = "";
 var logoSubtextRotationInterval = null;
 var advertRotationInterval = null;
 var backgroundRotationInterval = null;
+var backgroundImageQueue = [];
+var currentBackgroundQueueIndex = 0;
+
+/**
+ * Initialize the background image queue
+ */
+function initializeBackgroundQueue() {
+    // Create a shuffled copy of the background images array
+    backgroundImageQueue = config.backgroundImages.slice().sort(function() {
+        return Math.random() - 0.5;
+    });
+    currentBackgroundQueueIndex = 0;
+}
+
+/**
+ * Get the next background image from the queue
+ */
+function getNextBackgroundFromQueue() {
+    if (backgroundImageQueue.length === 0) {
+        // Queue is empty, reinitialize with shuffled images
+        initializeBackgroundQueue();
+    }
+    
+    var nextBackground = backgroundImageQueue[currentBackgroundQueueIndex];
+    currentBackgroundQueueIndex++;
+    
+    return nextBackground;
+}
 
 /**
  * Get a random index from an array, avoiding the last used index
@@ -361,22 +407,6 @@ function getRandomIndex(arrayLength, lastIndex) {
     } while (newIndex === lastIndex);
     
     return newIndex;
-}
-
-/**
- * Get a random background URL that's different from the last one
- */
-function getRandomBackground() {
-    var availableBackgrounds = config.backgroundImages.filter(function(bg) {
-        return bg !== lastBackgroundUrl;
-    });
-    
-    if (availableBackgrounds.length === 0) {
-        availableBackgrounds = config.backgroundImages;
-    }
-    
-    var randomIndex = Math.floor(Math.random() * availableBackgrounds.length);
-    return availableBackgrounds[randomIndex];
 }
 
 /**
@@ -396,6 +426,9 @@ function initializeUI() {
     
     // Start the UI update loop
     updateUI();
+    
+    // Initialize background queue
+    initializeBackgroundQueue();
     
     // Start message rotations
     startLogoSubtextRotation();
@@ -586,7 +619,7 @@ function updateAdvertMessage() {
 function setRandomBackground(isInitial) {
     if (!backgroundElement) return;
     
-    var randomBackground = getRandomBackground();
+    var randomBackground = getNextBackgroundFromQueue();
     lastBackgroundUrl = randomBackground;
     
     // Disable transition for initial load
