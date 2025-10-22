@@ -50,13 +50,39 @@ class NavbarManager {
         this.hamburger.classList.add('active');
         this.mobileMenu.classList.add('active');
         document.body.style.overflow = 'hidden';
+        // Update active link to reflect current page
+        this.setActiveLink();
     }
 
     closeMobileMenu() {
         this.isMobileMenuOpen = false;
         this.hamburger.classList.remove('active');
-        this.mobileMenu.classList.remove('active');
-        document.body.style.overflow = '';
+        
+        // Apply fade-out animation to menu items
+        const navItems = document.querySelectorAll('.mobile-menu .nav-link');
+        const socialSection = document.querySelector('.mobile-menu .navbar-social');
+        
+        navItems.forEach((item, index) => {
+            item.style.animation = `slideDownFadeOut 0.3s ease-out ${index * 0.05}s forwards`;
+        });
+        
+        if (socialSection) {
+            socialSection.style.animation = 'slideDownFadeOut 0.3s ease-out 0s forwards';
+        }
+        
+        // Close the menu after animation completes
+        setTimeout(() => {
+            this.mobileMenu.classList.remove('active');
+            document.body.style.overflow = '';
+            
+            // Reset animation styles
+            navItems.forEach(item => {
+                item.style.animation = '';
+            });
+            if (socialSection) {
+                socialSection.style.animation = '';
+            }
+        }, 300);
     }
 
     handleNavLinkClick(event) {
@@ -151,8 +177,9 @@ class NavbarManager {
         const currentPath = window.location.pathname;
         const isIndex = currentPath === '/' || currentPath === '/index.html' || currentPath === '';
         
-        // Remove active class from all links
-        this.navLinks.forEach(link => {
+        // Remove active class from all links (both desktop and mobile)
+        const allLinks = document.querySelectorAll('.nav-link');
+        allLinks.forEach(link => {
             link.classList.remove('active');
         });
         
@@ -166,37 +193,37 @@ class NavbarManager {
                 
                 if (isHelpInView) {
                     // Show HELP as active
-                    const helpLink = document.querySelector('a[href="/#help-section"]');
-                    if (helpLink) {
-                        helpLink.classList.add('active');
-                    }
+                    const helpLinks = document.querySelectorAll('a[href="/#help-section"]');
+                    helpLinks.forEach(link => {
+                        link.classList.add('active');
+                    });
                     return;
                 }
             }
             
             // Otherwise show HOME as active
-            const homeLink = document.querySelector('a[href="/"]');
-            if (homeLink) {
-                homeLink.classList.add('active');
-            }
+            const homeLinks = document.querySelectorAll('a[href="/"]');
+            homeLinks.forEach(link => {
+                link.classList.add('active');
+            });
             return;
         }
         
         // If on servers page, activate SERVERS
         if (currentPath.includes('/servers')) {
-            const serversLink = document.querySelector('a[href="/servers"]');
-            if (serversLink) {
-                serversLink.classList.add('active');
-            }
+            const serversLinks = document.querySelectorAll('a[href="/servers"]');
+            serversLinks.forEach(link => {
+                link.classList.add('active');
+            });
             return;
         }
         
         // If on rules page, activate RULES
         if (currentPath.includes('/rules')) {
-            const rulesLink = document.querySelector('a[href="/rules"]');
-            if (rulesLink) {
-                rulesLink.classList.add('active');
-            }
+            const rulesLinks = document.querySelectorAll('a[href="/rules"]');
+            rulesLinks.forEach(link => {
+                link.classList.add('active');
+            });
             return;
         }
     }
