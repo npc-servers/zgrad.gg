@@ -219,13 +219,13 @@
     
     <main>
     <section class="landing-section" id="home">
-        <video class="landing-background-video lazy-video" autoplay muted loop preload="none" playsinline data-src="videos/background.webm">
+        <video class="landing-background-video lazy-video intrinsic-media" autoplay muted loop preload="none" playsinline data-src="videos/background.webm" width="1280" height="720" poster="images/placeholder.png">
             <source data-src="videos/background.webm" type="video/webm">
         </video>
         <div class="vignette-overlay"></div>
         <div class="landing-container">
             <div class="logo-container">
-                <img src="images/logos/zgrad-logo.png" alt="ZGrad.gg Logo" class="landing-logo">
+                <img src="images/logos/zgrad-logo.png" alt="ZGrad.gg Logo" class="landing-logo intrinsic-media" width="420" height="140" loading="eager">
                 <div class="landing-subtitle">THE HOMIGRAD NETWORK</div>
                 <div class="landing-buttons-inline">
                     <a href="servers" class="landing-button landing-button-view-servers" id="viewServers">VIEW SERVERS
@@ -269,9 +269,9 @@
                 <div class="join-row">
                     <div class="join-section">
                         <div class="server-info">
-                            <div class="server-name" id="serverName">ZGRAD US1</div>
-                            <div class="server-players">// <span id="joinPlayerCount">0/0</span> players online</div>
-                            <div class="server-gamemode">Now Playing: <span id="currentGamemode">Loading...</span></div>
+                            <div class="server-name reserve-text" id="serverName">ZGRAD US1</div>
+                            <div class="server-players reserve-text">// <span id="joinPlayerCount">0/0</span> players online</div>
+                            <div class="server-gamemode reserve-text">Now Playing: <span id="currentGamemode">Loading...</span></div>
                         </div>
                     </div>
                     <a href="connect/us1" class="join-button-large" id="joinMostPopularServer">JOIN</a>
@@ -310,6 +310,7 @@
                 </div>
                 <div class="features-list" id="features-list">
                     <!-- Features will be dynamically added by JavaScript -->
+                    <div class="reserve-text" aria-hidden="true" style="min-height:6rem;"></div>
                 </div>
             </div>
             <div class="feature-showcases">
@@ -323,7 +324,7 @@
                             <div class="showcase-description">Scale up buildings, grab, tackle, and drag people, grab onto objects, and even shoot while climbing or mid-air, Max Payne style!</div>
                         </div>
                         <div class="showcase-video">
-                            <video muted loop preload="none" data-src="videos/climbing.mp4" class="lazy-video">
+                            <video muted loop preload="none" data-src="videos/climbing.mp4" class="lazy-video intrinsic-media" width="640" height="360" poster="images/placeholder.png">
                                 <source data-src="videos/climbing.mp4" type="video/mp4">
                             </video>
                         </div>
@@ -339,7 +340,7 @@
                             <div class="showcase-description">Getting hurt has consequences. You can bleed out, get knocked out, and die if you don't banadage wounds or get blood bags. CPR can be used to revive people, but it's not always successful.</div>
                         </div>
                         <div class="showcase-video">
-                            <video muted loop preload="none" data-src="videos/medical_demo1.mp4" class="lazy-video">
+                            <video muted loop preload="none" data-src="videos/medical_demo1.mp4" class="lazy-video intrinsic-media" width="640" height="360" poster="images/placeholder.png">
                                 <source data-src="videos/medical_demo1.mp4" type="video/mp4">
                             </video>
                         </div>
@@ -355,7 +356,7 @@
                             <div class="showcase-description">Getting shot can rip off limbs, and falling from a high place can explode you on impact. Losing a limb isn't a death sentence, but it can be a major disadvantage.</div>
                         </div>
                         <div class="showcase-video">
-                            <video muted loop preload="none" data-src="videos/gore_demo1.mp4" class="lazy-video">
+                            <video muted loop preload="none" data-src="videos/gore_demo1.mp4" class="lazy-video intrinsic-media" width="640" height="360" poster="images/placeholder.png">
                                 <source data-src="videos/gore_demo1.mp4" type="video/mp4">
                             </video>
                         </div>
@@ -371,7 +372,7 @@
                             <div class="showcase-description">Utilize our arsenal of 40+ firearms and 20+ melee weapons to wreak havoc on other players. In our upcoming update, experience completely custom animated weapons with thirdperson animations, customization, and gun skins!</div>
                         </div>
                         <div class="showcase-video">
-                            <video muted loop preload="none" data-src="videos/weapon_demo1.webm" class="lazy-video">
+                            <video muted loop preload="none" data-src="videos/weapon_demo1.webm" class="lazy-video intrinsic-media" width="640" height="360" poster="images/placeholder.png">
                                 <source data-src="videos/weapon_demo1.webm" type="video/webm">
                             </video>
                         </div>
@@ -387,7 +388,7 @@
                             <div class="showcase-description">Our gamemodes have classes! We've created more than a dozen custom classes, each with their own unique equipment.</div>
                         </div>
                         <div class="showcase-video">
-                            <video muted loop preload="none" data-src="videos/classes_demo1.webm" class="lazy-video">
+                            <video muted loop preload="none" data-src="videos/classes_demo1.webm" class="lazy-video intrinsic-media" width="640" height="360" poster="images/placeholder.png">
                                 <source data-src="videos/classes_demo1.webm" type="video/webm">
                             </video>
                         </div>
@@ -469,11 +470,11 @@
                     </div>
                 </div>
                 
-                <div class="webstore-image-container">
+                    <div class="webstore-image-container">
                     <div class="webstore-character">
-                        <img src="images/fittr.png" alt="Exclusive Weapons" class="webstore-image" id="webstore-image">
+                        <img src="images/fittr.png" alt="Exclusive Weapons" class="webstore-image intrinsic-media" id="webstore-image" width="520" height="520" loading="lazy">
                     </div>
-                    <div class="webstore-image-caption" id="webstore-caption">
+                    <div class="webstore-image-caption reserve-text" id="webstore-caption" style="min-height:3.6rem;">
                         Exclusive weapons - Access to unique weapons and equipment not available to regular players
                     </div>
                 </div>
@@ -486,9 +487,9 @@
     <section class="discord-section">
         <div class="discord-container">
             <div class="discord-content">
-                <div class="discord-image-container">
+                    <div class="discord-image-container">
                     <div class="discord-image-3d">
-                        <img src="images/zmod-discord.jpg" alt="ZMOD Discord Community" class="discord-image">
+                        <img src="images/zmod-discord.jpg" alt="ZMOD Discord Community" class="discord-image intrinsic-media" width="640" height="360" loading="lazy">
                     </div>
                 </div>
                 <div class="discord-text-content">

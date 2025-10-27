@@ -98,6 +98,26 @@ a:hover {
     transition: opacity 0.3s ease-in-out;
 }
 
+/* Intrinsic media helpers to reserve space and avoid CLS */
+.intrinsic-media {
+    display: block; /* takes up layout space predictably */
+    max-width: 100%;
+    height: auto; /* default fallback */
+    background-color: #1a1a1a;
+    object-fit: cover; /* for videos/images with different aspect ratios */
+}
+
+/* Use aspect-ratio where width/height aren't explicitly known (modern browsers) */
+.intrinsic-media[width][height] {
+    aspect-ratio: attr(width) / attr(height); /* fallback: browsers that support attr() in CSS */
+}
+
+/* Reserve space for dynamic text elements (player counts, captions) */
+.reserve-text {
+    display: block;
+    min-height: 2.4rem; /* roughly 1.5 lines of body text to prevent shift */
+}
+
 /* Loading state */
 .lazy-video.video-loading {
     opacity: 0.7;
