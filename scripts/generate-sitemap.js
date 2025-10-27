@@ -82,6 +82,19 @@ const pages = [
         ]
     },
     {
+        loc: 'https://zgrad.gg/guides/how-to-play-homigrad',
+        file: 'guides/how-to-play-homigrad.html',
+        changefreq: 'monthly',
+        priority: '0.6',
+        images: [
+            {
+                loc: 'https://zgrad.gg/images/guides/bg/homigrad-play.jpg',
+                title: 'How to Play Homigrad',
+                caption: 'How to Play Homigrad on ZGRAD Servers'
+            }
+        ]
+    },
+    {
         loc: 'https://zgrad.gg/connect/us1',
         file: 'connect/us1.html',
         changefreq: 'monthly',
