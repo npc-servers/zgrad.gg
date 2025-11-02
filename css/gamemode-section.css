@@ -815,7 +815,7 @@
 /* Swiper Navigation Styles */
 .gamemode-swiper .swiper-button-next,
 .gamemode-swiper .swiper-button-prev {
-    color: #ffffff;
+    color: #ffffff !important;
     background: rgba(0, 0, 0, 0.7);
     border-radius: 50%;
     width: 50px;
@@ -836,10 +836,45 @@
     box-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
 }
 
-.gamemode-swiper .swiper-button-next:after,
-.gamemode-swiper .swiper-button-prev:after {
-    font-size: 18px;
-    font-weight: 700;
+.gamemode-swiper .swiper-button-next::after,
+.gamemode-swiper .swiper-button-prev::after {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    font-family: swiper-icons !important;
+    text-transform: none !important;
+    letter-spacing: 0;
+    font-variant: normal;
+}
+
+/* Fallback arrows in case font doesn't load */
+.gamemode-swiper .swiper-button-next::before,
+.gamemode-swiper .swiper-button-prev::before {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-top: 3px solid #ffffff;
+    border-right: 3px solid #ffffff;
+    top: 50%;
+    left: 50%;
+    margin-top: -6px;
+    margin-left: -8px;
+}
+
+.gamemode-swiper .swiper-button-next::before {
+    transform: rotate(45deg);
+}
+
+.gamemode-swiper .swiper-button-prev::before {
+    transform: rotate(-135deg);
+    margin-left: -4px;
+}
+
+/* Hide fallback arrows when font icons work */
+.gamemode-swiper .swiper-button-next:not(:empty)::before,
+.gamemode-swiper .swiper-button-prev:not(:empty)::before {
+    display: none;
 }
 
 .gamemode-swiper .swiper-button-disabled {
@@ -924,8 +959,21 @@
         margin-top: -30px;
     }
     
-    .gamemode-swiper .swiper-button-next:after,
-    .gamemode-swiper .swiper-button-prev:after {
-        font-size: 22px;
+    .gamemode-swiper .swiper-button-next::after,
+    .gamemode-swiper .swiper-button-prev::after {
+        font-size: 22px !important;
+    }
+    
+    /* Larger fallback arrows for bigger buttons */
+    .gamemode-swiper .swiper-button-next::before,
+    .gamemode-swiper .swiper-button-prev::before {
+        width: 14px;
+        height: 14px;
+        margin-top: -7px;
+        margin-left: -9px;
+    }
+    
+    .gamemode-swiper .swiper-button-prev::before {
+        margin-left: -5px;
     }
 }
