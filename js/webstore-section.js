@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initWebstoreAnimations() {
+    // Generate webstore perks first before animations
+    generateWebstorePerks();
+    
     // Register ScrollTrigger animations for webstore section
     if (typeof gsap !== 'undefined' && gsap.registerPlugin) {
         gsap.registerPlugin(ScrollTrigger);
@@ -197,22 +200,28 @@ function initWebstoreAnimations() {
             }
         });
 
-        perksTimeline.fromTo('.webstore-perk', 
-            {
-                opacity: 0,
-                x: -50,
-                scale: 0.9
-            },
-            {
-                opacity: 1,
-                x: 0,
-                scale: 1,
-                duration: 0.6,
-                stagger: 0.1,
-                delay: 0.5,
-                ease: "power3.out"
-            }
-        ).fromTo('.webstore-visit-button', 
+        // Check if perks exist before animating
+        const perks = document.querySelectorAll('.webstore-perk');
+        if (perks.length > 0) {
+            perksTimeline.fromTo('.webstore-perk', 
+                {
+                    opacity: 0,
+                    x: -50,
+                    scale: 0.9
+                },
+                {
+                    opacity: 1,
+                    x: 0,
+                    scale: 1,
+                    duration: 0.6,
+                    stagger: 0.1,
+                    delay: 0.5,
+                    ease: "power3.out"
+                }
+            );
+        }
+        
+        perksTimeline.fromTo('.webstore-visit-button', 
             {
                 opacity: 0,
                 y: 30,
@@ -239,26 +248,29 @@ function initWebstoreAnimations() {
             }
         });
 
-        // Animate blood splatter decoration (only once)
-        gsap.fromTo('.bloodsplatter-decoration-webstore img', 
-            {
-                clipPath: 'circle(0% at 50% 50%)',
-                filter: 'brightness(0.5) contrast(1.2)'
-            },
-            {
-                clipPath: 'circle(100% at 50% 50%)',
-                filter: 'brightness(1) contrast(1)',
-                duration: 2,
-                delay: 0.8,
-                ease: "power2.out",
-                scrollTrigger: {
-                    trigger: '.webstore-header',
-                    start: 'top 80%',
-                    end: 'bottom 20%',
-                    toggleActions: 'play none none none'
+        // Animate blood splatter decoration if it exists (only once)
+        const bloodSplatterWebstore = document.querySelector('.bloodsplatter-decoration-webstore img');
+        if (bloodSplatterWebstore) {
+            gsap.fromTo('.bloodsplatter-decoration-webstore img', 
+                {
+                    clipPath: 'circle(0% at 50% 50%)',
+                    filter: 'brightness(0.5) contrast(1.2)'
+                },
+                {
+                    clipPath: 'circle(100% at 50% 50%)',
+                    filter: 'brightness(1) contrast(1)',
+                    duration: 2,
+                    delay: 0.8,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: '.webstore-header',
+                        start: 'top 80%',
+                        end: 'bottom 20%',
+                        toggleActions: 'play none none none'
+                    }
                 }
-            }
-        );
+            );
+        }
 
         // Enhanced hover effects for webstore perks
         const webstorePerks = document.querySelectorAll('.webstore-perk');
@@ -399,7 +411,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (webstoreButton) {
         webstoreButton.addEventListener('click', function(e) {
             // Add analytics tracking here if needed
-            console.log('Webstore button clicked');
         });
     }
 });
@@ -518,9 +529,7 @@ function generateWebstorePerks() {
 }
 
 function initWebstoreCycling() {
-    // Generate perks first
-    generateWebstorePerks();
-    
+    // Perks already generated in initWebstoreAnimations
     const perks = document.querySelectorAll('.webstore-perk');
     const webstoreImage = document.getElementById('webstore-image');
     const webstoreCaption = document.getElementById('webstore-caption');

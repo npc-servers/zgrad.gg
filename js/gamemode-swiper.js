@@ -160,8 +160,6 @@ function initGamemodeSwiper() {
         // Events
         on: {
             init: function() {
-                console.log('🎮 Gamemode Swiper initialized');
-                
                 // Preload videos for initial visible slides
                 preloadVisibleVideos(this);
                 
@@ -171,19 +169,15 @@ function initGamemodeSwiper() {
             
             slideChange: function() {
                 // Handle video changes immediately when slide changes
-                console.log('🔄 Slide changing...');
                 preloadVisibleVideos(this);
                 handleSlideChange(this);
             },
             
             slideChangeTransitionEnd: function() {
                 // Ensure video is playing after transition is complete
-                console.log('✅ Slide transition ended');
-                // Double-check that the video is playing
                 const activeSlide = this.slides[this.activeIndex];
                 const video = activeSlide?.querySelector('.gamemode-video');
                 if (video && video.paused && currentVideoElement === video) {
-                    console.log('🔄 Video paused after transition, restarting...');
                     setTimeout(() => playVideo(video), 100);
                 }
             },
@@ -215,13 +209,10 @@ function initGamemodeSwiper() {
     // Setup navigation click handlers for immediate video response
     setupNavigationHandlers();
     
-    // Initialize first video after a short delay
+    // Initialize first slide after a short delay (images don't need video initialization)
     setTimeout(() => {
-        console.log('🚀 Initializing first video...');
         if (gamemodeSwiper && gamemodeSwiper.slides) {
             handleSlideChange(gamemodeSwiper);
-        } else {
-            console.warn('⚠️ Swiper or slides not found during initialization');
         }
     }, 1000);
 }
@@ -303,38 +294,33 @@ function handleSlideChange(swiper) {
     const activeSlide = swiper.slides[swiper.activeIndex];
     const video = activeSlide?.querySelector('.gamemode-video');
     
-    console.log('🔄 Slide changed to index:', swiper.activeIndex);
-    console.log('📹 Active video element:', video);
-    console.log('🎬 Video src:', video?.src || video?.dataset.src);
+    // Since we're using images instead of videos in the gamemode section,
+    // we don't need to handle video playback
+    if (!video) {
+        currentVideoElement = null;
+        return;
+    }
     
     // Pause all other videos first
     pauseAllVideos();
     
-    if (video) {
-        // Load video if not already loaded
-        if (!video.src && video.dataset.src) {
-            console.log('📥 Loading video for slide change');
-            loadVideo(video);
-            
-            // Wait for video to load before playing
-            video.addEventListener('loadeddata', function() {
-                console.log('📊 Video loaded, now playing');
-                currentVideoElement = video;
-                playVideo(video);
-            }, { once: true });
-        } else {
-            // Video is already loaded, play immediately
+    // Load video if not already loaded
+    if (!video.src && video.dataset.src) {
+        loadVideo(video);
+        
+        // Wait for video to load before playing
+        video.addEventListener('loadeddata', function() {
             currentVideoElement = video;
-            
-            // Play the active video with a small delay to ensure smooth transition
-            setTimeout(() => {
-                console.log('🎯 Playing video after slide change');
-                playVideo(video);
-            }, 200);
-        }
+            playVideo(video);
+        }, { once: true });
     } else {
-        console.warn('⚠️ No video found in active slide');
-        currentVideoElement = null;
+        // Video is already loaded, play immediately
+        currentVideoElement = video;
+        
+        // Play the active video with a small delay to ensure smooth transition
+        setTimeout(() => {
+            playVideo(video);
+        }, 200);
     }
 }
 
@@ -350,8 +336,6 @@ function pauseAllVideos() {
 
 function loadVideo(video) {
     if (!video || !video.dataset.src) return;
-    
-    console.log('🔄 Loading gamemode video:', video.dataset.src);
     
     // Simple, direct loading approach
     video.classList.add('video-loading');
@@ -370,26 +354,22 @@ function loadVideo(video) {
     video.addEventListener('loadeddata', function() {
         video.classList.remove('video-loading');
         video.classList.add('video-loaded');
-        console.log('✅ Video loaded and ready:', video.src);
     }, { once: true });
     
     video.addEventListener('error', function() {
         video.classList.remove('video-loading');
         video.classList.add('video-error');
-        console.warn('❌ Failed to load gamemode video:', video.src);
+        console.warn('Failed to load gamemode video:', video.src);
     }, { once: true });
 }
 
 function playVideo(video) {
     if (!video || video.classList.contains('video-error')) return;
     
-    console.log('🎬 Attempting to play video:', video.src || video.dataset.src);
-    
     // Pause all other videos first
     const allVideos = document.querySelectorAll('.gamemode-video');
     allVideos.forEach(otherVideo => {
         if (otherVideo !== video && !otherVideo.paused) {
-            console.log('⏸️ Pausing other video:', otherVideo.src);
             otherVideo.pause();
             otherVideo.classList.remove('video-playing');
         }
@@ -397,7 +377,6 @@ function playVideo(video) {
     
     // Load video if not loaded
     if (!video.src && video.dataset.src) {
-        console.log('📥 Loading video before playing');
         loadVideo(video);
         video.addEventListener('loadeddata', () => {
             playVideoDirectly(video);
@@ -412,11 +391,8 @@ function playVideo(video) {
 function playVideoDirectly(video) {
     if (!video) return;
     
-    console.log('▶️ Playing video directly:', video.src, 'Ready state:', video.readyState);
-    
     // Wait for video to be ready if needed
     if (video.readyState < 2) {
-        console.log('⏳ Waiting for video to be ready...');
         video.addEventListener('loadeddata', () => {
             playVideoDirectly(video);
         }, { once: true });
@@ -431,24 +407,22 @@ function playVideoDirectly(video) {
                 .then(() => {
                     video.classList.add('video-playing');
                     currentVideoElement = video;
-                    console.log('✅ Video playing successfully:', video.src);
                 })
                 .catch(error => {
-                    console.warn('❌ Video play failed:', error);
                     // Try to enable autoplay by user interaction
                     if (error.name === 'NotAllowedError') {
-                        console.log('🔇 Autoplay blocked, trying muted play...');
                         video.muted = true;
-                        video.play().catch(e => console.warn('Muted play also failed:', e));
+                        video.play().catch(e => console.warn('Video autoplay blocked:', e));
+                    } else {
+                        console.warn('Video play failed:', error);
                     }
                 });
         } else {
             video.classList.add('video-playing');
             currentVideoElement = video;
-            console.log('✅ Video playing (no promise):', video.src);
         }
     } catch (error) {
-        console.warn('❌ Video play error:', error);
+        console.warn('Video play error:', error);
     }
 }
 
@@ -468,17 +442,15 @@ function pauseVideo(video) {
 }
 
 function setupVideoManagement() {
-    // Add click handlers to videos for manual testing
+    // Add click handlers to videos for manual interaction
     const allVideos = document.querySelectorAll('.gamemode-video');
     allVideos.forEach(video => {
         video.addEventListener('click', function(e) {
             e.preventDefault();
-            console.log('🖱️ Video clicked, attempting to play:', video.src || video.dataset.src);
             playVideo(video);
         });
         
         video.addEventListener('loadeddata', function() {
-            console.log('📊 Video loadeddata event:', video.src);
             if (video !== currentVideoElement) {
                 pauseVideo(video);
             }
@@ -494,7 +466,6 @@ function setupNavigationHandlers() {
     
     if (nextButton) {
         nextButton.addEventListener('click', function() {
-            console.log('➡️ Next button clicked');
             // Force immediate slide change handling after a short delay
             setTimeout(() => {
                 if (gamemodeSwiper) {
@@ -506,7 +477,6 @@ function setupNavigationHandlers() {
     
     if (prevButton) {
         prevButton.addEventListener('click', function() {
-            console.log('⬅️ Previous button clicked');
             // Force immediate slide change handling after a short delay
             setTimeout(() => {
                 if (gamemodeSwiper) {
@@ -520,7 +490,6 @@ function setupNavigationHandlers() {
         pagination.addEventListener('click', function(e) {
             // Check if clicked element is a pagination bullet
             if (e.target.classList.contains('swiper-pagination-bullet')) {
-                console.log('🔘 Pagination bullet clicked');
                 // Force immediate slide change handling after a short delay
                 setTimeout(() => {
                     if (gamemodeSwiper) {
@@ -540,7 +509,6 @@ function setupIntersectionObserver() {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 // Swiper is visible, allow autoplay
-                console.log('🎮 Gamemode swiper entered viewport');
                 if (gamemodeSwiper && gamemodeSwiper.autoplay) {
                     gamemodeSwiper.autoplay.start();
                 }
@@ -551,7 +519,6 @@ function setupIntersectionObserver() {
                         const activeSlide = gamemodeSwiper.slides[gamemodeSwiper.activeIndex];
                         const video = activeSlide?.querySelector('.gamemode-video');
                         if (video) {
-                            console.log('▶️ Resuming video playback for visible swiper');
                             currentVideoElement = video; // Re-establish the current video
                             playVideo(video);
                         }
@@ -559,7 +526,6 @@ function setupIntersectionObserver() {
                 }, 100);
             } else {
                 // Swiper is not visible, pause autoplay and ALL gamemode videos
-                console.log('🎮 Gamemode swiper left viewport - pausing all videos');
                 if (gamemodeSwiper && gamemodeSwiper.autoplay) {
                     gamemodeSwiper.autoplay.stop();
                 }
@@ -582,7 +548,6 @@ function pauseAllGamemodeVideos() {
     
     allGamemodeVideos.forEach(video => {
         if (!video.paused) {
-            console.log('⏸️ Pausing gamemode video (out of view):', video.src || video.dataset.src);
             pauseVideo(video);
         }
     });
@@ -748,7 +713,6 @@ window.GamemodeSwiper = {
 // Handle page visibility changes
 document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
-        console.log('📱 Page hidden - pausing all gamemode videos');
         // Pause all gamemode videos when page is hidden
         pauseAllGamemodeVideos();
         
@@ -756,7 +720,6 @@ document.addEventListener('visibilitychange', () => {
             gamemodeSwiper.autoplay.stop();
         }
     } else {
-        console.log('📱 Page visible - checking swiper visibility');
         // Only resume if swiper is actually visible
         const swiperContainer = document.querySelector('.gamemode-swiper');
         if (swiperContainer) {
@@ -764,7 +727,6 @@ document.addEventListener('visibilitychange', () => {
             const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
             
             if (isVisible) {
-                console.log('📱 Swiper is visible - resuming autoplay and video');
                 if (gamemodeSwiper && gamemodeSwiper.autoplay) {
                     gamemodeSwiper.autoplay.start();
                 }
