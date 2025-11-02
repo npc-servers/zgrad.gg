@@ -1,4 +1,46 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize background slideshow
+    const initBackgroundSlideshow = () => {
+        const images = document.querySelectorAll('.landing-background-image');
+        let currentIndex = 0;
+        
+        if (images.length === 0) return;
+        
+        // Function to change to the next image
+        const nextImage = () => {
+            const oldImage = images[currentIndex];
+            
+            // Hold the final animated state while fading out
+            oldImage.classList.remove('active');
+            oldImage.classList.add('animating');
+            
+            // Move to next image
+            currentIndex = (currentIndex + 1) % images.length;
+            const newImage = images[currentIndex];
+            
+            // Remove animating class and reset transform for the new image
+            newImage.classList.remove('animating');
+            newImage.style.transform = '';
+            
+            // Small delay before starting next image to ensure smooth transition
+            setTimeout(() => {
+                newImage.classList.add('active');
+            }, 50);
+            
+            // After fade completes, reset the old image
+            setTimeout(() => {
+                oldImage.classList.remove('animating');
+                oldImage.style.transform = '';
+            }, 2500);
+        };
+        
+        // Change image every 9 seconds (animation is 10s, starts fading at 9s)
+        setInterval(nextImage, 9000);
+    };
+    
+    // Initialize slideshow
+    initBackgroundSlideshow();
+    
     // Trigger landing animations on page load
     const initLandingAnimations = () => {
         // Check if user prefers reduced motion
