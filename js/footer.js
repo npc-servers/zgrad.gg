@@ -10,7 +10,7 @@ const footerConfig = {
         { href: 'servers', text: 'Servers' },
         { href: 'rules', text: 'Rules' },
         { href: 'https://discord.gg/npc', text: 'Discord', track: 'discord' },
-        { href: 'https://store.npcz.gg', text: 'Webstore', track: 'webstore' }
+        { href: 'https://store.zmod.gg', text: 'Webstore', track: 'webstore' }
     ],
     
     // ZMOD category links

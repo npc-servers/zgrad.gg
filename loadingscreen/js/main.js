@@ -201,7 +201,7 @@ var config = {
     // Logo subtext messages (below the logo)
     logoSubtextMessages: [
         'Your feedback is important, make suggestions and vote on our Discord!',
-        'You can support us on our webstore, <a href="https://store.npcz.gg" target="_blank">store.npcz.gg</a>!',
+        'You can support us on our webstore, <a href="https://store.zmod.gg" target="_blank">store.zmod.gg</a>!',
         'Fart',
         'We release updates nearly every day!',
         'Coming from social media? Be sure to join our Discord!'
@@ -215,7 +215,7 @@ var config = {
         },
         {
             title: "TIRED OF FULL SERVERS?",
-            subtitle: "Get a reserved slot on our webstore: https://store.npcz.gg!"
+            subtitle: "Get a reserved slot on our webstore: https://store.zmod.gg!"
         },
         {
             title: "DID YOU KNOW?", 
@@ -231,7 +231,7 @@ var config = {
         },
         {
             title: "GET CUSTOM PLAYERMODELS!",
-            subtitle: "Go to https://store.npcz.gg to unlock our custom playermodel system! (You also get so much more!!!)"
+            subtitle: "Go to https://store.zmod.gg to unlock our custom playermodel system! (You also get so much more!!!)"
         },
         {
             title: "GIVEAWAYS!?!?",

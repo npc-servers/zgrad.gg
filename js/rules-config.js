@@ -4,7 +4,7 @@ const rulesConfig = {
     subtitle: [
         "discord.gg/npc",
         "zgrad.gg", 
-        "store.npcz.gg"
+        "store.zmod.gg"
     ],
     rules: [
         {
@@ -163,7 +163,7 @@ function generateSubtitleHTML() {
         const subtitleData = [
             { text: 'discord.gg/npc', action: 'discord' },
             { text: 'zgrad.gg', action: 'website' },
-            { text: 'store.npcz.gg', action: 'store' }
+            { text: 'store.zmod.gg', action: 'store' }
         ];
 
         subtitleData.forEach(item => {
