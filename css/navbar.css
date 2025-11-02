@@ -309,7 +309,7 @@
 }
 
 .mobile-menu .nav-link:hover {
-    color: var(--accent-color);
+    color: #ff0000;
 }
 
 .mobile-menu .nav-link:last-child {
