@@ -173,41 +173,47 @@ class NavbarManager {
     }
 
     setActiveLink() {
-        // Get current page info
-        const currentPath = window.location.pathname;
-        const isIndex = currentPath === '/' || currentPath === '/index.html' || currentPath === '';
-        
-        // Remove active class from all links (both desktop and mobile)
-        const allLinks = document.querySelectorAll('.nav-link');
-        allLinks.forEach(link => {
-            link.classList.remove('active');
-        });
-        
-        // If on index page, check which section to highlight
-        if (isIndex) {
-            // Check if scrolled to help section
-            const helpSection = document.getElementById('help-section');
-            if (helpSection) {
-                const helpRect = helpSection.getBoundingClientRect();
-                const isHelpInView = helpRect.top < window.innerHeight && helpRect.bottom > 0;
-                
-                if (isHelpInView) {
-                    // Show HELP as active
-                    const helpLinks = document.querySelectorAll('a[href="/#help-section"]');
-                    helpLinks.forEach(link => {
-                        link.classList.add('active');
-                    });
-                    return;
-                }
-            }
-            
-            // Otherwise show HOME as active
-            const homeLinks = document.querySelectorAll('a[href="/"]');
-            homeLinks.forEach(link => {
-                link.classList.add('active');
-            });
-            return;
+        // Use requestAnimationFrame to batch layout reads
+        if (this.activeLinkRAF) {
+            cancelAnimationFrame(this.activeLinkRAF);
         }
+        
+        this.activeLinkRAF = requestAnimationFrame(() => {
+            // Get current page info
+            const currentPath = window.location.pathname;
+            const isIndex = currentPath === '/' || currentPath === '/index.html' || currentPath === '';
+            
+            // Remove active class from all links (both desktop and mobile)
+            const allLinks = document.querySelectorAll('.nav-link');
+            allLinks.forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // If on index page, check which section to highlight
+            if (isIndex) {
+                // Check if scrolled to help section
+                const helpSection = document.getElementById('help-section');
+                if (helpSection) {
+                    const helpRect = helpSection.getBoundingClientRect();
+                    const isHelpInView = helpRect.top < window.innerHeight && helpRect.bottom > 0;
+                    
+                    if (isHelpInView) {
+                        // Show HELP as active
+                        const helpLinks = document.querySelectorAll('a[href="/#help-section"]');
+                        helpLinks.forEach(link => {
+                            link.classList.add('active');
+                        });
+                        return;
+                    }
+                }
+                
+                // Otherwise show HOME as active
+                const homeLinks = document.querySelectorAll('a[href="/"]');
+                homeLinks.forEach(link => {
+                    link.classList.add('active');
+                });
+                return;
+            }
         
         // If on servers page, activate SERVERS
         if (currentPath.includes('/servers')) {
@@ -218,14 +224,15 @@ class NavbarManager {
             return;
         }
         
-        // If on rules page, activate RULES
-        if (currentPath.includes('/rules')) {
-            const rulesLinks = document.querySelectorAll('a[href="/rules"]');
-            rulesLinks.forEach(link => {
-                link.classList.add('active');
-            });
-            return;
-        }
+            // If on rules page, activate RULES
+            if (currentPath.includes('/rules')) {
+                const rulesLinks = document.querySelectorAll('a[href="/rules"]');
+                rulesLinks.forEach(link => {
+                    link.classList.add('active');
+                });
+                return;
+            }
+        });
     }
 }
 
