@@ -332,6 +332,15 @@ class EnhancedVideoManager {
     }
 
     setup() {
+        // Handle landing background video separately (not lazy loaded)
+        const landingVideo = document.querySelector('.landing-background-video');
+        if (landingVideo && !landingVideo.classList.contains('lazy-video')) {
+            // Landing video loads immediately, just set up play/pause control
+            this.setupLandingVideoControl(landingVideo);
+            // Mark as loaded
+            this.loadedVideos.add(landingVideo);
+        }
+
         // Check if Vanilla-LazyLoad is available
         if (typeof LazyLoad === 'undefined') {
             console.error('Vanilla-LazyLoad not found. Please include the library.');
@@ -370,6 +379,29 @@ class EnhancedVideoManager {
         this.startPerformanceMonitoring();
         
         const videoCount = document.querySelectorAll('.lazy-video').length;
+    }
+
+    setupLandingVideoControl(video) {
+        // Simple observer for landing video (always plays when visible)
+        const landingObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    this.playVideo(video);
+                } else {
+                    this.pauseVideo(video);
+                }
+            });
+        }, {
+            threshold: 0,
+            rootMargin: '0px'
+        });
+        
+        landingObserver.observe(video);
+        
+        // Start playing immediately
+        setTimeout(() => {
+            this.playVideo(video);
+        }, 100);
     }
 
     handleVideoLoaded(video) {

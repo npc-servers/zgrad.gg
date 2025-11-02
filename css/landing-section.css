@@ -26,6 +26,8 @@ overflow:hidden;
 box-sizing:border-box;
 /* Add padding for small height devices */
 padding:40px 0;
+/* Prevent unexpected reflows */
+contain: layout style;
 }
 
 .landing-background-video {
@@ -37,6 +39,24 @@ height:100%;
 object-fit:cover;
 z-index:0;
 opacity:0.4;
+/* Prevent layout shift during load - CRITICAL for CLS */
+aspect-ratio: 16 / 9;
+/* Create placeholder while loading */
+background-color: #1a1a1a;
+/* Force layout immediately */
+display: block;
+/* Prevent repaints during load */
+will-change: auto;
+/* Use content-visibility for better rendering performance */
+content-visibility: auto;
+/* Prevent unexpected reflows */
+contain: layout style paint size;
+/* Ensure video takes up space immediately */
+min-height: 100%;
+min-width: 100%;
+/* Prevent any size changes */
+max-height: 100%;
+max-width: 100%;
 }
 
 .landing-section::before {
@@ -96,7 +116,8 @@ pointer-events: none;
 position:relative;
 z-index:3;
 text-align:center;
-max-width:90%;
+max-width:92%;
+width: 100%;
 display:flex;
 flex-direction:column;
 align-items:center;
@@ -104,10 +125,25 @@ justify-content:center;
 min-height:80vh;
 }
 
+/* Cap maximum width on large screens */
+@media (min-width: 1200px) {
+  .landing-container {
+    max-width: 1100px;
+  }
+}
+
+@media (min-width: 1600px) {
+  .landing-container {
+    max-width: 1200px;
+  }
+}
+
 .logo-container{
 margin-bottom:140px;
 position:relative;
 z-index:2;
+/* Prevent unexpected reflows */
+contain: layout style;
 }
 
 .logo-container .landing-buttons-inline {
@@ -118,31 +154,35 @@ margin-top: 30px;
 }
 
 .landing-logo{
-max-width:50%;
+max-width:80%;
 height:auto;
 filter:drop-shadow(0 0 8px rgba(var(--highlight-color-rgb), 0.25));
 transition:transform 0.3s ease;
 opacity: 0;
 animation: logoGlow 0.8s ease-out forwards;
 animation-delay: 0s;
+/* Prevent layout shift */
+aspect-ratio: auto;
+/* Reserve minimum space */
+min-width: 200px;
 }
 
 /* Add responsive sizing for logo on larger displays */
 @media (min-width: 1200px) {
   .landing-logo {
-    max-width: 40%;
+    max-width: 70%;
   }
 }
 
 @media (min-width: 1600px) {
   .landing-logo {
-    max-width: 35%;
+    max-width: 65%;
   }
 }
 
 @media (min-width: 1920px) {
   .landing-logo {
-    max-width: 30%;
+    max-width: 60%;
   }
 }
 
@@ -920,7 +960,7 @@ position: relative;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 1200px;
+    gap: 60px;
 }
 
 .landing-buttons-inline {
@@ -933,7 +973,6 @@ position: relative;
     align-items: stretch;
     gap: 20px;
     width: 100%;
-    max-width: 1200px;
 }
 
 .join-button-container::before {

@@ -1,5 +1,5 @@
 /* Reset and Global Styles */
-/* Import Oxium font */
+/* Import Oxium font with optimized display strategy */
 @import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700&display=swap');
 
 * {
@@ -42,6 +42,12 @@ body {
     line-height: 1.6;
     color: var(--text-color);
     background-color: var(--dark-bg);
+    /* Prevent font-swap layout shift */
+    font-display: swap;
+    /* Improve text rendering stability */
+    text-rendering: optimizeSpeed;
+    /* Prevent unexpected reflows */
+    overflow-x: hidden;
 }
 
 a {
@@ -59,6 +65,8 @@ a:hover {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
+    /* Prevent unexpected reflows */
+    contain: layout style;
 }
 
 /* Button Styles */
@@ -96,6 +104,10 @@ a:hover {
 .lazy-video {
     background-color: #1a1a1a;
     transition: opacity 0.3s ease-in-out;
+    /* Prevent layout shift during load */
+    aspect-ratio: 16 / 9;
+    /* Reserve space */
+    min-height: 100%;
 }
 
 /* Loading state */

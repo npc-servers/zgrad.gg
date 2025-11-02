@@ -10,6 +10,11 @@
     border-bottom: none;
     padding: 0;
     box-shadow: none;
+    /* Prevent layout shift */
+    height: 70px;
+    min-height: 70px;
+    /* Prevent unexpected reflows */
+    contain: layout style;
 }
 
 .navbar-container {
@@ -31,6 +36,9 @@
     padding: 0;
     gap: 0;
     flex: 0;
+    /* Prevent layout shift */
+    min-height: 70px;
+    align-items: center;
 }
 
 .nav-item {

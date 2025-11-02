@@ -17,7 +17,16 @@
     <link rel="preload" href="css/main.css" as="style">
     <link rel="preload" href="css/landing-section.css" as="style">
     <link rel="preload" href="images/logos/zgrad-logo.png" as="image">
-    <link rel="preload" href="videos/background.webm" as="video" type="video/webm">
+    <!-- Preload LCP video as highest priority -->
+    <link rel="preload" href="videos/background.webm" as="video" type="video/webm" fetchpriority="high">
+    
+    <!-- Preconnect to Google Fonts for faster loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Preload critical font weights to prevent FOUT/FOIT -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700&display=swap">
+    <link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/oxanium/v21/RrQQboN_4-DfSD7yK5HhKTb5Gws.woff2" crossorigin>
     
     <!-- DNS Prefetch for External Resources -->
     <link rel="dns-prefetch" href="//unpkg.com">
@@ -219,13 +228,13 @@
     
     <main>
     <section class="landing-section" id="home">
-        <video class="landing-background-video lazy-video" autoplay muted loop preload="none" playsinline data-src="videos/background.webm">
-            <source data-src="videos/background.webm" type="video/webm">
+        <video class="landing-background-video" autoplay muted loop playsinline preload="auto" poster="" fetchpriority="high" width="1920" height="1080" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;">
+            <source src="videos/background.webm" type="video/webm">
         </video>
         <div class="vignette-overlay"></div>
         <div class="landing-container">
             <div class="logo-container">
-                <img src="images/logos/zgrad-logo.png" alt="ZGrad.gg Logo" class="landing-logo">
+                <img src="images/logos/zgrad-logo.png" alt="ZGrad.gg Logo" class="landing-logo" width="800" height="400">
                 <div class="landing-subtitle">THE HOMIGRAD NETWORK</div>
                 <div class="landing-buttons-inline">
                     <a href="servers" class="landing-button landing-button-view-servers" id="viewServers">VIEW SERVERS
