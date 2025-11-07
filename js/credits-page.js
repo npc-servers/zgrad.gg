@@ -8,7 +8,7 @@ const creditsData = {
     'Management': [
         {
             name: 'Charity',
-            roles: ['Co-Lead', 'Founder', 'Lead Web Developer']
+            roles: ['Co-Lead', 'Founder', 'Lead Web Developer', 'Project Manager']
         },
         {
             name: 'Desu',
