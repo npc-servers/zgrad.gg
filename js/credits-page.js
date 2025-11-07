@@ -223,56 +223,6 @@ function setupSmoothScroll() {
     });
 }
 
-/**
- * Add animation to credits sections on scroll
- */
-function setupScrollAnimations() {
-    // Use Intersection Observer for efficient animation triggering
-    if (!('IntersectionObserver' in window)) {
-        // Fallback: show all sections if IntersectionObserver not supported
-        document.querySelectorAll('.credits-section').forEach(section => {
-            section.style.opacity = '1';
-        });
-        return;
-    }
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.animation = 'fadeInUp 0.6s ease-out forwards';
-                observer.unobserve(entry.target);
-            }
-        });
-    }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -100px 0px'
-    });
-    
-    // Observe all credit sections
-    document.querySelectorAll('.credits-section').forEach(section => {
-        observer.observe(section);
-    });
-}
-
-/**
- * Add fade-in-up animation keyframe
- */
-function addAnimationKeyframes() {
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    `;
-    document.head.appendChild(style);
-}
 
 // Initialize page when DOM is ready
 if (document.readyState === 'loading') {
@@ -280,14 +230,10 @@ if (document.readyState === 'loading') {
         initializeCreditsPage();
         setupMobileMenu();
         setupSmoothScroll();
-        addAnimationKeyframes();
-        setupScrollAnimations();
     });
 } else {
     initializeCreditsPage();
     setupMobileMenu();
     setupSmoothScroll();
-    addAnimationKeyframes();
-    setupScrollAnimations();
 }
 
