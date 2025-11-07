@@ -9,6 +9,7 @@ const footerConfig = {
         { href: '/', text: 'Home' },
         { href: 'servers', text: 'Servers' },
         { href: 'rules', text: 'Rules' },
+        { href: 'credits', text: 'Credits' },
         { href: 'https://discord.gg/npc', text: 'Discord', track: 'discord' },
         { href: 'https://store.zmod.gg', text: 'Webstore', track: 'webstore' }
     ],

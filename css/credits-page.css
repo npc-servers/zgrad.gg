@@ -1,0 +1,548 @@
+/* Credits Page Styles */
+.credits-page {
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    background-color: var(--dark-bg);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* Hide scrollbars ONLY for GMod clients */
+body.gmod-client .credits-page {
+    /* Hide scrollbar for webkit browsers */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+body.gmod-client .credits-page::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+/* Hide scrollbars on body and html for credits page while keeping scrollable - GMod only */
+body.gmod-client {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+body.gmod-client::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+html.gmod-client {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+html.gmod-client::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+.credits-page::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('../images/textures/cooltexturebetter.png') center/auto repeat;
+    opacity: 0.2;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.credits-splatter {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 110vw;
+    height: 500px;
+    background: url('../images/textures/rules-splatter.png') center top/cover no-repeat;
+    pointer-events: none;
+    z-index: 1;
+    mask: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0) 80%);
+    -webkit-mask: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0) 80%);
+}
+
+/* GMod fallback for blood splatter - use same approach as index page */
+body.gmod-client .credits-splatter {
+    mask: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 20%, rgba(0,0,0,0.6) 45%, rgba(0,0,0,0.2) 65%, rgba(0,0,0,0) 80%);
+    -webkit-mask: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 20%, rgba(0,0,0,0.6) 45%, rgba(0,0,0,0.2) 65%, rgba(0,0,0,0) 80%);
+    background: url('../images/textures/rules-splatter.png') center top/cover no-repeat;
+}
+
+.credits-title {
+    position: relative;
+    z-index: 10;
+    padding: 40px;
+    margin-top: 0;
+    text-align: center;
+    margin-top: 70px;
+}
+
+.credits-title-text {
+    font-size: 6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin: 0;
+    color: #ffffff;
+    text-shadow: 
+        0 0 5px rgba(255, 71, 87, 0.8),
+        0 0 10px rgba(255, 71, 87, 0.6),
+        0 0 15px rgba(255, 71, 87, 0.4),
+        0 0 20px rgba(255, 71, 87, 0.2),
+        2px 2px 4px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.credits-title-text::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    filter: blur(6px);
+    opacity: 0.25;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.credits-subtitle {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.9);
+    position: relative;
+    z-index: 10;
+    font-weight: 600;
+    text-shadow: 
+        1px 1px 2px rgba(0, 0, 0, 0.8),
+        0 0 4px rgba(0, 0, 0, 0.5);
+    margin-top: 15px;
+    letter-spacing: 0.5px;
+}
+
+.credits-container {
+    position: relative;
+    z-index: 10;
+    padding: 20px 40px 40px;
+    width: 100%;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+}
+
+
+/* Credits Section */
+.credits-section {
+    margin-bottom: 50px;
+    position: relative;
+    z-index: 10;
+}
+
+.credits-section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-color);
+    text-shadow: 
+        0 0 5px rgba(255, 71, 87, 0.8),
+        0 0 10px rgba(255, 71, 87, 0.6),
+        0 0 15px rgba(255, 71, 87, 0.4),
+        0 0 20px rgba(255, 71, 87, 0.2),
+        2px 2px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    z-index: 1;
+}
+
+.credits-section-title::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 600px;
+    height: 250px;
+    background: url('../images/textures/credits-splatter.png') center/contain no-repeat;
+    opacity: 1;
+    z-index: -1;
+    pointer-events: none;
+    mask: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0) 100%);
+    -webkit-mask: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0) 100%);
+}
+
+.credits-section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 300px;
+    height: 2px;
+    background: linear-gradient(to right, #ff0000 0%, #ff0000 40%, rgba(255, 0, 0, 0) 100%);
+}
+
+/* Credits Grid - Simple list layout */
+.credits-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.credit-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: var(--transition);
+    position: relative;
+    gap: 30px;
+}
+
+.credit-item:last-child {
+    border-bottom: none;
+}
+
+.credit-item:hover {
+    background: rgba(255, 255, 255, 0.02);
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 0 -10px;
+}
+
+.credit-content {
+    position: relative;
+    z-index: 1;
+    display: contents;
+}
+
+.credit-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-color);
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.credit-roles {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: #999;
+    font-weight: 400;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+    text-align: right;
+    flex: 1;
+    min-width: 0;
+}
+
+.credit-role {
+    display: inline;
+    background: none;
+    color: #999;
+    padding: 0;
+    border-radius: 0;
+    font-size: 0.95rem;
+    margin-right: 0;
+    margin-bottom: 0;
+    border: none;
+    transition: var(--transition);
+}
+
+.credit-item:hover .credit-roles {
+    color: #ccc;
+}
+
+.credit-role:not(:last-child)::after {
+    content: ', ';
+}
+
+
+/* High Resolution Scaling - 1920p and above */
+@media (min-width: 1920px) and (min-height: 1080px) {
+    .credits-splatter {
+        width: 120vw;
+        height: 600px;
+    }
+    
+    .credits-title-text {
+        font-size: clamp(6.5rem, 7vw, 7rem);
+    }
+    
+    .credits-subtitle {
+        font-size: clamp(1.3rem, 1.4vw, 1.4rem);
+    }
+    
+    .credits-container {
+        padding: 25px 50px 50px;
+        max-width: 1200px;
+    }
+    
+    .credits-section-title {
+        font-size: clamp(2.7rem, 2.9vw, 2.9rem);
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+    }
+    
+    .credit-item {
+        padding: 20px 0;
+    }
+    
+    .credit-name {
+        font-size: clamp(1.2rem, 1.3vw, 1.3rem);
+    }
+    
+    .credit-roles {
+        font-size: clamp(1rem, 1.1vw, 1.1rem);
+    }
+}
+
+/* 2K and 1440p scaling */
+@media (min-width: 2560px) and (min-height: 1440px) {
+    .credits-splatter {
+        width: 130vw;
+        height: 750px;
+    }
+    
+    .credits-title-text {
+        font-size: clamp(8rem, 8.5vw, 8.5rem);
+    }
+    
+    .credits-subtitle {
+        font-size: clamp(1.5rem, 1.6vw, 1.6rem);
+    }
+    
+    .credits-container {
+        padding: 30px 60px 60px;
+        max-width: 1400px;
+    }
+    
+    .credits-section-title {
+        font-size: clamp(3rem, 3.2vw, 3.2rem);
+        margin-bottom: 35px;
+        padding-bottom: 25px;
+    }
+    
+    .credit-item {
+        padding: 25px 0;
+    }
+    
+    .credit-name {
+        font-size: clamp(1.4rem, 1.6vw, 1.6rem);
+    }
+    
+    .credit-roles {
+        font-size: clamp(1.1rem, 1.2vw, 1.2rem);
+    }
+}
+
+/* Ultra-wide and 4K scaling */
+@media (min-width: 3440px) and (min-height: 1440px) {
+    .credits-splatter {
+        width: 140vw;
+        height: 900px;
+    }
+    
+    .credits-title-text {
+        font-size: 10rem;
+    }
+    
+    .credits-subtitle {
+        font-size: 1.8rem;
+    }
+    
+    .credits-container {
+        padding: 40px 80px 80px;
+        max-width: 1600px;
+    }
+    
+    .credits-section-title {
+        font-size: 3.6rem;
+        margin-bottom: 40px;
+        padding-bottom: 30px;
+    }
+    
+    .credit-item {
+        padding: 30px 0;
+    }
+    
+    .credit-name {
+        font-size: 1.8rem;
+    }
+    
+    .credit-roles {
+        font-size: 1.4rem;
+    }
+}
+
+/* 8K and extreme high resolution scaling */
+@media (min-width: 7680px) and (min-height: 4320px) {
+    .credits-splatter {
+        width: 160vw;
+        height: 1200px;
+    }
+    
+    .credits-title-text {
+        font-size: 16rem;
+    }
+    
+    .credits-subtitle {
+        font-size: 2.5rem;
+    }
+    
+    .credits-container {
+        padding: 80px 120px 120px;
+        max-width: 2400px;
+    }
+    
+    .credits-section-title {
+        font-size: 5.2rem;
+        margin-bottom: 50px;
+        padding-bottom: 40px;
+    }
+    
+    .credit-item {
+        padding: 40px 0;
+    }
+    
+    .credit-name {
+        font-size: 2.4rem;
+    }
+    
+    .credit-roles {
+        font-size: 2rem;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 1400px) {
+    .credits-title-text {
+        font-size: 5rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .credits-title-text {
+        font-size: 4.5rem;
+    }
+    
+    .credits-section-title {
+        font-size: 2rem;
+    }
+    
+    .credits-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .credits-title-text {
+        font-size: 4rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .credits-title {
+        padding: 20px;
+        margin-top: 60px;
+    }
+
+    .credits-title-text {
+        font-size: 3rem;
+        text-align: center;
+    }
+    
+    .credits-subtitle {
+        font-size: 1rem;
+        margin-top: 10px;
+    }
+    
+    .credits-container {
+        padding: 20px;
+    }
+    
+    .credits-section-title {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+    }
+    
+    .credit-item {
+        gap: 15px;
+        padding: 12px 0;
+        flex-wrap: wrap;
+    }
+    
+    .credit-name {
+        font-size: 0.95rem;
+        flex-shrink: 0;
+    }
+    
+    .credit-roles {
+        font-size: 0.8rem;
+        text-align: right;
+        color: #888;
+        flex: 1;
+        text-align: right;
+    }
+}
+
+@media (max-width: 480px) {
+    .credits-title {
+        padding: 15px;
+        margin-top: 50px;
+    }
+
+    .credits-title-text {
+        font-size: 2.5rem;
+        text-align: center;
+    }
+    
+    .credits-subtitle {
+        font-size: 0.95rem;
+        margin-top: 8px;
+    }
+    
+    .credits-container {
+        padding: 15px;
+    }
+    
+    .credits-section-title {
+        font-size: 1.3rem;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+    }
+    
+    .credit-item {
+        gap: 10px;
+        padding: 10px 0;
+        flex-wrap: wrap;
+    }
+    
+    .credit-name {
+        font-size: 0.9rem;
+        flex-shrink: 0;
+    }
+    
+    .credit-roles {
+        font-size: 0.75rem;
+        text-align: right;
+        color: #777;
+        flex: 1;
+    }
+}
+
