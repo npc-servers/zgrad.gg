@@ -65,7 +65,7 @@ const footerConfig = {
     // Company information
     company: {
         name: 'ZMOD, LLC',
-        logo: 'images/logos/zgrad-logo-clean.png',
+        logo: 'images/logos/zgrad-logo.png',
         logoAlt: 'ZGrad.gg Logo'
     }
 };
