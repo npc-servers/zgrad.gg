@@ -12,7 +12,7 @@ const creditsData = {
         },
         {
             name: 'Desu',
-            roles: ['Co-Lead', 'Lead Developer']
+            roles: ['Co-Lead', 'Lead Developer', 'Director']
         },
         {
             name: 'Redox',
