@@ -14,11 +14,9 @@
     <link rel="icon" href="favicon.ico">
     
     <!-- Preload Critical Resources -->
-    <link rel="preload" href="css/main.css" as="style">
-    <link rel="preload" href="css/landing-section.css" as="style">
-    <link rel="preload" href="images/logos/zgrad-logo.png" as="image">
+    <link rel="preload" href="/images/logos/zgrad-logo.png" as="image">
     <!-- Preload first background image as highest priority -->
-    <link rel="preload" href="images/loadingscreen/homigrad-essence.jpg" as="image" fetchpriority="high">
+    <link rel="preload" href="/images/loadingscreen/homigrad-essence.jpg" as="image" fetchpriority="high">
     
     <!-- Preconnect to Google Fonts for faster loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -46,28 +44,7 @@
     <meta name="twitter:title" content="ZGRAD - The Homigrad Network | Garry's Mod Servers">
     <meta name="twitter:description" content="ZGRAD - THE HOMIGRAD NETWORK. The most chaotic experience in Garry's Mod. Join our servers for intense gunplay, physics-based gameplay, and custom gamemodes.">
     <meta name="twitter:image" content="https://zgrad.gg/images/logos/zgrad-logo.png">
-    <!-- Critical CSS - Above the fold only -->
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/navbar.css">
-    <link rel="stylesheet" href="css/landing-section.css">
-    
-    <!-- Non-critical CSS - Defer for below-the-fold content -->
-    <link rel="stylesheet" href="css/homigrad-section.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="css/features-section.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="css/gamemode-section.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="css/webstore-section.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="css/discord-section.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="css/help-section.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="css/footer.css" media="print" onload="this.media='all'">
-    <noscript>
-        <link rel="stylesheet" href="css/homigrad-section.css">
-        <link rel="stylesheet" href="css/features-section.css">
-        <link rel="stylesheet" href="css/gamemode-section.css">
-        <link rel="stylesheet" href="css/webstore-section.css">
-        <link rel="stylesheet" href="css/discord-section.css">
-        <link rel="stylesheet" href="css/help-section.css">
-        <link rel="stylesheet" href="css/footer.css">
-    </noscript>
+    <!-- CSS is now bundled via Vite in /src/main.js -->
     
     <!-- Lenis Smooth Scroll - Deferred -->
     <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.11/dist/lenis.css" media="print" onload="this.media='all'">
@@ -135,7 +112,7 @@
     <!-- Navigation Bar -->
     <nav class="navbar">
         <a href="https://zmod.gg" class="navbar-logo" aria-label="ZMOD Logo" target="_blank" rel="noopener">
-            <img src="images/logos/zmod_logo.svg" alt="ZMOD Logo" class="navbar-logo-img">
+            <img src="/images/logos/zmod_logo.svg" alt="ZMOD Logo" class="navbar-logo-img">
         </a>
         <div class="navbar-container">
             <ul class="navbar-nav">
@@ -247,20 +224,20 @@
     <main>
     <section class="landing-section" id="home">
         <div class="landing-background-slideshow">
-            <img src="images/loadingscreen/homigrad-essence.jpg" alt="Background" class="landing-background-image active" loading="eager" fetchpriority="high">
-            <img src="images/loadingscreen/street-war.jpg" alt="Background" class="landing-background-image" loading="lazy">
-            <img src="images/loadingscreen/massacre.jpg" alt="Background" class="landing-background-image" loading="lazy">
-            <img src="images/loadingscreen/bloody-mess.jpg" alt="Background" class="landing-background-image" loading="lazy">
-            <img src="images/loadingscreen/kill-room.jpg" alt="Background" class="landing-background-image" loading="lazy">
-            <img src="images/loadingscreen/bathroom.jpg" alt="Background" class="landing-background-image" loading="lazy">
-            <img src="images/loadingscreen/ptsd.jpg" alt="Background" class="landing-background-image" loading="lazy">
-            <img src="images/loadingscreen/traitor.jpg" alt="Background" class="landing-background-image" loading="lazy">
-            <img src="images/loadingscreen/fatboy.jpg" alt="Background" class="landing-background-image" loading="lazy">
+            <img src="/images/loadingscreen/homigrad-essence.jpg" alt="Background" class="landing-background-image active" loading="eager" fetchpriority="high">
+            <img src="/images/loadingscreen/street-war.jpg" alt="Background" class="landing-background-image" loading="lazy">
+            <img src="/images/loadingscreen/massacre.jpg" alt="Background" class="landing-background-image" loading="lazy">
+            <img src="/images/loadingscreen/bloody-mess.jpg" alt="Background" class="landing-background-image" loading="lazy">
+            <img src="/images/loadingscreen/kill-room.jpg" alt="Background" class="landing-background-image" loading="lazy">
+            <img src="/images/loadingscreen/bathroom.jpg" alt="Background" class="landing-background-image" loading="lazy">
+            <img src="/images/loadingscreen/ptsd.jpg" alt="Background" class="landing-background-image" loading="lazy">
+            <img src="/images/loadingscreen/traitor.jpg" alt="Background" class="landing-background-image" loading="lazy">
+            <img src="/images/loadingscreen/fatboy.jpg" alt="Background" class="landing-background-image" loading="lazy">
         </div>
         <div class="vignette-overlay"></div>
         <div class="landing-container">
             <div class="logo-container">
-                <img src="images/logos/zgrad-logo.png" alt="ZGrad.gg Logo" class="landing-logo" width="800" height="400" fetchpriority="high">
+                <img src="/images/logos/zgrad-logo.png" alt="ZGrad.gg Logo" class="landing-logo" width="800" height="400" fetchpriority="high">
                 <div class="landing-subtitle">THE HOMIGRAD NETWORK</div>
                 <div class="landing-buttons-inline">
                     <a href="servers" class="landing-button landing-button-view-servers" id="viewServers">VIEW SERVERS
@@ -326,7 +303,7 @@
         </div>
         <div class="homigrad-content">
             <div class="bloodsplatter-decoration-left">
-                <img src="images/textures/bloodsplatter2.png" alt="Homigrad blood splatter decoration">
+                <img src="/images/textures/bloodsplatter2.png" alt="Homigrad blood splatter decoration">
             </div>
             <div class="homigrad-description">
                 <h2 class="description-title">CHAOS AT ITS FINEST</h2>
@@ -340,7 +317,7 @@
                 <div class="features-title-container">
                     <h2 class="features-title">SO, SO MANY FEATURES</h2>
                     <div class="bloodsplatter-decoration-right">
-                        <img src="images/textures/bloodsplatter1.png" alt="Gaming features blood splatter decoration">
+                        <img src="/images/textures/bloodsplatter1.png" alt="Gaming features blood splatter decoration">
                     </div>
                 </div>
                 <div class="features-list" id="features-list">
@@ -350,7 +327,7 @@
             <div class="feature-showcases">
                 <div class="showcase-item">
                     <div class="bloodsplatter-decoration-ragdoll">
-                        <img src="images/textures/bloodsplatter3.png" alt="Ragdoll climbing blood splatter decoration">
+                        <img src="/images/textures/bloodsplatter3.png" alt="Ragdoll climbing blood splatter decoration">
                     </div>
                     <div class="showcase-content">
                         <div class="showcase-text">
@@ -358,15 +335,15 @@
                             <div class="showcase-description">Scale up buildings, grab, tackle, and drag people, grab onto objects, and even shoot while climbing or mid-air, Max Payne style!</div>
                         </div>
                         <div class="showcase-video">
-                            <video muted loop preload="none" data-src="videos/climbing.mp4" class="lazy-video">
-                                <source data-src="videos/climbing.mp4" type="video/mp4">
+                            <video muted loop preload="none" data-src="/videos/climbing.mp4" class="lazy-video">
+                                <source data-src="/videos/climbing.mp4" type="video/mp4">
                             </video>
                         </div>
                     </div>
                 </div>
                 <div class="showcase-item">
                     <div class="bloodsplatter-decoration-medical">
-                        <img src="images/textures/bloodsplatter5.png" alt="Medical system blood splatter decoration">
+                        <img src="/images/textures/bloodsplatter5.png" alt="Medical system blood splatter decoration">
                     </div>
                     <div class="showcase-content">
                         <div class="showcase-text">
@@ -374,15 +351,15 @@
                             <div class="showcase-description">Getting hurt has consequences. You can bleed out, get knocked out, and die if you don't banadage wounds or get blood bags. CPR can be used to revive people, but it's not always successful.</div>
                         </div>
                         <div class="showcase-video">
-                            <video muted loop preload="none" data-src="videos/medical_demo1.mp4" class="lazy-video">
-                                <source data-src="videos/medical_demo1.mp4" type="video/mp4">
+                            <video muted loop preload="none" data-src="/videos/medical_demo1.mp4" class="lazy-video">
+                                <source data-src="/videos/medical_demo1.mp4" type="video/mp4">
                             </video>
                         </div>
                     </div>
                 </div>
                 <div class="showcase-item">
                     <div class="bloodsplatter-decoration-gore">
-                        <img src="images/textures/bloodsplatter6.png" alt="Gore system blood splatter decoration">
+                        <img src="/images/textures/bloodsplatter6.png" alt="Gore system blood splatter decoration">
                     </div>
                     <div class="showcase-content">
                         <div class="showcase-text">
@@ -390,15 +367,15 @@
                             <div class="showcase-description">Getting shot can rip off limbs, and falling from a high place can explode you on impact. Losing a limb isn't a death sentence, but it can be a major disadvantage.</div>
                         </div>
                         <div class="showcase-video">
-                            <video muted loop preload="none" data-src="videos/gore_demo1.mp4" class="lazy-video">
-                                <source data-src="videos/gore_demo1.mp4" type="video/mp4">
+                            <video muted loop preload="none" data-src="/videos/gore_demo1.mp4" class="lazy-video">
+                                <source data-src="/videos/gore_demo1.mp4" type="video/mp4">
                             </video>
                         </div>
                     </div>
                 </div>
                 <div class="showcase-item">
                     <div class="bloodsplatter-decoration-cw">
-                        <img src="images/textures/bloodsplatter-cw.png" alt="Custom weapons blood splatter decoration">
+                        <img src="/images/textures/bloodsplatter-cw.png" alt="Custom weapons blood splatter decoration">
                     </div>
                     <div class="showcase-content">
                         <div class="showcase-text">
@@ -406,15 +383,15 @@
                             <div class="showcase-description">Utilize our arsenal of 40+ firearms and 20+ melee weapons to wreak havoc on other players. In our upcoming update, experience completely custom animated weapons with thirdperson animations, customization, and gun skins!</div>
                         </div>
                         <div class="showcase-video">
-                            <video muted loop preload="none" data-src="videos/weapon_demo1.webm" class="lazy-video">
-                                <source data-src="videos/weapon_demo1.webm" type="video/webm">
+                            <video muted loop preload="none" data-src="/videos/weapon_demo1.webm" class="lazy-video">
+                                <source data-src="/videos/weapon_demo1.webm" type="video/webm">
                             </video>
                         </div>
                     </div>
                 </div>
                 <div class="showcase-item">
                     <div class="bloodsplatter-decoration-classes">
-                        <img src="images/textures/bloodsplatter-classes.png" alt="Character classes blood splatter decoration">
+                        <img src="/images/textures/bloodsplatter-classes.png" alt="Character classes blood splatter decoration">
                     </div>
                     <div class="showcase-content">
                         <div class="showcase-text">
@@ -422,8 +399,8 @@
                             <div class="showcase-description">Our gamemodes have classes! We've created more than a dozen custom classes, each with their own unique equipment.</div>
                         </div>
                         <div class="showcase-video">
-                            <video muted loop preload="none" data-src="videos/classes_demo1.webm" class="lazy-video">
-                                <source data-src="videos/classes_demo1.webm" type="video/webm">
+                            <video muted loop preload="none" data-src="/videos/classes_demo1.webm" class="lazy-video">
+                                <source data-src="/videos/classes_demo1.webm" type="video/webm">
                             </video>
                         </div>
                     </div>
@@ -444,7 +421,7 @@
         <div class="gamemode-container">
             <div class="gamemode-header">
                 <div class="bloodsplatter-decoration-header-center">
-                    <img src="images/textures/bloodsplatter-gm.png" alt="Gamemode section blood splatter decoration">
+                    <img src="/images/textures/bloodsplatter-gm.png" alt="Gamemode section blood splatter decoration">
                 </div>
                 <h2 class="gamemode-main-title">HOMIGRAD'S BREAD AND BUTTER: GAMEMODES</h2>
                 <div class="gamemode-description">
@@ -472,10 +449,10 @@
     <section class="webstore-section">
         <div class="webstore-gradient-bg"></div>
         <div class="dollar-splatter-background">
-            <img src="images/textures/dollar-splatter.png" alt="Dollar Splatter Background">
+            <img src="/images/textures/dollar-splatter.png" alt="Dollar Splatter Background">
         </div>
         <div class="bloodsplatter-decoration-webstore-top">
-            <img src="images/textures/bloody-line.png" alt="Bloody Line">
+            <img src="/images/textures/bloody-line.png" alt="Bloody Line">
         </div>
         <div class="webstore-container">
             <div class="webstore-header">
@@ -506,7 +483,7 @@
                 
                 <div class="webstore-image-container">
                     <div class="webstore-character">
-                        <img src="images/fittr.png" alt="Exclusive Weapons" class="webstore-image" id="webstore-image">
+                        <img src="/images/fittr.jpg" alt="Exclusive Weapons" class="webstore-image" id="webstore-image">
                     </div>
                     <div class="webstore-image-caption" id="webstore-caption">
                         Exclusive weapons - Access to unique weapons and equipment not available to regular players
@@ -523,7 +500,7 @@
             <div class="discord-content">
                 <div class="discord-image-container">
                     <div class="discord-image-3d">
-                        <img src="images/zmod-discord.jpg" alt="ZMOD Discord Community" class="discord-image">
+                        <img src="/images/zmod-discord.jpg" alt="ZMOD Discord Community" class="discord-image">
                     </div>
                 </div>
                 <div class="discord-text-content">
@@ -606,26 +583,16 @@
         <!-- Footer content will be generated by JavaScript -->
     </footer>
 
-    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollToPlugin.min.js"></script>
-    <script defer src="https://unpkg.com/lenis@1.3.11/dist/lenis.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.min.js"></script>
-    <!-- Swiper JS -->
-    <script defer src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <!-- lenis-smooth-scroll.js removed - functionality handled by external library -->
-    <script defer src="js/main.js"></script>
-          <script defer src="js/homigrad-section.js"></script>
-      <script defer src="js/landing-section.js"></script>
-
-    <script defer src="js/help-section.js"></script>
-    <script defer src="js/webstore-section.js"></script>
-    <script defer src="js/discord-section.js"></script>
-    <script defer src="js/footer.js"></script>
-    <script defer src="js/bloodsplatter-animations.js"></script>
-    <script defer src="js/showcase-animations.js"></script>
-    <script defer src="js/gamemode-swiper.js"></script>
-    <script defer src="js/navbar.js"></script>
-    <!-- <script src="js/performance-monitor.js"></script> Uncomment for performance debugging -->
+    <!-- External Libraries (loaded via CDN for better caching) -->
+    <!-- Note: Not using 'defer' because the Vite module needs these available immediately -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollToPlugin.min.js"></script>
+    <script src="https://unpkg.com/lenis@1.3.11/dist/lenis.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    
+    <!-- Main module entry point (Vite) -->
+    <script type="module" src="/src/main.js"></script>
 </body>
 </html> 

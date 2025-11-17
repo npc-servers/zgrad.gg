@@ -33,11 +33,7 @@
         }
     </script>
     
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/guide-template.css">
-
-    <!-- Metricool Tracking Script -->
-    <script src="../js/tracking.js"></script>
+    <!-- CSS and JS bundled via Vite in /src/guides.js -->
 
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
@@ -160,7 +156,11 @@
         </div>
     </div>
 
+    <!-- External Libraries (loaded via CDN for better caching) -->
+    <!-- Note: Not using 'defer' because the Vite module needs these available immediately -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="../js/guide-template.js"></script>
+    
+    <!-- Main module entry point (Vite) -->
+    <script type="module" src="/src/guides.js"></script>
 </body>
 </html>

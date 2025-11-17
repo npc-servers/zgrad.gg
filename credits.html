@@ -42,18 +42,13 @@
         }
     </script>
     
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/navbar.css">
-    <link rel="stylesheet" href="css/credits-page.css">
-    <link rel="stylesheet" href="css/footer.css">
-
-    <!-- Metricool Tracking Script -->
+    <!-- CSS and JS bundled via Vite in /src/credits.js -->
 </head>
 <body>
     <!-- Navigation Bar -->
     <nav class="navbar">
         <a href="https://zmod.gg" class="navbar-logo" aria-label="ZMOD Logo" target="_blank" rel="noopener">
-            <img src="images/logos/zmod_logo.svg" alt="ZMOD Logo" class="navbar-logo-img">
+            <img src="/images/logos/zmod_logo.svg" alt="ZMOD Logo" class="navbar-logo-img">
         </a>
         <div class="navbar-container">
             <ul class="navbar-nav">
@@ -178,9 +173,8 @@
     </footer>
     </div>
 
-    <script src="js/credits-page.js"></script>
-    <script src="js/footer.js"></script>
-    <script src="js/navbar.js"></script>
+    <!-- Main module entry point (Vite) -->
+    <script type="module" src="/src/credits.js"></script>
 </body>
 </html>
 

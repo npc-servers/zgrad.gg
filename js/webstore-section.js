@@ -468,7 +468,7 @@ const webstorePerkData = [
         icon: '👔',
         title: 'CUSTOM PLAYERMODELS',
         description: 'Get access to Fittr, our in-house playermodel loader. Use any model you want from the Workshop!',
-        image: 'images/fittr.png',
+        image: 'images/fittr.jpg',
         alt: 'Custom Playermodel',
         caption: 'Our system, Fittr. Use any model you want!'
     },

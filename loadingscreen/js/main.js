@@ -243,7 +243,7 @@ var config = {
     // Background images for rotation
     backgroundImages: [
         '../../images/homigrad-render.png',
-        '../../images/homigrad-render2.png',
+        '../../images/homigrad-render2.jpg',
         '../../images/loadingscreen/bathroom.jpg',
         '../../images/loadingscreen/bloody-mess.jpg',
         '../../images/loadingscreen/eighteenth.jpg',

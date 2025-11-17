@@ -14,8 +14,6 @@
     <link rel="icon" href="/favicon.ico">
     
     <!-- Preload Critical Resources -->
-    <link rel="preload" href="/css/main.css" as="style">
-    <link rel="preload" href="/css/404-page.css" as="style">
     <link rel="preload" href="/images/logos/zgrad-logo.png" as="image">
     
     <!-- DNS Prefetch for External Resources -->
@@ -39,12 +37,7 @@
     <meta name="twitter:description" content="The page you're looking for doesn't exist. Return to ZGRAD - THE HOMIGRAD NETWORK.">
     <meta name="twitter:image" content="https://zgrad.gg/images/logos/zgrad-logo.png">
     
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="/css/main.css">
-    <link rel="stylesheet" href="/css/404-page.css">
-
-    <!-- Metricool Tracking Script -->
-    <script src="/js/tracking.js"></script>
+    <!-- CSS and JS bundled via Vite in /src/404.js -->
 
 </head>
 <body>
@@ -89,7 +82,7 @@
         </section>
     </main>
 
-
-    <script src="/js/404-page.js"></script>
+    <!-- Main module entry point (Vite) -->
+    <script type="module" src="/src/404.js"></script>
 </body>
 </html>

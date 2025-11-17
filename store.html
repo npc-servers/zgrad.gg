@@ -80,11 +80,7 @@
         window.location.replace("https://store.zmod.gg");
     </script>
     
-    <!-- Stylesheet -->
-    <link rel="stylesheet" href="css/redirect-page.css">
-    
-    <!-- Metricool Tracking Script -->
-    <script src="js/tracking.js"></script>
+    <!-- CSS and JS bundled via Vite in /src/redirect.js -->
 </head>
 <body>
     <div class="redirect-container">
@@ -99,6 +95,9 @@
         <meta http-equiv="refresh" content="0; url=https://store.zmod.gg">
         <p>If you are not redirected automatically, <a href="https://store.zmod.gg">click here</a>.</p>
     </noscript>
+    
+    <!-- Main module entry point (Vite) -->
+    <script type="module" src="/src/redirect.js"></script>
 </body>
 </html>
 

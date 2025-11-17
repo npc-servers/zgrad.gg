@@ -41,10 +41,7 @@
         }
     </script>
     
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/rules-page.css">
-
-    <!-- Metricool Tracking Script -->
+    <!-- CSS and JS bundled via Vite in /src/rules.js -->
 </head>
 <body>
     <div class="rules-page">
@@ -76,6 +73,7 @@
         </div>
     </div>
 
-    <script src="js/rules-config.js"></script>
+    <!-- Main module entry point (Vite) -->
+    <script type="module" src="/src/rules.js"></script>
 </body>
 </html>

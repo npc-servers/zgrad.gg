@@ -41,16 +41,12 @@
         }
     </script>
     
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/servers-page.css">
-
-    <!-- Metricool Tracking Script -->
-    <script src="js/tracking.js"></script>
+    <!-- CSS and JS bundled via Vite in /src/servers.js -->
 </head>
 <body>
     <div class="servers-page">
         <div class="server-title-splatter">
-            <img src="images/textures/server-title-splatter.png" alt="Server Title Splatter">
+            <img src="/images/textures/server-title-splatter.png" alt="Server Title Splatter">
         </div>
         <div class="servers-title">
             <h1 class="servers-title-text" data-text="SERVERS">SERVERS</h1>
@@ -80,7 +76,7 @@
                     <div class="mobile-ad-content">
                         <div class="mobile-ad-main">
                             <div class="mobile-ad-logo">
-                                <img src="images/logos/physgun.png" alt="Physgun" class="mobile-physgun-logo">
+                                <img src="/images/logos/physgun.png" alt="Physgun" class="mobile-physgun-logo">
                             </div>
                             <p class="mobile-ad-subtitle">Premium hosting from $5.87/mo</p>
                         </div>
@@ -135,7 +131,7 @@
             </div>
             <div class="notification-content" id="notificationContent">
                 <div class="notification-body">
-                    <p class="affiliate-text"><img src="images/logos/physgun.png" alt="Physgun" class="physgun-logo"></p>
+                    <p class="affiliate-text"><img src="/images/logos/physgun.png" alt="Physgun" class="physgun-logo"></p>
                     <p class="affiliate-description">We're proud Physgun affiliates! Get premium game hosting with unbeatable performance for as little as $5.87/mo!</p>
                     <div class="discount-highlight">
                         <span class="discount-badge">30% OFF</span>
@@ -238,9 +234,12 @@
         </div>
     </div>
     
+    <!-- External Libraries (loaded via CDN for better caching) -->
+    <!-- Note: Not using 'defer' because the Vite module needs these available immediately -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="js/bloodsplatter-animations.js"></script>
-    <script src="js/servers-page.js"></script>
+    
+    <!-- Main module entry point (Vite) -->
+    <script type="module" src="/src/servers.js"></script>
 </body>
 </html> 
