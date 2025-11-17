@@ -72,6 +72,7 @@ export default defineConfig({
         '/connect/us2',
         '/connect/us3',
         '/connect/us4',
+        '/guides',
         '/guides/ban-appeal',
         '/guides/player-report',
         '/guides/how-to-play-homigrad'
@@ -93,6 +94,7 @@ export default defineConfig({
         connectUs3: resolve(__dirname, 'connect/us3.html'),
         connectUs4: resolve(__dirname, 'connect/us4.html'),
         // Guide pages
+        guidesIndex: resolve(__dirname, 'guides/index.html'),
         banAppeal: resolve(__dirname, 'guides/ban-appeal.html'),
         playerReport: resolve(__dirname, 'guides/player-report.html'),
         howToPlay: resolve(__dirname, 'guides/how-to-play-homigrad.html'),
@@ -107,7 +109,8 @@ export default defineConfig({
             { src: 'favicon.ico', dest: 'dist' },
             { src: 'robots.txt', dest: 'dist' },
             { src: 'sitemap.xml', dest: 'dist' },
-            { src: 'CNAME', dest: 'dist' }
+            { src: 'CNAME', dest: 'dist' },
+            { src: 'guides/manifest.json', dest: 'dist/guides' }
           ],
           hook: 'writeBundle'
         })

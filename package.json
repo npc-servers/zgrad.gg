@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "npm run generate:guides && vite build",
+    "preview": "vite preview",
+    "generate:guides": "node scripts/generate-guides-manifest.js",
+    "generate:sitemap": "node scripts/generate-sitemap.js"
   },
   "devDependencies": {
     "rollup-plugin-copy": "^3.5.0",

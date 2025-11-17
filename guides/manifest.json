@@ -1,0 +1,20 @@
+{
+  "generated": "2025-11-17T06:51:06.401Z",
+  "guides": [
+    {
+      "file": "ban-appeal.html",
+      "slug": "ban-appeal",
+      "url": "/guides/ban-appeal"
+    },
+    {
+      "file": "how-to-play-homigrad.html",
+      "slug": "how-to-play-homigrad",
+      "url": "/guides/how-to-play-homigrad"
+    },
+    {
+      "file": "player-report.html",
+      "slug": "player-report",
+      "url": "/guides/player-report"
+    }
+  ]
+}
