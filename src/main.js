@@ -19,6 +19,9 @@ import '../css/footer.css';
 // - Swiper
 // - Vanilla LazyLoad
 
+// Import tracking
+import '../js/tracking.js';
+
 // Main.js contains GSAP Manager and Video Manager classes
 import '../js/main.js';
 
