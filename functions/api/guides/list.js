@@ -15,19 +15,30 @@ export async function onRequest(context) {
     return secureJsonResponse({ error: 'Rate limit exceeded' }, 429);
   }
 
-  // Require authentication for CMS guide list
+  // Check if user is authenticated (optional for this endpoint)
   const session = await validateSession(request, env);
-  if (!session) {
-    return secureJsonResponse({ error: 'Unauthorized - Authentication required' }, 401);
-  }
 
   try {
-    // Return all guides (including drafts) for authenticated CMS users
-    const { results } = await env.DB.prepare(
-      'SELECT id, slug, title, description, thumbnail, author_id, author_name, author_avatar, status, created_at, updated_at FROM guides ORDER BY created_at DESC'
-    ).all();
+    let query;
+    
+    if (session) {
+      // Authenticated users (CMS) - show all guides including drafts
+      query = env.DB.prepare(
+        'SELECT id, slug, title, description, thumbnail, author_id, author_name, author_avatar, status, created_at, updated_at FROM guides ORDER BY created_at DESC'
+      );
+    } else {
+      // Public users - only show published guides
+      query = env.DB.prepare(
+        'SELECT id, slug, title, description, thumbnail, author_id, author_name, author_avatar, status, created_at, updated_at FROM guides WHERE status = ? ORDER BY created_at DESC'
+      ).bind('published');
+    }
 
-    return secureJsonResponse({ guides: results }, 200);
+    const { results } = await query.all();
+
+    return secureJsonResponse({ 
+      guides: results,
+      is_authenticated: !!session 
+    }, 200);
   } catch (error) {
     console.error('Error fetching guides:', error);
     return secureJsonResponse({ error: 'Failed to fetch guides' }, 500);
