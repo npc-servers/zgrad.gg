@@ -13,6 +13,91 @@ let editor = null;
 let currentGuideId = null;
 let guides = [];
 
+// Custom Modal Functions
+function showConfirmModal(message, onConfirm) {
+    const modal = document.createElement('div');
+    modal.className = 'cms-custom-modal-overlay';
+    modal.innerHTML = `
+        <div class="cms-custom-modal">
+            <div class="cms-custom-modal-header">
+                <h3>Confirm Action</h3>
+            </div>
+            <div class="cms-custom-modal-body">
+                <p>${message}</p>
+            </div>
+            <div class="cms-custom-modal-actions">
+                <button class="cms-btn cms-btn-secondary" id="customModalCancel">Cancel</button>
+                <button class="cms-btn cms-btn-danger" id="customModalConfirm">Confirm</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    
+    document.getElementById('customModalConfirm').onclick = () => {
+        document.body.removeChild(modal);
+        onConfirm();
+    };
+    
+    document.getElementById('customModalCancel').onclick = () => {
+        document.body.removeChild(modal);
+    };
+    
+    modal.onclick = (e) => {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    };
+}
+
+function showPromptModal(message, placeholder, onSubmit) {
+    const modal = document.createElement('div');
+    modal.className = 'cms-custom-modal-overlay';
+    modal.innerHTML = `
+        <div class="cms-custom-modal">
+            <div class="cms-custom-modal-header">
+                <h3>${message}</h3>
+            </div>
+            <div class="cms-custom-modal-body">
+                <input type="text" class="cms-input" id="customModalInput" placeholder="${placeholder}" value="${placeholder}">
+            </div>
+            <div class="cms-custom-modal-actions">
+                <button class="cms-btn cms-btn-secondary" id="customModalCancel">Cancel</button>
+                <button class="cms-btn cms-btn-primary cms-btn-success" id="customModalSubmit">OK</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    
+    const input = document.getElementById('customModalInput');
+    input.focus();
+    input.select();
+    
+    const submit = () => {
+        const value = input.value.trim();
+        if (value) {
+            document.body.removeChild(modal);
+            onSubmit(value);
+        }
+    };
+    
+    document.getElementById('customModalSubmit').onclick = submit;
+    document.getElementById('customModalCancel').onclick = () => {
+        document.body.removeChild(modal);
+    };
+    
+    input.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+            submit();
+        }
+    };
+    
+    modal.onclick = (e) => {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    };
+}
+
 // Initialize CMS on page load
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('[CMS] Initializing CMS application...');
@@ -186,9 +271,9 @@ function displayGuides(guides) {
     document.querySelectorAll('.delete-guide-btn').forEach(btn => {
         btn.addEventListener('click', async (e) => {
             const guideId = e.target.closest('.delete-guide-btn').dataset.id;
-            if (confirm('Are you sure you want to delete this guide?')) {
+            showConfirmModal('Are you sure you want to delete this guide? This action cannot be undone.', async () => {
                 await deleteGuide(guideId);
-            }
+            });
         });
     });
 }
@@ -197,22 +282,35 @@ function createGuideCard(guide) {
     const createdDate = new Date(guide.created_at).toLocaleDateString();
     const thumbnailUrl = guide.thumbnail || '/images/placeholder.png';
     
+    const viewCount = guide.view_count || 0;
+    
     return `
         <div class="cms-guide-card">
             <img src="${thumbnailUrl}" alt="${escapeHtml(guide.title)}" class="cms-guide-thumbnail">
             <div class="cms-guide-info">
                 <div class="cms-guide-header">
                     <h3 class="cms-guide-title">${escapeHtml(guide.title)}</h3>
-                    <span class="cms-guide-status ${guide.status}">${guide.status}</span>
+                    <div class="cms-guide-header-meta">
+                        <span class="cms-guide-status ${guide.status}">${guide.status}</span>
+                        <span class="cms-guide-views">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            ${viewCount.toLocaleString()}
+                        </span>
+                    </div>
                 </div>
                 <p class="cms-guide-description">${escapeHtml(guide.description || '')}</p>
-                <div class="cms-guide-meta">
-                    <span>Created: ${createdDate}</span>
-                    <span>Slug: ${guide.slug}</span>
-                </div>
-                <div class="cms-guide-actions">
-                    <button class="cms-btn cms-btn-secondary cms-guide-btn edit-guide-btn" data-id="${guide.id}">Edit</button>
-                    <button class="cms-btn cms-btn-danger cms-guide-btn delete-guide-btn" data-id="${guide.id}">Delete</button>
+                <div class="cms-guide-footer">
+                    <div class="cms-guide-meta">
+                        <span>Created: ${createdDate}</span>
+                        <span>Slug: ${guide.slug}</span>
+                    </div>
+                    <div class="cms-guide-actions">
+                        <button class="cms-btn cms-btn-secondary cms-guide-btn edit-guide-btn" data-id="${guide.id}">Edit</button>
+                        <button class="cms-btn cms-btn-danger cms-guide-btn delete-guide-btn" data-id="${guide.id}">Delete</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -696,9 +794,50 @@ function displayGuideAuthorship(guide, contributors, isAuthor) {
     authorshipDiv.id = 'guideAuthorshipInfo';
     authorshipDiv.className = 'cms-authorship-info';
     
+    // Build metadata items for existing guides
+    let metadataHTML = '';
+    if (guide.created_at && guide.updated_at) {
+        const createdDate = new Date(guide.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        const viewCount = guide.view_count || 0;
+        
+        metadataHTML = `
+            <div class="cms-metadata-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <span class="cms-metadata-value">${viewCount.toLocaleString()}</span>
+            </div>
+            <div class="cms-metadata-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span class="cms-metadata-value">${createdDate}</span>
+            </div>
+        `;
+        
+        // Only show updated date if it's different from created date
+        if (guide.updated_at !== guide.created_at) {
+            const updatedDate = new Date(guide.updated_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            metadataHTML += `
+                <div class="cms-metadata-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span class="cms-metadata-value">${updatedDate}</span>
+                </div>
+            `;
+        }
+    }
+    
     let html = `
         <div class="cms-authorship-header">
             <h4>Guide Information</h4>
+            ${metadataHTML ? `<div class="cms-metadata-section">${metadataHTML}</div>` : ''}
         </div>
         <div class="cms-authorship-content">
             <div class="cms-author-section">
@@ -771,10 +910,8 @@ function setupCustomToolbar() {
             <line x1="9" y1="15" x2="15" y2="15"></line>
         </svg>`,
         () => {
-            const title = prompt('Enter step title:', 'Step Title');
-            if (title) {
-                editor.chain().focus().setStepCard({ title }).run();
-            }
+            // Insert step card with default title, user can edit it directly in the editor
+            editor.chain().focus().setStepCard({ title: 'Step Title' }).run();
         },
         'cms-btn-purple'
     );
@@ -801,10 +938,9 @@ function setupCustomToolbar() {
             <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
         </svg>`,
         () => {
-            const url = prompt('Enter URL:');
-            if (url) {
+            showPromptModal('Enter URL:', 'https://', (url) => {
                 editor.chain().focus().setLink({ href: url }).run();
-            }
+            });
         },
         'cms-btn-cyan'
     );

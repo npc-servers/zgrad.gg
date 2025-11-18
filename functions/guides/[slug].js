@@ -34,6 +34,16 @@ export async function onRequest(context) {
       return env.ASSETS.fetch(request);
     }
 
+    // Check if we should count this view
+    const shouldCountView = checkAndSetViewCookie(request, slug);
+    
+    if (shouldCountView) {
+      // Increment view count asynchronously (don't wait for it)
+      incrementViewCount(env.DB, guide.id).catch(err => {
+        console.error('Error incrementing view count:', err);
+      });
+    }
+
     // Fetch the template HTML file
     const templateHTML = await fetchTemplate(env.ASSETS);
     
@@ -45,7 +55,19 @@ export async function onRequest(context) {
     // Inject guide data into template
     const html = injectGuideData(templateHTML, guide);
 
-    return htmlResponse(html);
+    // Create response with view tracking cookie if needed
+    const response = htmlResponse(html);
+    
+    if (shouldCountView) {
+      const cookieName = `guide_view_${slug}`;
+      const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+      response.headers.append(
+        'Set-Cookie',
+        `${cookieName}=1; Expires=${expires.toUTCString()}; Path=/; SameSite=Lax`
+      );
+    }
+
+    return response;
 
   } catch (error) {
     console.error('Error rendering guide:', error);
@@ -90,4 +112,42 @@ async function fetchTemplate(assets) {
     console.error('Error fetching template:', error);
     return null;
   }
+}
+
+/**
+ * Check if view should be counted based on cookie
+ * @param {Request} request - The incoming request
+ * @param {string} slug - Guide slug
+ * @returns {boolean} - True if view should be counted
+ */
+function checkAndSetViewCookie(request, slug) {
+  const cookieHeader = request.headers.get('Cookie');
+  if (!cookieHeader) {
+    return true; // No cookies, count the view
+  }
+
+  const cookieName = `guide_view_${slug}`;
+  const cookies = cookieHeader.split(';').map(c => c.trim());
+  
+  for (const cookie of cookies) {
+    if (cookie.startsWith(`${cookieName}=`)) {
+      return false; // Cookie exists, don't count view
+    }
+  }
+  
+  return true; // Cookie doesn't exist, count the view
+}
+
+/**
+ * Increment view count for a guide
+ * @param {D1Database} db - D1 database instance
+ * @param {string} guideId - Guide ID
+ * @returns {Promise<void>}
+ */
+async function incrementViewCount(db, guideId) {
+  await db.prepare(
+    'UPDATE guides SET view_count = view_count + 1 WHERE id = ?'
+  )
+    .bind(guideId)
+    .run();
 }

@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS guides (
   author_name TEXT NOT NULL,
   author_avatar TEXT,
   status TEXT NOT NULL DEFAULT 'draft', -- draft, published
+  view_count INTEGER NOT NULL DEFAULT 0,
   created_at INTEGER NOT NULL,
   updated_at INTEGER NOT NULL
 );
@@ -55,6 +56,9 @@ CREATE INDEX IF NOT EXISTS idx_contributors_contributed_at ON guide_contributors
 -- Migration: Add last_edited_by fields to guides table
 -- ALTER TABLE guides ADD COLUMN last_edited_by_id TEXT;
 -- ALTER TABLE guides ADD COLUMN last_edited_by_name TEXT;
+
+-- Migration: Add view_count field to guides table
+-- ALTER TABLE guides ADD COLUMN view_count INTEGER NOT NULL DEFAULT 0;
 
 
 
