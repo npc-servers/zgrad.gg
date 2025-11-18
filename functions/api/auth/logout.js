@@ -17,7 +17,7 @@ export async function onRequest(context) {
   const response = Response.redirect(new URL('/', url.origin), 302);
   response.headers.append(
     'Set-Cookie',
-    'session_id=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0'
+    'session_id=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0'
   );
 
   return response;

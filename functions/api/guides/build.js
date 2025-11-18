@@ -1,13 +1,14 @@
 // API endpoint to trigger static site rebuild
 // This endpoint fetches all published guides and returns them in a format
 // suitable for static site generation
+import { secureJsonResponse, sanitizeHtml, isIpAllowed } from '../../_lib/security-utils.js';
 
 export async function onRequest(context) {
   const { request, env } = context;
 
   // Only allow POST requests
   if (request.method !== 'POST') {
-    return new Response('Method not allowed', { status: 405 });
+    return secureJsonResponse({ error: 'Method not allowed' }, 405);
   }
 
   // Verify build secret (set in Cloudflare Pages environment)
@@ -15,8 +16,23 @@ export async function onRequest(context) {
   const expectedSecret = env.BUILD_SECRET;
 
   if (!authHeader || authHeader !== `Bearer ${expectedSecret}`) {
-    return new Response('Unauthorized', { status: 401 });
+    console.warn('Build endpoint: Invalid authorization');
+    return secureJsonResponse({ error: 'Unauthorized' }, 401);
   }
+
+  // IP allowlisting (optional but recommended)
+  const clientIP = request.headers.get('CF-Connecting-IP') || 
+                   request.headers.get('X-Forwarded-For') || 
+                   'unknown';
+  
+  const allowedIPs = env.BUILD_ALLOWED_IPS ? env.BUILD_ALLOWED_IPS.split(',') : [];
+  if (allowedIPs.length > 0 && !isIpAllowed(clientIP, allowedIPs)) {
+    console.warn('Build endpoint: IP not allowed', clientIP);
+    return secureJsonResponse({ error: 'Forbidden - IP not allowed' }, 403);
+  }
+
+  // Log build request for audit
+  console.log('Build triggered by IP:', clientIP, 'at', new Date().toISOString());
 
   try {
     // Fetch all published guides
@@ -26,43 +42,40 @@ export async function onRequest(context) {
       .bind('published')
       .all();
 
-    // Generate HTML for each guide
-    const generatedGuides = guides.map(guide => ({
-      slug: guide.slug,
-      title: guide.title,
-      description: guide.description,
-      content: guide.content,
-      thumbnail: guide.thumbnail,
-      author: {
-        id: guide.author_id,
-        name: guide.author_name,
-        avatar: guide.author_avatar,
-      },
-      createdAt: guide.created_at,
-      updatedAt: guide.updated_at,
-      html: generateGuideHTML(guide),
-    }));
+    // Generate HTML for each guide with sanitization
+    const generatedGuides = guides.map(guide => {
+      // Sanitize content to prevent XSS
+      const sanitizedContent = sanitizeHtml(guide.content);
+      
+      return {
+        slug: guide.slug,
+        title: guide.title,
+        description: guide.description,
+        content: sanitizedContent,
+        thumbnail: guide.thumbnail,
+        author: {
+          id: guide.author_id,
+          name: guide.author_name,
+          avatar: guide.author_avatar,
+        },
+        createdAt: guide.created_at,
+        updatedAt: guide.updated_at,
+        html: generateGuideHTML({
+          ...guide,
+          content: sanitizedContent
+        }),
+      };
+    });
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        guides: generatedGuides,
-        count: generatedGuides.length,
-      }),
-      {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
+    return secureJsonResponse({
+      success: true,
+      guides: generatedGuides,
+      count: generatedGuides.length,
+      generatedAt: Date.now(),
+    }, 200);
   } catch (error) {
     console.error('Error generating guides:', error);
-    return new Response(
-      JSON.stringify({ error: 'Failed to generate guides' }),
-      {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
+    return secureJsonResponse({ error: 'Failed to generate guides' }, 500);
   }
 }
 
@@ -77,6 +90,10 @@ function generateGuideHTML(guide) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="origin-when-cross-origin">
+    
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; font-src 'self' data:; connect-src 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
     
     <!-- SEO Meta Tags -->
     <title>${escapeHtml(guide.title)} - ZGRAD Help Guide</title>

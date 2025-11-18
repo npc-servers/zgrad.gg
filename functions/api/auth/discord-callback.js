@@ -76,9 +76,40 @@ export async function onRequest(context) {
       });
     }
 
+    // Clean up old sessions for this user (limit to 3 active sessions)
+    const existingSessions = await env.DB.prepare(
+      'SELECT id FROM sessions WHERE user_id = ? ORDER BY created_at DESC'
+    )
+      .bind(userData.id)
+      .all();
+
+    // Delete sessions beyond the limit
+    if (existingSessions.results && existingSessions.results.length >= 3) {
+      const sessionsToDelete = existingSessions.results.slice(2); // Keep newest 2, delete rest
+      for (const session of sessionsToDelete) {
+        await env.DB.prepare('DELETE FROM sessions WHERE id = ?').bind(session.id).run();
+      }
+    }
+
     // Create session
     const sessionId = crypto.randomUUID();
     const expiresAt = Date.now() + (7 * 24 * 60 * 60 * 1000); // 7 days
+
+    // Encrypt sensitive tokens before storing
+    let encryptedAccessToken = access_token;
+    let encryptedRefreshToken = refresh_token;
+    
+    if (env.ENCRYPTION_KEY) {
+      try {
+        const { encryptData } = await import('../../_lib/security-utils.js');
+        encryptedAccessToken = await encryptData(access_token, env.ENCRYPTION_KEY);
+        if (refresh_token) {
+          encryptedRefreshToken = await encryptData(refresh_token, env.ENCRYPTION_KEY);
+        }
+      } catch (error) {
+        console.error('Token encryption failed, storing unencrypted:', error);
+      }
+    }
 
     // Store session in D1 database
     await env.DB.prepare(
@@ -90,19 +121,25 @@ export async function onRequest(context) {
         userData.username,
         userData.discriminator || '0',
         userData.avatar,
-        access_token,
-        refresh_token,
+        encryptedAccessToken,
+        encryptedRefreshToken,
         expiresAt,
         Date.now()
       )
       .run();
+
+    // Clean up expired sessions globally (run async, don't wait)
+    env.DB.prepare('DELETE FROM sessions WHERE expires_at < ?')
+      .bind(Date.now())
+      .run()
+      .catch(err => console.error('Session cleanup error:', err));
 
     // Set session cookie and redirect
     return new Response(null, {
       status: 302,
       headers: {
         'Location': '/cms',
-        'Set-Cookie': `session_id=${sessionId}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${7 * 24 * 60 * 60}`
+        'Set-Cookie': `session_id=${sessionId}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${7 * 24 * 60 * 60}`
       }
     });
   } catch (error) {

@@ -1,33 +1,55 @@
 // Create a new guide
-import { validateSession } from '../../_middleware/auth.js';
+import { validateSessionWithCsrf } from '../../_middleware/auth.js';
+import { secureJsonResponse, checkRateLimit, isValidSlug } from '../../_lib/security-utils.js';
 
 export async function onRequest(context) {
   const { request, env } = context;
 
   if (request.method !== 'POST') {
-    return new Response('Method not allowed', { status: 405 });
+    return secureJsonResponse({ error: 'Method not allowed' }, 405);
   }
 
-  // Validate session
-  const session = await validateSession(request, env);
+  // Rate limiting - 10 guide creations per hour
+  const rateLimit = await checkRateLimit(request, env, 'guide_create', 10, 3600);
+  if (!rateLimit.allowed) {
+    return secureJsonResponse({ error: 'Rate limit exceeded. Please try again later.' }, 429);
+  }
+
+  // Validate session with CSRF protection
+  const session = await validateSessionWithCsrf(request, env);
   if (!session) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return secureJsonResponse({ error: 'Unauthorized' }, 401);
   }
 
   try {
     const data = await request.json();
     const { title, description, content, thumbnail, slug, status = 'draft' } = data;
 
+    // Validate required fields
     if (!title || !content || !slug) {
-      return new Response(
-        JSON.stringify({ error: 'Missing required fields: title, content, slug' }),
-        {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        }
+      return secureJsonResponse(
+        { error: 'Missing required fields: title, content, slug' },
+        400
+      );
+    }
+
+    // Validate slug format
+    if (!isValidSlug(slug)) {
+      return secureJsonResponse(
+        { error: 'Invalid slug format. Use lowercase letters, numbers, and hyphens only.' },
+        400
+      );
+    }
+
+    // Check if slug already exists
+    const existingSlug = await env.DB.prepare('SELECT id FROM guides WHERE slug = ?')
+      .bind(slug)
+      .first();
+    
+    if (existingSlug) {
+      return secureJsonResponse(
+        { error: 'Slug already exists. Please choose a different slug.' },
+        409
       );
     }
 
@@ -61,8 +83,8 @@ export async function onRequest(context) {
       // For now, we'll just return success
     }
 
-    return new Response(
-      JSON.stringify({
+    return secureJsonResponse(
+      {
         success: true,
         guide: {
           id,
@@ -73,18 +95,12 @@ export async function onRequest(context) {
           status,
           created_at: now,
         },
-      }),
-      {
-        status: 201,
-        headers: { 'Content-Type': 'application/json' },
-      }
+      },
+      201
     );
   } catch (error) {
     console.error('Error creating guide:', error);
-    return new Response(JSON.stringify({ error: 'Failed to create guide' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return secureJsonResponse({ error: 'Failed to create guide' }, 500);
   }
 }
 

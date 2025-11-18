@@ -1,9 +1,16 @@
 // Get, update, or delete a specific guide
-import { validateSession } from '../../_middleware/auth.js';
+import { validateSession, validateSessionWithCsrf } from '../../_middleware/auth.js';
+import { secureJsonResponse, checkRateLimit, isValidSlug } from '../../_lib/security-utils.js';
 
 export async function onRequestGet(context) {
-  const { params, env } = context;
+  const { params, env, request } = context;
   const guideId = params.id;
+
+  // Rate limiting for GET requests
+  const rateLimit = await checkRateLimit(request, env, 'guide_get', 100, 60);
+  if (!rateLimit.allowed) {
+    return secureJsonResponse({ error: 'Rate limit exceeded' }, 429);
+  }
 
   try {
     const guide = await env.DB.prepare('SELECT * FROM guides WHERE id = ?')
@@ -11,10 +18,7 @@ export async function onRequestGet(context) {
       .first();
 
     if (!guide) {
-      return new Response(JSON.stringify({ error: 'Guide not found' }), {
-        status: 404,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return secureJsonResponse({ error: 'Guide not found' }, 404);
     }
 
     // Get contributors for this guide
@@ -24,22 +28,13 @@ export async function onRequestGet(context) {
       .bind(guideId)
       .all();
 
-    return new Response(
-      JSON.stringify({ 
-        guide,
-        contributors: contributors.results || []
-      }), 
-      {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
+    return secureJsonResponse({ 
+      guide,
+      contributors: contributors.results || []
+    }, 200);
   } catch (error) {
     console.error('Error fetching guide:', error);
-    return new Response(JSON.stringify({ error: 'Failed to fetch guide' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return secureJsonResponse({ error: 'Failed to fetch guide' }, 500);
   }
 }
 
@@ -47,18 +42,29 @@ export async function onRequestPut(context) {
   const { request, params, env } = context;
   const guideId = params.id;
 
-  // Validate session
-  const session = await validateSession(request, env);
+  // Rate limiting for PUT requests
+  const rateLimit = await checkRateLimit(request, env, 'guide_update', 30, 60);
+  if (!rateLimit.allowed) {
+    return secureJsonResponse({ error: 'Rate limit exceeded' }, 429);
+  }
+
+  // Validate session with CSRF protection
+  const session = await validateSessionWithCsrf(request, env);
   if (!session) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return secureJsonResponse({ error: 'Unauthorized' }, 401);
   }
 
   try {
     const data = await request.json();
     const { title, description, content, thumbnail, slug, status } = data;
+
+    // Validate slug format if provided
+    if (slug && !isValidSlug(slug)) {
+      return secureJsonResponse(
+        { error: 'Invalid slug format. Use lowercase letters, numbers, and hyphens only.' },
+        400
+      );
+    }
 
     // Check if guide exists
     const existingGuide = await env.DB.prepare('SELECT * FROM guides WHERE id = ?')
@@ -66,10 +72,21 @@ export async function onRequestPut(context) {
       .first();
 
     if (!existingGuide) {
-      return new Response(JSON.stringify({ error: 'Guide not found' }), {
-        status: 404,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return secureJsonResponse({ error: 'Guide not found' }, 404);
+    }
+
+    // Check if slug is being changed and if it already exists
+    if (slug && slug !== existingGuide.slug) {
+      const slugInUse = await env.DB.prepare('SELECT id FROM guides WHERE slug = ? AND id != ?')
+        .bind(slug, guideId)
+        .first();
+      
+      if (slugInUse) {
+        return secureJsonResponse(
+          { error: 'Slug already exists. Please choose a different slug.' },
+          409
+        );
+      }
     }
 
     // Check if editor is not the original author
@@ -110,31 +127,22 @@ export async function onRequestPut(context) {
       }
     }
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        is_contributor: isContributor,
-        guide: {
-          id: guideId,
-          title,
-          description,
-          slug,
-          thumbnail,
-          status,
-          updated_at: now,
-        },
-      }),
-      {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
+    return secureJsonResponse({
+      success: true,
+      is_contributor: isContributor,
+      guide: {
+        id: guideId,
+        title,
+        description,
+        slug,
+        thumbnail,
+        status,
+        updated_at: now,
+      },
+    }, 200);
   } catch (error) {
     console.error('Error updating guide:', error);
-    return new Response(JSON.stringify({ error: 'Failed to update guide' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return secureJsonResponse({ error: 'Failed to update guide' }, 500);
   }
 }
 
@@ -142,13 +150,16 @@ export async function onRequestDelete(context) {
   const { request, params, env } = context;
   const guideId = params.id;
 
-  // Validate session
-  const session = await validateSession(request, env);
+  // Rate limiting for DELETE requests
+  const rateLimit = await checkRateLimit(request, env, 'guide_delete', 20, 60);
+  if (!rateLimit.allowed) {
+    return secureJsonResponse({ error: 'Rate limit exceeded' }, 429);
+  }
+
+  // Validate session with CSRF protection
+  const session = await validateSessionWithCsrf(request, env);
   if (!session) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return secureJsonResponse({ error: 'Unauthorized' }, 401);
   }
 
   try {
@@ -158,25 +169,16 @@ export async function onRequestDelete(context) {
       .first();
 
     if (!existingGuide) {
-      return new Response(JSON.stringify({ error: 'Guide not found' }), {
-        status: 404,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return secureJsonResponse({ error: 'Guide not found' }, 404);
     }
 
-    // Delete guide
+    // Delete guide (and contributors will cascade delete due to foreign key)
     await env.DB.prepare('DELETE FROM guides WHERE id = ?').bind(guideId).run();
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return secureJsonResponse({ success: true }, 200);
   } catch (error) {
     console.error('Error deleting guide:', error);
-    return new Response(JSON.stringify({ error: 'Failed to delete guide' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return secureJsonResponse({ error: 'Failed to delete guide' }, 500);
   }
 }
 
