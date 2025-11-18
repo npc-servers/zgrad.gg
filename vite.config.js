@@ -98,6 +98,9 @@ export default defineConfig({
         banAppeal: resolve(__dirname, 'guides/ban-appeal.html'),
         playerReport: resolve(__dirname, 'guides/player-report.html'),
         howToPlay: resolve(__dirname, 'guides/how-to-play-homigrad.html'),
+        // CMS pages
+        cmsIndex: resolve(__dirname, 'cms/index.html'),
+        cmsUnauthorized: resolve(__dirname, 'cms/unauthorized.html'),
         // 404 page
         notFound: resolve(__dirname, '404.html')
       },

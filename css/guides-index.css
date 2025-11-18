@@ -218,6 +218,14 @@
     opacity: 0.8;
 }
 
+.guide-card-author-avatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
 .guide-card-link {
     display: flex;
     align-items: center;
@@ -394,6 +402,11 @@
         width: 14px;
         height: 14px;
     }
+    
+    .guide-card-author-avatar {
+        width: 18px;
+        height: 18px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -449,6 +462,11 @@
     .guide-card-author-logo {
         width: 12px;
         height: 12px;
+    }
+    
+    .guide-card-author-avatar {
+        width: 16px;
+        height: 16px;
     }
     
     .guide-card-link {

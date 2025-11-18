@@ -1,0 +1,21 @@
+name = "zgrad-gg"
+compatibility_date = "2024-01-01"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "zgrad-cms"
+database_id = "fc9257c7-e7df-4139-9453-abecabd5d5d6"
+
+# R2 Bucket binding for image uploads
+[[r2_buckets]]
+binding = "R2_BUCKET"
+bucket_name = "zgrad-guides-images"
+
+# Environment variables (set these in Cloudflare Pages dashboard)
+[vars]
+R2_PUBLIC_URL = "https://images.zgrad.gg"
+
+
+
+

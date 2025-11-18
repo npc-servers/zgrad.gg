@@ -1,0 +1,61 @@
+-- Cloudflare D1 Database Schema for CMS
+
+-- Sessions table for authentication
+CREATE TABLE IF NOT EXISTS sessions (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  username TEXT NOT NULL,
+  discriminator TEXT NOT NULL,
+  avatar TEXT,
+  access_token TEXT NOT NULL,
+  refresh_token TEXT,
+  expires_at INTEGER NOT NULL,
+  created_at INTEGER NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id);
+CREATE INDEX IF NOT EXISTS idx_sessions_expires_at ON sessions(expires_at);
+
+-- Guides table
+CREATE TABLE IF NOT EXISTS guides (
+  id TEXT PRIMARY KEY,
+  slug TEXT NOT NULL UNIQUE,
+  title TEXT NOT NULL,
+  description TEXT,
+  content TEXT NOT NULL,
+  thumbnail TEXT,
+  author_id TEXT NOT NULL,
+  author_name TEXT NOT NULL,
+  author_avatar TEXT,
+  status TEXT NOT NULL DEFAULT 'draft', -- draft, published
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_guides_slug ON guides(slug);
+CREATE INDEX IF NOT EXISTS idx_guides_author_id ON guides(author_id);
+CREATE INDEX IF NOT EXISTS idx_guides_status ON guides(status);
+CREATE INDEX IF NOT EXISTS idx_guides_created_at ON guides(created_at);
+
+-- Contributors table to track who edited each guide
+CREATE TABLE IF NOT EXISTS guide_contributors (
+  id TEXT PRIMARY KEY,
+  guide_id TEXT NOT NULL,
+  user_id TEXT NOT NULL,
+  username TEXT NOT NULL,
+  avatar TEXT,
+  contributed_at INTEGER NOT NULL,
+  FOREIGN KEY (guide_id) REFERENCES guides(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_contributors_guide_id ON guide_contributors(guide_id);
+CREATE INDEX IF NOT EXISTS idx_contributors_user_id ON guide_contributors(user_id);
+CREATE INDEX IF NOT EXISTS idx_contributors_contributed_at ON guide_contributors(contributed_at);
+
+-- Migration: Add last_edited_by fields to guides table
+-- ALTER TABLE guides ADD COLUMN last_edited_by_id TEXT;
+-- ALTER TABLE guides ADD COLUMN last_edited_by_name TEXT;
+
+
+
+

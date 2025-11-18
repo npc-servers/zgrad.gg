@@ -41,6 +41,30 @@ async function initGuidesIndex() {
 
 async function fetchGuidesManifest() {
     try {
+        // First, try to fetch from CMS API (for dynamic guides)
+        try {
+            const apiResponse = await fetch('/api/guides/list');
+            if (apiResponse.ok) {
+                const apiData = await apiResponse.json();
+                // Filter to only published guides
+                const publishedGuides = apiData.guides.filter(guide => guide.status === 'published');
+                // Convert to manifest format
+                return {
+                    generated: new Date().toISOString(),
+                    guides: publishedGuides.map(guide => ({
+                        slug: guide.slug,
+                        file: `${guide.slug}.html`,
+                        url: `/guides/${guide.slug}`,
+                        // Include CMS data directly
+                        cmsData: guide
+                    }))
+                };
+            }
+        } catch (apiError) {
+            console.log('CMS API not available, falling back to static manifest');
+        }
+        
+        // Fallback to static manifest.json
         const basePath = window.location.pathname.includes('/guides') 
             ? window.location.pathname.replace(/\/[^/]*$/, '/') 
             : '/guides/';
@@ -64,9 +88,31 @@ async function fetchAllGuides(guideList) {
     
     for (const guideInfo of guideList) {
         try {
-            const guideData = await fetchGuideData(guideInfo.file, guideInfo.slug);
-            if (guideData) {
-                guides.push(guideData);
+            // If we have CMS data, use it directly
+            if (guideInfo.cmsData) {
+                const guide = guideInfo.cmsData;
+                
+                // Construct Discord CDN URL for avatar
+                let authorAvatarUrl = null;
+                if (guide.author_avatar && guide.author_id) {
+                    authorAvatarUrl = `https://cdn.discordapp.com/avatars/${guide.author_id}/${guide.author_avatar}.png`;
+                }
+                
+                guides.push({
+                    title: guide.title,
+                    description: guide.description,
+                    imageUrl: guide.thumbnail,
+                    slug: guide.slug,
+                    url: `/guides/${guide.slug}`,
+                    author: guide.author_name,
+                    authorAvatar: authorAvatarUrl
+                });
+            } else {
+                // Otherwise, fetch and parse HTML
+                const guideData = await fetchGuideData(guideInfo.file, guideInfo.slug);
+                if (guideData) {
+                    guides.push(guideData);
+                }
             }
         } catch (error) {
             console.warn(`Failed to fetch guide ${guideInfo.file}:`, error);
@@ -205,6 +251,9 @@ function createGuideCard(guide, index) {
             <h3 class="guide-card-title">${escapeHtml(guide.title)}</h3>
             <div class="guide-card-author">
                 ${guide.author ? `
+                    ${guide.authorAvatar ? `
+                        <img src="${guide.authorAvatar}" alt="${escapeHtml(guide.author)}" class="guide-card-author-avatar">
+                    ` : ''}
                     <span class="guide-card-author-name">${escapeHtml(guide.author)}</span>
                 ` : `
                     <img src="/images/logos/zgrad-logopiece-z.png" alt="ZGRAD Logo" class="guide-card-author-logo">

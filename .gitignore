@@ -46,3 +46,21 @@ Thumbs.db
 *.tmp
 *.temp
 
+# Cloudflare Wrangler (CMS)
+.wrangler/
+.mf/
+.dev.vars
+wrangler.toml.local
+worker.js
+worker.js.map
+
+# Local databases (D1)
+*.db
+*.sqlite
+*.sqlite3
+*.sqlite-shm
+*.sqlite-wal
+
+# Session files
+sessions/
+

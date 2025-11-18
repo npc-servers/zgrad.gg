@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS Dashboard - ZGRAD</title>
+    <link rel="icon" href="../favicon.ico">
+    
+    <!-- Custom CMS styles -->
+</head>
+<body>
+    <!-- CMS Navigation -->
+    <nav class="cms-navbar">
+        <div class="cms-navbar-container">
+            <div class="cms-navbar-brand">
+                <img src="/images/logos/zgrad-logopiece-z.png" alt="ZGRAD Logo" class="cms-logo">
+                <span class="cms-title">ZGRAD CMS</span>
+            </div>
+            <div class="cms-navbar-user">
+                <div class="cms-user-info" id="userInfo">
+                    <span class="cms-user-loading">Loading...</span>
+                </div>
+                <button class="cms-btn cms-btn-secondary" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main CMS Container -->
+    <div class="cms-container">
+        <!-- Sidebar -->
+        <aside class="cms-sidebar">
+            <div class="cms-sidebar-section">
+                <button class="cms-sidebar-btn active" data-view="guides">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    <span>My Guides</span>
+                </button>
+                <button class="cms-sidebar-btn" data-view="new">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"></path>
+                    </svg>
+                    <span>New Guide</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="cms-content">
+            <!-- Guides List View -->
+            <div class="cms-view" id="guidesView">
+                <div class="cms-content-header">
+                    <h1 class="cms-content-title">My Guides</h1>
+                    <button class="cms-btn cms-btn-primary" id="createGuideBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 5v14M5 12h14"></path>
+                        </svg>
+                        Create New Guide
+                    </button>
+                </div>
+
+                <div class="cms-guides-list" id="guidesList">
+                    <div class="cms-loading">Loading guides...</div>
+                </div>
+            </div>
+
+            <!-- New/Edit Guide View -->
+            <div class="cms-view" id="editorView" style="display: none;">
+                <div class="cms-content-header">
+                    <h1 class="cms-content-title" id="editorTitle">Create New Guide</h1>
+                    <div class="cms-editor-actions">
+                        <button class="cms-btn cms-btn-secondary" id="cancelEditBtn">Cancel</button>
+                        <button class="cms-btn cms-btn-secondary" id="saveDraftBtn">Save Draft</button>
+                        <button class="cms-btn cms-btn-primary" id="publishBtn">Publish</button>
+                    </div>
+                </div>
+
+                <div class="cms-editor-container">
+                    <!-- Guide Metadata -->
+                    <div class="cms-form-section">
+                        <div class="cms-form-group">
+                            <label for="guideTitle" class="cms-label">Title</label>
+                            <input 
+                                type="text" 
+                                id="guideTitle" 
+                                class="cms-input" 
+                                placeholder="Enter guide title..."
+                                required
+                            >
+                        </div>
+
+                        <div class="cms-form-group">
+                            <label for="guideSlug" class="cms-label">
+                                Slug 
+                                <span class="cms-label-hint">(URL-friendly version, auto-generated from title)</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="guideSlug" 
+                                class="cms-input" 
+                                placeholder="guide-url-slug"
+                                required
+                            >
+                        </div>
+
+                        <div class="cms-form-group">
+                            <label for="guideDescription" class="cms-label">Description</label>
+                            <textarea 
+                                id="guideDescription" 
+                                class="cms-textarea" 
+                                rows="3"
+                                placeholder="Brief description of the guide for SEO and guide cards..."
+                            ></textarea>
+                        </div>
+
+                        <div class="cms-form-group">
+                            <label for="guideThumbnail" class="cms-label">Thumbnail URL</label>
+                            <div class="cms-file-input-group">
+                                <input 
+                                    type="text" 
+                                    id="guideThumbnail" 
+                                    class="cms-input" 
+                                    placeholder="https://..."
+                                >
+                                <label for="thumbnailUpload" class="cms-btn cms-btn-secondary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="17 8 12 3 7 8"></polyline>
+                                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                                    </svg>
+                                    Upload
+                                </label>
+                                <input 
+                                    type="file" 
+                                    id="thumbnailUpload" 
+                                    accept="image/*" 
+                                    style="display: none;"
+                                >
+                            </div>
+                            <div id="thumbnailPreview" class="cms-thumbnail-preview" style="display: none;">
+                                <img id="thumbnailPreviewImg" src="" alt="Thumbnail preview">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rich Text Editor -->
+                    <div class="cms-form-section">
+                        <label class="cms-label">Content</label>
+                        <div class="cms-editor-toolbar">
+                            <button type="button" class="cms-editor-btn" id="insertImageBtn">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
+                                Insert Image
+                            </button>
+                            <input type="file" id="contentImageUpload" accept="image/*" style="display: none;">
+                        </div>
+                        <div id="editor" class="cms-editor"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Image Upload Modal -->
+    <div class="cms-modal" id="imageUploadModal" style="display: none;">
+        <div class="cms-modal-overlay"></div>
+        <div class="cms-modal-content">
+            <div class="cms-modal-header">
+                <h2 class="cms-modal-title">Uploading Image</h2>
+            </div>
+            <div class="cms-modal-body">
+                <div class="cms-upload-progress">
+                    <div class="cms-spinner"></div>
+                    <p>Compressing and uploading image...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Settings Modal -->
+    <div class="cms-modal" id="imageSettingsModal" style="display: none;">
+        <div class="cms-modal-overlay" onclick="document.getElementById('imageSettingsModal').style.display='none'"></div>
+        <div class="cms-modal-content">
+            <div class="cms-modal-header">
+                <h2 class="cms-modal-title">Image Settings</h2>
+            </div>
+            <div class="cms-modal-body">
+                <div class="cms-form-group">
+                    <label class="cms-label">Width</label>
+                    <div class="cms-image-width-options">
+                        <button type="button" class="cms-width-btn" data-width="300px">Small (300px)</button>
+                        <button type="button" class="cms-width-btn" data-width="450px">Medium (450px)</button>
+                        <button type="button" class="cms-width-btn active" data-width="600px">Large (600px)</button>
+                        <button type="button" class="cms-width-btn" data-width="100%">Full Width</button>
+                    </div>
+                    <input type="text" id="customImageWidth" class="cms-input" placeholder="Or enter custom (e.g., 500px)" style="margin-top: 12px;">
+                </div>
+                
+                <div class="cms-form-group">
+                    <label class="cms-label">Alignment</label>
+                    <div class="cms-image-align-options">
+                        <button type="button" class="cms-align-btn" data-align="left">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                                <line x1="17" y1="10" x2="3" y2="10"></line>
+                                <line x1="21" y1="6" x2="3" y2="6"></line>
+                                <line x1="21" y1="14" x2="3" y2="14"></line>
+                                <line x1="17" y1="18" x2="3" y2="18"></line>
+                            </svg>
+                            Left
+                        </button>
+                        <button type="button" class="cms-align-btn active" data-align="center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                                <line x1="18" y1="10" x2="6" y2="10"></line>
+                                <line x1="21" y1="6" x2="3" y2="6"></line>
+                                <line x1="21" y1="14" x2="3" y2="14"></line>
+                                <line x1="18" y1="18" x2="6" y2="18"></line>
+                            </svg>
+                            Center
+                        </button>
+                        <button type="button" class="cms-align-btn" data-align="right">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                                <line x1="21" y1="10" x2="7" y2="10"></line>
+                                <line x1="21" y1="6" x2="3" y2="6"></line>
+                                <line x1="21" y1="14" x2="3" y2="14"></line>
+                                <line x1="21" y1="18" x2="7" y2="18"></line>
+                            </svg>
+                            Right
+                        </button>
+                    </div>
+                </div>
+
+                <div class="cms-modal-actions">
+                    <button type="button" class="cms-btn cms-btn-secondary" onclick="document.getElementById('imageSettingsModal').style.display='none'">Cancel</button>
+                    <button type="button" class="cms-btn cms-btn-primary" id="applyImageSettings">Apply</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Icon Picker Modal -->
+    <div id="iconPickerModal" class="cms-modal" style="display: none;">
+        <div class="cms-modal-content cms-icon-picker-content">
+            <div class="cms-modal-header">
+                <h3>Insert Icon</h3>
+                <button class="cms-modal-close" onclick="document.getElementById('iconPickerModal').style.display='none'">&times;</button>
+            </div>
+            <div class="cms-modal-body">
+                <div class="cms-icon-search">
+                    <input type="text" id="iconSearch" placeholder="Search icons (e.g. 'home', 'user', 'check')..." class="cms-input">
+                    <div class="cms-icon-collections">
+                        <label>
+                            <input type="radio" name="iconCollection" value="all" checked>
+                            All Collections
+                        </label>
+                        <label>
+                            <input type="radio" name="iconCollection" value="mdi">
+                            Material Design Icons
+                        </label>
+                        <label>
+                            <input type="radio" name="iconCollection" value="fa6-solid">
+                            Font Awesome
+                        </label>
+                        <label>
+                            <input type="radio" name="iconCollection" value="lucide">
+                            Lucide
+                        </label>
+                        <label>
+                            <input type="radio" name="iconCollection" value="heroicons">
+                            Heroicons
+                        </label>
+                    </div>
+                </div>
+                <div id="iconResults" class="cms-icon-results">
+                    <div class="cms-icon-placeholder">
+                        Type to search for icons...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main CMS script -->
+    <script type="module" src="/src/cms.js"></script>
+</body>
+</html>
+
+
+
+
