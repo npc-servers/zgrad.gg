@@ -30,7 +30,6 @@ export async function onRequest(context) {
 
     if (!guide) {
       // Guide not found in DB, fall back to static file
-      console.log(`Guide '${slug}' not found in database, trying static file`);
       return env.ASSETS.fetch(request);
     }
 
@@ -100,7 +99,7 @@ async function fetchGuideFromDB(db, slug) {
 async function fetchTemplate(assets) {
   try {
     const templateResponse = await assets.fetch(
-      new Request('http://placeholder/guides/ban-appeal.html')
+      new Request('http://placeholder/guides/template.html')
     );
     
     if (!templateResponse.ok) {

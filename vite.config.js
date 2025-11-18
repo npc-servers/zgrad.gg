@@ -77,6 +77,7 @@ export default defineConfig({
         connectUs4: resolve(__dirname, 'connect/us4.html'),
         // Guide pages
         guidesIndex: resolve(__dirname, 'guides/index.html'),
+        guideTemplate: resolve(__dirname, 'guides/template.html'),
         banAppeal: resolve(__dirname, 'guides/ban-appeal.html'),
         playerReport: resolve(__dirname, 'guides/player-report.html'),
         howToPlay: resolve(__dirname, 'guides/how-to-play-homigrad.html'),

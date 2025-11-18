@@ -14,6 +14,29 @@ let editor = null;
 let currentGuideId = null;
 let guides = [];
 
+// Toast Notification System
+function showToast(message, type = 'success', duration = 3000) {
+    const toast = document.createElement('div');
+    toast.className = `cms-toast cms-toast-${type}`;
+    toast.innerHTML = `
+        <div class="cms-toast-icon">
+            ${type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ'}
+        </div>
+        <div class="cms-toast-message">${message}</div>
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Trigger animation
+    setTimeout(() => toast.classList.add('show'), 10);
+    
+    // Auto remove
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, duration);
+}
+
 // Custom Modal Functions
 function showConfirmModal(message, onConfirm) {
     const modal = document.createElement('div');
@@ -396,7 +419,7 @@ async function saveGuide(status) {
     content = formatStepCardsHTML(content);
     
     if (!title || !slug) {
-        alert('Please fill in all required fields (Title and Slug)');
+        showToast('Please fill in all required fields (Title and Slug)', 'error');
         return;
     }
     
@@ -430,9 +453,9 @@ async function saveGuide(status) {
         
         // Show appropriate message based on whether user is a contributor
         if (result.is_contributor) {
-            alert(`✅ ${status === 'published' ? 'Guide published' : 'Draft saved'} successfully!\n\n🎉 You've been added as a contributor to this guide!`);
+            showToast(`${status === 'published' ? 'Guide published' : 'Draft saved'} successfully! 🎉 You've been added as a contributor!`, 'success', 4000);
         } else {
-            alert(status === 'published' ? 'Guide published successfully!' : 'Draft saved successfully!');
+            showToast(status === 'published' ? 'Guide published successfully!' : 'Draft saved successfully!', 'success');
         }
         
         console.log('[CMS] Guide saved:', {
@@ -445,7 +468,7 @@ async function saveGuide(status) {
         switchView('guides');
     } catch (error) {
         console.error('Error saving guide:', error);
-        alert('Failed to save guide. Please try again.');
+        showToast('Failed to save guide. Please try again.', 'error');
     }
 }
 
