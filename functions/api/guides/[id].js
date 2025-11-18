@@ -58,15 +58,7 @@ export async function onRequestPut(context) {
     const data = await request.json();
     const { title, description, content, thumbnail, slug, status } = data;
 
-    // Validate slug format if provided
-    if (slug && !isValidSlug(slug)) {
-      return secureJsonResponse(
-        { error: 'Invalid slug format. Use lowercase letters, numbers, and hyphens only.' },
-        400
-      );
-    }
-
-    // Check if guide exists
+    // Check if guide exists first
     const existingGuide = await env.DB.prepare('SELECT * FROM guides WHERE id = ?')
       .bind(guideId)
       .first();
@@ -75,10 +67,21 @@ export async function onRequestPut(context) {
       return secureJsonResponse({ error: 'Guide not found' }, 404);
     }
 
-    // Check if slug is being changed and if it already exists
-    if (slug && slug !== existingGuide.slug) {
+    // Use existing slug if not provided or empty (handle null, undefined, and empty string)
+    const finalSlug = (slug && slug.trim()) ? slug.trim() : existingGuide.slug;
+
+    // Validate slug format only if it's being changed
+    if (finalSlug !== existingGuide.slug && !isValidSlug(finalSlug)) {
+      return secureJsonResponse(
+        { error: `Invalid slug format: "${finalSlug}". Use lowercase letters, numbers, and hyphens only.` },
+        400
+      );
+    }
+
+    // Check if slug is being changed and if the new slug already exists
+    if (finalSlug !== existingGuide.slug) {
       const slugInUse = await env.DB.prepare('SELECT id FROM guides WHERE slug = ? AND id != ?')
-        .bind(slug, guideId)
+        .bind(finalSlug, guideId)
         .first();
       
       if (slugInUse) {
@@ -97,7 +100,7 @@ export async function onRequestPut(context) {
     await env.DB.prepare(
       'UPDATE guides SET title = ?, description = ?, content = ?, thumbnail = ?, slug = ?, status = ?, updated_at = ? WHERE id = ?'
     )
-      .bind(title, description, content, thumbnail, slug, status, now, guideId)
+      .bind(title, description, content, thumbnail, finalSlug, status, now, guideId)
       .run();
 
     // If this is a contributor (not the original author), add them to contributors
@@ -134,7 +137,7 @@ export async function onRequestPut(context) {
         id: guideId,
         title,
         description,
-        slug,
+        slug: finalSlug,
         thumbnail,
         status,
         updated_at: now,
@@ -142,7 +145,11 @@ export async function onRequestPut(context) {
     }, 200);
   } catch (error) {
     console.error('Error updating guide:', error);
-    return secureJsonResponse({ error: 'Failed to update guide' }, 500);
+    // Include error details for debugging (helpful during development)
+    return secureJsonResponse({ 
+      error: 'Failed to update guide',
+      details: error.message 
+    }, 500);
   }
 }
 

@@ -100,7 +100,10 @@ export async function onRequest(context) {
     );
   } catch (error) {
     console.error('Error creating guide:', error);
-    return secureJsonResponse({ error: 'Failed to create guide' }, 500);
+    return secureJsonResponse({ 
+      error: 'Failed to create guide',
+      details: error.message 
+    }, 500);
   }
 }
 
