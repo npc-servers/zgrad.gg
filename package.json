@@ -5,7 +5,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "npm run build && wrangler pages dev dist",
+    "dev": "npm run build && wrangler pages dev dist --live-reload",
+    "dev:watch": "vite build --watch",
     "build": "vite build",
     "preview": "wrangler pages dev dist",
     "generate:guides": "node scripts/generate-guides-manifest.js",
