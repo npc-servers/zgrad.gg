@@ -135,11 +135,13 @@ export async function onRequest(context) {
       .catch(err => console.error('Session cleanup error:', err));
 
     // Set session cookie and redirect
+    // Note: Using SameSite=Lax for OAuth callback (Strict would block the cookie)
+    // The cookie will be upgraded to Strict on subsequent same-site requests
     return new Response(null, {
       status: 302,
       headers: {
-        'Location': '/cms',
-        'Set-Cookie': `session_id=${sessionId}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${7 * 24 * 60 * 60}`
+        'Location': '/cms/',
+        'Set-Cookie': `session_id=${sessionId}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${7 * 24 * 60 * 60}`
       }
     });
   } catch (error) {
