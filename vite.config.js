@@ -3,7 +3,7 @@ import { ViteImageOptimizer } from 'vite-plugin-image-optimizer'
 import { resolve } from 'path'
 import copy from 'rollup-plugin-copy'
 import htmlMinifier from 'vite-plugin-html-minifier'
-import Sitemap from 'vite-plugin-sitemap';
+// Sitemap is now dynamically generated via /sitemap.xml endpoint (functions/sitemap.xml.js)
 
 const DEFAULT_OPTIONS = {
   includePublic: true,
@@ -59,25 +59,7 @@ const DEFAULT_OPTIONS = {
 export default defineConfig({
   plugins: [
     ViteImageOptimizer(DEFAULT_OPTIONS),
-    htmlMinifier({}),
-    Sitemap({ 
-      hostname: 'https://zgrad.gg',
-      dynamicRoutes: [
-        '/servers',
-        '/rules',
-        '/credits',
-        '/discord',
-        '/store',
-        '/connect/us1',
-        '/connect/us2',
-        '/connect/us3',
-        '/connect/us4',
-        '/guides',
-        '/guides/ban-appeal',
-        '/guides/player-report',
-        '/guides/how-to-play-homigrad'
-      ]
-    })
+    htmlMinifier({})
   ],
   build: {
     rollupOptions: {
@@ -111,7 +93,7 @@ export default defineConfig({
             { src: 'videos', dest: 'dist' },
             { src: 'favicon.ico', dest: 'dist' },
             { src: 'robots.txt', dest: 'dist' },
-            { src: 'sitemap.xml', dest: 'dist' },
+            // sitemap.xml is now dynamically generated via functions/sitemap.xml.js
             { src: 'CNAME', dest: 'dist' },
             { src: 'guides/manifest.json', dest: 'dist/guides' }
           ],

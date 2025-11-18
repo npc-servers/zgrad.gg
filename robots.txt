@@ -1,0 +1,13 @@
+# robots.txt for zgrad.gg
+
+# Allow all bots to crawl the site
+User-agent: *
+Allow: /
+
+# Disallow CMS and admin areas
+Disallow: /cms/
+Disallow: /api/
+
+# Sitemap location (dynamically generated)
+Sitemap: https://zgrad.gg/sitemap.xml
+
