@@ -3,6 +3,7 @@ import { Editor } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
+import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
 import TextStyle from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
@@ -494,6 +495,7 @@ function initializeEditor(content = '') {
                     rel: 'noopener noreferrer',
                 },
             }),
+            Underline,
             TextAlign.configure({
                 types: ['heading', 'paragraph'],
             }),
@@ -892,14 +894,80 @@ function displayGuideAuthorship(guide, contributors, isAuthor) {
 
 // Custom Toolbar Setup
 function setupCustomToolbar() {
-    const toolbarContainer = document.querySelector('.cms-editor-toolbar');
+    // Helper function to update button active states
+    const updateToolbarStates = () => {
+        const headingSelect = document.getElementById('headingSelect');
+        const { $from } = editor.state.selection;
+        const node = $from.node($from.depth);
+        
+        // Update heading dropdown
+        if (node.type.name === 'heading') {
+            headingSelect.value = node.attrs.level.toString();
+        } else if (node.type.name === 'paragraph') {
+            headingSelect.value = 'paragraph';
+        }
+        
+        // Update button active states
+        document.getElementById('boldBtn').classList.toggle('active', editor.isActive('bold'));
+        document.getElementById('italicBtn').classList.toggle('active', editor.isActive('italic'));
+        document.getElementById('underlineBtn').classList.toggle('active', editor.isActive('underline'));
+        document.getElementById('strikeBtn').classList.toggle('active', editor.isActive('strike'));
+        document.getElementById('bulletListBtn').classList.toggle('active', editor.isActive('bulletList'));
+        document.getElementById('orderedListBtn').classList.toggle('active', editor.isActive('orderedList'));
+    };
     
-    // Clear existing buttons except insert image
+    // Text formatting buttons (Bold, Italic, Underline, Strike)
+    document.getElementById('boldBtn').addEventListener('click', () => {
+        editor.chain().focus().toggleBold().run();
+        updateToolbarStates();
+    });
+    
+    document.getElementById('italicBtn').addEventListener('click', () => {
+        editor.chain().focus().toggleItalic().run();
+        updateToolbarStates();
+    });
+    
+    document.getElementById('underlineBtn').addEventListener('click', () => {
+        editor.chain().focus().toggleUnderline().run();
+        updateToolbarStates();
+    });
+    
+    document.getElementById('strikeBtn').addEventListener('click', () => {
+        editor.chain().focus().toggleStrike().run();
+        updateToolbarStates();
+    });
+    
+    // Heading dropdown
+    const headingSelect = document.getElementById('headingSelect');
+    headingSelect.addEventListener('change', (e) => {
+        const value = e.target.value;
+        if (value === 'paragraph') {
+            editor.chain().focus().setParagraph().run();
+        } else {
+            editor.chain().focus().toggleHeading({ level: parseInt(value) }).run();
+        }
+        updateToolbarStates();
+    });
+    
+    // Update button states on editor events
+    editor.on('selectionUpdate', updateToolbarStates);
+    editor.on('transaction', updateToolbarStates);
+    
+    // List buttons
+    document.getElementById('bulletListBtn').addEventListener('click', () => {
+        editor.chain().focus().toggleBulletList().run();
+        updateToolbarStates();
+    });
+    
+    document.getElementById('orderedListBtn').addEventListener('click', () => {
+        editor.chain().focus().toggleOrderedList().run();
+        updateToolbarStates();
+    });
+    
+    // Get references
     const insertImageBtn = document.getElementById('insertImageBtn');
-    const contentImageUpload = document.getElementById('contentImageUpload');
-    toolbarContainer.innerHTML = '';
-    toolbarContainer.appendChild(insertImageBtn);
-    toolbarContainer.appendChild(contentImageUpload);
+    const insertImageGroup = insertImageBtn.parentElement;
+    const toolbarContainer = document.querySelector('.cms-editor-toolbar');
     
     // Add Step Card button (Purple)
     const stepCardBtn = createToolbarButton(
@@ -910,7 +978,6 @@ function setupCustomToolbar() {
             <line x1="9" y1="15" x2="15" y2="15"></line>
         </svg>`,
         () => {
-            // Insert step card with default title, user can edit it directly in the editor
             editor.chain().focus().setStepCard({ title: 'Step Title' }).run();
         },
         'cms-btn-purple'
@@ -973,12 +1040,21 @@ function setupCustomToolbar() {
         'cms-btn-pink'
     );
     
-    // Insert buttons
-    toolbarContainer.insertBefore(stepCardBtn, insertImageBtn);
-    toolbarContainer.insertBefore(infoBoxBtn, insertImageBtn);
-    toolbarContainer.insertBefore(linkBtn, insertImageBtn);
-    toolbarContainer.insertBefore(codeBtn, insertImageBtn);
-    toolbarContainer.insertBefore(iconBtn, insertImageBtn);
+    // Remove the original insert image group wrapper
+    insertImageGroup.remove();
+    
+    // Create a custom elements group
+    const customElementsGroup = document.createElement('div');
+    customElementsGroup.className = 'cms-toolbar-group cms-toolbar-row-break';
+    customElementsGroup.appendChild(insertImageBtn);
+    customElementsGroup.appendChild(stepCardBtn);
+    customElementsGroup.appendChild(infoBoxBtn);
+    customElementsGroup.appendChild(linkBtn);
+    customElementsGroup.appendChild(codeBtn);
+    customElementsGroup.appendChild(iconBtn);
+    
+    // Append after all other toolbar items
+    toolbarContainer.appendChild(customElementsGroup);
     
     // Initialize image settings modal handlers and overlays
     initializeImageSettingsModal();

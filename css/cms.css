@@ -710,8 +710,60 @@ body {
 /* Rich Text Editor */
 .cms-editor-toolbar {
     display: flex;
-    gap: 8px;
+    gap: 12px;
     margin-bottom: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.cms-toolbar-group {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    background-color: rgba(20, 20, 20, 0.6);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cms-toolbar-group .cms-editor-btn {
+    padding: 8px 10px;
+    min-width: auto;
+}
+
+.cms-toolbar-group .cms-editor-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.cms-toolbar-row-break {
+    flex: 1 1 100%;
+    max-width: max-content;
+    margin-top: 4px;
+}
+
+.cms-toolbar-row-break .cms-editor-btn {
+    box-shadow: none !important;
+}
+
+.cms-toolbar-row-break .cms-editor-btn:hover {
+    box-shadow: none !important;
+}
+
+.cms-toolbar-row-break .cms-editor-btn.active {
+    box-shadow: none !important;
+}
+
+.cms-toolbar-row-break .cms-editor-btn.active:hover {
+    box-shadow: none !important;
+}
+
+.cms-toolbar-row-break .cms-editor-btn.cms-btn-indigo,
+.cms-toolbar-row-break .cms-editor-btn.cms-btn-purple,
+.cms-toolbar-row-break .cms-editor-btn.cms-btn-teal,
+.cms-toolbar-row-break .cms-editor-btn.cms-btn-cyan,
+.cms-toolbar-row-break .cms-editor-btn.cms-btn-yellow,
+.cms-toolbar-row-break .cms-editor-btn.cms-btn-pink {
+    box-shadow: none !important;
 }
 
 .cms-editor-btn {
@@ -772,6 +824,51 @@ body {
     transform: scale(0, 0);
     opacity: 0.3;
     transition: 0s;
+}
+
+.cms-editor-btn.active {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(37, 99, 235, 0.5));
+    color: #93c5fd;
+    border-color: #3b82f6;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.6), inset 0 0 15px rgba(59, 130, 246, 0.2);
+    transform: translateY(-1px);
+}
+
+.cms-editor-btn.active svg {
+    filter: drop-shadow(0 0 4px rgba(147, 197, 253, 0.8));
+}
+
+.cms-editor-btn.active:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.5), rgba(37, 99, 235, 0.6));
+    color: #bfdbfe;
+    border-color: #60a5fa;
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.8), inset 0 0 20px rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px);
+}
+
+.cms-editor-select {
+    padding: 8px 12px;
+    background-color: rgba(30, 30, 30, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    color: var(--cms-text-secondary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    font-family: 'Oxanium', sans-serif;
+    outline: none;
+    min-width: 130px;
+}
+
+.cms-editor-select:hover {
+    background-color: rgba(40, 40, 40, 0.98);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: var(--cms-text);
+}
+
+.cms-editor-select:focus {
+    border-color: rgba(37, 99, 235, 0.5);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 /* Purple variant for "Add Step" button */
@@ -1008,49 +1105,64 @@ body {
     margin: 1rem 0;
 }
 
-/* Custom Guide Elements in Editor */
+/* Custom Guide Elements in Editor - Match guide page styles exactly */
 .tiptap-editor .step-card {
-    background: var(--cms-bg-light);
-    border: 1px solid var(--cms-border);
-    border-left: 4px solid #66b3ff;
-    border-radius: 8px;
-    padding: 20px;
-    margin: 1.5rem 0;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 24px 0;
+    transition: all 0.3s ease;
+}
+
+.tiptap-editor .step-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 /* Step card headings (titles) - make them editable and styled */
 .tiptap-editor .step-card > h3:first-child {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 600;
-    color: var(--cms-text);
-    margin: 0 0 12px 0;
+    color: #ffffff;
+    margin: 0 0 16px 0;
     cursor: text;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--cms-border);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
 }
 
 .tiptap-editor .step-card .step-header {
-    margin-bottom: 12px;
+    margin-bottom: 16px;
 }
 
 .tiptap-editor .step-card .step-header h3 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 600;
-    color: var(--cms-text);
+    color: #ffffff;
     margin: 0;
     cursor: text;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
 }
 
 .tiptap-editor .step-card .step-title {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 600;
-    color: var(--cms-text);
+    color: #ffffff;
     margin: 0;
     cursor: text;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
 }
 
 .tiptap-editor .step-card .step-description {
-    color: var(--cms-text-secondary);
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.6;
 }
 
 .tiptap-editor .step-card .step-description p:first-child {
@@ -1059,7 +1171,8 @@ body {
 
 /* Step card paragraphs and other content */
 .tiptap-editor .step-card > p {
-    color: var(--cms-text-secondary);
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.6;
 }
 
 .tiptap-editor .info-box {

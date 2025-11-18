@@ -2,7 +2,7 @@
 import { Node, mergeAttributes } from '@tiptap/core';
 
 // Step Card Extension with editable title
-// Uses a wrapper structure with all content editable
+// Matches the actual guide page structure with step-header and step-description
 export const StepCard = Node.create({
     name: 'stepCard',
     
@@ -31,37 +31,18 @@ export const StepCard = Node.create({
                 'data-type': 'step-card',
                 'class': 'step-card',
             },
-            0, // All content goes here
+            [
+                'div',
+                { 'class': 'step-header' },
+                0  // Content for step-header goes here
+            ]
         ];
     },
     
     addCommands() {
         return {
             setStepCard: (attributes) => ({ commands }) => {
-                return commands.insertContent({
-                    type: this.name,
-                    content: [
-                        {
-                            type: 'heading',
-                            attrs: { level: 3, class: 'step-card-title' },
-                            content: [
-                                {
-                                    type: 'text',
-                                    text: attributes?.title || 'Step Title',
-                                },
-                            ],
-                        },
-                        {
-                            type: 'paragraph',
-                            content: [
-                                {
-                                    type: 'text',
-                                    text: 'Add step description here...',
-                                },
-                            ],
-                        },
-                    ],
-                });
+                return commands.insertContent(`<div class="step-card"><div class="step-header"><h3 class="step-title">${attributes?.title || 'Step Title'}</h3></div><div class="step-description"><p>Add step description here...</p></div></div>`);
             },
         };
     },
