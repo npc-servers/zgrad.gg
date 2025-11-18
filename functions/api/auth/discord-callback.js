@@ -57,7 +57,7 @@ export async function onRequest(context) {
     if (!guildMemberResponse.ok) {
       return new Response(null, {
         status: 302,
-        headers: { 'Location': '/cms/unauthorized.html' }
+        headers: { 'Location': '/cms/login.html' }
       });
     }
 
@@ -72,7 +72,7 @@ export async function onRequest(context) {
     if (!hasRequiredRole) {
       return new Response(null, {
         status: 302,
-        headers: { 'Location': '/cms/unauthorized.html' }
+        headers: { 'Location': '/cms/login.html' }
       });
     }
 
