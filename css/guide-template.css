@@ -60,49 +60,57 @@ html.gmod-client::-webkit-scrollbar {
 /* Hero Background Image */
 .guide-hero-bg {
     position: absolute;
-    top: 20px;
-    left: 20px;
-    right: 20px;
-    height: 150px;
-    border-radius: 12px;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 400px;
     z-index: 2;
     pointer-events: none;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     overflow: hidden;
 }
 
 .guide-hero-bg::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
     background-image: inherit;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    filter: blur(2px);
-    z-index: -1;
+    filter: blur(8px);
+    transform: scale(1.1);
+    z-index: 1;
 }
 
 .guide-hero-bg::after {
     content: '';
     position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -20px;
-    background: linear-gradient(
-        to bottom,
-        transparent 0%,
-        rgba(18, 18, 18, 0.3) 30%,
-        rgba(18, 18, 18, 0.7) 70%,
-        rgba(18, 18, 18, 0.95) 90%,
-        rgba(18, 18, 18, 1) 100%
-    );
-    border-radius: 12px;
-    z-index: 3;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(
+            ellipse at top center,
+            transparent 0%,
+            rgba(18, 18, 18, 0.2) 25%,
+            rgba(18, 18, 18, 0.5) 45%,
+            rgba(18, 18, 18, 0.8) 65%,
+            rgba(18, 18, 18, 0.95) 85%,
+            rgba(18, 18, 18, 1) 100%
+        ),
+        linear-gradient(
+            to bottom,
+            rgba(18, 18, 18, 0.3) 0%,
+            rgba(18, 18, 18, 0.5) 20%,
+            rgba(18, 18, 18, 0.7) 40%,
+            rgba(18, 18, 18, 0.9) 70%,
+            rgba(18, 18, 18, 1) 100%
+        );
+    z-index: 2;
 }
 
 /* Header Section */
@@ -111,7 +119,7 @@ html.gmod-client::-webkit-scrollbar {
     z-index: 10;
     padding: 0 40px 30px;
     text-align: center;
-    margin-top: 120px;
+    margin-top: 200px;
 }
 
 .guide-title {
@@ -504,10 +512,7 @@ body.gmod-client .guide-nav {
     }
     
     .guide-hero-bg {
-        height: 180px;
-        top: 25px;
-        left: 25px;
-        right: 25px;
+        height: 450px;
     }
     
     .guide-content {
@@ -575,10 +580,7 @@ body.gmod-client .guide-nav {
     }
     
     .guide-hero-bg {
-        height: 220px;
-        top: 30px;
-        left: 30px;
-        right: 30px;
+        height: 550px;
     }
     
     .guide-content {
@@ -646,10 +648,7 @@ body.gmod-client .guide-nav {
     }
     
     .guide-hero-bg {
-        height: 260px;
-        top: 40px;
-        left: 40px;
-        right: 40px;
+        height: 650px;
     }
     
     .guide-content {
@@ -717,10 +716,7 @@ body.gmod-client .guide-nav {
     }
     
     .guide-hero-bg {
-        height: 400px;
-        top: 60px;
-        left: 60px;
-        right: 60px;
+        height: 900px;
     }
     
     .guide-content {
@@ -779,7 +775,7 @@ body.gmod-client .guide-nav {
     }
     
     .guide-hero-bg {
-        height: 130px;
+        height: 350px;
     }
 }
 
@@ -789,11 +785,11 @@ body.gmod-client .guide-nav {
     }
     
     .guide-hero-bg {
-        height: 110px;
+        height: 300px;
     }
     
     .guide-header {
-        margin-top: 100px;
+        margin-top: 150px;
         padding: 0 20px 30px;
     }
     
@@ -809,11 +805,11 @@ body.gmod-client .guide-nav {
     }
     
     .guide-hero-bg {
-        height: 90px;
+        height: 250px;
     }
     
     .guide-header {
-        margin-top: 80px;
+        margin-top: 130px;
         padding: 0 15px 20px;
     }
     
@@ -860,11 +856,11 @@ body.gmod-client .guide-nav {
     }
     
     .guide-hero-bg {
-        height: 70px;
+        height: 200px;
     }
     
     .guide-header {
-        margin-top: 60px;
+        margin-top: 100px;
         padding: 0 10px 15px;
     }
     
