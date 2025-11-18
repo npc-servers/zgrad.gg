@@ -10,6 +10,7 @@ import '../css/features-section.css';
 import '../css/gamemode-section.css';
 import '../css/webstore-section.css';
 import '../css/discord-section.css';
+import '../css/cms-section.css';
 import '../css/help-section.css';
 import '../css/footer.css';
 

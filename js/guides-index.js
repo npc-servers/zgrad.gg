@@ -114,20 +114,54 @@ async function fetchGuideData(guideFile, slug) {
         const descriptionMeta = doc.querySelector('meta[name="description"]');
         const description = descriptionMeta ? descriptionMeta.getAttribute('content') : '';
         
-        // Extract Open Graph image if available
-        const ogImageMeta = doc.querySelector('meta[property="og:image"]');
-        const imageUrl = ogImageMeta ? ogImageMeta.getAttribute('content') : null;
+        // Extract thumbnail - prioritize dedicated thumbnail meta tag, fallback to og:image
+        // Thumbnails are used for:
+        // 1. Guide card images in the index page
+        // 2. External embeds (via og:image meta tag - should be set in guide HTML)
+        const thumbnailMeta = doc.querySelector('meta[name="thumbnail"]');
+        let imageUrl = thumbnailMeta ? thumbnailMeta.getAttribute('content') : null;
+        
+        // Fallback to Open Graph image if no dedicated thumbnail
+        // Note: For external embeds to work, guides should also have og:image meta tag set
+        if (!imageUrl) {
+            const ogImageMeta = doc.querySelector('meta[property="og:image"]');
+            imageUrl = ogImageMeta ? ogImageMeta.getAttribute('content') : null;
+        }
+        
+        // Ensure image URL is absolute for proper display
+        if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('//')) {
+            // Convert relative URLs to absolute
+            if (imageUrl.startsWith('/')) {
+                imageUrl = window.location.origin + imageUrl;
+            } else {
+                // Relative to current guide path
+                const basePath = window.location.pathname.includes('/guides') 
+                    ? window.location.pathname.replace(/\/[^/]*$/, '/') 
+                    : '/guides/';
+                imageUrl = window.location.origin + basePath + imageUrl;
+            }
+        }
         
         // Extract guide title from h1 if available (for display)
         const guideTitleElement = doc.querySelector('.guide-title');
         const displayTitle = guideTitleElement ? guideTitleElement.textContent.trim() : title;
+        
+        // Extract author from meta tag, default to null (will show ZGRAD)
+        const authorMeta = doc.querySelector('meta[name="author"]');
+        let author = authorMeta ? authorMeta.getAttribute('content') : null;
+        
+        // If author is ZGRAD Network or ZGRAD, treat as default (no author)
+        if (author && (author.toLowerCase().includes('zgrad network') || author.toLowerCase().trim() === 'zgrad')) {
+            author = null;
+        }
         
         return {
             title: displayTitle || title,
             description: description,
             imageUrl: imageUrl,
             slug: slug,
-            url: `/guides/${slug}`
+            url: `/guides/${slug}`,
+            author: author
         };
     } catch (error) {
         console.error(`Error fetching guide data for ${guideFile}:`, error);
@@ -169,6 +203,14 @@ function createGuideCard(guide, index) {
         ` : ''}
         <div class="guide-card-content">
             <h3 class="guide-card-title">${escapeHtml(guide.title)}</h3>
+            <div class="guide-card-author">
+                ${guide.author ? `
+                    <span class="guide-card-author-name">${escapeHtml(guide.author)}</span>
+                ` : `
+                    <img src="/images/logos/zgrad-logopiece-z.png" alt="ZGRAD Logo" class="guide-card-author-logo">
+                    <span class="guide-card-author-name">ZGRAD</span>
+                `}
+            </div>
             <p class="guide-card-description">${escapeHtml(guide.description)}</p>
             <div class="guide-card-link">
                 <span>Read Guide</span>
