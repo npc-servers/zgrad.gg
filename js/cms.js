@@ -762,7 +762,7 @@ function setupCustomToolbar() {
     toolbarContainer.appendChild(insertImageBtn);
     toolbarContainer.appendChild(contentImageUpload);
     
-    // Add Step Card button
+    // Add Step Card button (Purple)
     const stepCardBtn = createToolbarButton(
         'Add Step Card',
         `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -775,10 +775,11 @@ function setupCustomToolbar() {
             if (title) {
                 editor.chain().focus().setStepCard({ title }).run();
             }
-        }
+        },
+        'cms-btn-purple'
     );
     
-    // Add Info Box button
+    // Add Info Box button (Teal)
     const infoBoxBtn = createToolbarButton(
         'Add Info Box',
         `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -788,10 +789,11 @@ function setupCustomToolbar() {
         </svg>`,
         () => {
             editor.chain().focus().setInfoBox().run();
-        }
+        },
+        'cms-btn-teal'
     );
     
-    // Add Link button
+    // Add Link button (Cyan)
     const linkBtn = createToolbarButton(
         'Add Link',
         `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -803,10 +805,11 @@ function setupCustomToolbar() {
             if (url) {
                 editor.chain().focus().setLink({ href: url }).run();
             }
-        }
+        },
+        'cms-btn-cyan'
     );
     
-    // Add Code button
+    // Add Code button (Yellow)
     const codeBtn = createToolbarButton(
         'Inline Code',
         `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -815,10 +818,11 @@ function setupCustomToolbar() {
         </svg>`,
         () => {
             editor.chain().focus().toggleCode().run();
-        }
+        },
+        'cms-btn-yellow'
     );
     
-    // Add Icon button
+    // Add Icon button (Pink)
     const iconBtn = createToolbarButton(
         'Insert Icon',
         `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -829,7 +833,8 @@ function setupCustomToolbar() {
         </svg>`,
         () => {
             openIconPicker();
-        }
+        },
+        'cms-btn-pink'
     );
     
     // Insert buttons
@@ -844,10 +849,10 @@ function setupCustomToolbar() {
     initializeImageOverlays();
 }
 
-function createToolbarButton(text, iconHTML, onClick) {
+function createToolbarButton(text, iconHTML, onClick, colorClass = '') {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'cms-editor-btn';
+    btn.className = 'cms-editor-btn' + (colorClass ? ' ' + colorClass : '');
     btn.innerHTML = iconHTML + text;
     btn.addEventListener('click', onClick);
     return btn;

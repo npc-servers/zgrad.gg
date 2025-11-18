@@ -1,22 +1,42 @@
 /* CMS Styles */
 
+/* Import Oxanium font */
+@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700&display=swap');
+
+/* Custom Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgb(36, 36, 36);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 0, 0);
+}
+
 :root {
-    --cms-primary: #667eea;
-    --cms-primary-dark: #5568d3;
-    --cms-secondary: #764ba2;
-    --cms-bg-dark: #0f0f1e;
-    --cms-bg-darker: #0a0a14;
-    --cms-bg-light: #1a1a2e;
-    --cms-bg-lighter: #252541;
-    --cms-text: #ffffff;
-    --cms-text-secondary: rgba(255, 255, 255, 0.7);
-    --cms-text-tertiary: rgba(255, 255, 255, 0.5);
-    --cms-border: rgba(255, 255, 255, 0.1);
-    --cms-success: #51cf66;
-    --cms-warning: #ffd43b;
-    --cms-danger: #ff6b6b;
-    --cms-radius: 8px;
-    --cms-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    --cms-primary: #ff0000;
+    --cms-primary-dark: #cc0000;
+    --cms-secondary: #e78f3c;
+    --cms-bg-dark: #121212;
+    --cms-bg-darker: #0a0a0a;
+    --cms-bg-light: #1e1e1e;
+    --cms-bg-lighter: #2c2c2c;
+    --cms-text: #f5f5f5;
+    --cms-text-secondary: rgba(245, 245, 245, 0.7);
+    --cms-text-tertiary: rgba(245, 245, 245, 0.5);
+    --cms-border: rgba(255, 255, 255, 0.15);
+    --cms-success: #2ecc71;
+    --cms-warning: #ff6b00;
+    --cms-danger: #ff0000;
+    --cms-radius: 6px;
+    --cms-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 * {
@@ -26,7 +46,7 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+    font-family: 'Oxanium', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
     background: var(--cms-bg-dark);
     color: var(--cms-text);
     line-height: 1.6;
@@ -65,10 +85,7 @@ body {
 .cms-title {
     font-size: 1.5rem;
     font-weight: 700;
-    background: linear-gradient(135deg, var(--cms-primary) 0%, var(--cms-secondary) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--cms-text);
 }
 
 .cms-navbar-user {
@@ -87,7 +104,7 @@ body {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    border: 2px solid var(--cms-primary);
+    border: 2px solid var(--cms-border);
 }
 
 .cms-user-name {
@@ -119,14 +136,37 @@ body {
     align-items: center;
     gap: 12px;
     padding: 12px 16px;
-    background: transparent;
-    border: none;
+    background: rgba(30, 30, 30, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: var(--cms-radius);
     color: var(--cms-text-secondary);
     font-size: 0.95rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease-in-out;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.cms-sidebar-btn::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.4) 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.5s;
 }
 
 .cms-sidebar-btn svg {
@@ -135,13 +175,65 @@ body {
 }
 
 .cms-sidebar-btn:hover {
-    background: var(--cms-bg-light);
+    background: rgba(40, 40, 40, 0.98);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.3);
     color: var(--cms-text);
 }
 
+.cms-sidebar-btn:active {
+    transform: translateY(0);
+}
+
+.cms-sidebar-btn:active::after {
+    transform: scale(0, 0);
+    opacity: 0.3;
+    transition: 0s;
+}
+
 .cms-sidebar-btn.active {
-    background: linear-gradient(135deg, var(--cms-primary) 0%, var(--cms-secondary) 100%);
-    color: var(--cms-text);
+    background-color: rgba(30, 30, 30, 0.95);
+    color: #f5f5f5;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.cms-sidebar-btn.active::after {
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.4) 10%, transparent 10.01%);
+}
+
+.cms-sidebar-btn.active:hover {
+    background-color: rgba(40, 40, 40, 0.98);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #f5f5f5;
+}
+
+/* Blue variant for "New Guide" button */
+.cms-sidebar-btn[data-view="new"] {
+    background-color: rgba(102, 179, 255, 0.15);
+    color: #f5f5f5;
+    border-color: rgba(102, 179, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(102, 179, 255, 0.2);
+}
+
+.cms-sidebar-btn[data-view="new"]::after {
+    background-image: radial-gradient(circle, rgba(102, 179, 255, 0.4) 10%, transparent 10.01%);
+}
+
+.cms-sidebar-btn[data-view="new"]:hover {
+    background-color: rgba(102, 179, 255, 0.25);
+    border-color: rgba(102, 179, 255, 0.5);
+    color: #66b3ff;
+}
+
+.cms-sidebar-btn[data-view="new"]:active {
+    transform: translateY(0);
+}
+
+.cms-sidebar-btn[data-view="new"]:active::after {
+    transform: scale(0, 0);
+    opacity: 0.3;
+    transition: 0s;
 }
 
 /* Content */
@@ -174,12 +266,11 @@ body {
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
-    border: none;
     border-radius: var(--cms-radius);
     font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease-in-out;
 }
 
 .cms-btn svg {
@@ -188,31 +279,194 @@ body {
 }
 
 .cms-btn-primary {
-    background: linear-gradient(135deg, var(--cms-primary) 0%, var(--cms-secondary) 100%);
-    color: white;
+    background-color: rgba(255, 0, 0, 0.15);
+    color: #f5f5f5;
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.cms-btn-primary::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, rgba(255, 0, 0, 0.4) 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.5s;
 }
 
 .cms-btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+    background-color: rgba(255, 0, 0, 0.25);
+    border-color: rgba(255, 0, 0, 0.5);
+    color: #ff0000;
+    box-shadow: 0 6px 20px rgba(255, 0, 0, 0.3);
+}
+
+.cms-btn-primary:active {
+    transform: translateY(0);
+}
+
+.cms-btn-primary:active::after {
+    transform: scale(0, 0);
+    opacity: 0.3;
+    transition: 0s;
+}
+
+/* Blue variant for "Create New Guide" button */
+.cms-btn-primary.cms-btn-blue {
+    background-color: rgba(102, 179, 255, 0.15);
+    color: #f5f5f5;
+    border-color: rgba(102, 179, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(102, 179, 255, 0.2);
+}
+
+.cms-btn-primary.cms-btn-blue::after {
+    background-image: radial-gradient(circle, rgba(102, 179, 255, 0.4) 10%, transparent 10.01%);
+}
+
+.cms-btn-primary.cms-btn-blue:hover {
+    background-color: rgba(102, 179, 255, 0.25);
+    border-color: rgba(102, 179, 255, 0.5);
+    color: #66b3ff;
+}
+
+/* Green variant for "Publish" button */
+.cms-btn-primary.cms-btn-success {
+    background-color: rgba(46, 204, 113, 0.15);
+    color: #f5f5f5;
+    border-color: rgba(46, 204, 113, 0.3);
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.2);
+}
+
+.cms-btn-primary.cms-btn-success::after {
+    background-image: radial-gradient(circle, rgba(46, 204, 113, 0.4) 10%, transparent 10.01%);
+}
+
+.cms-btn-primary.cms-btn-success:hover {
+    background-color: rgba(46, 204, 113, 0.25);
+    border-color: rgba(46, 204, 113, 0.5);
+    color: #2ecc71;
 }
 
 .cms-btn-secondary {
-    background: var(--cms-bg-lighter);
+    background-color: rgba(30, 30, 30, 0.95);
     color: var(--cms-text);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.cms-btn-secondary::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.4) 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.5s;
 }
 
 .cms-btn-secondary:hover {
-    background: var(--cms-bg-light);
+    background-color: rgba(40, 40, 40, 0.98);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.cms-btn-secondary:active {
+    transform: translateY(0);
+}
+
+.cms-btn-secondary:active::after {
+    transform: scale(0, 0);
+    opacity: 0.3;
+    transition: 0s;
+}
+
+/* Orange variant for "Save Draft" button */
+.cms-btn-secondary.cms-btn-orange {
+    background-color: rgba(231, 143, 60, 0.15);
+    color: #f5f5f5;
+    border-color: rgba(231, 143, 60, 0.3);
+    box-shadow: 0 4px 15px rgba(231, 143, 60, 0.2);
+}
+
+.cms-btn-secondary.cms-btn-orange::after {
+    background-image: radial-gradient(circle, rgba(231, 143, 60, 0.4) 10%, transparent 10.01%);
+}
+
+.cms-btn-secondary.cms-btn-orange:hover {
+    background-color: rgba(231, 143, 60, 0.25);
+    border-color: rgba(231, 143, 60, 0.5);
+    color: #e78f3c;
 }
 
 .cms-btn-danger {
-    background: var(--cms-danger);
-    color: white;
+    background-color: rgba(255, 0, 0, 0.15);
+    color: #f5f5f5;
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.cms-btn-danger::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, rgba(255, 107, 107, 0.4) 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.5s;
 }
 
 .cms-btn-danger:hover {
-    background: #fa5252;
+    box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+    background-color: rgba(255, 0, 0, 0.3);
+    border-color: rgba(255, 0, 0, 0.6);
+    color: #ff6b6b;
+}
+
+.cms-btn-danger:active {
+    transform: translateY(0);
+}
+
+.cms-btn-danger:active::after {
+    transform: scale(0, 0);
+    opacity: 0.3;
+    transition: 0s;
 }
 
 /* Guides List */
@@ -232,7 +486,7 @@ body {
 }
 
 .cms-guide-card:hover {
-    border-color: var(--cms-primary);
+    border-color: rgba(255, 255, 255, 0.3);
     box-shadow: var(--cms-shadow);
 }
 
@@ -272,12 +526,12 @@ body {
 }
 
 .cms-guide-status.draft {
-    background: rgba(255, 212, 59, 0.2);
+    background: rgba(231, 143, 60, 0.2);
     color: var(--cms-warning);
 }
 
 .cms-guide-status.published {
-    background: rgba(81, 207, 102, 0.2);
+    background: rgba(46, 204, 113, 0.2);
     color: var(--cms-success);
 }
 
@@ -360,8 +614,8 @@ body {
 .cms-input:focus,
 .cms-textarea:focus {
     outline: none;
-    border-color: var(--cms-primary);
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
 }
 
 .cms-textarea {
@@ -402,13 +656,36 @@ body {
     align-items: center;
     gap: 6px;
     padding: 8px 12px;
-    background: var(--cms-bg-darker);
-    border: 1px solid var(--cms-border);
+    background-color: rgba(30, 30, 30, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 6px;
     color: var(--cms-text-secondary);
     font-size: 0.85rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease-in-out;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.cms-editor-btn::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.4) 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.5s;
 }
 
 .cms-editor-btn svg {
@@ -417,9 +694,128 @@ body {
 }
 
 .cms-editor-btn:hover {
-    background: var(--cms-bg-lighter);
+    background-color: rgba(40, 40, 40, 0.98);
     color: var(--cms-text);
-    border-color: var(--cms-primary);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.cms-editor-btn:active {
+    transform: translateY(0);
+}
+
+.cms-editor-btn:active::after {
+    transform: scale(0, 0);
+    opacity: 0.3;
+    transition: 0s;
+}
+
+/* Purple variant for "Add Step" button */
+.cms-editor-btn.cms-btn-purple {
+    background-color: rgba(155, 89, 182, 0.15);
+    color: #f5f5f5;
+    border-color: rgba(155, 89, 182, 0.3);
+    box-shadow: 0 4px 15px rgba(155, 89, 182, 0.2);
+}
+
+.cms-editor-btn.cms-btn-purple::after {
+    background-image: radial-gradient(circle, rgba(155, 89, 182, 0.4) 10%, transparent 10.01%);
+}
+
+.cms-editor-btn.cms-btn-purple:hover {
+    background-color: rgba(155, 89, 182, 0.25);
+    border-color: rgba(155, 89, 182, 0.5);
+    color: #9b59b6;
+}
+
+/* Teal variant for "Add Info Box" button */
+.cms-editor-btn.cms-btn-teal {
+    background-color: rgba(26, 188, 156, 0.15);
+    color: #f5f5f5;
+    border-color: rgba(26, 188, 156, 0.3);
+    box-shadow: 0 4px 15px rgba(26, 188, 156, 0.2);
+}
+
+.cms-editor-btn.cms-btn-teal::after {
+    background-image: radial-gradient(circle, rgba(26, 188, 156, 0.4) 10%, transparent 10.01%);
+}
+
+.cms-editor-btn.cms-btn-teal:hover {
+    background-color: rgba(26, 188, 156, 0.25);
+    border-color: rgba(26, 188, 156, 0.5);
+    color: #1abc9c;
+}
+
+/* Cyan variant for "Add Link" button */
+.cms-editor-btn.cms-btn-cyan {
+    background-color: rgba(52, 152, 219, 0.15);
+    color: #f5f5f5;
+    border-color: rgba(52, 152, 219, 0.3);
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+}
+
+.cms-editor-btn.cms-btn-cyan::after {
+    background-image: radial-gradient(circle, rgba(52, 152, 219, 0.4) 10%, transparent 10.01%);
+}
+
+.cms-editor-btn.cms-btn-cyan:hover {
+    background-color: rgba(52, 152, 219, 0.25);
+    border-color: rgba(52, 152, 219, 0.5);
+    color: #3498db;
+}
+
+/* Yellow variant for "Inline Code" button */
+.cms-editor-btn.cms-btn-yellow {
+    background-color: rgba(241, 196, 15, 0.15);
+    color: #f5f5f5;
+    border-color: rgba(241, 196, 15, 0.3);
+    box-shadow: 0 4px 15px rgba(241, 196, 15, 0.2);
+}
+
+.cms-editor-btn.cms-btn-yellow::after {
+    background-image: radial-gradient(circle, rgba(241, 196, 15, 0.4) 10%, transparent 10.01%);
+}
+
+.cms-editor-btn.cms-btn-yellow:hover {
+    background-color: rgba(241, 196, 15, 0.25);
+    border-color: rgba(241, 196, 15, 0.5);
+    color: #f1c40f;
+}
+
+/* Pink variant for "Insert Icon" button */
+.cms-editor-btn.cms-btn-pink {
+    background-color: rgba(255, 105, 180, 0.15);
+    color: #f5f5f5;
+    border-color: rgba(255, 105, 180, 0.3);
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.2);
+}
+
+.cms-editor-btn.cms-btn-pink::after {
+    background-image: radial-gradient(circle, rgba(255, 105, 180, 0.4) 10%, transparent 10.01%);
+}
+
+.cms-editor-btn.cms-btn-pink:hover {
+    background-color: rgba(255, 105, 180, 0.25);
+    border-color: rgba(255, 105, 180, 0.5);
+    color: #ff69b4;
+}
+
+/* Indigo variant for "Insert Image" button */
+.cms-editor-btn.cms-btn-indigo {
+    background-color: rgba(102, 51, 153, 0.15);
+    color: #f5f5f5;
+    border-color: rgba(102, 51, 153, 0.3);
+    box-shadow: 0 4px 15px rgba(102, 51, 153, 0.2);
+}
+
+.cms-editor-btn.cms-btn-indigo::after {
+    background-image: radial-gradient(circle, rgba(102, 51, 153, 0.4) 10%, transparent 10.01%);
+}
+
+.cms-editor-btn.cms-btn-indigo:hover {
+    background-color: rgba(102, 51, 153, 0.25);
+    border-color: rgba(102, 51, 153, 0.5);
+    color: #663399;
 }
 
 .cms-editor {
@@ -439,11 +835,13 @@ body {
     padding: 20px;
     min-height: 400px;
     outline: none;
+    font-family: 'Oxanium', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+    transition: all 0.2s;
 }
 
 .tiptap-editor:focus {
-    border-color: var(--cms-primary);
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
 }
 
 /* TipTap content styles */
@@ -452,6 +850,7 @@ body {
     font-weight: 700;
     margin: 1.5rem 0 1rem 0;
     color: var(--cms-text);
+    font-family: 'Oxanium', sans-serif;
 }
 
 .tiptap-editor h2 {
@@ -459,6 +858,7 @@ body {
     font-weight: 700;
     margin: 1.5rem 0 1rem 0;
     color: var(--cms-text);
+    font-family: 'Oxanium', sans-serif;
 }
 
 .tiptap-editor h3 {
@@ -466,6 +866,7 @@ body {
     font-weight: 600;
     margin: 1.5rem 0 1rem 0;
     color: var(--cms-text);
+    font-family: 'Oxanium', sans-serif;
 }
 
 .tiptap-editor h4 {
@@ -473,11 +874,13 @@ body {
     font-weight: 600;
     margin: 1.5rem 0 1rem 0;
     color: var(--cms-text);
+    font-family: 'Oxanium', sans-serif;
 }
 
 .tiptap-editor p {
     margin: 0.75rem 0;
     line-height: 1.7;
+    font-family: 'Oxanium', sans-serif;
 }
 
 .tiptap-editor a {
@@ -493,15 +896,17 @@ body {
 .tiptap-editor ol {
     padding-left: 1.5rem;
     margin: 0.75rem 0;
+    font-family: 'Oxanium', sans-serif;
 }
 
 .tiptap-editor li {
     margin: 0.25rem 0;
+    font-family: 'Oxanium', sans-serif;
 }
 
 .tiptap-editor code {
     background: var(--cms-bg-lighter);
-    color: #f8c555;
+    color: var(--cms-secondary);
     padding: 2px 6px;
     border-radius: 4px;
     font-family: 'Courier New', monospace;
@@ -529,6 +934,7 @@ body {
     margin: 1rem 0;
     font-style: italic;
     color: var(--cms-text-secondary);
+    font-family: 'Oxanium', sans-serif;
 }
 
 .tiptap-editor img {
@@ -542,7 +948,7 @@ body {
 .tiptap-editor .step-card {
     background: var(--cms-bg-light);
     border: 1px solid var(--cms-border);
-    border-left: 4px solid var(--cms-primary);
+    border-left: 4px solid #66b3ff;
     border-radius: 8px;
     padding: 20px;
     margin: 1.5rem 0;
@@ -593,8 +999,8 @@ body {
 }
 
 .tiptap-editor .info-box {
-    background: rgba(102, 126, 234, 0.1);
-    border: 1px solid var(--cms-primary);
+    background: rgba(102, 179, 255, 0.1);
+    border: 1px solid #66b3ff;
     border-radius: 8px;
     padding: 16px 20px;
     margin: 1.5rem 0;
@@ -646,7 +1052,7 @@ body {
 }
 
 .tiptap-editor .guide-image.cms-image-selected {
-    outline: 3px solid var(--cms-primary);
+    outline: 3px solid #66b3ff;
     outline-offset: 2px;
     border-radius: 8px;
 }
@@ -655,7 +1061,7 @@ body {
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(102, 126, 234, 0.1);
+    background: rgba(102, 179, 255, 0.1);
     border-radius: 8px;
     pointer-events: none;
 }
@@ -691,8 +1097,8 @@ body {
 }
 
 .cms-image-edit-btn:hover {
-    background: rgba(102, 126, 234, 0.9);
-    border-color: var(--cms-primary);
+    background: rgba(102, 179, 255, 0.9);
+    border-color: #66b3ff;
     transform: scale(1.05);
 }
 
@@ -724,6 +1130,17 @@ body {
     animation: spin 1s linear infinite;
 }
 
+.cms-spinner::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+}
+
 @keyframes spin {
     to {
         transform: rotate(360deg);
@@ -738,24 +1155,31 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    pointer-events: none;
 }
 
 .cms-modal-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(4px);
+    background: transparent;
+    pointer-events: none;
 }
 
 .cms-modal-content {
-    position: relative;
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
     background: var(--cms-bg-light);
     border: 1px solid var(--cms-border);
     border-radius: var(--cms-radius);
-    max-width: 500px;
-    width: 90%;
+    max-width: 400px;
+    width: 400px;
     max-height: 90vh;
     overflow: auto;
+    pointer-events: all;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    font-family: 'Oxanium', sans-serif;
 }
 
 .cms-modal-header {
@@ -766,10 +1190,12 @@ body {
 .cms-modal-title {
     font-size: 1.25rem;
     font-weight: 600;
+    font-family: 'Oxanium', sans-serif;
 }
 
 .cms-modal-body {
     padding: 24px;
+    font-family: 'Oxanium', sans-serif;
 }
 
 .cms-upload-progress {
@@ -780,7 +1206,36 @@ body {
     color: var(--cms-text-secondary);
 }
 
-/* Image Settings Modal */
+/* Image Settings Modal - appears to the right */
+#imageSettingsModal {
+    pointer-events: all;
+}
+
+#imageSettingsModal .cms-modal-overlay {
+    display: none;
+}
+
+/* Upload modal - keep centered with overlay */
+#imageUploadModal .cms-modal-overlay {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    pointer-events: all;
+}
+
+#imageUploadModal .cms-modal-content {
+    position: relative;
+    left: auto;
+    right: auto;
+    top: auto;
+    transform: none;
+    max-width: 500px;
+    width: 90%;
+}
+
+.cms-label {
+    font-family: 'Oxanium', sans-serif;
+}
+
 .cms-image-width-options,
 .cms-image-align-options {
     display: flex;
@@ -793,32 +1248,81 @@ body {
     flex: 1;
     min-width: 120px;
     padding: 12px 16px;
-    background: var(--cms-bg-darker);
-    border: 2px solid var(--cms-border);
+    background-color: rgba(30, 30, 30, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: var(--cms-radius);
     color: var(--cms-text-secondary);
     font-size: 0.9rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease-in-out;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.cms-width-btn::after,
+.cms-align-btn::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.4) 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.5s;
 }
 
 .cms-width-btn:hover,
 .cms-align-btn:hover {
-    background: var(--cms-bg-lighter);
-    border-color: var(--cms-primary);
+    background-color: rgba(40, 40, 40, 0.98);
+    border-color: rgba(255, 255, 255, 0.3);
     color: var(--cms-text);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.cms-width-btn:active,
+.cms-align-btn:active {
+    transform: translateY(0);
+}
+
+.cms-width-btn:active::after,
+.cms-align-btn:active::after {
+    transform: scale(0, 0);
+    opacity: 0.3;
+    transition: 0s;
 }
 
 .cms-width-btn.active,
 .cms-align-btn.active {
-    background: linear-gradient(135deg, var(--cms-primary) 0%, var(--cms-secondary) 100%);
-    border-color: var(--cms-primary);
-    color: white;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #f5f5f5;
+}
+
+.cms-width-btn.active::after,
+.cms-align-btn.active::after {
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.4) 10%, transparent 10.01%);
+}
+
+.cms-width-btn.active:hover,
+.cms-align-btn.active:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #f5f5f5;
 }
 
 .cms-align-btn svg {
@@ -914,7 +1418,7 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
-    background: rgba(102, 126, 234, 0.1);
+    background: rgba(255, 0, 0, 0.1);
     border: 1px solid var(--cms-primary);
     border-radius: var(--cms-radius);
     padding: 12px 16px;
@@ -1031,17 +1535,48 @@ body {
     justify-content: center;
     gap: 8px;
     padding: 16px 8px;
-    background: var(--cms-bg-lighter);
-    border: 2px solid var(--cms-border);
+    background-color: rgba(30, 30, 30, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: var(--cms-radius);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease-in-out;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.cms-icon-item::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.4) 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.5s;
 }
 
 .cms-icon-item:hover {
-    background: var(--cms-bg-hover);
-    border-color: var(--cms-primary);
-    transform: translateY(-2px);
+    background-color: rgba(255, 0, 0, 0.15);
+    border-color: rgba(255, 0, 0, 0.3);
+    box-shadow: 0 6px 20px rgba(255, 0, 0, 0.3);
+}
+
+.cms-icon-item:active {
+    transform: translateY(0);
+}
+
+.cms-icon-item:active::after {
+    transform: scale(0, 0);
+    opacity: 0.3;
+    transition: 0s;
 }
 
 .cms-icon-item svg {
