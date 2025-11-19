@@ -54,9 +54,9 @@ Create `.dev.vars` with:
 ```env
 DISCORD_CLIENT_ID=your_client_id
 DISCORD_CLIENT_SECRET=your_client_secret
-DISCORD_REDIRECT_URI=http://localhost:8788/api/auth/discord/callback
+DISCORD_REDIRECT_URI=http://localhost:8788/api/auth/discord-callback
 DISCORD_GUILD_ID=your_guild_id
-DISCORD_REQUIRED_ROLE_ID=your_role_id
+DISCORD_REQUIRED_ROLES=your_role_id_1,your_role_id_2
 SESSION_SECRET=generate_random_string_here
 ```
 
