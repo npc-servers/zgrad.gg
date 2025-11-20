@@ -565,6 +565,155 @@ background: linear-gradient(90deg,
 );
 }
 
+/* Scroll/Swipe Indicator */
+.scroll-indicator-container {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    pointer-events: auto;
+}
+
+.scroll-indicator-desktop,
+.scroll-indicator-mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 1.5s;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.scroll-indicator-container:hover .scroll-indicator-desktop {
+    transform: translateY(5px);
+    opacity: 0.8;
+}
+
+.scroll-text {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Desktop Mouse Animation */
+.mouse {
+    width: 26px;
+    height: 42px;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    border-radius: 20px;
+    position: relative;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.wheel {
+    width: 4px;
+    height: 8px;
+    background-color: #fff;
+    border-radius: 2px;
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: scrollWheel 1.5s infinite;
+}
+
+@keyframes scrollWheel {
+    0% {
+        opacity: 1;
+        top: 8px;
+    }
+    100% {
+        opacity: 0;
+        top: 24px;
+    }
+}
+
+/* Mobile Swipe Animation */
+.swipe-animation {
+    position: relative;
+    width: 30px;
+    height: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.swipe-circle {
+    width: 8px;
+    height: 8px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    margin: 4px 0;
+    animation: swipeUp 1.5s infinite ease-in-out;
+    opacity: 0;
+}
+
+.swipe-circle:nth-child(1) {
+    animation-delay: 0.6s;
+}
+
+.swipe-circle:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.swipe-circle:nth-child(3) {
+    animation-delay: 0s;
+}
+
+@keyframes swipeUp {
+    0% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.5);
+    }
+    20% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.5);
+    }
+}
+
+/* Visibility Control */
+.scroll-indicator-mobile {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .scroll-indicator-desktop {
+        display: none;
+    }
+    
+    .scroll-indicator-mobile {
+        display: flex;
+    }
+    
+    .scroll-indicator-container {
+        bottom: 80px; /* Move up a bit on mobile to avoid overlapping with browser UI */
+    }
+}
+
+/* Adjust for very small height screens */
+@media (max-height: 600px) {
+    .scroll-indicator-container {
+        display: none;
+    }
+}
+
 /* Responsive styles */
 @media (max-width:992px){
 .landing-section{
@@ -1608,4 +1757,4 @@ z-index: 2;
     .top-row .landing-buttons-inline .landing-button:nth-child(3) {
         animation-delay: 0.3s;
     }
-} 
+}

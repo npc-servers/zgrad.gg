@@ -336,4 +336,45 @@ document.addEventListener('DOMContentLoaded', () => {
             resizeTimeout = setTimeout(updateServerButtons, 150); // Debounce resize events by 150ms
         });
     }
-}); 
+
+    // Scroll/Swipe Indicator
+    const scrollIndicator = document.getElementById('scrollIndicator');
+    if (scrollIndicator) {
+        scrollIndicator.addEventListener('click', () => {
+            // Try to find the next section
+            const nextSection = document.querySelector('.homigrad-section');
+            if (nextSection) {
+                // Use Lenis for smooth scrolling if available, otherwise fallback to native
+                if (window.lenis) {
+                    window.lenis.scrollTo(nextSection);
+                } else {
+                    nextSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    }
+
+    // Fade out scroll indicator on scroll
+    window.addEventListener('scroll', () => {
+        const scrollPosition = window.scrollY;
+        const windowHeight = window.innerHeight;
+        const fadeStart = 0; // Start fading immediately
+        const fadeEnd = windowHeight * 0.3; // Fully faded out at 30% of viewport height
+        
+        let opacity = 1;
+        
+        if (scrollPosition > fadeStart) {
+            opacity = 1 - (scrollPosition - fadeStart) / (fadeEnd - fadeStart);
+            opacity = Math.max(0, Math.min(1, opacity));
+        }
+        
+        scrollIndicator.style.opacity = opacity;
+        
+        // Disable pointer events when invisible to prevent accidental clicks
+        if (opacity <= 0.1) {
+            scrollIndicator.style.pointerEvents = 'none';
+        } else {
+            scrollIndicator.style.pointerEvents = 'auto';
+        }
+    });
+});
