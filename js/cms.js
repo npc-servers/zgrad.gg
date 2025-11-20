@@ -1151,6 +1151,7 @@ function setupCustomToolbar() {
         document.getElementById('italicBtn').classList.toggle('active', editor.isActive('italic'));
         document.getElementById('underlineBtn').classList.toggle('active', editor.isActive('underline'));
         document.getElementById('strikeBtn').classList.toggle('active', editor.isActive('strike'));
+        document.getElementById('codeBtn').classList.toggle('active', editor.isActive('code'));
         document.getElementById('bulletListBtn').classList.toggle('active', editor.isActive('bulletList'));
         document.getElementById('orderedListBtn').classList.toggle('active', editor.isActive('orderedList'));
     };
@@ -1173,6 +1174,11 @@ function setupCustomToolbar() {
     
     document.getElementById('strikeBtn').addEventListener('click', () => {
         editor.chain().focus().toggleStrike().run();
+        updateToolbarStates();
+    });
+    
+    document.getElementById('codeBtn').addEventListener('click', () => {
+        editor.chain().focus().toggleCode().run();
         updateToolbarStates();
     });
     
@@ -1251,19 +1257,6 @@ function setupCustomToolbar() {
         'cms-btn-cyan'
     );
     
-    // Add Code button (Yellow)
-    const codeBtn = createToolbarButton(
-        'Inline Code',
-        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="16 18 22 12 16 6"></polyline>
-            <polyline points="8 6 2 12 8 18"></polyline>
-        </svg>`,
-        () => {
-            editor.chain().focus().toggleCode().run();
-        },
-        'cms-btn-yellow'
-    );
-    
     // Add Icon button (Pink)
     const iconBtn = createToolbarButton(
         'Insert Icon',
@@ -1284,12 +1277,11 @@ function setupCustomToolbar() {
     
     // Create a custom elements group
     const customElementsGroup = document.createElement('div');
-    customElementsGroup.className = 'cms-toolbar-group cms-toolbar-row-break';
+    customElementsGroup.className = 'cms-toolbar-group';
     customElementsGroup.appendChild(insertImageBtn);
     customElementsGroup.appendChild(stepCardBtn);
     customElementsGroup.appendChild(infoBoxBtn);
     customElementsGroup.appendChild(linkBtn);
-    customElementsGroup.appendChild(codeBtn);
     customElementsGroup.appendChild(iconBtn);
     
     // Append after all other toolbar items

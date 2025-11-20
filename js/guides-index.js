@@ -46,8 +46,10 @@ async function fetchGuidesManifest() {
             const apiResponse = await fetch('/api/guides/list');
             if (apiResponse.ok) {
                 const apiData = await apiResponse.json();
-                // Filter to only published guides
-                const publishedGuides = apiData.guides.filter(guide => guide.status === 'published');
+                // Filter to only published and public (not unlisted) guides
+                const publishedGuides = apiData.guides.filter(guide => 
+                    guide.status === 'published' && guide.visibility !== 'unlisted'
+                );
                 // Convert to manifest format
                 return {
                     generated: new Date().toISOString(),

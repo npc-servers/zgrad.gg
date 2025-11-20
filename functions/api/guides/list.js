@@ -25,13 +25,13 @@ export async function onRequest(context) {
     if (session) {
       // Authenticated users with valid roles (CMS) - show all guides including drafts
       query = env.DB.prepare(
-        'SELECT id, slug, title, description, thumbnail, author_id, author_name, author_avatar, status, created_at, updated_at FROM guides ORDER BY created_at DESC'
+        'SELECT id, slug, title, description, thumbnail, author_id, author_name, author_avatar, status, visibility, view_count, created_at, updated_at FROM guides ORDER BY created_at DESC'
       );
     } else {
       // Public users or users without valid roles - only show published guides
       query = env.DB.prepare(
-        'SELECT id, slug, title, description, thumbnail, author_id, author_name, author_avatar, status, created_at, updated_at FROM guides WHERE status = ? ORDER BY created_at DESC'
-      ).bind('published');
+        'SELECT id, slug, title, description, thumbnail, author_id, author_name, author_avatar, status, visibility, view_count, created_at, updated_at FROM guides WHERE status = ? AND visibility = ? ORDER BY created_at DESC'
+      ).bind('published', 'public');
     }
 
     const { results } = await query.all();
