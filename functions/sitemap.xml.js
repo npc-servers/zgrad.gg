@@ -50,6 +50,11 @@ export async function onRequest(context) {
         priority: '0.8'
       },
       {
+        loc: 'https://zgrad.gg/updates',
+        changefreq: 'daily',
+        priority: '0.8'
+      },
+      {
         loc: 'https://zgrad.gg/connect/us1',
         changefreq: 'monthly',
         priority: '0.5'
