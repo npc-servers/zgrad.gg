@@ -277,11 +277,3 @@ npm run preview          # Preview production build
 npm run generate:guides  # Generate guides manifest
 npm run generate:sitemap # Generate sitemap.xml
 ```
-
-## Contributing
-
-This is a private project for ZGRAD Network. Contributions are limited to authorized team members.
-
-## License
-
-© 2024 ZGRAD Network. All rights reserved.
