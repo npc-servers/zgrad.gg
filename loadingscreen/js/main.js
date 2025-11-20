@@ -437,6 +437,235 @@ function initializeUI() {
     
     // Initialize server list
     initializeServerList();
+    
+    // Schedule update display (condense social media and show updates)
+    setTimeout(showLatestUpdate, 3000);
+}
+
+/**
+ * Updates Integration
+ */
+var allUpdates = [];
+var currentUpdateIndex = 0;
+var updateCycleInterval = null;
+
+function fetchAllUpdates() {
+    // Fetch all updates
+    return fetch("/api/updates/list?limit=100&offset=0")
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+            if (data.updates && data.updates.length > 0) {
+                return data.updates;
+            }
+            return [];
+        })
+        .catch(function(error) {
+            console.error("[LoadingScreen] Error fetching updates:", error);
+            return [];
+        });
+}
+
+function fetchLatestUpdate() {
+    // Fetch only 1 update
+    return fetch("/api/updates/list?limit=1&offset=0")
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+            if (data.updates && data.updates.length > 0) {
+                return data.updates[0];
+            }
+            return null;
+        })
+        .catch(function(error) {
+            console.error("[LoadingScreen] Error fetching updates:", error);
+            return null;
+        });
+}
+
+function processUpdateContent(content) {
+    if (!content) return '';
+    
+    // Basic HTML escaping
+    var div = document.createElement('div');
+    div.textContent = content;
+    var processed = div.innerHTML;
+    
+    // Remove Discord references
+    processed = processed.replace(/&lt;[@#:][^&]+?&gt;/g, '');
+    
+    // Remove Discord CDN links
+    processed = processed.replace(
+        /https:\/\/cdn\.discordapp\.com\/attachments\/[\d]+\/[\d]+\/[^\s<]+(\?[^\s<]*)?/gi,
+        ''
+    );
+    
+    // Process lines for badges
+    var lines = processed.split('\n');
+    processed = lines.map(function(line) {
+        var trimmedLine = line.trim();
+        
+        if (trimmedLine.startsWith('+')) {
+            return '<span class="changelog-badge changelog-added">ADDED</span> ' + trimmedLine.substring(1).trim();
+        }
+        if (trimmedLine.startsWith('×') || trimmedLine.startsWith('x')) {
+            return '<span class="changelog-badge changelog-changed">CHANGED</span> ' + trimmedLine.substring(1).trim();
+        }
+        if (trimmedLine.startsWith('-')) {
+            return '<span class="changelog-badge changelog-removed">REMOVED</span> ' + trimmedLine.substring(1).trim();
+        }
+        if (trimmedLine.startsWith('*')) {
+            return '<span class="bullet-point">•</span> ' + trimmedLine.substring(1).trim();
+        }
+        return line;
+    }).join('\n');
+    
+    // Basic formatting
+    processed = processed.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    processed = processed.replace(/__(.+?)__/g, '<strong>$1</strong>');
+    processed = processed.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    processed = processed.replace(/`(.+?)`/g, '<code>$1</code>');
+    
+    // Links
+    processed = processed.replace(/\[([^\]]+)\]\(([^)]*)\)/g, function(match, text, url) {
+        if (url && url.trim()) {
+            return '<a href="' + url + '" target="_blank">' + text + '</a>';
+        }
+        return text;
+    });
+    
+    // Paragraphs
+    var paragraphs = processed.split('\n\n').filter(function(p) { return p.trim(); });
+    if (paragraphs.length > 1) {
+        processed = paragraphs.map(function(p) { return '<p>' + p.replace(/\n/g, '<br>') + '</p>'; }).join('');
+    } else {
+        processed = processed.replace(/\n/g, '<br>');
+    }
+    
+    return processed;
+}
+
+function getUpdateLabel(timestamp, isLatest) {
+    var updateDate = new Date(timestamp);
+    var today = new Date();
+    
+    // Reset time parts for accurate day comparison
+    today.setHours(0, 0, 0, 0);
+    updateDate.setHours(0, 0, 0, 0);
+    
+    var diffTime = today - updateDate;
+    var diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) {
+        return "TODAY'S UPDATE";
+    } else if (diffDays === 1) {
+        return "YESTERDAY'S UPDATE";
+    } else {
+        return "PAST UPDATE";
+    }
+}
+
+function displayUpdate(update, isLatest) {
+    var updateContent = document.getElementById('latestUpdateContent');
+    var updateDate = document.getElementById('latestUpdateDate');
+    var updateLabel = document.getElementById('latestUpdateLabel');
+    var authorAvatar = document.getElementById('authorAvatar');
+    var authorName = document.getElementById('authorName');
+    
+    if (!updateContent || !updateDate || !updateLabel) return;
+    
+    // Prepare update content
+    var date = new Date(update.timestamp);
+    updateDate.textContent = date.toLocaleDateString();
+    updateContent.innerHTML = processUpdateContent(update.content);
+    
+    // Update the label dynamically
+    updateLabel.textContent = getUpdateLabel(update.timestamp, isLatest);
+    
+    // Update author information
+    if (authorAvatar && update.author_id) {
+        var avatarUrl;
+        if (update.author_avatar && update.author_avatar !== 'null') {
+            avatarUrl = 'https://cdn.discordapp.com/avatars/' + update.author_id + '/' + update.author_avatar + '.png';
+        } else {
+            // Calculate default avatar index based on user ID
+            var defaultAvatarIndex = Number(BigInt(update.author_id) >> 22n) % 6;
+            avatarUrl = 'https://cdn.discordapp.com/embed/avatars/' + defaultAvatarIndex + '.png';
+        }
+        authorAvatar.src = avatarUrl;
+    }
+    if (authorName && update.author_username) {
+        authorName.textContent = update.author_username;
+    }
+}
+
+function showNextUpdate() {
+    var socialContainer = document.getElementById('socialMediaContainer');
+    var updateContainer = document.getElementById('latestUpdateContainer');
+    
+    if (!socialContainer || !updateContainer || allUpdates.length === 0) return;
+    
+    // Hide update container
+    updateContainer.classList.remove('visible');
+    
+    // Wait for hide animation, then show socials
+    setTimeout(function() {
+        socialContainer.classList.remove('condensed');
+        
+        // After 10 seconds, show next update
+        setTimeout(function() {
+            // Move to next update
+            currentUpdateIndex = (currentUpdateIndex + 1) % allUpdates.length;
+            var nextUpdate = allUpdates[currentUpdateIndex];
+            var isLatest = currentUpdateIndex === 0;
+            
+            // Display the update
+            displayUpdate(nextUpdate, isLatest);
+            
+            // Condense social media container
+            socialContainer.classList.add('condensed');
+            
+            // Show update container after a short delay
+            setTimeout(function() {
+                updateContainer.classList.add('visible');
+                
+                // Schedule next cycle
+                setTimeout(showNextUpdate, 15000);
+            }, 500);
+        }, 10000);
+    }, 500);
+}
+
+function showLatestUpdate() {
+    var socialContainer = document.getElementById('socialMediaContainer');
+    var updateContainer = document.getElementById('latestUpdateContainer');
+    
+    if (!socialContainer || !updateContainer) return;
+    
+    // Fetch all updates first
+    fetchAllUpdates().then(function(updates) {
+        if (!updates || updates.length === 0) {
+            console.log("[LoadingScreen] No updates found to display");
+            return;
+        }
+        
+        // Store all updates
+        allUpdates = updates;
+        currentUpdateIndex = 0;
+        
+        // Display the first (latest) update
+        var latestUpdate = allUpdates[0];
+        displayUpdate(latestUpdate, true);
+        
+        // Condense social media container
+        socialContainer.classList.add('condensed');
+        
+        // Show update container after a short delay to allow condense animation
+        setTimeout(function() {
+            updateContainer.classList.add('visible');
+            
+            // After 15 seconds, start the cycling
+            setTimeout(showNextUpdate, 15000);
+        }, 500);
+    });
 }
 
 /**
@@ -893,4 +1122,4 @@ document.addEventListener("DOMContentLoaded", function() {
     
     // Initialize UI elements
     setTimeout(initializeUI, 100);
-}); 
+});
