@@ -308,6 +308,20 @@ function createGuideCard(guide) {
     
     const viewCount = guide.view_count || 0;
     
+    // Determine status badge text and styling
+    let statusBadge = guide.status;
+    let statusClass = guide.status;
+    
+    if (guide.draft_content && guide.status === 'published') {
+        statusBadge = 'has draft';
+        statusClass = 'has-draft';
+    }
+    
+    // Visibility badge
+    const visibilityBadge = guide.visibility === 'unlisted' 
+        ? '<span class="cms-guide-status unlisted">unlisted</span>' 
+        : '';
+    
     return `
         <div class="cms-guide-card">
             <img src="${thumbnailUrl}" alt="${escapeHtml(guide.title)}" class="cms-guide-thumbnail">
@@ -315,7 +329,8 @@ function createGuideCard(guide) {
                 <div class="cms-guide-header">
                     <h3 class="cms-guide-title">${escapeHtml(guide.title)}</h3>
                     <div class="cms-guide-header-meta">
-                        <span class="cms-guide-status ${guide.status}">${guide.status}</span>
+                        <span class="cms-guide-status ${statusClass}">${statusBadge}</span>
+                        ${visibilityBadge}
                         <span class="cms-guide-views">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -350,7 +365,18 @@ function createNewGuide() {
     document.getElementById('guideSlug').value = '';
     document.getElementById('guideDescription').value = '';
     document.getElementById('guideThumbnail').value = '';
+    document.getElementById('guideVisibility').value = 'public';
     document.getElementById('thumbnailPreview').style.display = 'none';
+    
+    // Remove any existing draft notice
+    const existingNotice = document.getElementById('draftNotice');
+    if (existingNotice) {
+        existingNotice.remove();
+    }
+    
+    // Reset button states
+    document.getElementById('publishBtn').textContent = 'Publish';
+    document.getElementById('saveDraftBtn').textContent = 'Save Draft';
     
     // Initialize or reset editor
     initializeEditor('');
@@ -372,6 +398,8 @@ async function editGuide(guideId) {
         console.log('[CMS] Guide loaded:', {
             id: guide.id,
             title: guide.title,
+            status: guide.status,
+            hasDraft: !!guide.draft_content,
             author: guide.author_name,
             contributorCount: contributors.length
         });
@@ -388,6 +416,7 @@ async function editGuide(guideId) {
         document.getElementById('guideSlug').value = guide.slug;
         document.getElementById('guideDescription').value = guide.description || '';
         document.getElementById('guideThumbnail').value = guide.thumbnail || '';
+        document.getElementById('guideVisibility').value = guide.visibility || 'public';
         
         if (guide.thumbnail) {
             updateThumbnailPreview(guide.thumbnail);
@@ -396,8 +425,19 @@ async function editGuide(guideId) {
         // Show author and contributors info
         displayGuideAuthorship(guide, contributors, isAuthor);
         
+        // Load draft content if it exists, otherwise load published content
+        const contentToLoad = guide.draft_content || guide.content;
+        
+        // Show draft notice if there are draft changes
+        if (guide.draft_content && guide.status === 'published') {
+            showDraftNotice(guide);
+        }
+        
         // Initialize editor with content
-        initializeEditor(guide.content);
+        initializeEditor(contentToLoad);
+        
+        // Update button states based on guide status
+        updateEditorButtonStates(guide);
         
         // Switch to editor view
         document.getElementById('guidesView').style.display = 'none';
@@ -413,6 +453,7 @@ async function saveGuide(status) {
     const slug = document.getElementById('guideSlug').value.trim();
     const description = document.getElementById('guideDescription').value.trim();
     const thumbnail = document.getElementById('guideThumbnail').value.trim();
+    const visibility = document.getElementById('guideVisibility').value;
     let content = editor.getHTML();
     
     // Post-process step cards to match player-report.html structure
@@ -442,6 +483,7 @@ async function saveGuide(status) {
                 thumbnail,
                 content,
                 status,
+                visibility,
             }),
         });
         
@@ -451,17 +493,49 @@ async function saveGuide(status) {
         
         const result = await response.json();
         
-        // Show appropriate message based on whether user is a contributor
+        // Show appropriate message
+        let message = result.action_message || (status === 'published' ? 'Guide published successfully!' : 'Draft saved successfully!');
         if (result.is_contributor) {
-            showToast(`${status === 'published' ? 'Guide published' : 'Draft saved'} successfully! 🎉 You've been added as a contributor!`, 'success', 4000);
-        } else {
-            showToast(status === 'published' ? 'Guide published successfully!' : 'Draft saved successfully!', 'success');
+            message += ' 🎉 You\'ve been added as a contributor!';
         }
+        
+        showToast(message, 'success', 4000);
         
         console.log('[CMS] Guide saved:', {
             isContributor: result.is_contributor,
-            status: status
+            status: status,
+            actionMessage: result.action_message
         });
+        
+        // If we just published, update the UI to reflect no more draft
+        if (status === 'published') {
+            // Remove draft notice if present
+            const draftNotice = document.getElementById('draftNotice');
+            if (draftNotice) {
+                draftNotice.remove();
+            }
+            
+            // Update button states - create a temporary guide object with published status and no draft
+            updateEditorButtonStates({ 
+                status: 'published', 
+                draft_content: null 
+            });
+        }
+        // If we saved as draft on a published guide, show draft notice and update buttons
+        else if (status === 'draft' && currentGuideId) {
+            // Fetch the updated guide to get accurate state
+            const guideResponse = await fetch(`/api/guides/${currentGuideId}`);
+            const guideData = await guideResponse.json();
+            const updatedGuide = guideData.guide;
+            
+            // Show draft notice if we now have draft changes on a published guide
+            if (updatedGuide.status === 'published' && updatedGuide.draft_content) {
+                showDraftNotice(updatedGuide);
+            }
+            
+            // Update button states
+            updateEditorButtonStates(updatedGuide);
+        }
         
         // Reload guides and switch view
         await loadGuides();
@@ -469,6 +543,120 @@ async function saveGuide(status) {
     } catch (error) {
         console.error('Error saving guide:', error);
         showToast('Failed to save guide. Please try again.', 'error');
+    }
+}
+
+// Show draft notice when editing a guide with unsaved draft changes
+function showDraftNotice(guide) {
+    // Remove existing notice if present
+    const existing = document.getElementById('draftNotice');
+    if (existing) {
+        existing.remove();
+    }
+    
+    const notice = document.createElement('div');
+    notice.id = 'draftNotice';
+    notice.className = 'cms-draft-notice';
+    notice.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px; flex-shrink: 0;">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <div>
+            <strong>You're editing draft changes</strong>
+            <p style="margin: 4px 0 0 0; font-size: 0.9rem; opacity: 0.9;">This guide is published, but you have unpublished draft changes. Publishing will update the live guide.</p>
+        </div>
+        <button class="cms-btn cms-btn-secondary cms-btn-sm" id="discardDraftBtn" style="margin-left: auto;">
+            Discard Draft
+        </button>
+    `;
+    
+    const editorContainer = document.querySelector('.cms-editor-container');
+    editorContainer.insertBefore(notice, editorContainer.firstChild);
+    
+    // Add discard draft button handler
+    document.getElementById('discardDraftBtn').addEventListener('click', () => {
+        showConfirmModal('Are you sure you want to discard your draft changes? This will reload the published version.', async () => {
+            await discardDraft(guide.id);
+        });
+    });
+}
+
+// Discard draft changes and reload published version
+async function discardDraft(guideId) {
+    try {
+        // Fetch the guide to get the published content
+        const response = await fetch(`/api/guides/${guideId}`);
+        const data = await response.json();
+        const guide = data.guide;
+        
+        // Clear draft_content by saving the published content back with status='published'
+        // This triggers the API to set draft_content = NULL
+        const saveResponse = await fetch(`/api/guides/${guideId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                title: guide.title,
+                slug: guide.slug,
+                description: guide.description,
+                thumbnail: guide.thumbnail,
+                content: guide.content, // Use the published content
+                status: 'published',
+                visibility: guide.visibility,
+            }),
+        });
+        
+        if (!saveResponse.ok) {
+            throw new Error('Failed to discard draft');
+        }
+        
+        // Update editor with published content
+        editor.commands.setContent(guide.content);
+        
+        // Remove draft notice
+        const notice = document.getElementById('draftNotice');
+        if (notice) {
+            notice.remove();
+        }
+        
+        showToast('Draft changes discarded', 'success');
+        
+        // Update button states - set draft_content to null since we discarded it
+        updateEditorButtonStates({ 
+            ...guide, 
+            draft_content: null 
+        });
+        
+        // Reload guides list to update badges
+        await loadGuides();
+    } catch (error) {
+        console.error('Error discarding draft:', error);
+        showToast('Failed to discard draft', 'error');
+    }
+}
+
+// Update editor button states based on guide status
+function updateEditorButtonStates(guide) {
+    const publishBtn = document.getElementById('publishBtn');
+    const saveDraftBtn = document.getElementById('saveDraftBtn');
+    
+    // If guide is published and has draft changes
+    if (guide.status === 'published' && guide.draft_content) {
+        publishBtn.textContent = 'Publish Draft';
+        saveDraftBtn.textContent = 'Update Draft';
+    }
+    // If guide is published without draft changes
+    else if (guide.status === 'published') {
+        publishBtn.textContent = 'Update Published';
+        saveDraftBtn.textContent = 'Save as Draft';
+    }
+    // If guide is a draft
+    else {
+        publishBtn.textContent = 'Publish';
+        saveDraftBtn.textContent = 'Save Draft';
     }
 }
 
@@ -610,22 +798,43 @@ async function insertImage(file) {
         const url = await uploadImage(compressedFile);
         console.log('[CMS] Content image upload successful:', url);
         
-        // Insert guide image into editor with a paragraph after it
+        // Insert guide image into editor with paragraphs before and after it
         console.log('[CMS] Inserting image into editor...');
-        editor.chain()
-            .focus()
-            .setGuideImage({ src: url, alt: file.name })
-            .command(({ tr, dispatch }) => {
-                // Insert an empty paragraph after the image so users can continue typing
-                const paragraph = editor.schema.nodes.paragraph.create();
-                if (dispatch) {
-                    tr.insert(tr.selection.to, paragraph);
-                    // Move cursor to the new paragraph
-                    tr.setSelection(editor.state.selection.constructor.near(tr.doc.resolve(tr.selection.to)));
-                }
-                return true;
-            })
-            .run();
+        
+        const { state } = editor;
+        const { selection } = state;
+        
+        // Check if we're at the start of the document
+        const isAtStart = selection.from === 0 || selection.from === 1;
+        
+        if (isAtStart) {
+            // Insert a paragraph before the image when at the start
+            editor.chain()
+                .focus()
+                .insertContent([
+                    { type: 'paragraph' },
+                    { type: 'guideImage', attrs: { src: url, alt: file.name } },
+                    { type: 'paragraph' }
+                ])
+                .run();
+        } else {
+            // Normal insertion with a paragraph after
+            editor.chain()
+                .focus()
+                .setGuideImage({ src: url, alt: file.name })
+                .command(({ tr, dispatch }) => {
+                    // Insert an empty paragraph after the image so users can continue typing
+                    const paragraph = editor.schema.nodes.paragraph.create();
+                    if (dispatch) {
+                        tr.insert(tr.selection.to, paragraph);
+                        // Move cursor to the new paragraph
+                        tr.setSelection(editor.state.selection.constructor.near(tr.doc.resolve(tr.selection.to)));
+                    }
+                    return true;
+                })
+                .run();
+        }
+        
         console.log('[CMS] Image inserted successfully');
         
         hideUploadModal();
@@ -791,7 +1000,14 @@ function updateThumbnailPreview(url) {
     const imgEl = document.getElementById('thumbnailPreviewImg');
     
     if (url) {
+        console.log('[CMS] Updating thumbnail preview with URL:', url);
         imgEl.src = url;
+        imgEl.onerror = () => {
+            console.error('[CMS] Failed to load thumbnail preview:', url);
+        };
+        imgEl.onload = () => {
+            console.log('[CMS] Thumbnail preview loaded successfully');
+        };
         previewEl.style.display = 'block';
     } else {
         previewEl.style.display = 'none';
@@ -1286,6 +1502,13 @@ function formatStepCardsHTML(html) {
     const stepCards = doc.querySelectorAll('[data-type="step-card"]');
     
     stepCards.forEach(card => {
+        // If it already has step-header, it's already formatted - skip to avoid duplication
+        const hasStepHeader = Array.from(card.children).some(child => child.classList && child.classList.contains('step-header'));
+        if (hasStepHeader) {
+            card.classList.add('step-card');
+            return;
+        }
+        
         // Get the first h3 (title) and remaining content
         const h3 = card.querySelector('h3');
         if (!h3) return;
@@ -1308,7 +1531,7 @@ function formatStepCardsHTML(html) {
         // Move all content except the first h3 to step-description
         const children = Array.from(card.children);
         children.forEach(child => {
-            if (child.tagName !== 'H3' || child !== h3) {
+            if (child !== h3) {
                 stepDescription.appendChild(child.cloneNode(true));
             }
         });

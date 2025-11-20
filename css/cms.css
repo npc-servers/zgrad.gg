@@ -588,6 +588,16 @@ body {
     color: var(--cms-success);
 }
 
+.cms-guide-status.has-draft {
+    background: rgba(255, 165, 0, 0.2);
+    color: #ffa500;
+}
+
+.cms-guide-status.unlisted {
+    background: rgba(150, 150, 150, 0.2);
+    color: #999;
+}
+
 .cms-guide-description {
     color: var(--cms-text-secondary);
     font-size: 0.95rem;
@@ -1695,6 +1705,41 @@ body {
     font-size: 0.9rem;
     line-height: 1.5;
     font-family: 'Oxanium', sans-serif;
+}
+
+/* Draft Notice Styles */
+.cms-draft-notice {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 107, 0, 0.1);
+    border: 1px solid var(--cms-warning);
+    border-radius: var(--cms-radius);
+    padding: 16px;
+    margin-bottom: 24px;
+    color: var(--cms-text);
+    font-family: 'Oxanium', sans-serif;
+}
+
+.cms-draft-notice svg {
+    flex-shrink: 0;
+    color: var(--cms-warning);
+}
+
+.cms-draft-notice strong {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--cms-text);
+}
+
+.cms-draft-notice p {
+    margin: 0;
+}
+
+.cms-btn-sm {
+    padding: 6px 12px !important;
+    font-size: 0.85rem !important;
+    white-space: nowrap;
 }
 
 /* Custom Modal Styles */

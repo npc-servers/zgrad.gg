@@ -23,11 +23,13 @@ CREATE TABLE IF NOT EXISTS guides (
   title TEXT NOT NULL,
   description TEXT,
   content TEXT NOT NULL,
+  draft_content TEXT, -- Stores draft changes for published guides
   thumbnail TEXT,
   author_id TEXT NOT NULL,
   author_name TEXT NOT NULL,
   author_avatar TEXT,
   status TEXT NOT NULL DEFAULT 'draft', -- draft, published
+  visibility TEXT NOT NULL DEFAULT 'public', -- public, unlisted
   view_count INTEGER NOT NULL DEFAULT 0,
   created_at INTEGER NOT NULL,
   updated_at INTEGER NOT NULL
@@ -36,6 +38,7 @@ CREATE TABLE IF NOT EXISTS guides (
 CREATE INDEX IF NOT EXISTS idx_guides_slug ON guides(slug);
 CREATE INDEX IF NOT EXISTS idx_guides_author_id ON guides(author_id);
 CREATE INDEX IF NOT EXISTS idx_guides_status ON guides(status);
+CREATE INDEX IF NOT EXISTS idx_guides_visibility ON guides(visibility);
 CREATE INDEX IF NOT EXISTS idx_guides_created_at ON guides(created_at);
 
 -- Contributors table to track who edited each guide
@@ -86,7 +89,7 @@ CREATE TABLE IF NOT EXISTS local_images (
   id TEXT PRIMARY KEY,
   filename TEXT NOT NULL,
   content_type TEXT NOT NULL,
-  data BLOB NOT NULL,
+  data TEXT NOT NULL, -- Base64 encoded image data
   size INTEGER NOT NULL,
   hash TEXT NOT NULL UNIQUE,
   uploaded_by TEXT NOT NULL,

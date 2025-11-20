@@ -58,10 +58,13 @@ export async function onRequest(context) {
     // Sanitize filename to prevent path traversal
     const sanitizedFilename = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
 
+    // Detect development mode - check if we're using local R2 or if request is from localhost
+    const isDevMode = request.url.includes('localhost') || request.url.includes('127.0.0.1');
+    
     // Check if R2 is available (production) or if we're in dev mode
-    if (!env.R2_BUCKET) {
+    if (!env.R2_BUCKET || isDevMode) {
       // Development mode - store in D1 for persistence
-      console.log('R2_BUCKET not available, using D1 local storage for development');
+      console.log('Development mode detected, using D1 local storage');
       
       // Generate content-based hash for deduplication (same as production)
       const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
@@ -78,6 +81,9 @@ export async function onRequest(context) {
       ).bind(hashHex).first();
       
       if (!existing) {
+        // Convert binary data to base64 for D1 storage
+        const base64Data = btoa(String.fromCharCode(...uint8Array));
+        
         // Store in D1
         await env.DB.prepare(
           'INSERT INTO local_images (id, filename, content_type, data, size, hash, uploaded_by, uploaded_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
@@ -85,7 +91,7 @@ export async function onRequest(context) {
           imageId,
           filename,
           file.type,
-          uint8Array,
+          base64Data,
           file.size,
           hashHex,
           session.user_id,
@@ -102,7 +108,7 @@ export async function onRequest(context) {
         filename: filename,
         dev_mode: true,
         deduplicated: !!existing,
-        message: 'Stored in local D1 database. Will persist across reloads.',
+        warning: 'Using local D1 storage. Images will persist across reloads.',
       }, 200);
     }
 

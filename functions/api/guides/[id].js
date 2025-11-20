@@ -56,7 +56,7 @@ export async function onRequestPut(context) {
 
   try {
     const data = await request.json();
-    const { title, description, content, thumbnail, slug, status } = data;
+    const { title, description, content, thumbnail, slug, status, visibility } = data;
 
     // Check if guide exists first
     const existingGuide = await env.DB.prepare('SELECT * FROM guides WHERE id = ?')
@@ -95,13 +95,33 @@ export async function onRequestPut(context) {
     // Check if editor is not the original author
     const isContributor = existingGuide.author_id !== session.user_id;
     
-    // Update guide
     const now = Date.now();
-    await env.DB.prepare(
-      'UPDATE guides SET title = ?, description = ?, content = ?, thumbnail = ?, slug = ?, status = ?, updated_at = ? WHERE id = ?'
-    )
-      .bind(title, description, content, thumbnail, finalSlug, status, now, guideId)
-      .run();
+    const finalVisibility = visibility || existingGuide.visibility || 'public';
+    
+    // Determine what to update based on the action
+    let updateQuery;
+    let updateParams;
+    
+    // Case 1: Saving as draft on an already published guide (draft changes)
+    if (status === 'draft' && existingGuide.status === 'published') {
+      // Save to draft_content, keep published content untouched
+      updateQuery = 'UPDATE guides SET title = ?, description = ?, draft_content = ?, thumbnail = ?, slug = ?, visibility = ?, updated_at = ? WHERE id = ?';
+      updateParams = [title, description, content, thumbnail, finalSlug, finalVisibility, now, guideId];
+    }
+    // Case 2: Publishing from draft (either new draft or draft with changes)
+    else if (status === 'published') {
+      // Merge draft into published content and clear draft_content
+      updateQuery = 'UPDATE guides SET title = ?, description = ?, content = ?, draft_content = NULL, thumbnail = ?, slug = ?, status = ?, visibility = ?, updated_at = ? WHERE id = ?';
+      updateParams = [title, description, content, thumbnail, finalSlug, status, finalVisibility, now, guideId];
+    }
+    // Case 3: Regular draft save (not published yet)
+    else {
+      updateQuery = 'UPDATE guides SET title = ?, description = ?, content = ?, thumbnail = ?, slug = ?, status = ?, visibility = ?, updated_at = ? WHERE id = ?';
+      updateParams = [title, description, content, thumbnail, finalSlug, status, finalVisibility, now, guideId];
+    }
+    
+    // Execute update
+    await env.DB.prepare(updateQuery).bind(...updateParams).run();
 
     // If this is a contributor (not the original author), add them to contributors
     if (isContributor) {
@@ -130,9 +150,20 @@ export async function onRequestPut(context) {
       }
     }
 
+    // Determine action message
+    let actionMessage = 'Guide updated successfully';
+    if (status === 'draft' && existingGuide.status === 'published') {
+      actionMessage = 'Draft saved without affecting published guide';
+    } else if (status === 'published' && existingGuide.draft_content) {
+      actionMessage = 'Draft published successfully';
+    } else if (status === 'published') {
+      actionMessage = 'Guide published successfully';
+    }
+
     return secureJsonResponse({
       success: true,
       is_contributor: isContributor,
+      action_message: actionMessage,
       guide: {
         id: guideId,
         title,
@@ -140,6 +171,8 @@ export async function onRequestPut(context) {
         slug: finalSlug,
         thumbnail,
         status,
+        visibility: finalVisibility,
+        has_draft: status === 'draft' && existingGuide.status === 'published',
         updated_at: now,
       },
     }, 200);

@@ -23,7 +23,7 @@ export async function onRequest(context) {
 
   try {
     const data = await request.json();
-    const { title, description, content, thumbnail, slug, status = 'draft' } = data;
+    const { title, description, content, thumbnail, slug, status = 'draft', visibility = 'public' } = data;
 
     // Validate required fields
     if (!title || !content || !slug) {
@@ -59,7 +59,7 @@ export async function onRequest(context) {
 
     // Insert guide into database
     await env.DB.prepare(
-      'INSERT INTO guides (id, slug, title, description, content, thumbnail, author_id, author_name, author_avatar, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+      'INSERT INTO guides (id, slug, title, description, content, thumbnail, author_id, author_name, author_avatar, status, visibility, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
     )
       .bind(
         id,
@@ -72,6 +72,7 @@ export async function onRequest(context) {
         session.username,
         session.avatar,
         status,
+        visibility,
         now,
         now
       )
@@ -93,6 +94,7 @@ export async function onRequest(context) {
           description,
           thumbnail,
           status,
+          visibility,
           created_at: now,
         },
       },

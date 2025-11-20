@@ -122,6 +122,17 @@
                         </div>
 
                         <div class="cms-form-group">
+                            <label for="guideVisibility" class="cms-label">Visibility</label>
+                            <select id="guideVisibility" class="cms-editor-select">
+                                <option value="public">Public (Listed in guide index)</option>
+                                <option value="unlisted">Unlisted (Accessible via direct URL only)</option>
+                            </select>
+                            <p class="cms-label-hint" style="margin-top: 8px;">
+                                Unlisted guides can still be accessed if someone has the link, but won't appear in the guides list.
+                            </p>
+                        </div>
+
+                        <div class="cms-form-group">
                             <label for="guideThumbnail" class="cms-label">Thumbnail URL</label>
                             <div class="cms-file-input-group">
                                 <input 
