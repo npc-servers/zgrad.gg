@@ -155,6 +155,11 @@
     background-image: url('../images/homigrad-render.png');
 }
 
+/* Updates Box */
+.cms-box-updates::before {
+    background-image: url('../images/discord.png');
+}
+
 /* Media Queries */
 @media (max-width: 1200px) {
     .cms-section-container {

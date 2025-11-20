@@ -60,6 +60,25 @@ CREATE INDEX IF NOT EXISTS idx_contributors_contributed_at ON guide_contributors
 -- Migration: Add view_count field to guides table
 -- ALTER TABLE guides ADD COLUMN view_count INTEGER NOT NULL DEFAULT 0;
 
+-- Updates table (caching Discord messages for performance)
+CREATE TABLE IF NOT EXISTS updates (
+  id TEXT PRIMARY KEY,
+  discord_message_id TEXT NOT NULL UNIQUE,
+  channel_id TEXT NOT NULL,
+  title TEXT NOT NULL,
+  content TEXT NOT NULL,
+  author_username TEXT NOT NULL,
+  author_avatar TEXT,
+  author_id TEXT NOT NULL,
+  message_url TEXT NOT NULL,
+  timestamp INTEGER NOT NULL,
+  attachments TEXT, -- JSON array of attachment URLs
+  embeds TEXT, -- JSON array of embeds
+  created_at INTEGER NOT NULL
+);
 
+CREATE INDEX IF NOT EXISTS idx_updates_timestamp ON updates(timestamp DESC);
+CREATE INDEX IF NOT EXISTS idx_updates_channel_id ON updates(channel_id);
+CREATE INDEX IF NOT EXISTS idx_updates_discord_message_id ON updates(discord_message_id);
 
 

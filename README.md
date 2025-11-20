@@ -10,6 +10,7 @@ Official website for ZGRAD - Premium Homigrad Gaming Network
 - 📚 Dynamic guide system with database-backed content
 - ✨ Rich text editor with custom components (Step Cards, Info Boxes, Icons)
 - 👥 Multi-user collaboration with contributor tracking
+- 📢 **Discord Updates** - Automatic changelog from Discord channel
 - ⚡ Hybrid static/dynamic architecture for optimal performance
 
 ## Tech Stack
@@ -57,6 +58,8 @@ DISCORD_CLIENT_SECRET=your_client_secret
 DISCORD_REDIRECT_URI=http://localhost:8788/api/auth/discord-callback
 DISCORD_GUILD_ID=your_guild_id
 DISCORD_REQUIRED_ROLES=your_role_id_1,your_role_id_2
+DISCORD_BOT_TOKEN=your_bot_token
+DISCORD_UPDATES_CHANNEL_ID=your_channel_id
 SESSION_SECRET=generate_random_string_here
 ```
 
@@ -123,7 +126,8 @@ npx wrangler d1 execute zgrad-cms --remote --file=./migration.sql
 │   ├── api/          # API endpoints
 │   │   ├── auth/     # Discord OAuth
 │   │   ├── guides/   # Guide CRUD operations
-│   │   └── images/   # Image upload
+│   │   ├── images/   # Image upload
+│   │   └── updates/  # Discord updates sync
 │   ├── cms/          # CMS routes
 │   └── guides/       # Dynamic guide rendering
 ├── cms/              # CMS HTML and assets
@@ -132,13 +136,31 @@ npx wrangler d1 execute zgrad-cms --remote --file=./migration.sql
 └── dist/             # Built output (generated)
 ```
 
+## Discord Updates
+
+Automatically displays Discord messages as a changelog at `/updates/`.
+
+### Setup
+1. Create a Discord bot with "Read Messages" permission
+2. Add to your server and get bot token
+3. Set `DISCORD_BOT_TOKEN` and `DISCORD_UPDATES_CHANNEL_ID` in environment
+4. Visit `/updates/` - automatically loads last 50 messages
+5. Checks for new messages every 5 minutes
+
+### How It Works
+- First visitor triggers auto-sync from Discord
+- Messages cached in D1 database for fast loading
+- Auto-refreshes every 5 minutes for new updates
+- 0-5 minute delay for new messages to appear
+
 ## Database Schema
 
-The application uses three main tables:
+The application uses four main tables:
 
 - **sessions** - Discord OAuth sessions
 - **guides** - Published guides with author info
 - **guide_contributors** - Track users who edit guides
+- **updates** - Cached Discord messages for changelog
 
 See `schema.sql` for full schema definition.
 

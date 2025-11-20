@@ -3,5 +3,7 @@ DISCORD_CLIENT_SECRET=your_client_secret
 DISCORD_REDIRECT_URI=http://localhost:8788/api/auth/discord-callback
 DISCORD_GUILD_ID=your_guild_id
 DISCORD_REQUIRED_ROLES=your_role_id_1,your_role_id_2
+DISCORD_BOT_TOKEN=your_discord_bot_token
+DISCORD_UPDATES_CHANNEL_ID=your_updates_channel_id
 SESSION_SECRET=generate_random_string_here
 

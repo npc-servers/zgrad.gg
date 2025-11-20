@@ -84,6 +84,8 @@ export default defineConfig({
         // CMS pages
         cmsIndex: resolve(__dirname, 'cms/index.html'),
         cmsLogin: resolve(__dirname, 'cms/login.html'),
+        // Updates page
+        updates: resolve(__dirname, 'updates/index.html'),
         // 404 page
         notFound: resolve(__dirname, '404.html')
       },
