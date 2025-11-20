@@ -200,9 +200,8 @@ var backgroundElement = null;
 var config = {
     // Logo subtext messages (below the logo)
     logoSubtextMessages: [
-        'Your feedback is important, make suggestions and vote on our Discord!',
+        'You can get 35% on all ranks until December 31st!',
         'You can support us on our webstore, <a href="https://store.zmod.gg" target="_blank">store.zmod.gg</a>!',
-        'Fart',
         'We release updates nearly every day!',
         'Coming from social media? Be sure to join our Discord!'
     ],
