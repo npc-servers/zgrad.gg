@@ -666,9 +666,6 @@ body.gmod-client .updates-splatter {
         padding: 20px 16px 60px;
     }
 
-    .updates-timeline {
-        padding-left: 40px;
-    }
 
     .updates-timeline::before {
         left: 10px;
@@ -701,13 +698,26 @@ body.gmod-client .updates-splatter {
     }
 
     .updates-discord-btn {
-        width: 100%;
         justify-content: center;
+        padding: 0.6rem 1.2rem;
+        font-size: 0.85rem;
     }
 }
 
 @media (max-width: 480px) {
-    .updates-title {
+    .updates-discord-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.75rem;
+    }
+    
+    .updates-discord-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .updates-title-text {
         font-size: 2rem;
     }
 
