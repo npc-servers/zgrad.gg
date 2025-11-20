@@ -10,7 +10,10 @@
     "build": "vite build",
     "preview": "wrangler pages dev dist",
     "generate:guides": "node scripts/generate-guides-manifest.js",
-    "generate:sitemap": "node scripts/generate-sitemap.js"
+    "generate:sitemap": "node scripts/generate-sitemap.js",
+    "images:list": "node scripts/manage-local-images.js list",
+    "images:count": "node scripts/manage-local-images.js count",
+    "images:clear": "node scripts/manage-local-images.js clear"
   },
   "devDependencies": {
     "rollup-plugin-copy": "^3.5.0",

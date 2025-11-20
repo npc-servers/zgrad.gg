@@ -31,6 +31,19 @@ Official website for ZGRAD - Premium Homigrad Gaming Network
 
 ### Setup
 
+**Option 1: Automated Setup (Recommended)**
+
+```bash
+# Windows (PowerShell)
+.\setup-local-dev.ps1
+
+# Mac/Linux
+chmod +x setup-local-dev.sh
+./setup-local-dev.sh
+```
+
+**Option 2: Manual Setup**
+
 ```bash
 # 1. Install dependencies
 npm install
@@ -42,9 +55,14 @@ cp .dev.vars.example .dev.vars
 # 3. Initialize local database
 npx wrangler d1 execute zgrad-cms --local --file=./schema.sql
 
-# 4. Start dev server
+# 4. Set up local image storage (important!)
+npx wrangler d1 execute zgrad-cms --local --file=./migrations/add-local-images.sql
+
+# 5. Start dev server
 npm run dev
 ```
+
+> 📖 **Need help with image uploads?** See [LOCAL_IMAGE_SETUP.md](./LOCAL_IMAGE_SETUP.md)
 
 Visit `http://localhost:8788`
 
@@ -187,14 +205,18 @@ See `schema.sql` for full schema definition.
 ## Image Storage
 
 ### Development Mode
-- Images are converted to Base64 data URLs
-- No persistence between restarts
-- Warning displayed in CMS
+- Images are stored in local D1 database
+- **Persist across restarts** (unlike R2, D1 works locally!)
+- Automatic deduplication using content hashing
+- To set up local image storage:
+  ```bash
+  npx wrangler d1 execute zgrad-cms --local --file=./migrations/add-local-images.sql
+  ```
 
 ### Production Mode
 - Images uploaded to Cloudflare R2
-- Served via CDN
-- Permanent storage
+- Served via CDN at `https://images.zgrad.gg`
+- Permanent storage with deduplication
 
 ## Deployment
 
@@ -229,7 +251,12 @@ npx wrangler d1 execute zgrad-cms --local --file=./schema.sql
 
 ### Image Upload Issues
 
-**Development Mode**: Images are temporary Base64 data URLs. This is expected behavior without R2 configuration.
+**Development Mode**: 
+- If images aren't uploading locally, ensure the `local_images` table exists:
+  ```bash
+  npx wrangler d1 execute zgrad-cms --local --file=./migrations/add-local-images.sql
+  ```
+- Images are stored in D1 and will persist across restarts
 
 **Production Mode**: Ensure R2 bucket is properly bound in `wrangler.toml` and Cloudflare dashboard.
 

@@ -19,21 +19,43 @@ export async function onRequest(context) {
       return env.ASSETS.fetch(request);
     }
 
-    // Try to fetch from R2 first
-    const object = await env.R2_BUCKET.get(path);
+    // Try to fetch from R2 first (production)
+    if (env.R2_BUCKET) {
+      const object = await env.R2_BUCKET.get(path);
 
-    if (object) {
-      // Found in R2, serve it
-      return new Response(object.body, {
-        headers: {
-          'Content-Type': object.httpMetadata.contentType || 'image/png',
-          'Cache-Control': 'public, max-age=31536000, immutable',
-          'ETag': object.etag,
-        },
-      });
+      if (object) {
+        // Found in R2, serve it
+        return new Response(object.body, {
+          headers: {
+            'Content-Type': object.httpMetadata.contentType || 'image/png',
+            'Cache-Control': 'public, max-age=31536000, immutable',
+            'ETag': object.etag,
+          },
+        });
+      }
+    } else {
+      // Development mode - try D1 local storage
+      // Extract filename from path (e.g., 'guides/abc123.png' -> 'abc123.png')
+      const filename = path.split('/').pop();
+      
+      if (filename && path.startsWith('guides/')) {
+        const image = await env.DB.prepare(
+          'SELECT content_type, data FROM local_images WHERE filename = ?'
+        ).bind(filename).first();
+        
+        if (image) {
+          // Found in D1, serve it
+          return new Response(image.data, {
+            headers: {
+              'Content-Type': image.content_type || 'image/png',
+              'Cache-Control': 'public, max-age=3600',
+            },
+          });
+        }
+      }
     }
 
-    // Not in R2, try static files
+    // Not in R2 or D1, try static files
     return env.ASSETS.fetch(request);
 
   } catch (error) {

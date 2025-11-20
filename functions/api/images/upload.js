@@ -60,22 +60,49 @@ export async function onRequest(context) {
 
     // Check if R2 is available (production) or if we're in dev mode
     if (!env.R2_BUCKET) {
-      // Development mode - convert to data URL for preview
-      console.log('R2_BUCKET not available, using data URL for development');
-      const base64 = btoa(
-        new Uint8Array(arrayBuffer).reduce(
-          (data, byte) => data + String.fromCharCode(byte),
-          ''
-        )
-      );
-      const dataUrl = `data:${file.type};base64,${base64}`;
+      // Development mode - store in D1 for persistence
+      console.log('R2_BUCKET not available, using D1 local storage for development');
+      
+      // Generate content-based hash for deduplication (same as production)
+      const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      
+      const extension = sanitizedFilename.split('.').pop() || 'png';
+      const filename = `${hashHex.substring(0, 16)}.${extension}`;
+      const imageId = `local-${hashHex.substring(0, 16)}`;
+      
+      // Check if image already exists (deduplication)
+      const existing = await env.DB.prepare(
+        'SELECT filename FROM local_images WHERE hash = ?'
+      ).bind(hashHex).first();
+      
+      if (!existing) {
+        // Store in D1
+        await env.DB.prepare(
+          'INSERT INTO local_images (id, filename, content_type, data, size, hash, uploaded_by, uploaded_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+        ).bind(
+          imageId,
+          filename,
+          file.type,
+          uint8Array,
+          file.size,
+          hashHex,
+          session.user_id,
+          Date.now()
+        ).run();
+      }
+      
+      // Return local URL path
+      const localUrl = `/images/guides/${filename}`;
       
       return secureJsonResponse({
         success: true,
-        url: dataUrl,
-        filename: sanitizedFilename,
+        url: localUrl,
+        filename: filename,
         dev_mode: true,
-        warning: 'Using data URL - image will not persist on page reload. Upload to production for permanent storage.',
+        deduplicated: !!existing,
+        message: 'Stored in local D1 database. Will persist across reloads.',
       }, 200);
     }
 
