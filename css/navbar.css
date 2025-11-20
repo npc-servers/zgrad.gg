@@ -447,7 +447,7 @@
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 817px) {
     .navbar-hamburger {
         display: flex;
         order: 1000;

@@ -21,6 +21,93 @@
     pointer-events: none;
 }
 
+/* Navbar Back Link */
+.navbar-back-link {
+    position: fixed;
+    left: 20px;
+    top: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: rgba(30, 30, 30, 0.6);
+    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    overflow: hidden;
+    font-family: 'Oxanium', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    z-index: 1003;
+}
+
+.navbar-back-link svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+    pointer-events: none;
+}
+
+.navbar-back-link:hover {
+    background-color: rgba(40, 40, 40, 0.8);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-back-link:hover svg {
+    transform: translateX(-3px);
+}
+
+.navbar-logo-right {
+    position: fixed !important;
+    right: 20px !important;
+    left: auto !important;
+    top: 15px !important;
+    transform: none !important;
+}
+
+/* Responsive: Hide BACK text on smaller screens */
+@media (max-width: 923px) and (min-width: 765px) {
+    .navbar-back-link {
+        padding: 8px;
+    }
+    
+    .navbar-back-link svg {
+        margin: 0;
+    }
+    
+    .navbar-back-link::before {
+        content: '';
+        display: none;
+    }
+    
+    .navbar-back-link {
+        font-size: 0;
+    }
+    
+    .navbar-back-link svg {
+        font-size: initial;
+        width: 20px;
+        height: 20px;
+    }
+}
+
+/* Hide ZMOD logo when mobile menu is visible */
+@media (max-width: 768px) {
+    .navbar-logo-right {
+        display: none;
+    }
+}
+
 /* Blood Splatter at Top */
 .updates-splatter {
     position: absolute;
