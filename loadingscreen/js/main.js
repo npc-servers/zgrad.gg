@@ -262,7 +262,6 @@ var config = {
         '../../images/loadingscreen/thirteenth.jpg',
         '../../images/loadingscreen/traitor.jpg',
         '../../images/loadingscreen/twelth.jpg',
-        '../../images/loadingscreen/zgradded.jpg',
     ],
     
     // Rotation intervals (in milliseconds)
