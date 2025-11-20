@@ -78,6 +78,8 @@ npm run preview  # Preview production build locally
 3. Authorize with Discord
 4. Must be in ZGRAD Discord server with required role
 
+**Security**: The CMS verifies your Discord role on **every action** (page loads, edits, uploads). If your role is removed, you're immediately logged out. This uses the Discord bot token to check roles in real-time.
+
 ### CMS Features
 
 - **Rich Text Editor** powered by TipTap
@@ -89,6 +91,7 @@ npm run preview  # Preview production build locally
 - **Image Settings** - resize and align images
 - **Contributor System** - track all editors
 - **Live Preview** - see changes in real-time
+- **Role Verification** - Real-time Discord role checking
 
 ## Database Management
 
@@ -136,22 +139,39 @@ npx wrangler d1 execute zgrad-cms --remote --file=./migration.sql
 └── dist/             # Built output (generated)
 ```
 
-## Discord Updates
+## Discord Bot Setup
 
+The Discord bot is used for two features:
+
+### 1. CMS Role Verification
+Verifies users have the required role on every CMS action.
+
+### 2. Updates Changelog
 Automatically displays Discord messages as a changelog at `/updates/`.
 
-### Setup
-1. Create a Discord bot with "Read Messages" permission
-2. Add to your server and get bot token
-3. Set `DISCORD_BOT_TOKEN` and `DISCORD_UPDATES_CHANNEL_ID` in environment
-4. Visit `/updates/` - automatically loads last 50 messages
-5. Checks for new messages every 5 minutes
+### Bot Configuration
 
-### How It Works
-- First visitor triggers auto-sync from Discord
-- Messages cached in D1 database for fast loading
-- Auto-refreshes every 5 minutes for new updates
-- 0-5 minute delay for new messages to appear
+**Required Intent**:
+- ✅ **Server Members Intent** (enable in Discord Developer Portal → Bot → Privileged Gateway Intents)
+
+**Required Permissions**:
+- ✅ Read Messages/View Channels (permission: `1024`)
+
+**Setup Steps**:
+1. Go to [Discord Developer Portal](https://discord.com/developers/applications)
+2. Select your bot → Bot section
+3. Enable **"Server Members Intent"** (required for role checking)
+4. Copy bot token → add to `DISCORD_BOT_TOKEN` environment variable
+5. Invite bot to server with `bot` scope and read messages permission
+
+**Test Bot Access**:
+```bash
+# Verify bot token works
+curl -H "Authorization: Bot YOUR_BOT_TOKEN" \
+     https://discord.com/api/v10/guilds/YOUR_GUILD_ID/members/YOUR_USER_ID
+```
+
+If this returns member data with a `roles` array, you're all set!
 
 ## Database Schema
 
@@ -218,6 +238,8 @@ npx wrangler d1 execute zgrad-cms --local --file=./schema.sql
 - Verify Discord OAuth credentials in `.dev.vars`
 - Check that you're in the correct Discord server
 - Confirm you have the required role ID
+- Ensure **Server Members Intent** is enabled in Discord Developer Portal
+- Verify `DISCORD_BOT_TOKEN` is set and valid
 
 ## Scripts
 

@@ -16,6 +16,8 @@
         <h1 class="login-title">Composer</h1>
         <p class="login-subtitle">Content Management System</p>
         
+        <div id="error-message" class="login-error" style="display: none;"></div>
+        
         <p class="login-message">
             Sign in with Discord to access the Composer CMS.
         </p>
@@ -36,6 +38,34 @@
             </a>
         </div>
     </div>
+    
+    <script>
+        // Check for error messages in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        
+        if (error) {
+            const errorMessage = document.getElementById('error-message');
+            let message = '';
+            
+            switch(error) {
+                case 'role_required':
+                    message = '⚠️ Access denied: You no longer have the required Discord role to access the CMS.';
+                    break;
+                case 'session_expired':
+                    message = '⚠️ Your session has expired. Please log in again.';
+                    break;
+                default:
+                    message = '⚠️ Authentication failed. Please try again.';
+            }
+            
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            
+            // Clear URL parameter without page reload
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    </script>
 </body>
 </html>
 

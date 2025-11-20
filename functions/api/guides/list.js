@@ -15,19 +15,20 @@ export async function onRequest(context) {
     return secureJsonResponse({ error: 'Rate limit exceeded' }, 429);
   }
 
-  // Check if user is authenticated (optional for this endpoint)
-  const session = await validateSession(request, env);
+  // Check if user is authenticated with valid Discord roles (optional for this endpoint)
+  // Note: We verify roles to ensure only authorized users can see drafts
+  const session = await validateSession(request, env, true);
 
   try {
     let query;
     
     if (session) {
-      // Authenticated users (CMS) - show all guides including drafts
+      // Authenticated users with valid roles (CMS) - show all guides including drafts
       query = env.DB.prepare(
         'SELECT id, slug, title, description, thumbnail, author_id, author_name, author_avatar, status, created_at, updated_at FROM guides ORDER BY created_at DESC'
       );
     } else {
-      // Public users - only show published guides
+      // Public users or users without valid roles - only show published guides
       query = env.DB.prepare(
         'SELECT id, slug, title, description, thumbnail, author_id, author_name, author_avatar, status, created_at, updated_at FROM guides WHERE status = ? ORDER BY created_at DESC'
       ).bind('published');

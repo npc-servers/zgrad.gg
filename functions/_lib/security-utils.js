@@ -353,3 +353,51 @@ export function isIpAllowed(ip, allowlist) {
   return allowlist.includes(ip) || allowlist.includes('*');
 }
 
+/**
+ * Verify user has required Discord roles using the bot token
+ * @param {string} userId - Discord user ID
+ * @param {Object} env - Environment bindings
+ * @returns {Promise<{hasRole: boolean, error?: string}>}
+ */
+export async function verifyDiscordRoles(userId, env) {
+  try {
+    if (!env.DISCORD_BOT_TOKEN || !env.DISCORD_GUILD_ID || !env.DISCORD_REQUIRED_ROLES) {
+      console.warn('Discord verification skipped: Missing configuration');
+      return { hasRole: true }; // Allow in development/incomplete setup
+    }
+
+    // Use bot token to check user's roles in the guild
+    const guildMemberResponse = await fetch(
+      `https://discord.com/api/v10/guilds/${env.DISCORD_GUILD_ID}/members/${userId}`,
+      {
+        headers: {
+          'Authorization': `Bot ${env.DISCORD_BOT_TOKEN}`,
+        },
+      }
+    );
+
+    if (!guildMemberResponse.ok) {
+      if (guildMemberResponse.status === 404) {
+        // User is not in the guild
+        return { hasRole: false, error: 'not_in_guild' };
+      }
+      console.error('Discord API error:', guildMemberResponse.status);
+      return { hasRole: false, error: 'api_error' };
+    }
+
+    const guildMemberData = await guildMemberResponse.json();
+
+    // Check if user has any of the required roles
+    const requiredRoles = env.DISCORD_REQUIRED_ROLES.split(',').map(r => r.trim());
+    const hasRequiredRole = guildMemberData.roles.some(role =>
+      requiredRoles.includes(role)
+    );
+
+    return { hasRole: hasRequiredRole, error: hasRequiredRole ? undefined : 'no_required_role' };
+  } catch (error) {
+    console.error('Error verifying Discord roles:', error);
+    // On error, deny access for security
+    return { hasRole: false, error: 'verification_failed' };
+  }
+}
+

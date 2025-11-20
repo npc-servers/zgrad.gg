@@ -1,5 +1,5 @@
 // Authentication middleware helper
-export async function validateSession(request, env) {
+export async function validateSession(request, env, verifyRoles = false) {
   const cookies = request.headers.get('Cookie') || '';
   const sessionMatch = cookies.match(/session_id=([^;]+)/);
   const sessionId = sessionMatch ? sessionMatch[1] : null;
@@ -23,17 +23,32 @@ export async function validateSession(request, env) {
     return null;
   }
 
+  // Verify Discord roles if requested
+  if (verifyRoles) {
+    const { verifyDiscordRoles } = await import('../_lib/security-utils.js');
+    const roleCheck = await verifyDiscordRoles(session.user_id, env);
+    
+    if (!roleCheck.hasRole) {
+      console.warn(`User ${session.user_id} failed role check: ${roleCheck.error}`);
+      // Invalidate session if user no longer has required roles
+      await env.DB.prepare('DELETE FROM sessions WHERE id = ?').bind(sessionId).run();
+      return null;
+    }
+  }
+
   return session;
 }
 
 /**
- * Validate session with CSRF protection
+ * Validate session with CSRF protection and Discord role verification
  * @param {Request} request - Request object
  * @param {Object} env - Environment bindings
+ * @param {boolean} verifyRoles - Whether to verify Discord roles (default: true)
  * @returns {Promise<Object|null>} Session object or null
  */
-export async function validateSessionWithCsrf(request, env) {
-  const session = await validateSession(request, env);
+export async function validateSessionWithCsrf(request, env, verifyRoles = true) {
+  // Validate session and optionally verify roles
+  const session = await validateSession(request, env, verifyRoles);
   if (!session) {
     return null;
   }

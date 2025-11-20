@@ -11,8 +11,8 @@ export async function onRequest(context) {
     return secureJsonResponse({ error: 'Rate limit exceeded' }, 429);
   }
 
-  // Validate session
-  const session = await validateSession(request, env);
+  // Validate session and verify Discord roles
+  const session = await validateSession(request, env, true);
   
   if (!session) {
     return secureJsonResponse({ error: 'Not authenticated' }, 401);
