@@ -1,0 +1,8 @@
+# Headers for the loading screen
+# This allows the loading screen to work properly in GMod's Chromium Embedded Framework
+
+/loadingscreen/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; font-src 'self' data:; connect-src 'self' https://zgrad.gg https://*.zgrad.gg; frame-ancestors 'none'
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
