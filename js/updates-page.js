@@ -279,19 +279,28 @@ function processContent(content) {
     processed = processed.replace(/`(.+?)`/g, '<code>$1</code>');
     
     // Links: [text](url) - only process if URL exists, otherwise just show text
+    // Use a unique placeholder to prevent double-linking
+    const linkPlaceholders = [];
     processed = processed.replace(/\[([^\]]+)\]\(([^)]*)\)/g, (match, text, url) => {
         if (url && url.trim()) {
-            return `<a href="${url}" target="_blank" rel="noopener">${text}</a>`;
+            const placeholder = `__LINK_PLACEHOLDER_${linkPlaceholders.length}__`;
+            linkPlaceholders.push(`<a href="${url}" target="_blank" rel="noopener">${text}</a>`);
+            return placeholder;
         }
         return text; // Just return the text without brackets if no URL
     });
     
-    // Auto-link plain URLs (that aren't already in <a> or <img> tags)
+    // Auto-link plain URLs (that aren't already in <a> or <img> tags or placeholders)
     // Add word-break for long URLs
     processed = processed.replace(
-        /(?<!href="|src="|class=")https?:\/\/[^\s<]+/g, 
+        /(?<!href="|src="|class="|__LINK_PLACEHOLDER_)https?:\/\/[^\s<]+/g, 
         '<a href="$&" target="_blank" rel="noopener" style="word-break: break-all;">$&</a>'
     );
+    
+    // Replace link placeholders with actual links
+    linkPlaceholders.forEach((link, index) => {
+        processed = processed.replace(`__LINK_PLACEHOLDER_${index}__`, link);
+    });
     
     // Convert line breaks to paragraphs
     const paragraphs = processed.split('\n\n').filter(p => p.trim());

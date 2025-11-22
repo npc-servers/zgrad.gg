@@ -1,5 +1,6 @@
 // Get the latest update (for quick preview/checking)
 import { secureJsonResponse, checkRateLimit } from '../../_lib/security-utils.js';
+import { processUpdateDiscordLinks } from '../../_lib/discord-utils.js';
 
 export async function onRequest(context) {
   const { request, env } = context;
@@ -29,11 +30,20 @@ export async function onRequest(context) {
     }
 
     // Parse JSON fields
-    const parsedUpdate = {
+    let parsedUpdate = {
       ...update,
       attachments: update.attachments ? JSON.parse(update.attachments) : [],
       embeds: update.embeds ? JSON.parse(update.embeds) : [],
     };
+
+    // Process Discord channel links if bot token is available
+    if (env.DISCORD_BOT_TOKEN && env.DISCORD_GUILD_ID) {
+      parsedUpdate = await processUpdateDiscordLinks(
+        parsedUpdate,
+        env.DISCORD_BOT_TOKEN,
+        env.DISCORD_GUILD_ID
+      );
+    }
 
     return secureJsonResponse({ update: parsedUpdate }, 200);
   } catch (error) {
