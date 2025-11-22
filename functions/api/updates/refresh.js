@@ -27,7 +27,7 @@ export async function onRequest(context) {
 
     // Get the 10 most recent updates from database
     const { results: recentUpdates } = await env.DB.prepare(
-      `SELECT discord_message_id, id 
+      `SELECT discord_message_id, id, grouped_message_ids 
        FROM updates 
        ORDER BY timestamp DESC 
        LIMIT 10`
@@ -45,38 +45,69 @@ export async function onRequest(context) {
     // Fetch and update each message's reactions
     for (const update of recentUpdates) {
       try {
-        // Fetch fresh message data from Discord
-        const messageResponse = await fetch(
-          `https://discord.com/api/v10/channels/${channelId}/messages/${update.discord_message_id}`,
-          {
-            headers: {
-              'Authorization': `Bot ${botToken}`,
-              'Content-Type': 'application/json',
-            },
-          }
-        );
+        // Parse grouped message IDs (could be multiple messages grouped together)
+        const messageIds = update.grouped_message_ids 
+          ? JSON.parse(update.grouped_message_ids) 
+          : [update.discord_message_id];
 
-        if (!messageResponse.ok) {
-          console.warn(`[Refresh] Failed to fetch message ${update.discord_message_id}:`, messageResponse.status);
-          continue;
+        // Fetch all messages in the group and merge their reactions
+        const allReactions = [];
+        
+        for (const messageId of messageIds) {
+          const messageResponse = await fetch(
+            `https://discord.com/api/v10/channels/${channelId}/messages/${messageId}`,
+            {
+              headers: {
+                'Authorization': `Bot ${botToken}`,
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+
+          if (!messageResponse.ok) {
+            console.warn(`[Refresh] Failed to fetch message ${messageId}:`, messageResponse.status);
+            continue;
+          }
+
+          const message = await messageResponse.json();
+
+          // Merge reactions from this message
+          if (message.reactions && message.reactions.length > 0) {
+            for (const newReaction of message.reactions) {
+              // Find if this emoji already exists
+              const existingIndex = allReactions.findIndex(r => {
+                if (newReaction.emoji.id && r.emoji.id) {
+                  return r.emoji.id === newReaction.emoji.id;
+                } else if (!newReaction.emoji.id && !r.emoji.id) {
+                  return r.emoji.name === newReaction.emoji.name;
+                }
+                return false;
+              });
+
+              if (existingIndex !== -1) {
+                // Emoji exists, add the counts
+                allReactions[existingIndex].count += newReaction.count;
+                allReactions[existingIndex].me = allReactions[existingIndex].me || newReaction.me;
+              } else {
+                // New emoji, add it
+                allReactions.push({
+                  emoji: newReaction.emoji.id ? {
+                    id: newReaction.emoji.id,
+                    name: newReaction.emoji.name,
+                    animated: newReaction.emoji.animated || false
+                  } : {
+                    name: newReaction.emoji.name
+                  },
+                  count: newReaction.count,
+                  me: newReaction.me || false
+                });
+              }
+            }
+          }
         }
 
-        const message = await messageResponse.json();
-
-        // Process reactions
-        const reactions = JSON.stringify(
-          (message.reactions || []).map(r => ({
-            emoji: r.emoji.id ? {
-              id: r.emoji.id,
-              name: r.emoji.name,
-              animated: r.emoji.animated || false
-            } : {
-              name: r.emoji.name
-            },
-            count: r.count,
-            me: r.me || false
-          }))
-        );
+        // Process merged reactions
+        const reactions = JSON.stringify(allReactions);
 
         // Update reactions in database
         await env.DB.prepare(

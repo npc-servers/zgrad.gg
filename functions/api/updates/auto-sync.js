@@ -83,6 +83,9 @@ export async function onRequest(context) {
         currentGroup.attachments = currentGroup.attachments.concat(message.attachments);
         currentGroup.embeds = currentGroup.embeds.concat(message.embeds);
         
+        // Track all message IDs in this group
+        currentGroup.groupedMessageIds.push(message.id);
+        
         // Merge reactions - combine counts for same emoji
         if (message.reactions && message.reactions.length > 0) {
           const currentReactions = currentGroup.reactions || [];
@@ -119,7 +122,8 @@ export async function onRequest(context) {
           timestamp: messageTime,
           attachments: [...message.attachments],
           embeds: [...message.embeds],
-          reactions: message.reactions ? [...message.reactions] : []
+          reactions: message.reactions ? [...message.reactions] : [],
+          groupedMessageIds: [message.id] // Track all message IDs in this group
         };
       }
     }
@@ -176,6 +180,8 @@ export async function onRequest(context) {
         }))
       );
 
+      const groupedMessageIds = JSON.stringify(message.groupedMessageIds || [message.id]);
+
       const messageUrl = `https://discord.com/channels/${env.DISCORD_GUILD_ID}/${channelId}/${message.id}`;
       const timestamp = typeof message.timestamp === 'number' ? message.timestamp : new Date(message.timestamp).getTime();
       const now = Date.now();
@@ -185,8 +191,8 @@ export async function onRequest(context) {
       await env.DB.prepare(
         `INSERT OR IGNORE INTO updates 
          (id, discord_message_id, channel_id, title, content, 
-          author_username, author_avatar, author_id, message_url, timestamp, attachments, embeds, reactions, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+          author_username, author_avatar, author_id, message_url, timestamp, attachments, embeds, reactions, grouped_message_ids, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
       ).bind(
         updateId,
         message.id,
@@ -201,6 +207,7 @@ export async function onRequest(context) {
         attachments,
         embeds,
         reactions,
+        groupedMessageIds,
         now
       ).run();
       

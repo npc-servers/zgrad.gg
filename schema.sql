@@ -66,6 +66,9 @@ CREATE INDEX IF NOT EXISTS idx_contributors_contributed_at ON guide_contributors
 -- Migration: Add reactions field to updates table
 -- ALTER TABLE updates ADD COLUMN reactions TEXT;
 
+-- Migration: Add grouped_message_ids field to updates table
+-- ALTER TABLE updates ADD COLUMN grouped_message_ids TEXT;
+
 -- Updates table (caching Discord messages for performance)
 CREATE TABLE IF NOT EXISTS updates (
   id TEXT PRIMARY KEY,
@@ -81,6 +84,7 @@ CREATE TABLE IF NOT EXISTS updates (
   attachments TEXT, -- JSON array of attachment URLs
   embeds TEXT, -- JSON array of embeds
   reactions TEXT, -- JSON array of reactions
+  grouped_message_ids TEXT, -- JSON array of all message IDs that were grouped together
   created_at INTEGER NOT NULL
 );
 
