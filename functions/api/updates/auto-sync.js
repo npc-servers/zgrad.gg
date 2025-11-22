@@ -82,6 +82,35 @@ export async function onRequest(context) {
         currentGroup.content += (currentGroup.content ? '\n\n' : '') + (message.content || '');
         currentGroup.attachments = currentGroup.attachments.concat(message.attachments);
         currentGroup.embeds = currentGroup.embeds.concat(message.embeds);
+        
+        // Merge reactions - combine counts for same emoji
+        if (message.reactions && message.reactions.length > 0) {
+          const currentReactions = currentGroup.reactions || [];
+          
+          for (const newReaction of message.reactions) {
+            // Find if this emoji already exists in current reactions
+            const existingIndex = currentReactions.findIndex(r => {
+              // Compare custom emojis by ID, unicode by name
+              if (newReaction.emoji.id && r.emoji.id) {
+                return r.emoji.id === newReaction.emoji.id;
+              } else if (!newReaction.emoji.id && !r.emoji.id) {
+                return r.emoji.name === newReaction.emoji.name;
+              }
+              return false;
+            });
+            
+            if (existingIndex !== -1) {
+              // Emoji exists, add the counts
+              currentReactions[existingIndex].count += newReaction.count;
+              currentReactions[existingIndex].me = currentReactions[existingIndex].me || newReaction.me;
+            } else {
+              // New emoji, add it
+              currentReactions.push({ ...newReaction });
+            }
+          }
+          
+          currentGroup.reactions = currentReactions;
+        }
       } else {
         // Start new group
         if (currentGroup) groupedMessages.push(currentGroup);
@@ -89,7 +118,8 @@ export async function onRequest(context) {
           ...message,
           timestamp: messageTime,
           attachments: [...message.attachments],
-          embeds: [...message.embeds]
+          embeds: [...message.embeds],
+          reactions: message.reactions ? [...message.reactions] : []
         };
       }
     }
@@ -132,6 +162,20 @@ export async function onRequest(context) {
         }))
       );
 
+      const reactions = JSON.stringify(
+        (message.reactions || []).map(r => ({
+          emoji: r.emoji.id ? {
+            id: r.emoji.id,
+            name: r.emoji.name,
+            animated: r.emoji.animated || false
+          } : {
+            name: r.emoji.name
+          },
+          count: r.count,
+          me: r.me || false
+        }))
+      );
+
       const messageUrl = `https://discord.com/channels/${env.DISCORD_GUILD_ID}/${channelId}/${message.id}`;
       const timestamp = typeof message.timestamp === 'number' ? message.timestamp : new Date(message.timestamp).getTime();
       const now = Date.now();
@@ -141,8 +185,8 @@ export async function onRequest(context) {
       await env.DB.prepare(
         `INSERT OR IGNORE INTO updates 
          (id, discord_message_id, channel_id, title, content, 
-          author_username, author_avatar, author_id, message_url, timestamp, attachments, embeds, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+          author_username, author_avatar, author_id, message_url, timestamp, attachments, embeds, reactions, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
       ).bind(
         updateId,
         message.id,
@@ -156,6 +200,7 @@ export async function onRequest(context) {
         timestamp,
         attachments,
         embeds,
+        reactions,
         now
       ).run();
       

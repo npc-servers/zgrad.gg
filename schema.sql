@@ -63,6 +63,9 @@ CREATE INDEX IF NOT EXISTS idx_contributors_contributed_at ON guide_contributors
 -- Migration: Add view_count field to guides table
 -- ALTER TABLE guides ADD COLUMN view_count INTEGER NOT NULL DEFAULT 0;
 
+-- Migration: Add reactions field to updates table
+-- ALTER TABLE updates ADD COLUMN reactions TEXT;
+
 -- Updates table (caching Discord messages for performance)
 CREATE TABLE IF NOT EXISTS updates (
   id TEXT PRIMARY KEY,
@@ -77,6 +80,7 @@ CREATE TABLE IF NOT EXISTS updates (
   timestamp INTEGER NOT NULL,
   attachments TEXT, -- JSON array of attachment URLs
   embeds TEXT, -- JSON array of embeds
+  reactions TEXT, -- JSON array of reactions
   created_at INTEGER NOT NULL
 );
 

@@ -19,7 +19,7 @@ export async function onRequest(context) {
     // Fetch the most recent update
     const update = await env.DB.prepare(
       `SELECT id, title, content, author_username, author_avatar, author_id, message_url, 
-       timestamp, attachments, embeds
+       timestamp, attachments, embeds, reactions
        FROM updates 
        ORDER BY timestamp DESC
        LIMIT 1`
@@ -34,6 +34,7 @@ export async function onRequest(context) {
       ...update,
       attachments: update.attachments ? JSON.parse(update.attachments) : [],
       embeds: update.embeds ? JSON.parse(update.embeds) : [],
+      reactions: update.reactions ? JSON.parse(update.reactions) : [],
     };
 
     // Process Discord channel links if bot token is available

@@ -526,6 +526,50 @@ body.gmod-client .updates-splatter {
     display: block;
 }
 
+/* Update Reactions */
+.update-reactions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.update-reaction {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+    cursor: default;
+}
+
+.update-reaction:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.reaction-emoji-custom {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+}
+
+.reaction-emoji-unicode {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.reaction-count {
+    color: rgba(255, 255, 255, 0.7);
+    font-family: 'Oxanium', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
 /* Update Footer */
 .update-footer {
     display: flex;

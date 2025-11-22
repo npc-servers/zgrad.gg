@@ -201,6 +201,17 @@ function createUpdateElement(update) {
             </div>
         ` : ''}
         
+        ${update.reactions && update.reactions.length > 0 ? `
+            <div class="update-reactions">
+                ${update.reactions.map(reaction => {
+                    const emoji = reaction.emoji.id 
+                        ? `<img src="https://cdn.discordapp.com/emojis/${reaction.emoji.id}.${reaction.emoji.animated ? 'gif' : 'png'}" alt="${escapeHtml(reaction.emoji.name)}" class="reaction-emoji-custom">`
+                        : `<span class="reaction-emoji-unicode">${reaction.emoji.name}</span>`;
+                    return `<div class="update-reaction" title="${escapeHtml(reaction.emoji.name)}">${emoji}<span class="reaction-count">${reaction.count}</span></div>`;
+                }).join('')}
+            </div>
+        ` : ''}
+        
         <div class="update-footer">
             <a href="${update.message_url}" target="_blank" rel="noopener" class="update-link">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127.14 96.36" fill="currentColor">
@@ -352,9 +363,25 @@ function setupAutoRefresh() {
     });
 }
 
-// Refresh updates (check for new ones)
+// Refresh updates (check for new ones and update reactions)
 async function refreshUpdates() {
     try {
+        // First, refresh reactions for recent updates
+        try {
+            const refreshResponse = await fetch('/api/updates/refresh', {
+                method: 'POST'
+            });
+            if (refreshResponse.ok) {
+                const refreshData = await refreshResponse.json();
+                if (refreshData.refreshed) {
+                    console.log(`[Updates] Refreshed reactions for ${refreshData.count} update(s)`);
+                }
+            }
+        } catch (refreshError) {
+            console.warn('[Updates] Failed to refresh reactions:', refreshError);
+        }
+        
+        // Then check for new updates
         const response = await fetch(`/api/updates/list?limit=5&offset=0`);
         const data = await response.json();
         
@@ -369,19 +396,30 @@ async function refreshUpdates() {
         );
         
         let newCount = 0;
+        let updatedCount = 0;
         
-        // Check for new updates
+        // Check for new updates or updates with changed content
         for (const update of data.updates) {
             if (!existingIds.has(update.id)) {
                 const updateElement = createUpdateElement(update);
                 timeline.insertBefore(updateElement, timeline.firstChild);
                 newCount++;
+            } else {
+                // Update existing element (for reaction changes)
+                const existingElement = timeline.querySelector(`[data-update-id="${update.id}"]`);
+                if (existingElement) {
+                    const newElement = createUpdateElement(update);
+                    existingElement.replaceWith(newElement);
+                    updatedCount++;
+                }
             }
         }
         
         if (newCount > 0) {
             console.log(`[Updates] Added ${newCount} new update(s)`);
             showNotification(`${newCount} new update${newCount > 1 ? 's' : ''} added`);
+        } else if (updatedCount > 0) {
+            console.log(`[Updates] Updated ${updatedCount} update(s) (reactions/content changed)`);
         }
     } catch (error) {
         console.error('[Updates] Error refreshing updates:', error);
