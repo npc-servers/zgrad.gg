@@ -82,7 +82,14 @@ export async function onRequest(context) {
       
       if (!existing) {
         // Convert binary data to base64 for D1 storage
-        const base64Data = btoa(String.fromCharCode(...uint8Array));
+        // Process in chunks to avoid stack overflow with large files
+        let binaryString = '';
+        const chunkSize = 8192; // 8KB chunks
+        for (let i = 0; i < uint8Array.length; i += chunkSize) {
+          const chunk = uint8Array.slice(i, i + chunkSize);
+          binaryString += String.fromCharCode(...chunk);
+        }
+        const base64Data = btoa(binaryString);
         
         // Store in D1
         await env.DB.prepare(
