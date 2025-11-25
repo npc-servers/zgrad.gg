@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import preact from '@preact/preset-vite'
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer'
 import { resolve } from 'path'
 import copy from 'rollup-plugin-copy'
@@ -58,6 +59,7 @@ const DEFAULT_OPTIONS = {
 
 export default defineConfig({
   plugins: [
+    preact(),
     ViteImageOptimizer(DEFAULT_OPTIONS),
     htmlMinifier({})
   ],
