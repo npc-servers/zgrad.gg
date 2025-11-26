@@ -35,6 +35,11 @@
     width: 100%;
 }
 
+/* News box always spans full width below */
+.cms-box-news {
+    grid-column: 1 / -1;
+}
+
 .cms-box {
     position: relative;
     height: 400px;
@@ -61,7 +66,7 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    filter: grayscale(100%) brightness(0.3);
+    filter: brightness(0.4);
     transition: filter 0.4s ease;
     z-index: 0;
     animation: none;
@@ -103,7 +108,7 @@
 }
 
 .cms-box:hover::before {
-    filter: grayscale(0%) brightness(0.6);
+    filter: brightness(0.6);
     animation: backgroundMove 8s ease-in-out infinite;
 }
 
@@ -160,6 +165,64 @@
     background-image: url('../images/discord.png');
 }
 
+/* Discord Box */
+.cms-box-discord {
+    grid-column: 1 / -1;
+    height: 200px;
+}
+
+.cms-box-discord::before {
+    background-image: url('../images/zmod-discord.jpg');
+}
+
+.cms-discord-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 100%;
+    background: radial-gradient(circle at left, rgba(88, 101, 242, 0.5) 0%, transparent 70%);
+    z-index: 1;
+    pointer-events: none;
+    animation: discordGlowPulse 3s infinite alternate ease-in-out;
+}
+
+@keyframes discordGlowPulse {
+    0% {
+        opacity: 0.7;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.cms-box-discord:hover {
+    border-color: rgba(88, 101, 242, 0.6);
+    box-shadow: 0 8px 30px rgba(88, 101, 242, 0.3);
+}
+
+.cms-box-discord:hover .cms-box-title {
+    text-shadow: 0 0 20px rgba(88, 101, 242, 0.8);
+}
+
+.cms-box-discord .cms-box-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-shadow: 0 0 10px rgba(88, 101, 242, 0.5);
+}
+
+.cms-discord-icon {
+    width: 36px;
+    height: 36px;
+}
+
+.cms-discord-members {
+    color: #5865F2;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(88, 101, 242, 0.6);
+}
+
 /* Media Queries */
 @media (max-width: 1200px) {
     .cms-section-container {
@@ -168,21 +231,6 @@
     
     .cms-boxes {
         gap: 25px;
-    }
-}
-
-@media (max-width: 900px) {
-    .cms-boxes {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    
-    .cms-box {
-        height: 350px;
-    }
-    
-    .cms-box-title {
-        font-size: 32px;
     }
 }
 
@@ -195,9 +243,23 @@
         padding: 0 20px;
     }
     
+    .cms-boxes {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .cms-box-news,
+    .cms-box-discord {
+        grid-column: auto;
+    }
+    
     .cms-box {
         height: 300px;
         padding: 30px;
+    }
+    
+    .cms-box-discord {
+        height: 180px;
     }
     
     .cms-box-title {
@@ -207,6 +269,11 @@
     
     .cms-box-subtitle {
         font-size: 14px;
+    }
+    
+    .cms-discord-icon {
+        width: 28px;
+        height: 28px;
     }
 }
 
