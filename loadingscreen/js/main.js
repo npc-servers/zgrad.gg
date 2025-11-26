@@ -504,14 +504,23 @@ function processUpdateContent(content) {
         if (trimmedLine.startsWith('+')) {
             return '<span class="changelog-badge changelog-added">ADDED</span> ' + trimmedLine.substring(1).trim();
         }
+        if (trimmedLine.startsWith('\\+')) {
+            return '<span class="changelog-badge changelog-added">ADDED</span> ' + trimmedLine.substring(2).trim();
+        }
         if (trimmedLine.startsWith('×') || trimmedLine.startsWith('x')) {
             return '<span class="changelog-badge changelog-changed">CHANGED</span> ' + trimmedLine.substring(1).trim();
         }
         if (trimmedLine.startsWith('-')) {
             return '<span class="changelog-badge changelog-removed">REMOVED</span> ' + trimmedLine.substring(1).trim();
         }
+        if (trimmedLine.startsWith('\\-')) {
+            return '<span class="changelog-badge changelog-removed">REMOVED</span> ' + trimmedLine.substring(2).trim();
+        }
         if (trimmedLine.startsWith('*')) {
             return '<span class="bullet-point">•</span> ' + trimmedLine.substring(1).trim();
+        }
+        if (trimmedLine.startsWith('\\*')) {
+            return '<span class="bullet-point">•</span> ' + trimmedLine.substring(2).trim();
         }
         return line;
     }).join('\n');

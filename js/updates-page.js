@@ -252,27 +252,39 @@ function processContent(content) {
     processed = lines.map(line => {
         const trimmedLine = line.trim();
         
-        // ADDED: lines starting with +
+        // ADDED: lines starting with + or \+
         if (trimmedLine.startsWith('+')) {
             const content = trimmedLine.substring(1).trim();
             return `<span class="changelog-badge changelog-added">ADDED</span> ${content}`;
         }
+        if (trimmedLine.startsWith('\\+')) {
+            const content = trimmedLine.substring(2).trim();
+            return `<span class="changelog-badge changelog-added">ADDED</span> ${content}`;
+        }
         
-        // CHANGED: lines starting with ×
+        // CHANGED: lines starting with × or x
         if (trimmedLine.startsWith('×') || trimmedLine.startsWith('x')) {
             const content = trimmedLine.substring(1).trim();
             return `<span class="changelog-badge changelog-changed">CHANGED</span> ${content}`;
         }
         
-        // REMOVED: lines starting with -
+        // REMOVED: lines starting with - or \-
         if (trimmedLine.startsWith('-')) {
             const content = trimmedLine.substring(1).trim();
             return `<span class="changelog-badge changelog-removed">REMOVED</span> ${content}`;
         }
+        if (trimmedLine.startsWith('\\-')) {
+            const content = trimmedLine.substring(2).trim();
+            return `<span class="changelog-badge changelog-removed">REMOVED</span> ${content}`;
+        }
         
-        // BULLET POINT: lines starting with *
+        // BULLET POINT: lines starting with * or \*
         if (trimmedLine.startsWith('*')) {
             const content = trimmedLine.substring(1).trim();
+            return `<span class="bullet-point">•</span> ${content}`;
+        }
+        if (trimmedLine.startsWith('\\*')) {
+            const content = trimmedLine.substring(2).trim();
             return `<span class="bullet-point">•</span> ${content}`;
         }
         
