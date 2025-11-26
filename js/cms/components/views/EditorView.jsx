@@ -3,8 +3,8 @@
  */
 
 import { useState, useEffect } from 'preact/hooks';
-import { guideForm, currentGuide, editorInstance, resetGuideForm, updateGuideForm } from '../../store/state.js';
-import { GuideForm } from '../content/GuideForm.jsx';
+import { contentForm, currentContent, editorInstance, activeContentType, updateContentForm } from '../../store/state.js';
+import { ContentForm } from '../content/ContentForm.jsx';
 import { TipTapEditor } from '../editor/TipTapEditor.jsx';
 import { EditorToolbar } from '../editor/EditorToolbar.jsx';
 import { Button } from '../ui/Button.jsx';
@@ -14,11 +14,12 @@ import { ImageSettingsModal } from '../editor/ImageSettingsModal.jsx';
 import { IconPickerModal } from '../editor/IconPickerModal.jsx';
 import { DraftNotice } from '../content/DraftNotice.jsx';
 import { GuideMetadata } from '../content/GuideMetadata.jsx';
+import { getContentTypeConfig } from '../../config/contentTypes.js';
 
 export function EditorView({ 
     onSave, 
     onCancel, 
-    onThumbnailUpload,
+    onImageUpload,
     onInsertImage,
     onDiscardDraft,
     title 
@@ -27,9 +28,12 @@ export function EditorView({
     const [iconPickerOpen, setIconPickerOpen] = useState(false);
     const [imageSettingsOpen, setImageSettingsOpen] = useState(false);
     
-    const guide = currentGuide.value;
-    const form = guideForm.value;
+    const contentType = activeContentType.value;
+    const config = getContentTypeConfig(contentType);
+    const item = currentContent.value;
+    const form = contentForm.value;
     const editor = editorInstance.value;
+    const editorFeatures = config?.editorFeatures || {};
 
     // Add image edit button overlays when editor updates
     useEffect(() => {
@@ -152,23 +156,23 @@ export function EditorView({
         setIconPickerOpen(false);
     };
 
-    // Determine button text based on guide state
+    // Determine button text based on item state
     const getButtonText = () => {
-        if (!guide || !guide.id) {
+        if (!item || !item.id) {
             return {
                 publish: 'Publish',
                 draft: 'Save Draft'
             };
         }
 
-        if (guide.status === 'published' && guide.draft_content) {
+        if (item.status === 'published' && item.draft_content) {
             return {
                 publish: 'Publish Draft',
                 draft: 'Update Draft'
             };
         }
 
-        if (guide.status === 'published') {
+        if (item.status === 'published') {
             return {
                 publish: 'Update Published',
                 draft: 'Save as Draft'
@@ -198,12 +202,12 @@ export function EditorView({
                 </div>
             </div>
 
-            <DraftNotice guide={guide} onDiscardDraft={onDiscardDraft} />
+            <DraftNotice guide={item} onDiscardDraft={onDiscardDraft} />
 
-            <GuideMetadata guide={guide} />
+            <GuideMetadata guide={item} />
 
             <div className="cms-editor-container">
-                <GuideForm onThumbnailUpload={onThumbnailUpload} />
+                <ContentForm contentType={contentType} onImageUpload={onImageUpload} />
 
                 <div className="cms-form-section">
                     <label className="cms-label">Content</label>
@@ -240,33 +244,37 @@ export function EditorView({
                             Insert Icon
                         </button>
                         
-                        <button
-                            type="button"
-                            className="cms-editor-btn cms-btn-purple"
-                            onClick={handleAddStepCard}
-                            title="Add Step Card"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <line x1="9" y1="9" x2="15" y2="9"></line>
-                                <line x1="9" y1="15" x2="15" y2="15"></line>
-                            </svg>
-                            Add Step Card
-                        </button>
+                        {editorFeatures.stepCards && (
+                            <button
+                                type="button"
+                                className="cms-editor-btn cms-btn-purple"
+                                onClick={handleAddStepCard}
+                                title="Add Step Card"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="9" y1="9" x2="15" y2="9"></line>
+                                    <line x1="9" y1="15" x2="15" y2="15"></line>
+                                </svg>
+                                Add Step Card
+                            </button>
+                        )}
                         
-                        <button
-                            type="button"
-                            className="cms-editor-btn cms-btn-teal"
-                            onClick={handleAddInfoBox}
-                            title="Add Info Box"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="12" y1="16" x2="12" y2="12"></line>
-                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                            </svg>
-                            Add Info Box
-                        </button>
+                        {editorFeatures.infoBoxes && (
+                            <button
+                                type="button"
+                                className="cms-editor-btn cms-btn-teal"
+                                onClick={handleAddInfoBox}
+                                title="Add Info Box"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                                Add Info Box
+                            </button>
+                        )}
                         
                     </div>
 

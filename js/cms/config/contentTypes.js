@@ -45,6 +45,10 @@ export const contentTypeConfig = {
         supportsDrafts: true,
         supportsContributors: true,
         listColumns: ['thumbnail', 'title', 'status', 'views', 'created'],
+        editorFeatures: {
+            stepCards: true,
+            infoBoxes: true,
+        },
     },
     
     [CONTENT_TYPES.NEWS]: {
@@ -56,18 +60,16 @@ export const contentTypeConfig = {
         fields: {
             title: { type: 'text', required: true, label: 'Title' },
             slug: { type: 'slug', required: true, label: 'URL Slug' },
-            excerpt: { type: 'textarea', required: false, label: 'Excerpt' },
-            featured_image: { type: 'image', required: false, label: 'Featured Image' },
-            content: { type: 'richtext', required: true, label: 'Content' },
+            cover_image: { type: 'image', required: false, label: 'Cover Image' },
+            image_caption: { type: 'text', required: false, label: 'Image Caption' },
+            content: { type: 'richtext', required: true, label: 'Article Content' },
             category: {
                 type: 'select',
                 required: true,
                 label: 'Category',
                 options: [
                     { value: 'announcement', label: 'Announcement' },
-                    { value: 'update', label: 'Update' },
-                    { value: 'event', label: 'Event' },
-                    { value: 'community', label: 'Community' }
+                    { value: 'event', label: 'Event' }
                 ],
                 default: 'announcement'
             },
@@ -90,7 +92,11 @@ export const contentTypeConfig = {
         },
         supportsDrafts: true,
         supportsContributors: false,
-        listColumns: ['featured_image', 'title', 'category', 'status', 'views', 'created'],
+        listColumns: ['cover_image', 'title', 'category', 'status', 'views', 'created'],
+        editorFeatures: {
+            stepCards: false,
+            infoBoxes: false,
+        },
     },
 };
 

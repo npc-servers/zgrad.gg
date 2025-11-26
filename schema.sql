@@ -107,4 +107,30 @@ CREATE TABLE IF NOT EXISTS local_images (
 CREATE INDEX IF NOT EXISTS idx_local_images_hash ON local_images(hash);
 CREATE INDEX IF NOT EXISTS idx_local_images_filename ON local_images(filename);
 
+-- News table
+CREATE TABLE IF NOT EXISTS news (
+  id TEXT PRIMARY KEY,
+  slug TEXT NOT NULL UNIQUE,
+  title TEXT NOT NULL,
+  content TEXT NOT NULL,
+  draft_content TEXT, -- Stores draft changes for published news
+  cover_image TEXT,
+  image_caption TEXT,
+  category TEXT NOT NULL DEFAULT 'announcement', -- announcement, update, event, community
+  author_id TEXT NOT NULL,
+  author_name TEXT NOT NULL,
+  author_avatar TEXT,
+  status TEXT NOT NULL DEFAULT 'draft', -- draft, published
+  visibility TEXT NOT NULL DEFAULT 'public', -- public, unlisted
+  view_count INTEGER NOT NULL DEFAULT 0,
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_news_slug ON news(slug);
+CREATE INDEX IF NOT EXISTS idx_news_author_id ON news(author_id);
+CREATE INDEX IF NOT EXISTS idx_news_status ON news(status);
+CREATE INDEX IF NOT EXISTS idx_news_visibility ON news(visibility);
+CREATE INDEX IF NOT EXISTS idx_news_category ON news(category);
+CREATE INDEX IF NOT EXISTS idx_news_created_at ON news(created_at);
 

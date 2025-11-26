@@ -246,7 +246,7 @@ export function App() {
         });
     };
 
-    const handleThumbnailUpload = async (e) => {
+    const handleImageUpload = async (e, fieldName) => {
         const file = e.target.files[0];
         if (!file) return;
 
@@ -255,10 +255,8 @@ export function App() {
             const compressed = await ImageService.compressImage(file, 1200, 630);
             const result = await API.uploadImage(compressed);
             
-            // Update the appropriate field based on content type
-            const config = getContentTypeConfig(activeContentType.value);
-            const imageField = config.fields.thumbnail ? 'thumbnail' : 'featured_image';
-            updateContentForm(imageField, result.url);
+            // Update the specified field
+            updateContentForm(fieldName, result.url);
             showToast('Image uploaded successfully', 'success');
         } catch (error) {
             console.error('Error uploading image:', error);
@@ -366,7 +364,7 @@ export function App() {
                             title={editorTitle}
                             onSave={handleSaveContent}
                             onCancel={handleCancelEdit}
-                            onThumbnailUpload={handleThumbnailUpload}
+                            onImageUpload={handleImageUpload}
                             onInsertImage={handleInsertImage}
                             onDiscardDraft={handleDiscardDraft}
                         />
