@@ -935,7 +935,7 @@ top: 0;
 right: -20%;
 bottom: 0;
 width: 80%;
-background: url('../images/homigrad-render2.jpg') center center/cover no-repeat;
+background: var(--join-bg-image, url('../images/homigrad-render2.jpg')) center center/cover no-repeat;
 mask: linear-gradient(to right, transparent 0%, transparent 10%, rgba(255,255,255,0.1) 15%, rgba(255,255,255,0.2) 20%, rgba(255,255,255,0.3) 25%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.5) 35%, rgba(255,255,255,0.6) 40%, rgba(255,255,255,0.7) 45%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.9) 55%, rgba(255,255,255,0.95) 60%, rgba(255,255,255,1) 65%);
 -webkit-mask: linear-gradient(to right, transparent 0%, transparent 10%, rgba(255,255,255,0.1) 15%, rgba(255,255,255,0.2) 20%, rgba(255,255,255,0.3) 25%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.5) 35%, rgba(255,255,255,0.6) 40%, rgba(255,255,255,0.7) 45%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.9) 55%, rgba(255,255,255,0.95) 60%, rgba(255,255,255,1) 65%);
 opacity: 0.3;

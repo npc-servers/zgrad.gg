@@ -69,6 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentGamemode = document.getElementById('currentGamemode');
     const joinSection = document.querySelector('.join-section');
     
+    // Set initial background image for US1 (default server)
+    if (joinSection) {
+        joinSection.style.setProperty('--join-bg-image', 'url(\'/images/loadingscreen/homigrad-essence.jpg\')');
+    }
+    
     if (joinButton && viewServersButton) {
         // Function to check if device is tablet or mobile
         const isTabletOrMobile = () => {
@@ -91,7 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     port: 27066,
                     region: 'US',
                     gamemode: 'All Gamemodes',
-                    link: 'connect/us1'
+                    link: 'connect/us1',
+                    backgroundImage: '/images/loadingscreen/homigrad-essence.jpg'
                 },
                 {
                     id: 'zgrad2',
@@ -100,7 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     port: 27051,
                     region: 'US',
                     gamemode: 'All Gamemodes',
-                    link: 'connect/us2'
+                    link: 'connect/us2',
+                    backgroundImage: '/images/loadingscreen/eighteenth.jpg'
                 },
                 {
                     id: 'zgrad3',
@@ -108,8 +115,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     ip: '193.243.190.18',
                     port: 27053,
                     region: 'US',
-                    gamemode: 'Low Loot Rate',
-                    link: 'connect/us3'
+                    gamemode: 'TDM 24/7',
+                    link: 'connect/us3',
+                    backgroundImage: '/images/loadingscreen/street-war.jpg'
                 },
                 {
                     id: 'zgrad4',
@@ -118,7 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     port: 27052,
                     region: 'US',
                     gamemode: 'Homicide Only',
-                    link: 'connect/us4'
+                    link: 'connect/us4',
+                    backgroundImage: '/images/loadingscreen/eigth.jpg'
                 }
             ];
             
@@ -200,6 +209,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Update the JOIN button link
                     joinButton.href = selectedServer.link;
                     
+                    // Set background image for join-section
+                    if (joinSection && selectedServer.backgroundImage) {
+                        joinSection.style.setProperty('--join-bg-image', `url('${selectedServer.backgroundImage}')`);
+                    }
+                    
                     // Set VIEW SERVERS button link to servers page
                     viewServersButton.href = "servers";
                     
@@ -241,6 +255,11 @@ document.addEventListener('DOMContentLoaded', () => {
                             setTimeout(() => {
                                 joinPlayerCount.classList.remove('update-animation');
                             }, 500);
+                            
+                            // Update background image for join-section
+                            if (joinSection && selectedServer.backgroundImage) {
+                                joinSection.style.setProperty('--join-bg-image', `url('${selectedServer.backgroundImage}')`);
+                            }
                             
                             // Update join button text
                             joinButton.textContent = 'JOIN';
@@ -287,6 +306,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             joinButton.classList.remove('nearly-full', 'getting-full');
                             if (joinSection) {
                                 joinSection.classList.remove('nearly-full', 'getting-full');
+                                // Set background image for error case too
+                                if (selectedServer.backgroundImage) {
+                                    joinSection.style.setProperty('--join-bg-image', `url('${selectedServer.backgroundImage}')`);
+                                }
                             }
                         }
                         // No need for mobile class on the new button design

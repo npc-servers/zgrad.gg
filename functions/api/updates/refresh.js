@@ -4,6 +4,9 @@ import { secureJsonResponse, checkRateLimit } from '../../_lib/security-utils.js
 // Helper to add delay between Discord API calls to avoid rate limits
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+// Delay between Discord API requests to avoid rate limits
+const DISCORD_REQUEST_DELAY = 50;
+
 export async function onRequest(context) {
   const { request, env } = context;
 
@@ -44,6 +47,7 @@ export async function onRequest(context) {
     }
 
     let refreshedCount = 0;
+    let requestCount = 0;
 
     // Fetch and update each message's reactions
     for (const update of recentUpdates) {
@@ -59,10 +63,11 @@ export async function onRequest(context) {
         for (let i = 0; i < messageIds.length; i++) {
           const messageId = messageIds[i];
           
-          // Add delay between requests to avoid Discord rate limits (except for first request)
-          if (i > 0) {
-            await delay(50); // 50ms delay = ~20 req/sec, well under Discord's 50 req/sec limit
+          // Add delay between ALL requests to avoid Discord rate limits
+          if (requestCount > 0) {
+            await delay(DISCORD_REQUEST_DELAY);
           }
+          requestCount++;
           
           const messageResponse = await fetch(
             `https://discord.com/api/v10/channels/${channelId}/messages/${messageId}`,
