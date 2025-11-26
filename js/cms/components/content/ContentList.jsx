@@ -35,7 +35,7 @@ export function ContentList({ onCreateNew, onEdit, onDelete }) {
         <div className="cms-view">
             <div className="cms-content-header">
                 <h1 className="cms-content-title">{config.icon} {config.label}</h1>
-                <Button variant="primary" onClick={onCreateNew}>
+                <Button variant="primary" color="blue" onClick={onCreateNew}>
                     Create New {config.labelSingular}
                 </Button>
             </div>

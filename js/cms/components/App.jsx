@@ -32,7 +32,6 @@ import { LoadingSpinner } from './ui/Loading.jsx';
 export function App() {
     const [isUploading, setIsUploading] = useState(false);
     const [confirmModal, setConfirmModal] = useState({ isOpen: false, message: '', onConfirm: null });
-    const [contentToDelete, setContentToDelete] = useState(null);
 
     useEffect(() => {
         initializeApp();
@@ -114,25 +113,30 @@ export function App() {
     };
 
     const handleDeleteContent = (item) => {
-        setContentToDelete(item);
         const config = getContentTypeConfig(activeContentType.value);
         setConfirmModal({
             isOpen: true,
             message: `Are you sure you want to delete this ${config.labelSingular.toLowerCase()}? This action cannot be undone.`,
             onConfirm: async () => {
-                await confirmDelete();
+                await confirmDelete(item);
             },
         });
     };
 
-    const confirmDelete = async () => {
+    const confirmDelete = async (item) => {
+        if (!item || !item.id) {
+            console.error('No item to delete');
+            showToast('Failed to delete: No item selected', 'error');
+            setConfirmModal({ isOpen: false, message: '', onConfirm: null });
+            return;
+        }
+
         try {
             const type = activeContentType.value;
-            await API.deleteContent(type, contentToDelete.id);
+            await API.deleteContent(type, item.id);
             showToast('Deleted successfully', 'success');
             await loadContentForType(type);
             setConfirmModal({ isOpen: false, message: '', onConfirm: null });
-            setContentToDelete(null);
         } catch (error) {
             console.error('Error deleting content:', error);
             showToast('Failed to delete', 'error');

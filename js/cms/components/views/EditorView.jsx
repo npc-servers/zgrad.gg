@@ -11,6 +11,7 @@ import { Button } from '../ui/Button.jsx';
 import { formatStepCardsHTML } from '../../utils/helpers.js';
 import { LinkModal } from '../ui/LinkModal.jsx';
 import { ImageSettingsModal } from '../editor/ImageSettingsModal.jsx';
+import { IconPickerModal } from '../editor/IconPickerModal.jsx';
 import { DraftNotice } from '../content/DraftNotice.jsx';
 import { GuideMetadata } from '../content/GuideMetadata.jsx';
 
@@ -135,6 +136,22 @@ export function EditorView({
         setLinkPromptOpen(false);
     };
 
+    const handleInsertIcon = (iconData, iconName) => {
+        if (!editor || !iconData) return;
+
+        editor.chain()
+            .focus()
+            .insertIcon({
+                iconName,
+                iconData,
+                color: 'currentColor',
+                size: '1em',
+            })
+            .run();
+        
+        setIconPickerOpen(false);
+    };
+
     // Determine button text based on guide state
     const getButtonText = () => {
         if (!guide || !guide.id) {
@@ -210,6 +227,21 @@ export function EditorView({
                         
                         <button
                             type="button"
+                            className="cms-editor-btn cms-btn-pink"
+                            onClick={() => setIconPickerOpen(true)}
+                            title="Insert Icon"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                            </svg>
+                            Insert Icon
+                        </button>
+                        
+                        <button
+                            type="button"
                             className="cms-editor-btn cms-btn-purple"
                             onClick={handleAddStepCard}
                             title="Add Step Card"
@@ -251,6 +283,13 @@ export function EditorView({
                 hasSelection={editor && !editor.state.selection.empty}
                 onSubmit={handleAddLink}
                 onCancel={() => setLinkPromptOpen(false)}
+            />
+
+            {/* Icon Picker Modal */}
+            <IconPickerModal
+                isOpen={iconPickerOpen}
+                onClose={() => setIconPickerOpen(false)}
+                onSelectIcon={handleInsertIcon}
             />
 
             {/* Image Settings Modal */}
