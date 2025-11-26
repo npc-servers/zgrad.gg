@@ -1,6 +1,9 @@
 // Refresh endpoint - Updates reactions for recent messages
 import { secureJsonResponse, checkRateLimit } from '../../_lib/security-utils.js';
 
+// Helper to add delay between Discord API calls to avoid rate limits
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 export async function onRequest(context) {
   const { request, env } = context;
 
@@ -53,7 +56,14 @@ export async function onRequest(context) {
         // Fetch all messages in the group and merge their reactions
         const allReactions = [];
         
-        for (const messageId of messageIds) {
+        for (let i = 0; i < messageIds.length; i++) {
+          const messageId = messageIds[i];
+          
+          // Add delay between requests to avoid Discord rate limits (except for first request)
+          if (i > 0) {
+            await delay(50); // 50ms delay = ~20 req/sec, well under Discord's 50 req/sec limit
+          }
+          
           const messageResponse = await fetch(
             `https://discord.com/api/v10/channels/${channelId}/messages/${messageId}`,
             {
