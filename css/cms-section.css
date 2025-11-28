@@ -28,6 +28,16 @@
     z-index: 1;
 }
 
+.cms-section-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-transform: uppercase;
+    margin: 0 0 40px 0;
+    letter-spacing: 3px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
 .cms-boxes {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -241,6 +251,12 @@
     
     .cms-section-container {
         padding: 0 20px;
+    }
+    
+    .cms-section-title {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+        letter-spacing: 2px;
     }
     
     .cms-boxes {
