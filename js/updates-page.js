@@ -140,7 +140,8 @@ function createUpdateElement(update) {
     item.dataset.updateId = update.id;
     
     // Check if update is new (posted after last visit)
-    const isNew = update.timestamp > lastVisitTimestamp;
+    // Don't mark as new on first visit (lastVisitTimestamp === 0)
+    const isNew = lastVisitTimestamp > 0 && update.timestamp > lastVisitTimestamp;
     if (isNew) {
         item.classList.add('update-new');
     }

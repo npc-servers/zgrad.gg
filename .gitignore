@@ -46,20 +46,23 @@ Thumbs.db
 *.tmp
 *.temp
 
-# Cloudflare Wrangler (CMS)
+# Wrangler (legacy - can be deleted from your machine)
 .wrangler/
 .mf/
 .dev.vars
-wrangler.toml.local
-worker.js
-worker.js.map
 
-# Local databases (D1)
+# Local databases
 *.db
+*.db-shm
+*.db-wal
 *.sqlite
 *.sqlite3
 *.sqlite-shm
 *.sqlite-wal
+
+# VPS Server Data
+server/data/cms.db
+server/data/uploads/
 
 # Session files
 sessions/
