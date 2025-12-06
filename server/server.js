@@ -22,6 +22,7 @@ import imagesRoutes from './routes/images.js';
 
 // Import middleware
 import { addSecurityHeaders } from './lib/security-utils.js';
+import { validateSession } from './middleware/auth.js';
 import { serveGuide } from './routes/guides-page.js';
 import { serveImage } from './routes/images-serve.js';
 import { startDiscordBot, stopDiscordBot } from './lib/discord-bot.js';
@@ -71,6 +72,24 @@ app.get('/guides/:slug', serveGuide);
 
 // Serve uploaded images
 app.get('/images/guides/:filename', serveImage);
+
+// Protect CMS routes - redirect to login if not authenticated
+app.use('/cms', async (req, res, next) => {
+  // Allow access to login page
+  if (req.path === '/login.html' || req.path === '/login') {
+    return next();
+  }
+  
+  // Check if user has valid session
+  const session = await validateSession(req);
+  
+  if (!session) {
+    // Redirect to login page
+    return res.redirect('/cms/login.html');
+  }
+  
+  next();
+});
 
 // Serve static files from dist folder (for production)
 app.use(express.static(path.join(__dirname, '../dist')));
