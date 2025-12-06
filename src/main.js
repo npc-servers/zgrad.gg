@@ -13,6 +13,7 @@ import '../css/discord-section.css';
 import '../css/cms-section.css';
 import '../css/help-section.css';
 import '../css/footer.css';
+import '../css/discord-popup.css';
 
 // Note: External libraries are loaded via CDN in HTML for better caching
 // - GSAP (with ScrollTrigger and ScrollToPlugin)
@@ -37,6 +38,7 @@ import '../js/footer.js';
 import '../js/bloodsplatter-animations.js';
 import '../js/showcase-animations.js';
 import '../js/gamemode-swiper.js';
+import '../js/discord-popup.js';
 
 console.log('ZGRAD website initialized successfully with Vite');
 
