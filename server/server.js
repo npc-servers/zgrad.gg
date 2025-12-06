@@ -10,6 +10,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 
+// Import database (ensures it's created/initialized before routes)
+import { initDatabase } from './lib/database.js';
+
 // Import routes
 import authRoutes from './routes/auth.js';
 import guidesRoutes from './routes/guides.js';
@@ -96,9 +99,11 @@ app.use((err, req, res, next) => {
 
 // Start server
 const server = app.listen(PORT, async () => {
+  const dbInfo = initDatabase();
+  
   console.log(`🚀 ZGRAD CMS server running on http://localhost:${PORT}`);
   console.log(`📁 Static files served from: ${path.join(__dirname, '../dist')}`);
-  console.log(`💾 Database: ${process.env.DATABASE_PATH || './server/data/cms.db'}`);
+  console.log(`💾 Database: ${dbInfo.path}${dbInfo.isNew ? ' (newly created)' : ''}`);
   
   // Start Discord bot for real-time updates
   await startDiscordBot();

@@ -11,20 +11,37 @@ import fs from 'fs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Ensure data directory exists
+// Ensure data directories exist
 const dataDir = path.join(__dirname, '../data');
+const uploadsDir = path.join(dataDir, 'uploads/guides');
+
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
+  console.log('📁 Created data directory:', dataDir);
+}
+
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+  console.log('📁 Created uploads directory:', uploadsDir);
 }
 
 const dbPath = process.env.DATABASE_PATH || path.join(dataDir, 'cms.db');
+const isNewDatabase = !fs.existsSync(dbPath);
+
 const db = new Database(dbPath);
+
+if (isNewDatabase) {
+  console.log('🆕 Creating new database:', dbPath);
+} else {
+  console.log('📂 Using existing database:', dbPath);
+}
 
 // Enable WAL mode for better performance
 db.pragma('journal_mode = WAL');
 
 // Initialize database schema
 const initSchema = () => {
+  console.log('🔧 Initializing database schema...');
   db.exec(`
     -- Sessions table for authentication
     CREATE TABLE IF NOT EXISTS sessions (
@@ -158,10 +175,19 @@ const initSchema = () => {
       expires_at INTEGER NOT NULL
     );
   `);
+  console.log('✅ Database schema initialized successfully');
 };
 
 // Initialize schema on module load
 initSchema();
+
+// Export initialization function for explicit calls
+export const initDatabase = () => {
+  return {
+    path: dbPath,
+    isNew: isNewDatabase,
+  };
+};
 
 // Helper function to prepare and bind statements (similar to D1 API)
 export const query = {
