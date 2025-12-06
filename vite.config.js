@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite'
+import preact from '@preact/preset-vite'
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer'
 import { resolve } from 'path'
 import copy from 'rollup-plugin-copy'
 import htmlMinifier from 'vite-plugin-html-minifier'
-import Sitemap from 'vite-plugin-sitemap';
+// Sitemap is now dynamically generated via /sitemap.xml endpoint (functions/sitemap.xml.js)
 
 const DEFAULT_OPTIONS = {
   includePublic: true,
@@ -58,25 +59,9 @@ const DEFAULT_OPTIONS = {
 
 export default defineConfig({
   plugins: [
+    preact(),
     ViteImageOptimizer(DEFAULT_OPTIONS),
-    htmlMinifier({}),
-    Sitemap({ 
-      hostname: 'https://zgrad.gg',
-      dynamicRoutes: [
-        '/servers',
-        '/rules',
-        '/credits',
-        '/discord',
-        '/store',
-        '/connect/us1',
-        '/connect/us2',
-        '/connect/us3',
-        '/connect/us4',
-        '/guides/ban-appeal',
-        '/guides/player-report',
-        '/guides/how-to-play-homigrad'
-      ]
-    })
+    htmlMinifier({})
   ],
   build: {
     rollupOptions: {
@@ -93,9 +78,18 @@ export default defineConfig({
         connectUs3: resolve(__dirname, 'connect/us3.html'),
         connectUs4: resolve(__dirname, 'connect/us4.html'),
         // Guide pages
+        guidesIndex: resolve(__dirname, 'guides/index.html'),
+        guideTemplate: resolve(__dirname, 'guides/template.html'),
         banAppeal: resolve(__dirname, 'guides/ban-appeal.html'),
         playerReport: resolve(__dirname, 'guides/player-report.html'),
         howToPlay: resolve(__dirname, 'guides/how-to-play-homigrad.html'),
+        // CMS pages
+        cmsIndex: resolve(__dirname, 'cms/index.html'),
+        cmsLogin: resolve(__dirname, 'cms/login.html'),
+        // Updates page
+        updates: resolve(__dirname, 'updates/index.html'),
+        // Loading screen
+        loadingscreen: resolve(__dirname, 'loadingscreen/index.html'),
         // 404 page
         notFound: resolve(__dirname, '404.html')
       },
@@ -106,8 +100,9 @@ export default defineConfig({
             { src: 'videos', dest: 'dist' },
             { src: 'favicon.ico', dest: 'dist' },
             { src: 'robots.txt', dest: 'dist' },
-            { src: 'sitemap.xml', dest: 'dist' },
-            { src: 'CNAME', dest: 'dist' }
+            // sitemap.xml is now dynamically generated via functions/sitemap.xml.js
+            { src: 'CNAME', dest: 'dist' },
+            { src: 'guides/manifest.json', dest: 'dist/guides' }
           ],
           hook: 'writeBundle'
         })

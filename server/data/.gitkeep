@@ -1,0 +1,6 @@
+# This directory contains:
+# - cms.db (SQLite database)
+# - uploads/ (uploaded images)
+#
+# These files are auto-created and should not be committed to git.
+

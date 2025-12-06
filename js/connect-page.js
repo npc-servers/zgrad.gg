@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ip: '193.243.190.18',
             port: 27053,
             region: 'US',
-            gamemode: 'Low Loot Rate'
+            gamemode: 'TDM 24/7'
         },
         'zgrad4': {
             id: 'zgrad4',

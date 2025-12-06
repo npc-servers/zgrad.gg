@@ -1,32 +1,279 @@
-# zmod.gg
+# zgrad.gg
 
-Official website for ZMOD
+Official website for ZGRAD - Premium Homigrad Gaming Network
 
-## Development
+## Features
 
-```bash
-npm install
-npm run dev
-```
-
-## Build
-
-```bash
-npm run build
-npm run preview
-```
+- 🎮 Server status and information
+- 📝 Content Management System with Discord OAuth
+- 🖼️ Image upload and R2 storage integration
+- 📚 Dynamic guide system with database-backed content
+- ✨ Rich text editor with custom components (Step Cards, Info Boxes, Icons)
+- 👥 Multi-user collaboration with contributor tracking
+- 📢 **Discord Updates** - Automatic changelog from Discord channel
+- ⚡ Hybrid static/dynamic architecture for optimal performance
 
 ## Tech Stack
 
-- Vite - Build tool & dev server
-- Vanilla JS (ES6 modules)
-- CSS3
-- GSAP for animations
+- **Frontend**: Vite + Vanilla JS + CSS3 + TipTap Editor
+- **Backend**: Cloudflare Pages Functions (Workers)
+- **Database**: Cloudflare D1 (SQLite)
+- **Storage**: Cloudflare R2
+- **Auth**: Discord OAuth 2.0
+- **Icons**: Iconify API (200,000+ icons)
+
+## Quick Start
+
+### Prerequisites
+- Node.js 18+
+- Wrangler CLI: `npm install -g wrangler`
+- Discord OAuth app credentials
+
+### Setup
+
+**Option 1: Automated Setup (Recommended)**
+
+```bash
+# Windows (PowerShell)
+.\setup-local-dev.ps1
+
+# Mac/Linux
+chmod +x setup-local-dev.sh
+./setup-local-dev.sh
+```
+
+**Option 2: Manual Setup**
+
+```bash
+# 1. Install dependencies
+npm install
+
+# 2. Set up environment variables
+cp .dev.vars.example .dev.vars
+# Edit .dev.vars with your Discord OAuth credentials
+
+# 3. Initialize local database
+npx wrangler d1 execute zgrad-cms --local --file=./schema.sql
+
+# 4. Set up local image storage (important!)
+npx wrangler d1 execute zgrad-cms --local --file=./migrations/add-local-images.sql
+
+# 5. Start dev server
+npm run dev
+```
+
+> 📖 **Need help with image uploads?** See [LOCAL_IMAGE_SETUP.md](./LOCAL_IMAGE_SETUP.md)
+
+Visit `http://localhost:8788`
+
+### Environment Variables
+
+Create `.dev.vars` with:
+
+```env
+DISCORD_CLIENT_ID=your_client_id
+DISCORD_CLIENT_SECRET=your_client_secret
+DISCORD_REDIRECT_URI=http://localhost:8788/api/auth/discord-callback
+DISCORD_GUILD_ID=your_guild_id
+DISCORD_REQUIRED_ROLES=your_role_id_1,your_role_id_2
+DISCORD_BOT_TOKEN=your_bot_token
+DISCORD_UPDATES_CHANNEL_ID=your_channel_id
+SESSION_SECRET=generate_random_string_here
+```
+
+## Development Commands
+
+```bash
+npm run dev      # Build + start Wrangler dev server
+npm run build    # Build for production
+npm run preview  # Preview production build locally
+```
+
+## CMS Access
+
+1. Visit `/cms`
+2. Click "Login with Discord"
+3. Authorize with Discord
+4. Must be in ZGRAD Discord server with required role
+
+**Security**: The CMS verifies your Discord role on **every action** (page loads, edits, uploads). If your role is removed, you're immediately logged out. This uses the Discord bot token to check roles in real-time.
+
+### CMS Features
+
+- **Rich Text Editor** powered by TipTap
+- **Custom Components**:
+  - Step Cards - numbered steps with titles
+  - Info Boxes - highlighted information blocks
+  - Icons - 200,000+ icons from Iconify
+- **Image Upload** with automatic compression
+- **Image Settings** - resize and align images
+- **Contributor System** - track all editors
+- **Live Preview** - see changes in real-time
+- **Role Verification** - Real-time Discord role checking
+
+## Database Management
+
+### Local Database
+
+```bash
+# Run queries
+npx wrangler d1 execute zgrad-cms --local --command "SELECT * FROM guides"
+
+# Apply migrations
+npx wrangler d1 execute zgrad-cms --local --file=./migration.sql
+```
+
+### Remote Database (Production)
+
+```bash
+# Run queries
+npx wrangler d1 execute zgrad-cms --remote --command "SELECT * FROM guides"
+
+# Apply migrations
+npx wrangler d1 execute zgrad-cms --remote --file=./migration.sql
+```
 
 ## Project Structure
 
-- `/src` - Entry points for each page
-- `/js` - JavaScript modules
-- `/css` - Stylesheets
-- `/public` - Static assets
-- `/dist` - Built output (generated)
+```
+├── src/              # Vite entry points
+├── js/               # JavaScript modules
+│   ├── cms.js        # CMS frontend logic
+│   └── tiptap-extensions.js  # Custom TipTap nodes
+├── css/              # Stylesheets
+├── functions/        # Cloudflare Workers
+│   ├── _lib/         # Shared utilities
+│   ├── _middleware/  # Auth middleware
+│   ├── api/          # API endpoints
+│   │   ├── auth/     # Discord OAuth
+│   │   ├── guides/   # Guide CRUD operations
+│   │   ├── images/   # Image upload
+│   │   └── updates/  # Discord updates sync
+│   ├── cms/          # CMS routes
+│   └── guides/       # Dynamic guide rendering
+├── cms/              # CMS HTML and assets
+├── guides/           # Static guide templates
+├── images/           # Static assets
+└── dist/             # Built output (generated)
+```
+
+## Discord Bot Setup
+
+The Discord bot is used for two features:
+
+### 1. CMS Role Verification
+Verifies users have the required role on every CMS action.
+
+### 2. Updates Changelog
+Automatically displays Discord messages as a changelog at `/updates/`.
+
+### Bot Configuration
+
+**Required Intent**:
+- ✅ **Server Members Intent** (enable in Discord Developer Portal → Bot → Privileged Gateway Intents)
+
+**Required Permissions**:
+- ✅ Read Messages/View Channels (permission: `1024`)
+
+**Setup Steps**:
+1. Go to [Discord Developer Portal](https://discord.com/developers/applications)
+2. Select your bot → Bot section
+3. Enable **"Server Members Intent"** (required for role checking)
+4. Copy bot token → add to `DISCORD_BOT_TOKEN` environment variable
+5. Invite bot to server with `bot` scope and read messages permission
+
+**Test Bot Access**:
+```bash
+# Verify bot token works
+curl -H "Authorization: Bot YOUR_BOT_TOKEN" \
+     https://discord.com/api/v10/guilds/YOUR_GUILD_ID/members/YOUR_USER_ID
+```
+
+If this returns member data with a `roles` array, you're all set!
+
+## Database Schema
+
+The application uses four main tables:
+
+- **sessions** - Discord OAuth sessions
+- **guides** - Published guides with author info
+- **guide_contributors** - Track users who edit guides
+- **updates** - Cached Discord messages for changelog
+
+See `schema.sql` for full schema definition.
+
+## Image Storage
+
+### Development Mode
+- Images are stored in local D1 database
+- **Persist across restarts** (unlike R2, D1 works locally!)
+- Automatic deduplication using content hashing
+- To set up local image storage:
+  ```bash
+  npx wrangler d1 execute zgrad-cms --local --file=./migrations/add-local-images.sql
+  ```
+
+### Production Mode
+- Images uploaded to Cloudflare R2
+- Served via CDN at `https://images.zgrad.gg`
+- Permanent storage with deduplication
+
+## Deployment
+
+### Automatic Deployment
+Pushes to `main` branch trigger automatic deployment via Cloudflare Pages.
+
+### Manual Deployment
+
+```bash
+# Build the project
+npm run build
+
+# Deploy to Cloudflare Pages
+npx wrangler pages deploy dist
+```
+
+### Environment Setup in Cloudflare
+
+1. Add environment variables in Cloudflare Pages dashboard
+2. Set up D1 database binding: `DB` → `zgrad-cms`
+3. Set up R2 bucket binding: `R2_BUCKET` → `zgrad-guides-images`
+
+## Troubleshooting
+
+### Database Errors
+
+If you see "table not found" errors, run the database migration:
+
+```bash
+npx wrangler d1 execute zgrad-cms --local --file=./schema.sql
+```
+
+### Image Upload Issues
+
+**Development Mode**: 
+- If images aren't uploading locally, ensure the `local_images` table exists:
+  ```bash
+  npx wrangler d1 execute zgrad-cms --local --file=./migrations/add-local-images.sql
+  ```
+- Images are stored in D1 and will persist across restarts
+
+**Production Mode**: Ensure R2 bucket is properly bound in `wrangler.toml` and Cloudflare dashboard.
+
+### CMS Access Denied
+
+- Verify Discord OAuth credentials in `.dev.vars`
+- Check that you're in the correct Discord server
+- Confirm you have the required role ID
+- Ensure **Server Members Intent** is enabled in Discord Developer Portal
+- Verify `DISCORD_BOT_TOKEN` is set and valid
+
+## Scripts
+
+```bash
+npm run dev              # Development server
+npm run build            # Production build
+npm run preview          # Preview production build
+npm run generate:guides  # Generate guides manifest
+npm run generate:sitemap # Generate sitemap.xml
+```

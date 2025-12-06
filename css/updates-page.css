@@ -1,0 +1,776 @@
+/* Updates Page Styles */
+
+.updates-page {
+    min-height: 100vh;
+    background-color: var(--dark-bg);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.updates-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('../images/textures/cooltexturebetter.png') center/auto repeat;
+    opacity: 0.2;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Navbar Back Link */
+.navbar-back-link {
+    position: fixed;
+    left: 20px;
+    top: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: rgba(30, 30, 30, 0.6);
+    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    overflow: hidden;
+    font-family: 'Oxanium', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    z-index: 1003;
+}
+
+.navbar-back-link svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+    pointer-events: none;
+}
+
+.navbar-back-link:hover {
+    background-color: rgba(40, 40, 40, 0.8);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-back-link:hover svg {
+    transform: translateX(-3px);
+}
+
+.navbar-logo-right {
+    position: fixed !important;
+    right: 20px !important;
+    left: auto !important;
+    top: 15px !important;
+    transform: none !important;
+}
+
+/* Responsive: Hide BACK text on smaller screens */
+@media (max-width: 923px) and (min-width: 765px) {
+    .navbar-back-link {
+        padding: 8px;
+    }
+    
+    .navbar-back-link svg {
+        margin: 0;
+    }
+    
+    .navbar-back-link::before {
+        content: '';
+        display: none;
+    }
+    
+    .navbar-back-link {
+        font-size: 0;
+    }
+    
+    .navbar-back-link svg {
+        font-size: initial;
+        width: 20px;
+        height: 20px;
+    }
+}
+
+/* Hide ZMOD logo when mobile menu is visible */
+@media (max-width: 768px) {
+    .navbar-logo-right {
+        display: none;
+    }
+}
+
+/* Blood Splatter at Top */
+.updates-splatter {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 110vw;
+    height: 500px;
+    background: url('../images/textures/rules-splatter.png') center top/cover no-repeat;
+    pointer-events: none;
+    z-index: 1;
+    mask: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0) 80%);
+    -webkit-mask: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0) 80%);
+}
+
+/* GMod fallback */
+body.gmod-client .updates-splatter {
+    mask: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 20%, rgba(0,0,0,0.6) 45%, rgba(0,0,0,0.2) 65%, rgba(0,0,0,0) 80%);
+    -webkit-mask: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 20%, rgba(0,0,0,0.6) 45%, rgba(0,0,0,0.2) 65%, rgba(0,0,0,0) 80%);
+}
+
+.updates-title {
+    position: relative;
+    z-index: 10;
+    padding: 40px;
+    margin-top: 70px;
+    text-align: center;
+}
+
+.updates-title-text {
+    font-size: 6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin: 0;
+    color: #ffffff;
+    text-shadow: 
+        0 0 5px rgba(255, 71, 87, 0.8),
+        0 0 10px rgba(255, 71, 87, 0.6),
+        0 0 15px rgba(255, 71, 87, 0.4),
+        0 0 20px rgba(255, 71, 87, 0.2),
+        2px 2px 4px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.updates-title-text::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    filter: blur(6px);
+    opacity: 0.25;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.updates-subtitle {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.9);
+    position: relative;
+    z-index: 10;
+    font-weight: 600;
+    text-shadow: 
+        1px 1px 2px rgba(0, 0, 0, 0.8),
+        0 0 4px rgba(0, 0, 0, 0.5);
+    margin-top: 15px;
+    margin-bottom: 15px;
+    letter-spacing: 0.5px;
+}
+
+.updates-container {
+    position: relative;
+    z-index: 10;
+    padding: 0 40px 80px;
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+}
+
+.updates-actions {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+
+.updates-discord-btn {
+    display: inline-flex;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(114, 137, 218, 0.1);
+    border: 1px solid rgba(114, 137, 218, 0.3);
+    border-radius: 6px;
+    padding: 0.7rem 1.8rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    text-decoration: none;
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 15px rgba(114, 137, 218, 0.2);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    min-width: fit-content;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    width: fit-content;
+    gap: 8px;
+    font-family: 'Oxanium', sans-serif;
+}
+
+.updates-discord-btn::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, rgba(114, 137, 218, 0.4) 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.5s;
+}
+
+.updates-discord-btn:hover {
+    background-color: rgba(114, 137, 218, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(114, 137, 218, 0.3);
+    border-color: rgba(114, 137, 218, 0.5);
+    color: #7289da;
+}
+
+.updates-discord-btn:active {
+    transform: translateY(0);
+}
+
+.updates-discord-btn:active::after {
+    transform: scale(0, 0);
+    opacity: 0.3;
+    transition: 0s;
+}
+
+.updates-discord-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    transition: transform 0.3s ease;
+}
+
+.updates-discord-btn:hover svg {
+    transform: scale(1.1);
+}
+
+/* Timeline */
+.updates-timeline {
+    position: relative;
+}
+
+/* Update Item */
+.update-item {
+    position: relative;
+    margin-bottom: 24px;
+    padding: 24px;
+    background: rgba(20, 20, 20, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.6s ease;
+}
+
+/* New Update Highlight */
+.update-item.update-new {
+    border-color: rgba(255, 255, 255, 0.15);
+    background: rgba(20, 20, 20, 0.7);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.update-item:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(25, 25, 25, 0.7);
+}
+
+/* Update Header */
+.update-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 20px;
+}
+
+.update-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Oxanium', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.update-item:hover .update-author {
+    text-shadow: 0 0 8px rgba(255, 71, 87, 0.6);
+}
+
+.update-author::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 16px;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    background-image: url('/images/textures/bloody-icon-background.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.update-author-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    z-index: 1;
+}
+
+.update-date {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+/* NEW Badge */
+.update-new-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+    color: #ffffff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    border-radius: 4px;
+    text-transform: uppercase;
+    box-shadow: 0 2px 10px rgba(220, 38, 38, 0.4);
+    animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+    0%, 100% { 
+        box-shadow: 0 2px 10px rgba(220, 38, 38, 0.4);
+        transform: scale(1);
+    }
+    50% { 
+        box-shadow: 0 4px 20px rgba(220, 38, 38, 0.6);
+        transform: scale(1.05);
+    }
+}
+
+/* Update Content */
+.update-content {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 16px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.update-content p {
+    margin: 0 0 12px 0;
+}
+
+.update-content p:last-child {
+    margin-bottom: 0;
+}
+
+.update-content strong {
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+}
+
+.update-content code {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+}
+
+.update-content a {
+    color: #4A9EFF;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.update-content a:hover {
+    color: #6BB0FF;
+    text-decoration: underline;
+}
+
+/* Inline images from Discord */
+.content-inline-image {
+    display: block;
+    margin: 10px 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Changelog Category Badges */
+.changelog-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    margin-right: 8px;
+    font-family: 'Oxanium', sans-serif;
+}
+
+.changelog-added {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.4);
+    color: #22c55e;
+}
+
+.changelog-changed {
+    background: rgba(251, 191, 36, 0.15);
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    color: #fbbf24;
+}
+
+.changelog-removed {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #ef4444;
+}
+
+/* Bullet Points */
+.bullet-point {
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 700;
+    margin-right: 8px;
+    font-size: 1.2em;
+}
+
+.update-content ul, .update-content ol {
+    margin: 16px 0;
+    padding-left: 24px;
+}
+
+.update-content li {
+    margin-bottom: 8px;
+}
+
+/* Update Attachments */
+.update-attachments {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.update-attachment {
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.update-attachment:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.update-attachment img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Update Reactions */
+.update-reactions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.update-reaction {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+    cursor: default;
+}
+
+.update-reaction:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.reaction-emoji-custom {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+}
+
+.reaction-emoji-unicode {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.reaction-count {
+    color: rgba(255, 255, 255, 0.7);
+    font-family: 'Oxanium', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+/* Update Footer */
+.update-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.update-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: 'Oxanium', sans-serif;
+    font-size: 0.8rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.3s ease;
+}
+
+.update-link:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.update-link svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Loading State */
+.updates-loading {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto 20px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top-color: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.updates-loading p {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.05em;
+}
+
+/* Empty State */
+.updates-empty {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.updates-empty-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 24px;
+    opacity: 0.3;
+}
+
+.updates-empty h3 {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0 0 12px 0;
+    letter-spacing: 0.05em;
+}
+
+.updates-empty p {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin: 0;
+}
+
+/* Load More Button */
+.updates-load-more {
+    text-align: center;
+    margin-top: 32px;
+    padding: 32px 20px;
+}
+
+.updates-load-more-btn {
+    padding: 14px 36px;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.8);
+    font-family: 'Oxanium', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.updates-load-more-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+}
+
+.updates-load-more-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .updates-title {
+        padding: 30px 20px;
+        margin-top: 50px;
+    }
+
+    .updates-title-text {
+        font-size: 3rem;
+    }
+
+    .updates-subtitle {
+        font-size: 1rem;
+    }
+
+    .updates-container {
+        padding: 20px 16px 60px;
+    }
+
+
+    .updates-timeline::before {
+        left: 10px;
+    }
+
+    .update-item {
+        padding: 20px;
+    }
+
+    .update-item::before {
+        left: -34px;
+        width: 12px;
+        height: 12px;
+    }
+
+    .update-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .update-date {
+        align-self: flex-start;
+    }
+
+    .update-footer {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .updates-discord-btn {
+        justify-content: center;
+        padding: 0.6rem 1.2rem;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .updates-discord-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.75rem;
+    }
+    
+    .updates-discord-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .updates-title-text {
+        font-size: 2rem;
+    }
+
+    .update-title {
+        font-size: 1.25rem;
+    }
+
+    .update-attachments {
+        grid-template-columns: 1fr;
+    }
+}
+

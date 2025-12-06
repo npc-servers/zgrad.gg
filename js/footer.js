@@ -7,9 +7,10 @@ const footerConfig = {
     // OVERVIEW category links
     overview: [
         { href: '/', text: 'Home' },
-        { href: 'servers', text: 'Servers' },
-        { href: 'rules', text: 'Rules' },
-        { href: 'credits', text: 'Credits' },
+        { href: '/servers', text: 'Servers' },
+        { href: '/rules', text: 'Rules' },
+        { href: '/credits', text: 'Credits' },
+        { href: '/cms', text: 'Composer' },
         { href: 'https://discord.gg/npc', text: 'Discord', track: 'discord' },
         { href: 'https://store.zmod.gg', text: 'Webstore', track: 'webstore' }
     ],
@@ -17,8 +18,8 @@ const footerConfig = {
     // ZMOD category links
     zmod: [
         { href: 'https://discord.gg/npc', text: 'Help & Support' },
-        { href: 'guides/player-report', text: 'Report a Player' },
-        { href: 'guides/ban-appeal', text: 'Ban Appeals' },
+        { href: '/guides/player-report', text: 'Report a Player' },
+        { href: '/guides/ban-appeal', text: 'Ban Appeals' },
         { href: 'mailto:charity@npcz.gg', text: 'Contact Us' },
         { href: 'https://zmod.gg?ref=zgrad', text: 'ZMOD.GG' }
     ],

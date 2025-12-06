@@ -565,6 +565,178 @@ background: linear-gradient(90deg,
 );
 }
 
+/* Scroll/Swipe Indicator */
+.scroll-indicator-container {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    pointer-events: auto;
+}
+
+.scroll-indicator-desktop,
+.scroll-indicator-mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 1.5s;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.scroll-indicator-container:hover .scroll-indicator-desktop {
+    transform: translateY(5px);
+    opacity: 0.8;
+}
+
+.scroll-text {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.4);
+    animation: fadeInUp 1s ease-out forwards, textGlowPulse 2s ease-in-out 1.5s 3;
+}
+
+/* Desktop Mouse Animation */
+.mouse {
+    width: 26px;
+    height: 42px;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    border-radius: 20px;
+    position: relative;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.wheel {
+    width: 4px;
+    height: 8px;
+    background-color: #fff;
+    border-radius: 2px;
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: scrollWheel 1.5s infinite;
+}
+
+@keyframes scrollWheel {
+    0% {
+        opacity: 1;
+        top: 8px;
+    }
+    100% {
+        opacity: 0;
+        top: 24px;
+    }
+}
+
+/* Mobile Swipe Animation */
+.swipe-animation {
+    position: relative;
+    width: 30px;
+    height: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.swipe-circle {
+    width: 8px;
+    height: 8px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    margin: 4px 0;
+    animation: swipeUp 1.5s infinite ease-in-out;
+    opacity: 0;
+}
+
+.swipe-circle:nth-child(1) {
+    animation-delay: 0.6s;
+}
+
+.swipe-circle:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.swipe-circle:nth-child(3) {
+    animation-delay: 0s;
+}
+
+@keyframes swipeUp {
+    0% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.5);
+    }
+    20% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.5);
+    }
+}
+
+/* Visibility Control */
+.scroll-indicator-mobile {
+    display: none;
+}
+
+.scroll-indicator-mobile .scroll-text {
+    animation: fadeInUp 1s ease-out forwards, textGlowPulse 2s ease-in-out 1.5s 3;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.4);
+}
+
+@keyframes textGlowPulse {
+    0%, 100% {
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.4);
+        color: rgba(255, 255, 255, 1);
+    }
+    50% {
+        text-shadow: 0 0 20px rgba(255, 255, 255, 1), 0 0 40px rgba(255, 255, 255, 0.6), 0 0 60px rgba(255, 255, 255, 0.3);
+        color: #ffffff;
+    }
+}
+
+@media (max-width: 768px) {
+    .scroll-indicator-desktop {
+        display: none;
+    }
+    
+    .scroll-indicator-mobile {
+        display: flex;
+    }
+    
+    .scroll-indicator-mobile .scroll-text {
+        font-size: 0.75rem;
+        text-align: center;
+        line-height: 1.3;
+    }
+    
+    .scroll-indicator-container {
+        bottom: 80px; /* Move up a bit on mobile to avoid overlapping with browser UI */
+    }
+}
+
+/* Adjust for very small height screens */
+@media (max-height: 600px) {
+    .scroll-indicator-container {
+        display: none;
+    }
+}
+
 /* Responsive styles */
 @media (max-width:992px){
 .landing-section{
@@ -786,7 +958,7 @@ top: 0;
 right: -20%;
 bottom: 0;
 width: 80%;
-background: url('../images/homigrad-render2.jpg') center center/cover no-repeat;
+background: var(--join-bg-image, url('../images/homigrad-render2.jpg')) center center/cover no-repeat;
 mask: linear-gradient(to right, transparent 0%, transparent 10%, rgba(255,255,255,0.1) 15%, rgba(255,255,255,0.2) 20%, rgba(255,255,255,0.3) 25%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.5) 35%, rgba(255,255,255,0.6) 40%, rgba(255,255,255,0.7) 45%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.9) 55%, rgba(255,255,255,0.95) 60%, rgba(255,255,255,1) 65%);
 -webkit-mask: linear-gradient(to right, transparent 0%, transparent 10%, rgba(255,255,255,0.1) 15%, rgba(255,255,255,0.2) 20%, rgba(255,255,255,0.3) 25%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.5) 35%, rgba(255,255,255,0.6) 40%, rgba(255,255,255,0.7) 45%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.9) 55%, rgba(255,255,255,0.95) 60%, rgba(255,255,255,1) 65%);
 opacity: 0.3;
@@ -1152,12 +1324,22 @@ position: relative;
 @media (max-width: 768px) {
     .logo-container {
         margin-bottom: 60px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
     
     .logo-container .landing-buttons-inline {
-        display: flex; /* Show buttons in logo container */
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         gap: 12px;
         margin-top: 25px;
+        max-width: 280px;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
     }
     
     .join-button-container {
@@ -1169,31 +1351,24 @@ position: relative;
         display: none; /* Hide buttons in top row */
     }
     
-    .landing-buttons-inline .landing-button {
-        font-size: 0.9rem;
-        padding: 0.8rem 1.2rem;
-        width: auto;
-        min-width: 130px;
-        flex: none;
+    .logo-container .landing-buttons-inline .landing-button {
+        font-size: 0.95rem;
+        padding: 0.9rem 1.5rem;
+        width: 100%;
+        min-width: auto;
+        min-height: 48px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     
-    .landing-buttons-inline .landing-button-view-servers {
-        min-width: 130px;
-    }
-    
-    .landing-buttons-inline .landing-button-discord {
-        min-width: 120px;
-    }
-    
-    .landing-buttons-inline .landing-button-store {
-        min-width: 100px;
-    }
-    
-    /* Hide icons on mobile */
-    .servers-icon,
-    .discord-icon,
-    .store-icon {
-        display: none;
+    /* Show icons on mobile for stacked buttons */
+    .logo-container .landing-buttons-inline .servers-icon,
+    .logo-container .landing-buttons-inline .discord-icon,
+    .logo-container .landing-buttons-inline .store-icon {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
     }
     
     .join-row {
@@ -1235,58 +1410,53 @@ position: relative;
         justify-content: center;
     }
     
-    .landing-buttons-inline {
-        max-width: 450px;
-        width: 100%;
+    .logo-container {
         display: flex;
-        align-items: stretch;
-        justify-content: center;
-        gap: 20px;
+        flex-direction: column;
+        align-items: center;
     }
     
-    .landing-buttons-inline .landing-button {
-        flex: none;
+    .logo-container .landing-buttons-inline {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        max-width: 300px;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .logo-container .landing-buttons-inline .landing-button {
+        width: 100%;
         min-width: auto;
-        min-height: 45px;
-        padding: 0.8rem 1rem;
-        font-size: 0.9rem;
+        min-height: 50px;
+        padding: 0.9rem 1.5rem;
+        font-size: 1rem;
         display: flex;
         justify-content: center;
         align-items: center;
         white-space: nowrap;
-        width: auto;
-    }
-    
-    .landing-buttons-inline .landing-button-view-servers {
-        min-width: auto;
-    }
-    
-    .landing-buttons-inline .landing-button-discord {
-        min-width: 120px;
     }
 
-    /* Make both buttons equally prominent */
+    /* Make all buttons equally prominent */
     .landing-button-view-servers,
-    .landing-button-discord {
+    .landing-button-discord,
+    .landing-button-store {
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), inset 0 0 10px rgba(0, 0, 0, 0.05);
     }
     
     .landing-button-view-servers:hover,
-    .landing-button-discord:hover {
+    .landing-button-discord:hover,
+    .landing-button-store:hover {
         transform: translateY(-3px);
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2), inset 0 0 15px rgba(0, 0, 0, 0.1);
     }
 
     .landing-button-view-servers:hover .servers-icon,
-    .landing-button-discord:hover .discord-icon {
+    .landing-button-discord:hover .discord-icon,
+    .landing-button-store:hover .store-icon {
         transform: scale(1.1);
-    }
-
-    .landing-button-discord {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 5px;
     }
 }
 
@@ -1302,24 +1472,32 @@ position: relative;
         gap: 10px;
     }
     
-    .landing-buttons-inline .landing-button {
-        font-size: 0.75rem;
-        padding: 0.6rem 0.8rem;
-        width: auto;
-        min-width: 100px;
-        flex: none;
+    .logo-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
     
-    .landing-buttons-inline .landing-button-view-servers {
-        min-width: 100px;
+    .logo-container .landing-buttons-inline {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        max-width: 250px;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
     }
     
-    .landing-buttons-inline .landing-button-discord {
-        min-width: 90px;
-    }
-    
-    .landing-buttons-inline .landing-button-store {
-        min-width: 80px;
+    .logo-container .landing-buttons-inline .landing-button {
+        width: 100%;
+        min-width: auto;
+        min-height: 45px;
+        padding: 0.8rem 1.2rem;
+        font-size: 0.9rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     
     /* Hide START PLAYING NOW and related elements on mobile */
@@ -1608,4 +1786,4 @@ z-index: 2;
     .top-row .landing-buttons-inline .landing-button:nth-child(3) {
         animation-delay: 0.3s;
     }
-} 
+}

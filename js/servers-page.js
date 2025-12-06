@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
             port: 27066,
             region: 'US',
             gamemode: 'All Gamemodes',
-            link: 'connect/us1'
+            link: 'connect/us1',
+            backgroundImage: '/images/loadingscreen/homigrad-essence.jpg'
         },
         {
             id: 'zgrad2',
@@ -20,7 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
             port: 27051,
             region: 'US',
             gamemode: 'All Gamemodes',
-            link: 'connect/us2'
+            link: 'connect/us2',
+            backgroundImage: '/images/loadingscreen/eighteenth.jpg'
         },
         {
             id: 'zgrad3',
@@ -28,8 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
             ip: '193.243.190.18',
             port: 27053,
             region: 'US',
-            gamemode: 'Low Loot Rate',
-            link: 'connect/us3'
+            gamemode: 'TDM 24/7',
+            link: 'connect/us3',
+            backgroundImage: '/images/loadingscreen/street-war.jpg'
         },
         {
             id: 'zgrad4',
@@ -38,7 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
             port: 27052,
             region: 'US',
             gamemode: 'Homicide Only',
-            link: 'connect/us4'
+            link: 'connect/us4',
+            backgroundImage: '/images/loadingscreen/eigth.jpg'
         }
     ];
     
@@ -111,32 +115,51 @@ document.addEventListener('DOMContentLoaded', () => {
         const wrapper = document.createElement('div');
         wrapper.className = 'server-wrapper';
         
+        // Create server item element
+        const serverItem = document.createElement('div');
+        serverItem.className = `server-item ${serverCapacityClass}`;
+        serverItem.setAttribute('data-server-id', server.id);
+        
+        // Set background image using CSS custom property
+        serverItem.style.setProperty('--server-bg-image', `url('${server.backgroundImage}')`);
+        
         // Create different HTML based on server status
         if (isOnline) {
-            wrapper.innerHTML = `
-                <div class="server-item ${serverCapacityClass}" data-server-id="${server.id}">
-                    <div class="server-content">
-                        <div class="server-info">
-                            <div class="server-name-display">${server.title}</div>
-                            <div class="server-players-display">// <span class="${playerCountClass}">${playerCount}/${maxPlayers}</span> players online</div>
-                            <div class="server-gamemode-display">Now Playing: <span>${serverStatus.gamemode}</span> <span style="color: #a8a8a8;">on</span> ${serverStatus.map}</div>
-                        </div>
+            serverItem.innerHTML = `
+                <div class="server-content">
+                    <div class="server-info">
+                        <div class="server-name-display">${server.title}</div>
+                        <div class="server-players-display">// <span class="${playerCountClass}">${playerCount}/${maxPlayers}</span> players online</div>
+                        <div class="server-gamemode-display">Now Playing: <span>${serverStatus.gamemode}</span> <span style="color: #a8a8a8;">on</span> ${serverStatus.map}</div>
                     </div>
                 </div>
-                <a href="${server.link}" class="server-join-btn">JOIN</a>
             `;
+            
+            const joinBtn = document.createElement('a');
+            joinBtn.href = server.link;
+            joinBtn.className = 'server-join-btn';
+            joinBtn.textContent = 'JOIN';
+            
+            wrapper.appendChild(serverItem);
+            wrapper.appendChild(joinBtn);
         } else {
-            wrapper.innerHTML = `
-                <div class="server-item ${serverCapacityClass}" data-server-id="${server.id}">
-                    <div class="server-content">
-                        <div class="server-info">
-                            <div class="server-name-display">${server.title}</div>
-                            <div class="server-offline-message">This server is down, we may be experiencing an outage or crashed :(</div>
-                        </div>
+            serverItem.innerHTML = `
+                <div class="server-content">
+                    <div class="server-info">
+                        <div class="server-name-display">${server.title}</div>
+                        <div class="server-offline-message">This server is down, we may be experiencing an outage or crashed :(</div>
                     </div>
                 </div>
-                <a href="${server.link}" class="server-join-btn" style="pointer-events: none;">OFFLINE</a>
             `;
+            
+            const joinBtn = document.createElement('a');
+            joinBtn.href = server.link;
+            joinBtn.className = 'server-join-btn';
+            joinBtn.textContent = 'OFFLINE';
+            joinBtn.style.pointerEvents = 'none';
+            
+            wrapper.appendChild(serverItem);
+            wrapper.appendChild(joinBtn);
         }
         
         return wrapper;
@@ -168,6 +191,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update server item classes
         const serverItem = wrapper.querySelector('.server-item');
         serverItem.className = `server-item ${serverCapacityClass}`;
+        
+        // Update background image if not already set
+        if (!serverItem.style.getPropertyValue('--server-bg-image')) {
+            serverItem.style.setProperty('--server-bg-image', `url('${server.backgroundImage}')`);
+        }
         
         // Update server info based on status
         const serverInfo = wrapper.querySelector('.server-info');
@@ -288,218 +316,6 @@ document.addEventListener('DOMContentLoaded', () => {
     updateServerList();
     setInterval(updateServerList, 30000);
     
-    // Hosting Notification Functionality
-    const initHostingNotification = () => {
-        const notification = document.getElementById('hostingNotification');
-        const notificationHeader = document.getElementById('notificationHeader');
-        
-        if (!notification || !notificationHeader) return;
-        
-        // Show notification after 2 seconds
-        setTimeout(() => {
-            notification.classList.add('show');
-            
-            // Track that notification has been shown
-            localStorage.setItem('hostingNotificationSeen', 'true');
-        }, 2000);
-        
-        // Handle notification header click (expand/collapse)
-        notificationHeader.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const isExpanded = notification.classList.contains('expanded');
-            
-            if (isExpanded) {
-                notification.classList.remove('expanded');
-            } else {
-                notification.classList.add('expanded');
-            }
-            
-            // Track user interaction
-            localStorage.setItem('hostingNotificationInteracted', 'true');
-        });
-        
-        // Handle affiliate button click tracking
-        const affiliateBtn = notification.querySelector('.affiliate-btn');
-        if (affiliateBtn) {
-            affiliateBtn.addEventListener('click', (e) => {
-                // Track affiliate button click
-                localStorage.setItem('hostingNotificationClicked', 'true');
-                
-                // Optional: You can add analytics tracking here
-            });
-        }
-        
-        // Handle copy code functionality
-        const copyCodeElement = notification.querySelector('.copy-code');
-        if (copyCodeElement) {
-            copyCodeElement.addEventListener('click', async (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const codeText = copyCodeElement.getAttribute('data-code');
-                
-                try {
-                    // Use modern clipboard API if available
-                    if (navigator.clipboard && window.isSecureContext) {
-                        await navigator.clipboard.writeText(codeText);
-                    } else {
-                        // Fallback for older browsers
-                        const textArea = document.createElement('textarea');
-                        textArea.value = codeText;
-                        textArea.style.position = 'fixed';
-                        textArea.style.opacity = '0';
-                        textArea.style.left = '-9999px';
-                        document.body.appendChild(textArea);
-                        textArea.focus();
-                        textArea.select();
-                        document.execCommand('copy');
-                        document.body.removeChild(textArea);
-                    }
-                    
-                    // Visual feedback
-                    copyCodeElement.classList.add('copied');
-                    const originalText = copyCodeElement.textContent;
-                    copyCodeElement.textContent = 'COPIED!';
-                    
-                    // Reset after 2 seconds
-                    setTimeout(() => {
-                        copyCodeElement.classList.remove('copied');
-                        copyCodeElement.textContent = originalText;
-                    }, 2000);
-                    
-                    // Track copy action
-                    localStorage.setItem('hostingNotificationCodeCopied', 'true');
-                    
-                } catch (err) {
-                    console.error('Failed to copy code:', err);
-                    
-                    // Fallback visual feedback for copy failure
-                    copyCodeElement.style.background = 'rgba(244, 67, 54, 0.3)';
-                    copyCodeElement.style.borderColor = 'rgba(244, 67, 54, 0.6)';
-                    const originalText = copyCodeElement.textContent;
-                    copyCodeElement.textContent = 'FAILED';
-                    
-                    setTimeout(() => {
-                        copyCodeElement.style.background = '';
-                        copyCodeElement.style.borderColor = '';
-                        copyCodeElement.textContent = originalText;
-                    }, 2000);
-                }
-            });
-        }
-        
-        // Add close functionality (optional - click outside to dismiss)
-        document.addEventListener('click', (e) => {
-            if (notification.classList.contains('show') && 
-                !notification.contains(e.target) && 
-                notification.classList.contains('expanded')) {
-                
-                notification.classList.remove('expanded');
-                
-                // If user clicks outside after expanding, consider it as "dismissed"
-                setTimeout(() => {
-                    if (!notification.classList.contains('expanded')) {
-                        localStorage.setItem('hostingNotificationDismissed', Date.now().toString());
-                    }
-                }, 300);
-            }
-        });
-        
-        // Auto-hide functionality removed for testing
-    };
-    
-    // Initialize notification system
-    initHostingNotification();
-    
-    // Mobile Affiliate Ad Functionality
-    const initMobileAffiliateAd = () => {
-        const mobileAd = document.getElementById('mobileAffiliateAd');
-        if (!mobileAd) return;
-        
-        // Show mobile ad after servers are loaded (add a small delay)
-        setTimeout(() => {
-            mobileAd.style.opacity = '1';
-            mobileAd.style.transform = 'translateY(0)';
-            
-            // Track that mobile ad has been shown
-            localStorage.setItem('mobileAffiliateAdSeen', 'true');
-        }, 3000);
-        
-        // Handle mobile affiliate button click tracking
-        const mobileAffiliateBtn = mobileAd.querySelector('.mobile-cta-btn');
-        if (mobileAffiliateBtn) {
-            mobileAffiliateBtn.addEventListener('click', (e) => {
-                // Track mobile affiliate button click
-                localStorage.setItem('mobileAffiliateAdClicked', 'true');
-                
-                // Optional: You can add analytics tracking here
-            });
-        }
-        
-        // Handle mobile copy code functionality
-        const mobileCopyCodeElement = mobileAd.querySelector('.mobile-copy-code');
-        if (mobileCopyCodeElement) {
-            mobileCopyCodeElement.addEventListener('click', async (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const codeText = mobileCopyCodeElement.getAttribute('data-code');
-                
-                try {
-                    // Use modern clipboard API if available
-                    if (navigator.clipboard && window.isSecureContext) {
-                        await navigator.clipboard.writeText(codeText);
-                    } else {
-                        // Fallback for older browsers
-                        const textArea = document.createElement('textarea');
-                        textArea.value = codeText;
-                        textArea.style.position = 'fixed';
-                        textArea.style.opacity = '0';
-                        textArea.style.left = '-9999px';
-                        document.body.appendChild(textArea);
-                        textArea.focus();
-                        textArea.select();
-                        document.execCommand('copy');
-                        document.body.removeChild(textArea);
-                    }
-                    
-                    // Visual feedback
-                    mobileCopyCodeElement.classList.add('copied');
-                    const originalText = mobileCopyCodeElement.textContent;
-                    mobileCopyCodeElement.textContent = 'COPIED!';
-                    
-                    // Reset after 2 seconds
-                    setTimeout(() => {
-                        mobileCopyCodeElement.classList.remove('copied');
-                        mobileCopyCodeElement.textContent = originalText;
-                    }, 2000);
-                    
-                    // Track copy action
-                    localStorage.setItem('mobileAffiliateCodeCopied', 'true');
-                    
-                } catch (err) {
-                    console.error('Failed to copy mobile code:', err);
-                    
-                    // Fallback visual feedback for copy failure
-                    mobileCopyCodeElement.style.background = 'rgba(244, 67, 54, 0.3)';
-                    mobileCopyCodeElement.style.borderColor = 'rgba(244, 67, 54, 0.6)';
-                    const originalText = mobileCopyCodeElement.textContent;
-                    mobileCopyCodeElement.textContent = 'FAILED';
-                    
-                    setTimeout(() => {
-                        mobileCopyCodeElement.style.background = '';
-                        mobileCopyCodeElement.style.borderColor = '';
-                        mobileCopyCodeElement.textContent = originalText;
-                    }, 2000);
-                }
-            });
-        }
-    };
-    
-    // Initialize mobile affiliate ad system
-    initMobileAffiliateAd();
     
     // Join Guide Popup Functionality
     const initJoinGuidePopup = () => {

@@ -1,0 +1,318 @@
+/* CMS Section Styles */
+.cms-section {
+    position: relative;
+    background-color: var(--dark-bg);
+    padding: 80px 0;
+    overflow: visible;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cms-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('../images/textures/cooltexturebetter.png') center/cover no-repeat;
+    opacity: 0.2;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.cms-section-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px;
+    position: relative;
+    z-index: 1;
+}
+
+.cms-section-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-transform: uppercase;
+    margin: 0 0 40px 0;
+    letter-spacing: 3px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.cms-boxes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    width: 100%;
+}
+
+/* News box always spans full width below */
+.cms-box-news {
+    grid-column: 1 / -1;
+}
+
+.cms-box {
+    position: relative;
+    height: 400px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(20, 20, 20, 0.95);
+    cursor: pointer;
+    transition: all 0.4s ease;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 40px;
+}
+
+.cms-box::before {
+    content: '';
+    position: absolute;
+    top: -10%;
+    left: -10%;
+    width: 120%;
+    height: 120%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: brightness(0.4);
+    transition: filter 0.4s ease;
+    z-index: 0;
+    animation: none;
+}
+
+@keyframes backgroundMove {
+    0% {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(8px, -8px);
+    }
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+.cms-box::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(18, 18, 18, 0.3) 50%,
+        rgba(18, 18, 18, 0.8) 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+}
+
+.cms-box:hover {
+    border-color: rgba(255, 0, 0, 0.5);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(255, 0, 0, 0.3);
+}
+
+.cms-box:hover::before {
+    filter: brightness(0.6);
+    animation: backgroundMove 8s ease-in-out infinite;
+}
+
+.cms-box-content {
+    position: relative;
+    z-index: 2;
+}
+
+.cms-box-title {
+    font-size: 36px;
+    font-weight: 800;
+    color: #ffffff;
+    text-transform: uppercase;
+    margin: 0;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    transition: text-shadow 0.4s ease;
+}
+
+.cms-box:hover .cms-box-title {
+    text-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+}
+
+.cms-box-subtitle {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.cms-box-coming-soon {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 8px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Quick Guides Box */
+.cms-box-quick-guides::before {
+    background-image: url('../images/guides/bg/guides-bg.jpg');
+}
+
+/* News/Events Box */
+.cms-box-news::before {
+    background-image: url('../images/homigrad-render.png');
+}
+
+/* Updates Box */
+.cms-box-updates::before {
+    background-image: url('../images/discord.png');
+}
+
+/* Discord Box */
+.cms-box-discord {
+    grid-column: 1 / -1;
+    height: 200px;
+}
+
+.cms-box-discord::before {
+    background-image: url('../images/zmod-discord.jpg');
+}
+
+.cms-discord-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 100%;
+    background: radial-gradient(circle at left, rgba(88, 101, 242, 0.5) 0%, transparent 70%);
+    z-index: 1;
+    pointer-events: none;
+    animation: discordGlowPulse 3s infinite alternate ease-in-out;
+}
+
+@keyframes discordGlowPulse {
+    0% {
+        opacity: 0.7;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.cms-box-discord:hover {
+    border-color: rgba(88, 101, 242, 0.6);
+    box-shadow: 0 8px 30px rgba(88, 101, 242, 0.3);
+}
+
+.cms-box-discord:hover .cms-box-title {
+    text-shadow: 0 0 20px rgba(88, 101, 242, 0.8);
+}
+
+.cms-box-discord .cms-box-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-shadow: 0 0 10px rgba(88, 101, 242, 0.5);
+}
+
+.cms-discord-icon {
+    width: 36px;
+    height: 36px;
+}
+
+.cms-discord-members {
+    color: #5865F2;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(88, 101, 242, 0.6);
+}
+
+/* Media Queries */
+@media (max-width: 1200px) {
+    .cms-section-container {
+        padding: 0 30px;
+    }
+    
+    .cms-boxes {
+        gap: 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .cms-section {
+        padding: 60px 0;
+    }
+    
+    .cms-section-container {
+        padding: 0 20px;
+    }
+    
+    .cms-section-title {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+        letter-spacing: 2px;
+    }
+    
+    .cms-boxes {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .cms-box-news,
+    .cms-box-discord {
+        grid-column: auto;
+    }
+    
+    .cms-box {
+        height: 300px;
+        padding: 30px;
+    }
+    
+    .cms-box-discord {
+        height: 180px;
+    }
+    
+    .cms-box-title {
+        font-size: 28px;
+        letter-spacing: 1px;
+    }
+    
+    .cms-box-subtitle {
+        font-size: 14px;
+    }
+    
+    .cms-discord-icon {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    .cms-section {
+        padding: 50px 0;
+    }
+    
+    .cms-box {
+        height: 280px;
+        padding: 25px;
+    }
+    
+    .cms-box-title {
+        font-size: 24px;
+    }
+    
+    .cms-box-subtitle {
+        font-size: 13px;
+    }
+    
+    .cms-box-coming-soon {
+        font-size: 12px;
+    }
+}
+
