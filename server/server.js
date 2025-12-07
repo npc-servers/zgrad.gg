@@ -94,18 +94,49 @@ app.use('/cms', async (req, res, next) => {
 // Serve static files from dist folder (for production)
 app.use(express.static(path.join(__dirname, '../dist')));
 
-// Fallback to index.html for SPA routing
+// Handle extensionless URLs and fallback routing
 app.get('*', (req, res, next) => {
   // Skip API routes
   if (req.path.startsWith('/api/')) {
     return next();
   }
   
-  // Try to serve static file first, then fallback to index.html
-  const staticPath = path.join(__dirname, '../dist', req.path);
+  const distPath = path.join(__dirname, '../dist');
+  const requestedPath = req.path;
+  
+  // Try to serve static file first
+  const staticPath = path.join(distPath, requestedPath);
   res.sendFile(staticPath, (err) => {
     if (err) {
-      res.sendFile(path.join(__dirname, '../dist/index.html'));
+      // If the path doesn't have an extension and isn't a directory, try adding .html
+      if (!path.extname(requestedPath)) {
+        const htmlPath = path.join(distPath, requestedPath + '.html');
+        res.sendFile(htmlPath, (htmlErr) => {
+          if (htmlErr) {
+            // Also try as a directory with index.html
+            const indexPath = path.join(distPath, requestedPath, 'index.html');
+            res.sendFile(indexPath, (indexErr) => {
+              if (indexErr) {
+                // Final fallback: serve 404 page or main index
+                const notFoundPath = path.join(distPath, '404.html');
+                res.status(404).sendFile(notFoundPath, (notFoundErr) => {
+                  if (notFoundErr) {
+                    res.status(404).send('Page not found');
+                  }
+                });
+              }
+            });
+          }
+        });
+      } else {
+        // Has extension but file not found - serve 404
+        const notFoundPath = path.join(distPath, '404.html');
+        res.status(404).sendFile(notFoundPath, (notFoundErr) => {
+          if (notFoundErr) {
+            res.status(404).send('Page not found');
+          }
+        });
+      }
     }
   });
 });
