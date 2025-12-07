@@ -243,26 +243,39 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     overflow: hidden;
-    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transform: translateY(0);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                border-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     text-decoration: none;
     color: inherit;
-    animation: fadeInUp 0.6s ease;
+    animation: fadeInUp 0.6s ease forwards;
 }
 
-.news-card:hover {
-    border-color: rgba(255, 71, 87, 0.4);
+/* News/Announcement hover - Red */
+.news-card:hover,
+.news-card[data-category="announcement"]:hover {
+    border-color: rgba(255, 71, 87, 0.5);
     transform: translateY(-4px);
-    box-shadow: 0 10px 40px rgba(255, 71, 87, 0.15);
+    box-shadow: 0 10px 40px rgba(255, 71, 87, 0.2),
+                0 0 20px rgba(255, 71, 87, 0.1);
+}
+
+/* Event hover - Gold */
+.news-card[data-category="event"]:hover {
+    border-color: rgba(255, 183, 77, 0.5);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 40px rgba(255, 183, 77, 0.2),
+                0 0 20px rgba(255, 183, 77, 0.1);
 }
 
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(30px);
     }
     to {
         opacity: 1;
-        transform: translateY(0);
     }
 }
 
@@ -351,13 +364,22 @@
     text-shadow: 
         0 2px 4px rgba(0, 0, 0, 0.5),
         0 0 20px rgba(0, 0, 0, 0.3);
-    transition: text-shadow 0.3s ease;
+    transition: text-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.news-card:hover .news-card-title {
+/* Title hover - Red for announcements */
+.news-card:hover .news-card-title,
+.news-card[data-category="announcement"]:hover .news-card-title {
     text-shadow: 
         0 2px 4px rgba(0, 0, 0, 0.5),
         0 0 20px rgba(255, 71, 87, 0.4);
+}
+
+/* Title hover - Gold for events */
+.news-card[data-category="event"]:hover .news-card-title {
+    text-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(255, 183, 77, 0.4);
 }
 
 /* Category Badge */

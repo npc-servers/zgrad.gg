@@ -384,14 +384,24 @@ function animateNewsCards() {
             if (entry.isIntersecting) {
                 entry.target.style.opacity = '1';
                 entry.target.style.transform = 'translateY(0)';
+                
+                // Clear inline styles after animation completes to allow CSS hover transitions
+                const delay = parseFloat(entry.target.dataset.delay || 0);
+                setTimeout(() => {
+                    entry.target.style.transition = '';
+                    entry.target.style.opacity = '';
+                    entry.target.style.transform = '';
+                }, (delay + 0.6) * 1000);
             }
         });
     }, observerOptions);
     
     cards.forEach((card, index) => {
+        const delay = index * 0.1;
+        card.dataset.delay = delay;
         card.style.opacity = '0';
         card.style.transform = 'translateY(30px)';
-        card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+        card.style.transition = `opacity 0.6s ease ${delay}s, transform 0.6s ease ${delay}s`;
         observer.observe(card);
     });
 }
