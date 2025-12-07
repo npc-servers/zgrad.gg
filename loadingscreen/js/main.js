@@ -414,13 +414,11 @@ function initializeUI() {
     loadingBar = document.getElementById('loadingBar');
     loadingPercentage = document.getElementById('loadingPercentage');
     loadingStatus = document.getElementById('loadingStatus');
-    logoSubtext = document.getElementById('logoSubtext');
     advertTitle = document.querySelector('.advert-title');
     advertSubtext = document.querySelector('.advert-subtext');
     serverListElement = document.getElementById('loadingScreenServerList');
     totalPlayersCountElement = document.getElementById('totalPlayersCount');
     backgroundElement = document.querySelector('.background');
-    
     
     // Start the UI update loop
     updateUI();
@@ -428,8 +426,10 @@ function initializeUI() {
     // Initialize background queue
     initializeBackgroundQueue();
     
+    // Initialize sale banner from config
+    initializeSaleBanner();
+    
     // Start message rotations
-    startLogoSubtextRotation();
     startAdvertRotation();
     startBackgroundRotation();
     
@@ -446,6 +446,47 @@ function initializeUI() {
 var allUpdates = [];
 var currentUpdateIndex = 0;
 var updateCycleInterval = null;
+
+// Sale banner configuration
+var saleConfig = {
+    enabled: true,
+    percentage: "35%",
+    title: "WINTER SALE",
+    description: "Get <strong>35% off</strong> on all ranks until <strong>December 31st!</strong>",
+    linkText: "STORE.ZMOD.GG",
+    linkUrl: "https://store.zmod.gg"
+};
+
+// Track which panel to show next: 'update', 'sale'
+var nextPanelType = 'update';
+
+// Track how many updates have been shown since last sale (show 3 before sale)
+var updatesSinceLastSale = 0;
+var updatesBeforeSale = 3;
+
+/**
+ * Initialize sale banner from config
+ */
+function initializeSaleBanner() {
+    var percentageEl = document.getElementById('salePercentage');
+    var titleEl = document.getElementById('saleTitle');
+    var descriptionEl = document.getElementById('saleDescription');
+    var linkEl = document.getElementById('saleLink');
+    
+    if (percentageEl) {
+        percentageEl.innerHTML = saleConfig.percentage + '<br>OFF';
+    }
+    if (titleEl) {
+        titleEl.textContent = saleConfig.title;
+    }
+    if (descriptionEl) {
+        descriptionEl.innerHTML = saleConfig.description;
+    }
+    if (linkEl) {
+        linkEl.textContent = saleConfig.linkText;
+        linkEl.href = saleConfig.linkUrl;
+    }
+}
 
 function fetchAllUpdates() {
     // Fetch all updates
@@ -604,53 +645,96 @@ function displayUpdate(update, isLatest) {
     }
 }
 
+function hideAllPanels() {
+    var updateContainer = document.getElementById('latestUpdateContainer');
+    var saleContainer = document.getElementById('saleBannerContainer');
+    
+    if (updateContainer) updateContainer.classList.remove('visible');
+    if (saleContainer) saleContainer.classList.remove('visible');
+}
+
+function showSaleBanner() {
+    var saleContainer = document.getElementById('saleBannerContainer');
+    
+    if (!saleContainer || !saleConfig.enabled) {
+        // If sale is disabled, skip to showing update
+        showNextUpdate();
+        return;
+    }
+    
+    // Hide any visible panel
+    hideAllPanels();
+    
+    // Wait for fade out animation, then show sale
+    setTimeout(function() {
+        saleContainer.classList.add('visible');
+        
+        // Reset the counter since we just showed the sale
+        updatesSinceLastSale = 0;
+        
+        // Schedule next cycle - switch to update after 15 seconds
+        nextPanelType = 'update';
+        setTimeout(showNextPanel, 15000);
+    }, 400);
+}
+
+function showNextPanel() {
+    if (nextPanelType === 'sale' && saleConfig.enabled) {
+        showSaleBanner();
+    } else {
+        showNextUpdate();
+    }
+}
+
 function showNextUpdate() {
-    var socialContainer = document.getElementById('socialMediaContainer');
     var updateContainer = document.getElementById('latestUpdateContainer');
     
-    if (!socialContainer || !updateContainer || allUpdates.length === 0) return;
+    if (!updateContainer || allUpdates.length === 0) return;
     
-    // Hide update container
-    updateContainer.classList.remove('visible');
+    // Hide any visible panel
+    hideAllPanels();
     
-    // Wait for hide animation, then show socials
+    // Wait for fade out animation to complete (400ms matches CSS transition)
     setTimeout(function() {
-        socialContainer.classList.remove('condensed');
+        // Move to next update
+        currentUpdateIndex = (currentUpdateIndex + 1) % allUpdates.length;
+        var nextUpdate = allUpdates[currentUpdateIndex];
+        var isLatest = currentUpdateIndex === 0;
         
-        // After 10 seconds, show next update
-        setTimeout(function() {
-            // Move to next update
-            currentUpdateIndex = (currentUpdateIndex + 1) % allUpdates.length;
-            var nextUpdate = allUpdates[currentUpdateIndex];
-            var isLatest = currentUpdateIndex === 0;
-            
-            // Display the update
-            displayUpdate(nextUpdate, isLatest);
-            
-            // Condense social media container
-            socialContainer.classList.add('condensed');
-            
-            // Show update container after a short delay
-            setTimeout(function() {
-                updateContainer.classList.add('visible');
-                
-                // Schedule next cycle
-                setTimeout(showNextUpdate, 15000);
-            }, 500);
-        }, 10000);
-    }, 500);
+        // Display the update content
+        displayUpdate(nextUpdate, isLatest);
+        
+        // Show update container
+        updateContainer.classList.add('visible');
+        
+        // Track updates shown
+        updatesSinceLastSale++;
+        
+        // Only show sale after showing the configured number of updates
+        if (updatesSinceLastSale >= updatesBeforeSale) {
+            nextPanelType = 'sale';
+        } else {
+            nextPanelType = 'update';
+        }
+        
+        setTimeout(showNextPanel, 15000);
+    }, 400);
 }
 
 function showLatestUpdate() {
-    var socialContainer = document.getElementById('socialMediaContainer');
     var updateContainer = document.getElementById('latestUpdateContainer');
     
-    if (!socialContainer || !updateContainer) return;
+    if (!updateContainer) return;
     
     // Fetch all updates first
     fetchAllUpdates().then(function(updates) {
         if (!updates || updates.length === 0) {
             console.log("[LoadingScreen] No updates found to display");
+            // If no updates, start with sale banner if enabled
+            if (saleConfig.enabled) {
+                nextPanelType = 'sale';
+                setTimeout(showSaleBanner, 3000);
+            }
             return;
         }
         
@@ -658,20 +742,17 @@ function showLatestUpdate() {
         allUpdates = updates;
         currentUpdateIndex = 0;
         
-        // Display the first (latest) update
+        // Display the first (latest) update content
         var latestUpdate = allUpdates[0];
         displayUpdate(latestUpdate, true);
         
-        // Condense social media container
-        socialContainer.classList.add('condensed');
+        // Show update container
+        updateContainer.classList.add('visible');
         
-        // Show update container after a short delay to allow condense animation
-        setTimeout(function() {
-            updateContainer.classList.add('visible');
-            
-            // After 15 seconds, start the cycling
-            setTimeout(showNextUpdate, 15000);
-        }, 500);
+        // After 15 seconds of showing update, start cycling
+        // Next panel will be the sale banner
+        nextPanelType = 'sale';
+        setTimeout(showNextPanel, 15000);
     });
 }
 
@@ -788,32 +869,10 @@ function getCurrentStatus() {
 }
 
 /**
- * Start the logo subtext rotation system
+ * Logo subtext rotation disabled - now static
  */
 function startLogoSubtextRotation() {
-    if (!logoSubtext) return;
-    
-    // Set initial random message
-    currentLogoMessageIndex = Math.floor(Math.random() * config.logoSubtextMessages.length);
-    lastLogoMessageIndex = currentLogoMessageIndex;
-    updateLogoSubtextMessage();
-    
-    // Start rotation interval
-    logoSubtextRotationInterval = setInterval(function() {
-        currentLogoMessageIndex = getRandomIndex(config.logoSubtextMessages.length, lastLogoMessageIndex);
-        lastLogoMessageIndex = currentLogoMessageIndex;
-        updateLogoSubtextMessage();
-    }, config.logoSubtextInterval);
-}
-
-/**
- * Update the logo subtext message with no animation
- */
-function updateLogoSubtextMessage() {
-    if (!logoSubtext) return;
-    
-    // Simply change the message directly
-    logoSubtext.innerHTML = config.logoSubtextMessages[currentLogoMessageIndex];
+    // Rotation disabled - logo subtext is now static
 }
 
 /**
