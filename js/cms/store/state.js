@@ -31,6 +31,10 @@ export const currentView = signal('list'); // 'list' | 'editor'
 export const isUploading = signal(false);
 export const activeModal = signal(null); // null | 'image-settings' | 'icon-picker' | etc.
 
+// Editing locks state
+export const activeLocks = signal([]); // Array of active locks from server
+export const currentLock = signal(null); // Lock held by current user for current content
+
 // Generic content form state
 export const contentForm = signal({
     type: CONTENT_TYPES.GUIDES,

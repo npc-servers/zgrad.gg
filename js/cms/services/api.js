@@ -134,6 +134,39 @@ class APIService {
 
         return await response.json();
     }
+
+    // Lock endpoints
+    async getLocks() {
+        return await this.request('/api/locks/status');
+    }
+
+    async acquireLock(contentType, contentId) {
+        return await this.request('/api/locks/acquire', {
+            method: 'POST',
+            body: JSON.stringify({ content_type: contentType, content_id: contentId }),
+        });
+    }
+
+    async releaseLock(contentType, contentId) {
+        return await this.request('/api/locks/release', {
+            method: 'POST',
+            body: JSON.stringify({ content_type: contentType, content_id: contentId }),
+        });
+    }
+
+    async heartbeatLock(contentType, contentId) {
+        return await this.request('/api/locks/heartbeat', {
+            method: 'POST',
+            body: JSON.stringify({ content_type: contentType, content_id: contentId }),
+        });
+    }
+
+    async forceReleaseLock(contentType, contentId) {
+        return await this.request('/api/locks/force-release', {
+            method: 'POST',
+            body: JSON.stringify({ content_type: contentType, content_id: contentId }),
+        });
+    }
 }
 
 export default new APIService();

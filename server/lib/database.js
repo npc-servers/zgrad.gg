@@ -180,6 +180,23 @@ const initSchema = () => {
       token TEXT NOT NULL,
       expires_at INTEGER NOT NULL
     );
+
+    -- Editing locks table for real-time collaboration
+    CREATE TABLE IF NOT EXISTS editing_locks (
+      id TEXT PRIMARY KEY,
+      content_type TEXT NOT NULL,
+      content_id TEXT NOT NULL,
+      user_id TEXT NOT NULL,
+      username TEXT NOT NULL,
+      avatar TEXT,
+      locked_at INTEGER NOT NULL,
+      expires_at INTEGER NOT NULL,
+      UNIQUE(content_type, content_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_editing_locks_content ON editing_locks(content_type, content_id);
+    CREATE INDEX IF NOT EXISTS idx_editing_locks_user ON editing_locks(user_id);
+    CREATE INDEX IF NOT EXISTS idx_editing_locks_expires ON editing_locks(expires_at);
   `);
   console.log('✅ Database schema initialized successfully');
 };

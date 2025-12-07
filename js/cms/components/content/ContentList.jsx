@@ -3,7 +3,7 @@
  * Works with any content type based on configuration
  */
 
-import { activeContentType, activeContentList, isLoadingContent } from '../../store/state.js';
+import { activeContentType, activeContentList, isLoadingContent, activeLocks, currentUser } from '../../store/state.js';
 import { getContentTypeConfig } from '../../config/contentTypes.js';
 import { Button } from '../ui/Button.jsx';
 import { LoadingSpinner } from '../ui/Loading.jsx';
@@ -14,6 +14,16 @@ export function ContentList({ onCreateNew, onEdit, onDelete }) {
     const items = activeContentList.value;
     const isLoading = isLoadingContent.value;
     const config = getContentTypeConfig(contentType);
+    const locks = activeLocks.value;
+    const user = currentUser.value;
+
+    // Helper to find lock for an item
+    const getLockForItem = (itemId) => {
+        return locks.find(lock => 
+            lock.content_type === contentType && 
+            lock.content_id === itemId
+        );
+    };
 
     if (!config) {
         return (
@@ -51,16 +61,23 @@ export function ContentList({ onCreateNew, onEdit, onDelete }) {
                 </div>
             ) : (
                 <div className="cms-content-grid">
-                    {items.map(item => (
-                        <ContentCard
-                            key={item.id}
-                            item={item}
-                            contentType={contentType}
-                            config={config}
-                            onEdit={() => onEdit(item)}
-                            onDelete={() => onDelete(item)}
-                        />
-                    ))}
+                    {items.map(item => {
+                        const lock = getLockForItem(item.id);
+                        const isLockedByOther = lock && user && lock.user_id !== user.id;
+                        
+                        return (
+                            <ContentCard
+                                key={item.id}
+                                item={item}
+                                contentType={contentType}
+                                config={config}
+                                onEdit={() => onEdit(item)}
+                                onDelete={() => onDelete(item)}
+                                lock={lock}
+                                isLockedByOther={isLockedByOther}
+                            />
+                        );
+                    })}
                 </div>
             )}
         </div>

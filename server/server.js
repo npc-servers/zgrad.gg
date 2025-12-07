@@ -19,6 +19,7 @@ import guidesRoutes from './routes/guides.js';
 import newsRoutes from './routes/news.js';
 import updatesRoutes from './routes/updates.js';
 import imagesRoutes from './routes/images.js';
+import locksRoutes from './routes/locks.js';
 
 // Import middleware
 import { addSecurityHeaders } from './lib/security-utils.js';
@@ -66,6 +67,7 @@ app.use('/api/guides', guidesRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/updates', updatesRoutes);
 app.use('/api/images', imagesRoutes);
+app.use('/api/locks', locksRoutes);
 
 // Dynamic guide pages - serve from database
 app.get('/guides/:slug', serveGuide);

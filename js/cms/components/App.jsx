@@ -3,7 +3,7 @@
  * Now supports multiple content types through generic architecture
  */
 
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useState, useRef } from 'preact/hooks';
 import { 
     currentUser, 
     activeContentType,
@@ -17,6 +17,8 @@ import {
     updateContentForm,
     editorInstance,
     switchContentType,
+    activeLocks,
+    currentLock,
 } from '../store/state.js';
 import API from '../services/api.js';
 import ImageService from '../services/image.js';
@@ -32,9 +34,27 @@ import { LoadingSpinner } from './ui/Loading.jsx';
 export function App() {
     const [isUploading, setIsUploading] = useState(false);
     const [confirmModal, setConfirmModal] = useState({ isOpen: false, message: '', onConfirm: null });
+    const heartbeatInterval = useRef(null);
+    const lockPollInterval = useRef(null);
 
     useEffect(() => {
         initializeApp();
+        
+        // Cleanup on unmount
+        return () => {
+            stopHeartbeat();
+            stopLockPolling();
+            releaseCurrentLock();
+        };
+    }, []);
+
+    // Release lock when leaving page
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            releaseCurrentLock();
+        };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
     }, []);
 
     const initializeApp = async () => {
@@ -45,9 +65,91 @@ export function App() {
 
             // Load guides by default
             await loadContentForType(activeContentType.value);
+            
+            // Start polling for locks
+            startLockPolling();
         } catch (error) {
             console.error('Initialization error:', error);
             window.location.href = '/api/auth/login';
+        }
+    };
+
+    // Lock polling functions
+    const startLockPolling = () => {
+        fetchLocks();
+        lockPollInterval.current = setInterval(fetchLocks, 10000); // Poll every 10 seconds
+    };
+
+    const stopLockPolling = () => {
+        if (lockPollInterval.current) {
+            clearInterval(lockPollInterval.current);
+            lockPollInterval.current = null;
+        }
+    };
+
+    const fetchLocks = async () => {
+        try {
+            const data = await API.getLocks();
+            activeLocks.value = data.locks || [];
+        } catch (error) {
+            console.error('Error fetching locks:', error);
+        }
+    };
+
+    // Heartbeat functions
+    const startHeartbeat = (contentType, contentId) => {
+        stopHeartbeat();
+        heartbeatInterval.current = setInterval(async () => {
+            try {
+                await API.heartbeatLock(contentType, contentId);
+            } catch (error) {
+                console.error('Heartbeat failed:', error);
+                showToast('Lost editing lock - someone else may edit this content', 'warning');
+                stopHeartbeat();
+            }
+        }, 30000); // Every 30 seconds
+    };
+
+    const stopHeartbeat = () => {
+        if (heartbeatInterval.current) {
+            clearInterval(heartbeatInterval.current);
+            heartbeatInterval.current = null;
+        }
+    };
+
+    // Lock management functions
+    const acquireLock = async (contentType, contentId) => {
+        try {
+            const result = await API.acquireLock(contentType, contentId);
+            
+            if (result.success) {
+                currentLock.value = result.lock;
+                startHeartbeat(contentType, contentId);
+                return { success: true };
+            } else if (result.locked_by) {
+                return { 
+                    success: false, 
+                    locked_by: result.locked_by 
+                };
+            }
+            
+            return { success: false };
+        } catch (error) {
+            console.error('Error acquiring lock:', error);
+            return { success: false, error: error.message };
+        }
+    };
+
+    const releaseCurrentLock = async () => {
+        const lock = currentLock.value;
+        if (lock) {
+            try {
+                await API.releaseLock(lock.content_type, lock.content_id);
+            } catch (error) {
+                console.error('Error releasing lock:', error);
+            }
+            currentLock.value = null;
+            stopHeartbeat();
         }
     };
 
@@ -59,6 +161,9 @@ export function App() {
             // Store content based on content type
             const contentKey = type === 'guides' ? 'guides' : type;
             setContentForType(type, data[contentKey] || []);
+            
+            // Refresh locks
+            await fetchLocks();
         } catch (error) {
             console.error(`Error loading ${type}:`, error);
             showToast(`Failed to load ${type}`, 'error');
@@ -72,7 +177,10 @@ export function App() {
         await loadContentForType(type);
     };
 
-    const handleCreateNew = () => {
+    const handleCreateNew = async () => {
+        // Release any existing lock first
+        await releaseCurrentLock();
+        
         const type = activeContentType.value;
         resetContentForm(type);
         currentContent.value = null;
@@ -83,6 +191,20 @@ export function App() {
         try {
             const type = activeContentType.value;
             const config = getContentTypeConfig(type);
+            
+            // Try to acquire lock first
+            const lockResult = await acquireLock(type, item.id);
+            
+            if (!lockResult.success) {
+                if (lockResult.locked_by) {
+                    const lockedBy = lockResult.locked_by;
+                    showToast(`This ${config.labelSingular.toLowerCase()} is currently being edited by ${lockedBy.username}`, 'warning', 5000);
+                } else {
+                    showToast('Could not acquire editing lock', 'error');
+                }
+                return;
+            }
+            
             const data = await API.getContent(type, item.id);
             const fullItem = data[config.apiEndpoint.slice(0, -1)] || data.guide || data.news;
 
@@ -109,6 +231,7 @@ export function App() {
         } catch (error) {
             console.error('Error loading content:', error);
             showToast('Failed to load content', 'error');
+            await releaseCurrentLock();
         }
     };
 
@@ -183,6 +306,8 @@ export function App() {
             await loadContentForType(type);
             
             if (data.status === 'published' || !data.id) {
+                // Release lock when leaving editor
+                await releaseCurrentLock();
                 currentView.value = 'list';
             }
         } catch (error) {
@@ -330,7 +455,10 @@ export function App() {
         }
     };
 
-    const handleCancelEdit = () => {
+    const handleCancelEdit = async () => {
+        // Release lock when canceling
+        await releaseCurrentLock();
+        
         currentView.value = 'list';
         resetContentForm();
         currentContent.value = null;

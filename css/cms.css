@@ -570,6 +570,75 @@ body {
     box-shadow: var(--cms-shadow);
 }
 
+/* Lock indicator styles */
+.cms-card-locked {
+    opacity: 0.7;
+    border-color: rgba(255, 100, 100, 0.3);
+}
+
+.cms-card-locked:hover {
+    border-color: rgba(255, 100, 100, 0.4);
+}
+
+.cms-lock-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+}
+
+.cms-guide-card {
+    position: relative;
+}
+
+.cms-lock-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.cms-lock-indicator.locked-by-other .cms-lock-badge {
+    background: linear-gradient(135deg, rgba(255, 80, 80, 0.9), rgba(200, 50, 50, 0.9));
+    color: white;
+}
+
+.cms-lock-indicator.locked-by-you .cms-lock-badge {
+    background: linear-gradient(135deg, rgba(80, 180, 80, 0.9), rgba(50, 150, 50, 0.9));
+    color: white;
+}
+
+.cms-lock-badge svg {
+    width: 14px;
+    height: 14px;
+}
+
+.cms-lock-avatar {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.cms-lock-username {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cms-btn-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cms-btn-disabled:hover {
+    transform: none;
+}
+
 .cms-guide-thumbnail {
     width: 120px;
     height: 80px;

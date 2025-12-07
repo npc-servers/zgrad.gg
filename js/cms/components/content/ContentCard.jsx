@@ -3,7 +3,7 @@
  * Displays a content item card based on content type configuration
  */
 
-export function ContentCard({ item, contentType, config, onEdit, onDelete }) {
+export function ContentCard({ item, contentType, config, onEdit, onDelete, lock, isLockedByOther }) {
     const createdDate = new Date(item.created_at).toLocaleDateString();
     
     // Get thumbnail/image based on content type
@@ -39,7 +39,29 @@ export function ContentCard({ item, contentType, config, onEdit, onDelete }) {
     const description = descriptionField ? item[descriptionField] : '';
 
     return (
-        <div className="cms-guide-card">
+        <div className={`cms-guide-card ${isLockedByOther ? 'cms-card-locked' : ''}`}>
+            {/* Lock indicator */}
+            {lock && (
+                <div className={`cms-lock-indicator ${isLockedByOther ? 'locked-by-other' : 'locked-by-you'}`}>
+                    <div className="cms-lock-badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        {lock.avatar && (
+                            <img 
+                                src={`https://cdn.discordapp.com/avatars/${lock.user_id}/${lock.avatar}.png?size=32`} 
+                                alt={lock.username}
+                                className="cms-lock-avatar"
+                            />
+                        )}
+                        <span className="cms-lock-username">
+                            {isLockedByOther ? lock.username : 'You'}
+                        </span>
+                    </div>
+                </div>
+            )}
+            
             <img src={thumbnailUrl} alt={item.title} className="cms-guide-thumbnail" />
             <div className="cms-guide-info">
                 <div className="cms-guide-header">
@@ -65,14 +87,17 @@ export function ContentCard({ item, contentType, config, onEdit, onDelete }) {
                     </div>
                     <div className="cms-guide-actions">
                         <button 
-                            className="cms-btn cms-btn-secondary cms-guide-btn" 
+                            className={`cms-btn cms-btn-secondary cms-guide-btn ${isLockedByOther ? 'cms-btn-disabled' : ''}`}
                             onClick={onEdit}
+                            disabled={isLockedByOther}
+                            title={isLockedByOther ? `Being edited by ${lock.username}` : 'Edit'}
                         >
-                            Edit
+                            {isLockedByOther ? 'Locked' : 'Edit'}
                         </button>
                         <button 
                             className="cms-btn cms-btn-danger cms-guide-btn" 
                             onClick={onDelete}
+                            disabled={isLockedByOther}
                         >
                             Delete
                         </button>
