@@ -153,7 +153,13 @@ const initSchema = () => {
       visibility TEXT NOT NULL DEFAULT 'public',
       view_count INTEGER NOT NULL DEFAULT 0,
       created_at INTEGER NOT NULL,
-      updated_at INTEGER NOT NULL
+      updated_at INTEGER NOT NULL,
+      -- Loading screen fields
+      show_on_loading_screen INTEGER NOT NULL DEFAULT 0,
+      loading_screen_description TEXT,
+      loading_screen_link_text TEXT,
+      event_start_date INTEGER,
+      event_end_date INTEGER
     );
 
     CREATE INDEX IF NOT EXISTS idx_news_slug ON news(slug);
@@ -180,6 +186,51 @@ const initSchema = () => {
 
 // Initialize schema on module load
 initSchema();
+
+// Run migrations for existing databases
+const runMigrations = () => {
+  console.log('🔄 Running database migrations...');
+  
+  // Check if news table has the new loading screen columns
+  const newsColumns = db.prepare("PRAGMA table_info(news)").all();
+  const columnNames = newsColumns.map(c => c.name);
+  
+  if (!columnNames.includes('show_on_loading_screen')) {
+    console.log('  Adding show_on_loading_screen column to news table...');
+    db.exec('ALTER TABLE news ADD COLUMN show_on_loading_screen INTEGER NOT NULL DEFAULT 0');
+  }
+  
+  if (!columnNames.includes('loading_screen_description')) {
+    console.log('  Adding loading_screen_description column to news table...');
+    db.exec('ALTER TABLE news ADD COLUMN loading_screen_description TEXT');
+  }
+  
+  if (!columnNames.includes('loading_screen_link_text')) {
+    console.log('  Adding loading_screen_link_text column to news table...');
+    db.exec('ALTER TABLE news ADD COLUMN loading_screen_link_text TEXT');
+  }
+  
+  if (!columnNames.includes('event_start_date')) {
+    console.log('  Adding event_start_date column to news table...');
+    db.exec('ALTER TABLE news ADD COLUMN event_start_date INTEGER');
+  }
+  
+  if (!columnNames.includes('event_end_date')) {
+    console.log('  Adding event_end_date column to news table...');
+    db.exec('ALTER TABLE news ADD COLUMN event_end_date INTEGER');
+  }
+  
+  // Create index for loading screen if not exists
+  try {
+    db.exec('CREATE INDEX IF NOT EXISTS idx_news_loading_screen ON news(show_on_loading_screen)');
+  } catch (e) {
+    // Index might already exist
+  }
+  
+  console.log('✅ Migrations complete');
+};
+
+runMigrations();
 
 // Export initialization function for explicit calls
 export const initDatabase = () => {

@@ -89,6 +89,33 @@ export const contentTypeConfig = {
                 options: ['draft', 'published'],
                 default: 'draft'
             },
+            // Loading screen fields
+            show_on_loading_screen: {
+                type: 'checkbox',
+                required: false,
+                label: 'Show on Loading Screen',
+                description: 'Display this news/event on the game loading screen',
+                default: false
+            },
+            loading_screen_description: {
+                type: 'textarea',
+                required: false,
+                label: 'Loading Screen Description',
+                description: 'Short description for the loading screen. Use <strong> for bold, <em> for italic.',
+                showIf: 'show_on_loading_screen'
+            },
+            event_start_date: {
+                type: 'datetime',
+                required: false,
+                label: 'Event Start Date',
+                showIf: { category: 'event' }
+            },
+            event_end_date: {
+                type: 'datetime',
+                required: false,
+                label: 'Event End Date',
+                showIf: { category: 'event' }
+            },
         },
         supportsDrafts: true,
         supportsContributors: false,
@@ -138,6 +165,12 @@ export function getDefaultFormValues(type) {
                     break;
                 case 'select':
                     defaults[key] = field.options[0]?.value || '';
+                    break;
+                case 'checkbox':
+                    defaults[key] = false;
+                    break;
+                case 'datetime':
+                    defaults[key] = null;
                     break;
                 default:
                     defaults[key] = null;

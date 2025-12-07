@@ -34,7 +34,7 @@ router.get('/list', async (req, res) => {
     if (session) {
       // Authenticated users - show all guides including drafts
       results = query.prepare(
-        'SELECT id, slug, title, description, thumbnail, author_id, author_name, author_avatar, status, visibility, view_count, created_at, updated_at FROM guides ORDER BY created_at DESC'
+        'SELECT id, slug, title, description, thumbnail, author_id, author_name, author_avatar, status, visibility, view_count, created_at, updated_at, draft_content FROM guides ORDER BY created_at DESC'
       ).all().results;
     } else {
       // Public users - only show published guides

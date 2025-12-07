@@ -15,6 +15,84 @@ import {
 const router = Router();
 
 /**
+ * GET /api/news/loading-screen - Get active news/events for the loading screen
+ * Returns up to 3 active events + 1 announcement that have show_on_loading_screen enabled
+ */
+router.get('/loading-screen', async (req, res) => {
+  const rateLimit = await checkRateLimit(req, 'news_loading_screen', 120, 60);
+  if (!rateLimit.allowed) {
+    return secureJsonResponse(res, { error: 'Rate limit exceeded' }, 429);
+  }
+
+  try {
+    const now = Date.now();
+    const items = [];
+    
+    // Get up to 3 active events
+    // An event is active if: published, show_on_loading_screen = 1, and either no end_date or end_date is in the future
+    const activeEvents = query.prepare(
+      `SELECT id, slug, title, category, loading_screen_description, event_start_date, event_end_date, created_at 
+       FROM news 
+       WHERE status = 'published' 
+         AND visibility = 'public' 
+         AND show_on_loading_screen = 1 
+         AND category = 'event'
+         AND (event_end_date IS NULL OR event_end_date > ?)
+       ORDER BY created_at DESC 
+       LIMIT 3`
+    ).bind(now).all().results;
+
+    // Get 1 announcement
+    const announcement = query.prepare(
+      `SELECT id, slug, title, category, loading_screen_description, event_start_date, event_end_date, created_at 
+       FROM news 
+       WHERE status = 'published' 
+         AND visibility = 'public' 
+         AND show_on_loading_screen = 1 
+         AND category = 'announcement'
+       ORDER BY created_at DESC 
+       LIMIT 1`
+    ).first();
+
+    // Add announcement first if exists
+    if (announcement) {
+      items.push({
+        id: announcement.id,
+        slug: announcement.slug,
+        title: announcement.title,
+        type: 'announcement',
+        description: announcement.loading_screen_description || '',
+        linkUrl: `zgrad.gg/news/${announcement.slug}`,
+        startDate: null,
+        endDate: null
+      });
+    }
+
+    // Then add events
+    for (const event of activeEvents) {
+      items.push({
+        id: event.id,
+        slug: event.slug,
+        title: event.title,
+        type: 'event',
+        description: event.loading_screen_description || '',
+        linkUrl: `zgrad.gg/news/${event.slug}`,
+        startDate: event.event_start_date,
+        endDate: event.event_end_date
+      });
+    }
+
+    return secureJsonResponse(res, { 
+      active: items.length > 0,
+      items: items
+    });
+  } catch (error) {
+    console.error('Error fetching loading screen news:', error);
+    return secureJsonResponse(res, { error: 'Failed to fetch loading screen news' }, 500);
+  }
+});
+
+/**
  * GET /api/news/list - List all news articles
  */
 router.get('/list', async (req, res) => {
@@ -30,11 +108,11 @@ router.get('/list', async (req, res) => {
     
     if (session) {
       results = query.prepare(
-        'SELECT id, slug, title, cover_image, image_caption, category, author_id, author_name, author_avatar, status, visibility, view_count, created_at, updated_at FROM news ORDER BY created_at DESC'
+        'SELECT id, slug, title, cover_image, image_caption, category, author_id, author_name, author_avatar, status, visibility, view_count, created_at, updated_at, draft_content, show_on_loading_screen, loading_screen_description, loading_screen_link_text, event_start_date, event_end_date FROM news ORDER BY created_at DESC'
       ).all().results;
     } else {
       results = query.prepare(
-        'SELECT id, slug, title, cover_image, image_caption, category, author_id, author_name, author_avatar, status, visibility, view_count, created_at, updated_at FROM news WHERE status = ? AND visibility = ? ORDER BY created_at DESC'
+        'SELECT id, slug, title, cover_image, image_caption, category, author_id, author_name, author_avatar, status, visibility, view_count, created_at, updated_at, show_on_loading_screen, loading_screen_description, loading_screen_link_text, event_start_date, event_end_date FROM news WHERE status = ? AND visibility = ? ORDER BY created_at DESC'
       ).bind('published', 'public').all().results;
     }
 
@@ -63,7 +141,12 @@ router.post('/create', async (req, res) => {
   }
 
   try {
-    const { title, content, cover_image, image_caption, slug, status = 'draft', visibility = 'public', category = 'announcement' } = req.body;
+    const { 
+      title, content, cover_image, image_caption, slug, 
+      status = 'draft', visibility = 'public', category = 'announcement',
+      show_on_loading_screen = false, loading_screen_description = '',
+      event_start_date = null, event_end_date = null
+    } = req.body;
 
     if (!title || !content || !slug) {
       return secureJsonResponse(res, { error: 'Missing required fields: title, content, slug' }, 400);
@@ -82,11 +165,14 @@ router.post('/create', async (req, res) => {
     const now = Date.now();
 
     query.prepare(
-      'INSERT INTO news (id, slug, title, content, cover_image, image_caption, category, author_id, author_name, author_avatar, status, visibility, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+      `INSERT INTO news (id, slug, title, content, cover_image, image_caption, category, author_id, author_name, author_avatar, status, visibility, created_at, updated_at, show_on_loading_screen, loading_screen_description, event_start_date, event_end_date) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     ).bind(
       id, slug, title, content, cover_image || '', image_caption || '', category,
       session.user_id, session.username, session.avatar,
-      status, visibility, now, now
+      status, visibility, now, now,
+      show_on_loading_screen ? 1 : 0, loading_screen_description || '',
+      event_start_date || null, event_end_date || null
     ).run();
 
     return secureJsonResponse(res, {
@@ -138,7 +224,11 @@ router.put('/:id', async (req, res) => {
 
   try {
     const newsId = req.params.id;
-    const { title, content, cover_image, image_caption, slug, status, visibility, category } = req.body;
+    const { 
+      title, content, cover_image, image_caption, slug, status, visibility, category,
+      show_on_loading_screen, loading_screen_description,
+      event_start_date, event_end_date
+    } = req.body;
 
     const existingNews = query.prepare('SELECT * FROM news WHERE id = ?').bind(newsId).first();
     if (!existingNews) {
@@ -160,23 +250,32 @@ router.put('/:id', async (req, res) => {
 
     const now = Date.now();
     const finalVisibility = visibility || existingNews.visibility || 'public';
+    const isSavingDraftForPublished = status === 'draft' && existingNews.status === 'published';
+    const isPublishingDraft = status === 'published' && existingNews.draft_content;
     const isDraftBeingPublished = existingNews.status === 'draft' && status === 'published';
 
     let contentToSave = content || existingNews.content;
     let draftContent = existingNews.draft_content;
+    let finalStatus = status || existingNews.status;
 
-    if (status === 'published' && draftContent) {
-      contentToSave = draftContent;
+    if (isPublishingDraft) {
+      // Publishing with existing draft - use draft content
+      contentToSave = existingNews.draft_content;
       draftContent = null;
-    } else if (status === 'draft' && existingNews.status === 'published') {
+      finalStatus = 'published';
+    } else if (isSavingDraftForPublished) {
+      // Saving draft for already published item - keep status as published
       draftContent = content || existingNews.content;
-      contentToSave = existingNews.content;
+      contentToSave = existingNews.content; // Keep published content unchanged
+      finalStatus = 'published'; // Don't change status!
     }
 
     query.prepare(
       `UPDATE news 
        SET title = ?, content = ?, draft_content = ?, cover_image = ?, image_caption = ?, 
-           slug = ?, status = ?, visibility = ?, category = ?, updated_at = ?
+           slug = ?, status = ?, visibility = ?, category = ?, updated_at = ?,
+           show_on_loading_screen = ?, loading_screen_description = ?,
+           event_start_date = ?, event_end_date = ?
        WHERE id = ?`
     ).bind(
       title || existingNews.title,
@@ -185,19 +284,33 @@ router.put('/:id', async (req, res) => {
       cover_image !== undefined ? cover_image : existingNews.cover_image,
       image_caption !== undefined ? image_caption : existingNews.image_caption,
       finalSlug,
-      status || existingNews.status,
+      finalStatus,
       finalVisibility,
       category || existingNews.category,
       now,
+      show_on_loading_screen !== undefined ? (show_on_loading_screen ? 1 : 0) : existingNews.show_on_loading_screen,
+      loading_screen_description !== undefined ? loading_screen_description : existingNews.loading_screen_description,
+      event_start_date !== undefined ? event_start_date : existingNews.event_start_date,
+      event_end_date !== undefined ? event_end_date : existingNews.event_end_date,
       newsId
     ).run();
 
     const updatedNews = query.prepare('SELECT * FROM news WHERE id = ?').bind(newsId).first();
 
+    let actionMessage = 'News article updated successfully!';
+    if (isSavingDraftForPublished) {
+      actionMessage = 'Draft saved without affecting published article';
+    } else if (isPublishingDraft) {
+      actionMessage = 'Draft published successfully!';
+    } else if (isDraftBeingPublished) {
+      actionMessage = 'News article published successfully!';
+    }
+
     return secureJsonResponse(res, {
       success: true,
       news: updatedNews,
-      action_message: isDraftBeingPublished ? 'News article published successfully!' : 'News article updated successfully!'
+      has_draft: isSavingDraftForPublished,
+      action_message: actionMessage
     });
   } catch (error) {
     console.error('Error updating news:', error);

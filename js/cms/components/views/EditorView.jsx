@@ -104,7 +104,7 @@ export function EditorView({
 
     const handleContentChange = (html) => {
         // Update the content in the form state
-        updateGuideForm('content', html);
+        updateContentForm('content', html);
     };
 
     const handleAddStepCard = () => {

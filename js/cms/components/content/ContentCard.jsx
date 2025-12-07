@@ -8,6 +8,7 @@ export function ContentCard({ item, contentType, config, onEdit, onDelete }) {
     
     // Get thumbnail/image based on content type
     const thumbnailField = config.fields.thumbnail ? 'thumbnail' : 
+                          config.fields.cover_image ? 'cover_image' :
                           config.fields.featured_image ? 'featured_image' : null;
     const thumbnailUrl = thumbnailField ? (item[thumbnailField] || '/images/placeholder.png') : '/images/placeholder.png';
     

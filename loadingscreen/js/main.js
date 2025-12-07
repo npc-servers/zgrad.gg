@@ -429,15 +429,21 @@ function initializeUI() {
     // Initialize sale banner from config
     initializeSaleBanner();
     
+    // Fetch event/news from CMS API, then initialize event banner
+    fetchLoadingScreenNews().then(function() {
+        // Initialize event banner with data from API (or defaults if API failed)
+        initializeEventBanner();
+        
+        // Schedule update display (condense social media and show updates)
+        setTimeout(showLatestUpdate, 3000);
+    });
+    
     // Start message rotations
     startAdvertRotation();
     startBackgroundRotation();
     
     // Initialize server list
     initializeServerList();
-    
-    // Schedule update display (condense social media and show updates)
-    setTimeout(showLatestUpdate, 3000);
 }
 
 /**
@@ -457,12 +463,86 @@ var saleConfig = {
     linkUrl: "https://store.zmod.gg"
 };
 
-// Track which panel to show next: 'update', 'sale'
-var nextPanelType = 'update';
+// Event/News items from CMS API (up to 3 events + 1 news)
+var loadingScreenItems = [];
+var currentLoadingScreenItemIndex = 0;
 
-// Track how many updates have been shown since last sale (show 3 before sale)
-var updatesSinceLastSale = 0;
-var updatesBeforeSale = 3;
+// Current event config (populated from loadingScreenItems)
+var eventConfig = {
+    enabled: false,
+    type: 'news',
+    title: "",
+    description: "",
+    endDate: null,
+    linkUrl: ""
+};
+
+// Track which panel to show next: 'update', 'sale', 'event'
+var nextPanelType = 'event'; // Start with event/news first
+
+// Track how many updates have been shown since last special panel
+var updatesSinceLastSpecial = 0;
+var updatesBeforeSpecial = 5;
+
+/**
+ * Fetch event/news from CMS API for loading screen
+ */
+function fetchLoadingScreenNews() {
+    return fetch("/api/news/loading-screen")
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+            if (data.active && data.items && data.items.length > 0) {
+                // Store all items
+                loadingScreenItems = data.items;
+                currentLoadingScreenItemIndex = 0;
+                
+                // Set the first item as current
+                setCurrentLoadingScreenItem(0);
+                
+                console.log("[LoadingScreen] Loaded " + loadingScreenItems.length + " event/news items from CMS");
+                return true;
+            } else {
+                loadingScreenItems = [];
+                eventConfig.enabled = false;
+                console.log("[LoadingScreen] No active event/news from CMS");
+                return false;
+            }
+        })
+        .catch(function(error) {
+            console.error("[LoadingScreen] Error fetching event/news:", error);
+            loadingScreenItems = [];
+            eventConfig.enabled = false;
+            return false;
+        });
+}
+
+/**
+ * Set the current loading screen item from the items array
+ */
+function setCurrentLoadingScreenItem(index) {
+    if (loadingScreenItems.length === 0) {
+        eventConfig.enabled = false;
+        return;
+    }
+    
+    var item = loadingScreenItems[index];
+    eventConfig.enabled = true;
+    eventConfig.type = item.type === 'event' ? 'event' : 'news';
+    eventConfig.title = item.title || '';
+    eventConfig.description = item.description || '';
+    eventConfig.linkUrl = item.linkUrl || '';
+    eventConfig.endDate = item.endDate ? new Date(item.endDate) : null;
+}
+
+/**
+ * Move to the next loading screen item
+ */
+function nextLoadingScreenItem() {
+    if (loadingScreenItems.length === 0) return;
+    
+    currentLoadingScreenItemIndex = (currentLoadingScreenItemIndex + 1) % loadingScreenItems.length;
+    setCurrentLoadingScreenItem(currentLoadingScreenItemIndex);
+}
 
 /**
  * Initialize sale banner from config
@@ -485,6 +565,48 @@ function initializeSaleBanner() {
     if (linkEl) {
         linkEl.textContent = saleConfig.linkText;
         linkEl.href = saleConfig.linkUrl;
+    }
+}
+
+/**
+ * Initialize event banner from config
+ */
+function initializeEventBanner() {
+    // Set up countdown timer to update every minute
+    setInterval(updateEventCountdown, 60000);
+    
+    // Initialize content if we have items
+    if (loadingScreenItems.length > 0) {
+        updateEventBannerContent();
+    }
+}
+
+/**
+ * Update event countdown timer
+ */
+function updateEventCountdown() {
+    var countdownEl = document.getElementById('eventCountdown');
+    if (!countdownEl || !eventConfig.endDate) return;
+    
+    var now = new Date();
+    var endDate = eventConfig.endDate;
+    var diff = endDate - now;
+    
+    if (diff <= 0) {
+        countdownEl.textContent = 'Event ended';
+        return;
+    }
+    
+    var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    
+    if (days > 0) {
+        countdownEl.textContent = 'Event ends in ' + days + ' day' + (days !== 1 ? 's' : '') + ', ' + hours + ' hour' + (hours !== 1 ? 's' : '');
+    } else if (hours > 0) {
+        countdownEl.textContent = 'Event ends in ' + hours + ' hour' + (hours !== 1 ? 's' : '');
+    } else {
+        var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        countdownEl.textContent = 'Event ends in ' + minutes + ' minute' + (minutes !== 1 ? 's' : '');
     }
 }
 
@@ -648,17 +770,23 @@ function displayUpdate(update, isLatest) {
 function hideAllPanels() {
     var updateContainer = document.getElementById('latestUpdateContainer');
     var saleContainer = document.getElementById('saleBannerContainer');
+    var eventContainer = document.getElementById('eventBannerContainer');
     
     if (updateContainer) updateContainer.classList.remove('visible');
     if (saleContainer) saleContainer.classList.remove('visible');
+    if (eventContainer) eventContainer.classList.remove('visible');
 }
 
 function showSaleBanner() {
     var saleContainer = document.getElementById('saleBannerContainer');
     
     if (!saleContainer || !saleConfig.enabled) {
-        // If sale is disabled, skip to showing update
-        showNextUpdate();
+        // If sale is disabled, try event or skip to update
+        if (eventConfig.enabled) {
+            showEventBanner();
+        } else {
+            showNextUpdate();
+        }
         return;
     }
     
@@ -669,8 +797,9 @@ function showSaleBanner() {
     setTimeout(function() {
         saleContainer.classList.add('visible');
         
-        // Reset the counter since we just showed the sale
-        updatesSinceLastSale = 0;
+        // Reset the counter and mark that we showed sale
+        updatesSinceLastSpecial = 0;
+        lastSpecialPanel = 'sale';
         
         // Schedule next cycle - switch to update after 15 seconds
         nextPanelType = 'update';
@@ -678,9 +807,115 @@ function showSaleBanner() {
     }, 400);
 }
 
+function showEventBanner() {
+    var eventContainer = document.getElementById('eventBannerContainer');
+    
+    if (!eventContainer || !eventConfig.enabled || loadingScreenItems.length === 0) {
+        // If no events/news, try sale or skip to update
+        if (saleConfig.enabled) {
+            showSaleBanner();
+        } else {
+            showNextUpdate();
+        }
+        return;
+    }
+    
+    // Hide any visible panel
+    hideAllPanels();
+    
+    // Wait for fade out animation, then show event
+    setTimeout(function() {
+        // Update banner content with current item
+        updateEventBannerContent();
+        
+        eventContainer.classList.add('visible');
+        
+        // Move to next item for next time
+        nextLoadingScreenItem();
+        
+        // Decide what to show next
+        // After cycling through all items, show sale (if enabled), then updates
+        if (currentLoadingScreenItemIndex === 0) {
+            // We've cycled through all items
+            if (saleConfig.enabled) {
+                nextPanelType = 'sale';
+            } else {
+                nextPanelType = 'update';
+                updatesSinceLastSpecial = 0;
+            }
+        } else {
+            // More items to show
+            nextPanelType = 'event';
+        }
+        
+        setTimeout(showNextPanel, 15000);
+    }, 400);
+}
+
+/**
+ * Update event banner DOM content with current eventConfig
+ */
+function updateEventBannerContent() {
+    var titleEl = document.getElementById('eventTitle');
+    var descriptionEl = document.getElementById('eventDescription');
+    var countdownEl = document.getElementById('eventCountdown');
+    var linkEl = document.getElementById('eventLink');
+    var calendarIcon = document.getElementById('eventIconCalendar');
+    var megaphoneIcon = document.getElementById('eventIconMegaphone');
+    
+    if (titleEl) {
+        titleEl.textContent = eventConfig.title;
+    }
+    if (descriptionEl) {
+        descriptionEl.innerHTML = eventConfig.description;
+    }
+    
+    // Show correct icon based on type
+    if (eventConfig.type === 'event') {
+        if (calendarIcon) calendarIcon.classList.add('visible');
+        if (megaphoneIcon) megaphoneIcon.classList.remove('visible');
+    } else {
+        if (megaphoneIcon) megaphoneIcon.classList.add('visible');
+        if (calendarIcon) calendarIcon.classList.remove('visible');
+    }
+    
+    if (countdownEl) {
+        if (eventConfig.type === 'event' && eventConfig.endDate) {
+            countdownEl.style.display = '';
+            updateEventCountdown();
+        } else {
+            countdownEl.style.display = 'none';
+        }
+    }
+    
+    if (linkEl) {
+        if (eventConfig.linkUrl) {
+            linkEl.textContent = eventConfig.linkUrl;
+            linkEl.href = 'https://' + eventConfig.linkUrl;
+            linkEl.classList.add('visible');
+        } else {
+            linkEl.classList.remove('visible');
+        }
+    }
+}
+
 function showNextPanel() {
-    if (nextPanelType === 'sale' && saleConfig.enabled) {
-        showSaleBanner();
+    if (nextPanelType === 'event') {
+        if (loadingScreenItems.length > 0) {
+            showEventBanner();
+        } else if (saleConfig.enabled) {
+            showSaleBanner();
+        } else {
+            showNextUpdate();
+        }
+    } else if (nextPanelType === 'sale') {
+        if (saleConfig.enabled) {
+            showSaleBanner();
+        } else if (loadingScreenItems.length > 0) {
+            showEventBanner();
+        } else {
+            showNextUpdate();
+        }
     } else {
         showNextUpdate();
     }
@@ -708,10 +943,12 @@ function showNextUpdate() {
         updateContainer.classList.add('visible');
         
         // Track updates shown
-        updatesSinceLastSale++;
+        updatesSinceLastSpecial++;
         
-        // Only show sale after showing the configured number of updates
-        if (updatesSinceLastSale >= updatesBeforeSale) {
+        // After configured number of updates, go back to events/news
+        if (updatesSinceLastSpecial >= updatesBeforeSpecial && loadingScreenItems.length > 0) {
+            nextPanelType = 'event';
+        } else if (updatesSinceLastSpecial >= updatesBeforeSpecial && saleConfig.enabled) {
             nextPanelType = 'sale';
         } else {
             nextPanelType = 'update';
@@ -730,29 +967,29 @@ function showLatestUpdate() {
     fetchAllUpdates().then(function(updates) {
         if (!updates || updates.length === 0) {
             console.log("[LoadingScreen] No updates found to display");
-            // If no updates, start with sale banner if enabled
-            if (saleConfig.enabled) {
-                nextPanelType = 'sale';
-                setTimeout(showSaleBanner, 3000);
-            }
-            return;
+        } else {
+            // Store all updates
+            allUpdates = updates;
+            currentUpdateIndex = -1; // Start at -1 so first showNextUpdate goes to index 0
+            
+            // Display the first (latest) update content but don't show yet
+            var latestUpdate = allUpdates[0];
+            displayUpdate(latestUpdate, true);
         }
         
-        // Store all updates
-        allUpdates = updates;
-        currentUpdateIndex = 0;
-        
-        // Display the first (latest) update content
-        var latestUpdate = allUpdates[0];
-        displayUpdate(latestUpdate, true);
-        
-        // Show update container
-        updateContainer.classList.add('visible');
-        
-        // After 15 seconds of showing update, start cycling
-        // Next panel will be the sale banner
-        nextPanelType = 'sale';
-        setTimeout(showNextPanel, 15000);
+        // Always start with event/news if available, then sale, then updates
+        if (loadingScreenItems.length > 0) {
+            showEventBanner();
+        } else if (saleConfig.enabled) {
+            showSaleBanner();
+        } else if (allUpdates.length > 0) {
+            // Show update container directly
+            currentUpdateIndex = 0;
+            updateContainer.classList.add('visible');
+            updatesSinceLastSpecial = 1;
+            nextPanelType = 'update';
+            setTimeout(showNextPanel, 15000);
+        }
     });
 }
 

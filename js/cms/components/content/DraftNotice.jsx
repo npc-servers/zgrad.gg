@@ -1,6 +1,6 @@
 /**
  * Draft Notice Component
- * Shows when editing a published guide with draft changes
+ * Shows when editing published content with draft changes
  */
 
 export function DraftNotice({ guide, onDiscardDraft }) {
@@ -18,7 +18,7 @@ export function DraftNotice({ guide, onDiscardDraft }) {
             <div>
                 <strong>You're editing draft changes</strong>
                 <p style={{ margin: '4px 0 0 0', fontSize: '0.9rem', opacity: 0.9 }}>
-                    This guide is published, but you have unpublished draft changes. Publishing will update the live guide.
+                    This content is published, but you have unpublished draft changes. Publishing will update the live version.
                 </p>
             </div>
             <button 

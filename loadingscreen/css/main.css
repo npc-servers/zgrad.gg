@@ -1909,3 +1909,220 @@ body, html {
         font-size: 0.75rem;
     }
 }
+
+/* Event/News Banner Container */
+/* Event/News Banner - Similar layout to sale banner */
+.event-banner-container {
+    position: absolute;
+    top: 0;
+    left: -20px;
+    /* GPU-accelerated smooth transitions */
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+    transform-origin: top left;
+    transition: 
+        opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, opacity;
+    pointer-events: none;
+}
+
+.event-banner-container.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.event-banner-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+}
+
+.event-icon-wrapper {
+    width: 120px;
+    height: 120px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.event-icon {
+    width: 80px;
+    height: 80px;
+    color: #ffffff;
+    transform: rotate(-8deg);
+    filter: drop-shadow(0 0 5px rgba(255, 0, 0, 0.8))
+            drop-shadow(0 0 10px rgba(255, 0, 0, 0.6))
+            drop-shadow(0 0 15px rgba(255, 0, 0, 0.4))
+            drop-shadow(0 0 20px rgba(255, 0, 0, 0.2));
+    display: none;
+}
+
+.event-icon.visible {
+    display: block;
+}
+
+.event-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-left: 8px;
+}
+
+.event-countdown {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.event-title {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0;
+    line-height: 1.1;
+    text-shadow: 
+        0 0 5px rgba(255, 0, 0, 0.8),
+        0 0 10px rgba(255, 0, 0, 0.6),
+        0 0 15px rgba(255, 0, 0, 0.4),
+        0 0 20px rgba(255, 0, 0, 0.2),
+        2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.event-description {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.4;
+    margin: 0;
+    width: 450px;
+}
+
+.event-description strong {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.event-link {
+    display: none;
+    font-family: 'Oxanium', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #ff3333;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 51, 51, 0.1);
+    border: 1px solid rgba(255, 51, 51, 0.4);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    width: fit-content;
+}
+
+.event-link.visible {
+    display: inline-block;
+}
+
+.event-link:hover {
+    background: rgba(255, 51, 51, 0.2);
+    border-color: rgba(255, 51, 51, 0.6);
+    color: #ff5555;
+}
+
+/* Event Banner Responsive - 2K */
+@media (min-width: 1920px) and (min-height: 1080px) {
+    .event-icon-wrapper {
+        width: 140px;
+        height: 140px;
+    }
+    
+    .event-icon {
+        width: 95px;
+        height: 95px;
+    }
+    
+    .event-countdown {
+        font-size: 0.95rem;
+    }
+    
+    .event-title {
+        font-size: 2.4rem;
+    }
+    
+    .event-description {
+        font-size: 1.1rem;
+        width: 500px;
+    }
+}
+
+/* Event Banner Responsive - 1440p */
+@media (min-width: 2560px) and (min-height: 1440px) {
+    .event-icon-wrapper {
+        width: 160px;
+        height: 160px;
+    }
+    
+    .event-icon {
+        width: 110px;
+        height: 110px;
+    }
+    
+    .event-countdown {
+        font-size: 1.05rem;
+    }
+    
+    .event-title {
+        font-size: 2.8rem;
+    }
+    
+    .event-description {
+        font-size: 1.25rem;
+        width: 550px;
+    }
+}
+
+/* Event Banner Responsive - Mobile */
+@media (max-width: 768px) {
+    .event-banner-container {
+        top: -10px;
+        left: -10px;
+    }
+    
+    .event-icon-wrapper {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .event-icon {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .event-countdown {
+        font-size: 0.7rem;
+    }
+    
+    .event-title {
+        font-size: 1.4rem;
+        letter-spacing: 1px;
+    }
+    
+    .event-description {
+        font-size: 0.85rem;
+        width: auto;
+        max-width: 280px;
+    }
+}

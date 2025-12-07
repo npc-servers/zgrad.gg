@@ -726,6 +726,127 @@ body {
     font-family: 'Oxanium', sans-serif;
 }
 
+.cms-hint {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--cms-text-tertiary);
+    margin-top: 6px;
+}
+
+/* Checkbox styling */
+.cms-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 12px 16px;
+    background: var(--cms-bg-darker);
+    border: 1px solid var(--cms-border);
+    border-radius: var(--cms-radius);
+    transition: all 0.2s;
+}
+
+.cms-checkbox-label:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.cms-checkbox {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--cms-success);
+    cursor: pointer;
+}
+
+.cms-checkbox-text {
+    font-weight: 500;
+    color: var(--cms-text);
+}
+
+/* Datetime input styling */
+input[type="datetime-local"].cms-input {
+    color-scheme: dark;
+}
+
+/* Textarea with formatting toolbar */
+.cms-textarea-with-formatting {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.cms-formatting-toolbar {
+    display: flex;
+    gap: 4px;
+    padding: 8px;
+    background: var(--cms-bg-darker);
+    border: 1px solid var(--cms-border);
+    border-bottom: none;
+    border-radius: var(--cms-radius) var(--cms-radius) 0 0;
+}
+
+.cms-format-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cms-bg);
+    border: 1px solid var(--cms-border);
+    border-radius: 4px;
+    color: var(--cms-text);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.cms-format-btn:hover {
+    background: var(--cms-bg-lighter);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.cms-textarea-with-formatting .cms-textarea {
+    border-radius: 0 0 var(--cms-radius) var(--cms-radius);
+    margin-top: 0;
+}
+
+/* Richtext input (contenteditable) */
+.cms-richtext-input {
+    width: 100%;
+    min-height: 80px;
+    padding: 12px 16px;
+    background: var(--cms-bg-darker);
+    border: 1px solid var(--cms-border);
+    border-top: none;
+    border-radius: 0 0 var(--cms-radius) var(--cms-radius);
+    color: var(--cms-text);
+    font-size: 0.95rem;
+    font-family: 'Oxanium', sans-serif;
+    line-height: 1.5;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.cms-richtext-input:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.cms-richtext-input:empty::before {
+    content: attr(data-placeholder);
+    color: var(--cms-text-muted);
+    pointer-events: none;
+}
+
+.cms-richtext-input strong,
+.cms-richtext-input b {
+    font-weight: 700;
+}
+
+.cms-richtext-input em,
+.cms-richtext-input i {
+    font-style: italic;
+}
+
 .cms-input,
 .cms-textarea {
     width: 100%;
