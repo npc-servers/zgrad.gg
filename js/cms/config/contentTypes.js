@@ -89,7 +89,14 @@ export const contentTypeConfig = {
                 options: ['draft', 'published'],
                 default: 'draft'
             },
-            // Loading screen fields
+            // Description field (also used by loading screen)
+            loading_screen_description: {
+                type: 'richtext',
+                required: false,
+                label: 'Description',
+                description: 'Short description for previews and loading screen.',
+            },
+            // Loading screen toggle
             show_on_loading_screen: {
                 type: 'checkbox',
                 required: false,
@@ -97,18 +104,17 @@ export const contentTypeConfig = {
                 description: 'Display this news/event on the game loading screen',
                 default: false
             },
-            loading_screen_description: {
-                type: 'textarea',
-                required: false,
-                label: 'Loading Screen Description',
-                description: 'Short description for the loading screen. Use <strong> for bold, <em> for italic.',
-                showIf: 'show_on_loading_screen'
-            },
             event_start_date: {
                 type: 'datetime',
                 required: false,
                 label: 'Event Start Date',
-                showIf: { category: 'event' }
+                showIf: { category: 'event' },
+                usePublicationDateOption: true,
+                publicationDateField: 'use_publication_date_for_start'
+            },
+            use_publication_date_for_start: {
+                type: 'hidden',
+                default: false
             },
             event_end_date: {
                 type: 'datetime',
@@ -171,6 +177,9 @@ export function getDefaultFormValues(type) {
                     break;
                 case 'datetime':
                     defaults[key] = null;
+                    break;
+                case 'hidden':
+                    defaults[key] = field.default !== undefined ? field.default : null;
                     break;
                 default:
                     defaults[key] = null;

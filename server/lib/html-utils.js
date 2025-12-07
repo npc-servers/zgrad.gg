@@ -50,6 +50,115 @@ export function replaceTitle(html, title) {
 }
 
 /**
+ * Format category label for display
+ */
+function formatCategory(category) {
+  const categories = {
+    'announcement': 'Announcement',
+    'event': 'Event'
+  };
+  return categories[category] || 'News';
+}
+
+/**
+ * Inject news data into HTML template
+ */
+export function injectNewsData(templateHTML, news) {
+  let html = templateHTML;
+  
+  // Update document metadata
+  html = replaceTitle(html, `${news.title} - ZGRAD News`);
+  html = replaceMetaTag(html, 'description', news.loading_screen_description || news.title);
+  html = replaceMetaTag(html, 'author', news.author_name);
+  
+  // Update canonical and URLs
+  html = html.replace(
+    /<link rel="canonical" href=".*?">/,
+    `<link rel="canonical" href="https://zgrad.gg/news/${escapeHtml(news.slug)}">`
+  );
+  
+  // Update Open Graph meta tags
+  html = replaceMetaTag(html, 'og:title', `${news.title} - ZGRAD`, true);
+  html = replaceMetaTag(html, 'og:description', news.loading_screen_description || news.title, true);
+  html = replaceMetaTag(html, 'og:url', `https://zgrad.gg/news/${news.slug}`, true);
+  
+  // Update Twitter Card meta tags
+  html = replaceMetaTag(html, 'twitter:title', `${news.title} - ZGRAD`);
+  html = replaceMetaTag(html, 'twitter:description', news.loading_screen_description || news.title);
+  
+  // Update cover image
+  if (news.cover_image) {
+    html = replaceMetaTag(html, 'og:image', news.cover_image, true);
+    html = replaceMetaTag(html, 'twitter:image', news.cover_image);
+    
+    // Update the cover image src
+    html = html.replace(
+      /<img src="[^"]*" alt="Cover image" class="news-article-cover-img">/,
+      `<img src="${escapeHtml(news.cover_image)}" alt="${escapeHtml(news.title)}" class="news-article-cover-img">`
+    );
+  } else {
+    // Hide cover image section if no image
+    html = html.replace(
+      /<figure class="news-article-cover">[\s\S]*?<\/figure>/,
+      ''
+    );
+  }
+  
+  // Update cover image caption if provided
+  if (news.image_caption) {
+    html = html.replace(
+      /<figcaption class="news-article-cover-caption"><\/figcaption>/,
+      `<figcaption class="news-article-cover-caption">${escapeHtml(news.image_caption)}</figcaption>`
+    );
+  }
+  
+  // Update category badge
+  const categoryClass = `category-${news.category || 'announcement'}`;
+  const categoryLabel = formatCategory(news.category);
+  html = html.replace(
+    /<span class="news-article-category[^"]*">.*?<\/span>/,
+    `<span class="news-article-category ${categoryClass}">${categoryLabel}</span>`
+  );
+  
+  // Update title
+  const titleUpper = news.title.toUpperCase();
+  html = html.replace(
+    /<h1 class="news-article-title" data-text=".*?">.*?<\/h1>/,
+    `<h1 class="news-article-title" data-text="${escapeHtml(titleUpper)}">${escapeHtml(titleUpper)}</h1>`
+  );
+  
+  // Update author info
+  let authorAvatarUrl = '/images/logos/zgrad-logopiece-z.png';
+  if (news.author_avatar && news.author_id) {
+    authorAvatarUrl = `https://cdn.discordapp.com/avatars/${news.author_id}/${news.author_avatar}.png`;
+  }
+  
+  html = html.replace(
+    /<img src="[^"]*" alt="Author" class="news-article-author-avatar">/,
+    `<img src="${escapeHtml(authorAvatarUrl)}" alt="${escapeHtml(news.author_name || 'ZGRAD')}" class="news-article-author-avatar">`
+  );
+  
+  html = html.replace(
+    /<span class="news-article-author-name">.*?<\/span>/,
+    `<span class="news-article-author-name">${escapeHtml(news.author_name || 'ZGRAD')}</span>`
+  );
+  
+  // Update date
+  html = html.replace(
+    /<span class="news-article-date">.*?<\/span>/,
+    `<span class="news-article-date">${formatDate(news.created_at)}</span>`
+  );
+  
+  // Inject the actual news content
+  html = html.replace(
+    /<div class="news-article-content">[^]*?<\/div>/,
+    `<div class="news-article-content">${news.content}</div>`
+  );
+  
+  return html;
+}
+
+/**
  * Inject guide data into HTML template
  */
 export function injectGuideData(templateHTML, guide) {

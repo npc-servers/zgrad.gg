@@ -95,11 +95,18 @@ export function EditorView({
         let content = editor ? editor.getHTML() : '';
         content = formatStepCardsHTML(content);
 
-        onSave({
+        const saveData = {
             ...form,
             status,
             content,
-        });
+        };
+
+        // Handle "use publication date" option for event start date
+        if (status === 'published' && form.use_publication_date_for_start && !form.event_start_date) {
+            saveData.event_start_date = Date.now();
+        }
+
+        onSave(saveData);
     };
 
     const handleContentChange = (html) => {

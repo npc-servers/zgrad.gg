@@ -25,6 +25,7 @@ import locksRoutes from './routes/locks.js';
 import { addSecurityHeaders } from './lib/security-utils.js';
 import { validateSession } from './middleware/auth.js';
 import { serveGuide } from './routes/guides-page.js';
+import { serveNews } from './routes/news-page.js';
 import { serveImage } from './routes/images-serve.js';
 import { startDiscordBot, stopDiscordBot } from './lib/discord-bot.js';
 
@@ -71,6 +72,9 @@ app.use('/api/locks', locksRoutes);
 
 // Dynamic guide pages - serve from database
 app.get('/guides/:slug', serveGuide);
+
+// Dynamic news pages - serve from database
+app.get('/news/:slug', serveNews);
 
 // Serve uploaded images
 app.get('/images/guides/:filename', serveImage);

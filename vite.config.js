@@ -88,6 +88,9 @@ export default defineConfig({
         cmsLogin: resolve(__dirname, 'cms/login.html'),
         // Updates page
         updates: resolve(__dirname, 'updates/index.html'),
+        // News pages
+        newsIndex: resolve(__dirname, 'news/index.html'),
+        newsTemplate: resolve(__dirname, 'news/template.html'),
         // Loading screen
         loadingscreen: resolve(__dirname, 'loadingscreen/index.html'),
         // 404 page

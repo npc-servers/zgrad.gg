@@ -7,6 +7,7 @@ import { contentForm, updateContentForm } from '../../store/state.js';
 import { getContentTypeConfig } from '../../config/contentTypes.js';
 import { Input, Textarea, Select } from '../ui/Input.jsx';
 import { generateSlug } from '../../utils/helpers.js';
+import { MiniRichTextEditor } from '../editor/MiniRichTextEditor.jsx';
 
 export function ContentForm({ contentType, onImageUpload }) {
     const form = contentForm.value;
@@ -76,7 +77,7 @@ export function ContentForm({ contentType, onImageUpload }) {
                         key={fieldKey}
                         label={fieldConfig.label}
                         value={value || ''}
-                        onChange={(val) => updateContentForm(fieldKey, val)}
+                        onChange={(val) => updateContentForm(fieldKey, generateSlug(val))}
                         placeholder="url-slug"
                         required={fieldConfig.required}
                         hint="(URL-friendly version, auto-generated from title)"
@@ -206,15 +207,43 @@ export function ContentForm({ contentType, onImageUpload }) {
                 );
 
             case 'datetime':
+                const usePublicationDate = fieldConfig.usePublicationDateOption && 
+                    fieldConfig.publicationDateField && 
+                    form[fieldConfig.publicationDateField];
+                
                 return (
                     <div key={fieldKey} className="cms-form-group">
                         <label className="cms-label">{fieldConfig.label}</label>
-                        <input
-                            type="datetime-local"
-                            className="cms-input"
-                            value={formatDateTimeForInput(value)}
-                            onChange={(e) => updateContentForm(fieldKey, parseDateTimeFromInput(e.target.value))}
-                        />
+                        {fieldConfig.usePublicationDateOption && fieldConfig.publicationDateField && (
+                            <label className="cms-checkbox-label cms-checkbox-inline">
+                                <input
+                                    type="checkbox"
+                                    checked={!!form[fieldConfig.publicationDateField]}
+                                    onChange={(e) => {
+                                        updateContentForm(fieldConfig.publicationDateField, e.target.checked);
+                                        if (e.target.checked) {
+                                            // Clear the manual date when using publication date
+                                            updateContentForm(fieldKey, null);
+                                        }
+                                    }}
+                                    className="cms-checkbox"
+                                />
+                                <span className="cms-checkbox-text">Use publication date/time</span>
+                            </label>
+                        )}
+                        {!usePublicationDate && (
+                            <input
+                                type="datetime-local"
+                                className="cms-input"
+                                value={formatDateTimeForInput(value)}
+                                onChange={(e) => updateContentForm(fieldKey, parseDateTimeFromInput(e.target.value))}
+                            />
+                        )}
+                        {usePublicationDate && (
+                            <div className="cms-publication-date-notice">
+                                Start date will be set automatically when published
+                            </div>
+                        )}
                         {fieldConfig.description && (
                             <span className="cms-hint">{fieldConfig.description}</span>
                         )}
@@ -257,6 +286,22 @@ export function ContentForm({ contentType, onImageUpload }) {
                     </div>
                 );
 
+            case 'richtext':
+                // Mini rich text editor for secondary richtext fields (not main content)
+                return (
+                    <div key={fieldKey} className="cms-form-group">
+                        <label className="cms-label">{fieldConfig.label}</label>
+                        <MiniRichTextEditor
+                            content={value || ''}
+                            onChange={(html) => updateContentForm(fieldKey, html)}
+                            placeholder={`Enter ${fieldConfig.label.toLowerCase()}...`}
+                        />
+                        {fieldConfig.description && (
+                            <span className="cms-hint">{fieldConfig.description}</span>
+                        )}
+                    </div>
+                );
+
             default:
                 return null;
         }
@@ -265,8 +310,8 @@ export function ContentForm({ contentType, onImageUpload }) {
     return (
         <div className="cms-form-section">
             {Object.entries(config.fields).map(([fieldKey, fieldConfig]) => {
-                // Skip richtext content field (handled separately in editor)
-                if (fieldConfig.type === 'richtext') return null;
+                // Skip main content richtext field (handled separately by main editor)
+                if (fieldKey === 'content' && fieldConfig.type === 'richtext') return null;
                 // Skip status field (handled by action buttons)
                 if (fieldConfig.type === 'status') return null;
                 // Check conditional visibility
