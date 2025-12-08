@@ -1787,3 +1787,399 @@ z-index: 2;
         animation-delay: 0.3s;
     }
 }
+
+/* ===== LANDING CAROUSEL STYLES ===== */
+
+/* Hidden state for default content during carousel */
+.logo-container.carousel-hidden,
+.join-button-container.carousel-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.logo-container:not(.carousel-hidden),
+.join-button-container:not(.carousel-hidden) {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+/* Carousel overlay container - hard left aligned */
+.landing-carousel-overlay {
+    position: absolute;
+    top: 45%;
+    left: 5%;
+    transform: translateY(-50%);
+    z-index: 20;
+    width: 60%;
+    max-width: 800px;
+    text-align: left;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease-out;
+}
+
+.landing-carousel-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Carousel content wrapper */
+.carousel-content-wrapper {
+    position: relative;
+    min-height: 300px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+/* Individual carousel content panels */
+.carousel-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-30px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.carousel-content.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+}
+
+/* Carousel badge - simple white text */
+.carousel-badge {
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 4px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 15px;
+    text-transform: uppercase;
+}
+
+/* Event countdown - inline */
+.carousel-event-countdown {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.countdown-label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.countdown-time {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #ff9b4d;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 1px;
+}
+
+/* Carousel title - massive with red glow */
+.carousel-title {
+    font-size: 5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    line-height: 1;
+    text-shadow: 
+        0 0 10px rgba(255, 0, 0, 0.4),
+        0 0 20px rgba(255, 0, 0, 0.2),
+        0 4px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Carousel description - supports formatting */
+.carousel-description {
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.6;
+    max-width: 600px;
+}
+
+.carousel-description strong,
+.carousel-description b {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.carousel-description em,
+.carousel-description i {
+    font-style: italic;
+}
+
+/* Carousel link button - very bottom left of landing section */
+.landing-section > .carousel-link {
+    position: absolute;
+    bottom: 80px;
+    left: 5%;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 16px 40px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.3s ease, opacity 0.5s ease;
+    text-decoration: none;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 30;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.landing-section > .carousel-link.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.landing-section > .carousel-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.landing-section > .carousel-link svg {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+}
+
+.landing-section > .carousel-link:hover svg {
+    transform: translateX(5px);
+}
+
+/* Sale percentage - huge */
+.carousel-sale-percentage {
+    font-size: 7rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 15px;
+    line-height: 1;
+    text-shadow: 
+        0 0 10px rgba(255, 0, 0, 0.4),
+        0 0 20px rgba(255, 0, 0, 0.2),
+        0 4px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* News spacing */
+.carousel-news .carousel-badge {
+    margin-bottom: 25px;
+}
+
+/* Full-width progress bar at bottom with padding */
+.carousel-progress-bar {
+    position: absolute;
+    bottom: 30px;
+    left: 5%;
+    width: 90%;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.05);
+    z-index: 25;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    border-radius: 2px;
+}
+
+.carousel-progress-bar.visible {
+    opacity: 1;
+}
+
+.carousel-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 2px;
+    transition: width 0.1s linear;
+}
+
+@keyframes progressFill {
+    from {
+        width: 0%;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+/* Responsive carousel styles */
+@media (max-width: 1400px) {
+    .carousel-title {
+        font-size: 4rem;
+    }
+    
+    .carousel-sale-percentage {
+        font-size: 6rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .landing-carousel-overlay {
+        width: 65%;
+        left: 4%;
+    }
+    
+    .carousel-title {
+        font-size: 3.5rem;
+    }
+    
+    .carousel-sale-percentage {
+        font-size: 5rem;
+    }
+    
+    .countdown-time {
+        font-size: 1.6rem;
+    }
+    
+    .carousel-progress-bar {
+        left: 4%;
+        width: 92%;
+    }
+}
+
+@media (max-width: 992px) {
+    .landing-carousel-overlay {
+        width: 70%;
+        left: 4%;
+    }
+    
+    .carousel-title {
+        font-size: 3rem;
+    }
+    
+    .carousel-sale-percentage {
+        font-size: 4rem;
+    }
+    
+    .countdown-time {
+        font-size: 1.5rem;
+    }
+    
+    .carousel-description {
+        font-size: 1.1rem;
+    }
+    
+    .landing-section > .carousel-link {
+        bottom: 70px;
+        left: 4%;
+    }
+}
+
+@media (max-width: 768px) {
+    .landing-carousel-overlay {
+        width: 90%;
+        left: 5%;
+        transform: translateY(-50%);
+    }
+    
+    .carousel-content-wrapper {
+        min-height: 280px;
+    }
+    
+    .carousel-title {
+        font-size: 2.5rem;
+    }
+    
+    .carousel-description {
+        font-size: 1rem;
+    }
+    
+    .carousel-sale-percentage {
+        font-size: 3.5rem;
+    }
+    
+    .countdown-time {
+        font-size: 1.4rem;
+    }
+    
+    .landing-section > .carousel-link {
+        padding: 14px 30px;
+        font-size: 1rem;
+        bottom: 60px;
+        left: 5%;
+    }
+    
+    .carousel-progress-bar {
+        bottom: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .landing-carousel-overlay {
+        width: 90%;
+        left: 5%;
+    }
+    
+    .carousel-content-wrapper {
+        min-height: 260px;
+    }
+    
+    .carousel-badge {
+        font-size: 1rem;
+        letter-spacing: 3px;
+    }
+    
+    .carousel-title {
+        font-size: 2rem;
+    }
+    
+    .carousel-description {
+        font-size: 0.95rem;
+    }
+    
+    .carousel-sale-percentage {
+        font-size: 3rem;
+    }
+    
+    .countdown-time {
+        font-size: 1.3rem;
+    }
+    
+    .landing-section > .carousel-link {
+        padding: 12px 25px;
+        font-size: 0.9rem;
+        bottom: 50px;
+    }
+    
+    .carousel-progress-bar {
+        bottom: 15px;
+    }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    .carousel-content,
+    .logo-container.carousel-hidden,
+    .join-button-container.carousel-hidden,
+    .landing-carousel-overlay,
+    .carousel-progress-fill {
+        transition: none;
+        animation: none;
+    }
+}

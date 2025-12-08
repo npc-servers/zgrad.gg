@@ -30,6 +30,7 @@ import '../js/main.js';
 // Import page-specific modules (will auto-execute when loaded)
 import '../js/navbar.js';
 import '../js/landing-section.js';
+import '../js/landing-carousel.js';
 import '../js/homigrad-section.js';
 import '../js/help-section.js';
 import '../js/webstore-section.js';
