@@ -131,6 +131,92 @@
     color: #ffb74d;
 }
 
+/* Event Countdown Timer */
+.news-article-event-countdown {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    font-family: 'Oxanium', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: rgba(255, 183, 77, 0.15);
+    border: 1px solid rgba(255, 183, 77, 0.4);
+    border-radius: 6px;
+    color: #ffb74d;
+    margin-bottom: 20px;
+    animation: countdown-pulse 2s ease-in-out infinite;
+}
+
+.news-article-event-countdown svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.news-article-event-countdown .countdown-text {
+    white-space: nowrap;
+}
+
+@keyframes countdown-pulse {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(255, 183, 77, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(255, 183, 77, 0.5);
+    }
+}
+
+/* Event Ended State */
+.news-article-event-ended {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    font-family: 'Oxanium', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    border-radius: 6px;
+    color: #ef4444;
+    margin-bottom: 20px;
+}
+
+.news-article-event-ended svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* Event Start Date */
+.news-article-event-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    font-family: 'Oxanium', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: rgba(96, 165, 250, 0.15);
+    border: 1px solid rgba(96, 165, 250, 0.4);
+    border-radius: 6px;
+    color: #60a5fa;
+    margin-bottom: 20px;
+}
+
+.news-article-event-date svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
 /* Title */
 .news-article-title {
     font-size: 3.5rem;
@@ -511,6 +597,21 @@
         flex-direction: column;
         align-items: flex-start;
     }
+
+    .news-article-event-countdown,
+    .news-article-event-ended,
+    .news-article-event-date {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        gap: 8px;
+    }
+
+    .news-article-event-countdown svg,
+    .news-article-event-ended svg,
+    .news-article-event-date svg {
+        width: 18px;
+        height: 18px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -561,6 +662,22 @@
     .news-article-content h1 { font-size: 1.4rem; }
     .news-article-content h2 { font-size: 1.25rem; }
     .news-article-content h3 { font-size: 1.1rem; }
+
+    .news-article-event-countdown,
+    .news-article-event-ended,
+    .news-article-event-date {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        gap: 6px;
+        margin-bottom: 16px;
+    }
+
+    .news-article-event-countdown svg,
+    .news-article-event-ended svg,
+    .news-article-event-date svg {
+        width: 16px;
+        height: 16px;
+    }
 }
 
 /* ========================================
@@ -589,6 +706,21 @@
     .news-article-content {
         font-size: clamp(1.1rem, 1.2vw, 1.2rem);
     }
+
+    .news-article-event-countdown,
+    .news-article-event-ended,
+    .news-article-event-date {
+        padding: 12px 24px;
+        font-size: 1.1rem;
+        gap: 12px;
+    }
+
+    .news-article-event-countdown svg,
+    .news-article-event-ended svg,
+    .news-article-event-date svg {
+        width: 22px;
+        height: 22px;
+    }
 }
 
 @media (min-width: 2560px) and (min-height: 1440px) {
@@ -612,5 +744,20 @@
 
     .news-article-content {
         font-size: clamp(1.3rem, 1.4vw, 1.4rem);
+    }
+
+    .news-article-event-countdown,
+    .news-article-event-ended,
+    .news-article-event-date {
+        padding: 14px 28px;
+        font-size: 1.25rem;
+        gap: 14px;
+    }
+
+    .news-article-event-countdown svg,
+    .news-article-event-ended svg,
+    .news-article-event-date svg {
+        width: 26px;
+        height: 26px;
     }
 }
