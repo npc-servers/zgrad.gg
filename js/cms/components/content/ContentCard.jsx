@@ -6,10 +6,13 @@
 export function ContentCard({ item, contentType, config, onEdit, onDelete, lock, isLockedByOther }) {
     const createdDate = new Date(item.created_at).toLocaleDateString();
     
-    // Get thumbnail/image based on content type
-    const thumbnailField = config.fields.thumbnail ? 'thumbnail' : 
+    // Check if this is a sales content type (no thumbnails/slugs)
+    const isSales = contentType === 'sales';
+    
+    // Get thumbnail/image based on content type (skip for sales)
+    const thumbnailField = !isSales ? (config.fields.thumbnail ? 'thumbnail' : 
                           config.fields.cover_image ? 'cover_image' :
-                          config.fields.featured_image ? 'featured_image' : null;
+                          config.fields.featured_image ? 'featured_image' : null) : null;
     const thumbnailUrl = thumbnailField ? (item[thumbnailField] || '/images/placeholder.png') : '/images/placeholder.png';
     
     const viewCount = item.view_count || 0;
@@ -23,6 +26,12 @@ export function ContentCard({ item, contentType, config, onEdit, onDelete, lock,
         statusClass = 'has-draft';
     }
 
+    // For sales, use enabled status instead of draft/published
+    if (isSales) {
+        statusBadge = item.enabled ? 'enabled' : 'disabled';
+        statusClass = item.enabled ? 'published' : 'draft';
+    }
+
     // Visibility badge
     const visibilityBadge = item.visibility === 'unlisted' ? (
         <span className="cms-guide-status unlisted">unlisted</span>
@@ -33,10 +42,12 @@ export function ContentCard({ item, contentType, config, onEdit, onDelete, lock,
         <span className="cms-guide-status category">{item.category}</span>
     ) : null;
 
-    // Description/excerpt field
+    // Description/excerpt field (for sales, show percentage instead)
     const descriptionField = config.fields.description ? 'description' : 
                             config.fields.excerpt ? 'excerpt' : null;
-    const description = descriptionField ? item[descriptionField] : '';
+    const description = isSales 
+        ? `${item.percentage} off - ${item.link_text}` 
+        : (descriptionField ? item[descriptionField] : '');
 
     return (
         <div className={`cms-guide-card ${isLockedByOther ? 'cms-card-locked' : ''}`}>
@@ -62,7 +73,7 @@ export function ContentCard({ item, contentType, config, onEdit, onDelete, lock,
                 </div>
             )}
             
-            <img src={thumbnailUrl} alt={item.title} className="cms-guide-thumbnail" />
+            {!isSales && <img src={thumbnailUrl} alt={item.title} className="cms-guide-thumbnail" />}
             <div className="cms-guide-info">
                 <div className="cms-guide-header">
                     <h3 className="cms-guide-title">{item.title}</h3>
@@ -70,20 +81,23 @@ export function ContentCard({ item, contentType, config, onEdit, onDelete, lock,
                         <span className={`cms-guide-status ${statusClass}`}>{statusBadge}</span>
                         {visibilityBadge}
                         {categoryBadge}
-                        <span className="cms-guide-views">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                            {viewCount.toLocaleString()}
-                        </span>
+                        {!isSales && (
+                            <span className="cms-guide-views">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                {viewCount.toLocaleString()}
+                            </span>
+                        )}
                     </div>
                 </div>
                 {description && <p className="cms-guide-description">{description}</p>}
                 <div className="cms-guide-footer">
                     <div className="cms-guide-meta">
                         <span>Created: {createdDate}</span>
-                        <span>Slug: {item.slug}</span>
+                        {!isSales && item.slug && <span>Slug: {item.slug}</span>}
+                        {isSales && <span>Link: {item.link_url}</span>}
                     </div>
                     <div className="cms-guide-actions">
                         <button 

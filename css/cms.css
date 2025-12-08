@@ -2476,3 +2476,45 @@ input[type="datetime-local"].cms-input {
     background: rgba(52, 152, 219, 0.2);
     color: #3498db;
 }
+
+/* Admin Badge for sidebar */
+.admin-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, rgba(255, 0, 0, 0.3), rgba(200, 50, 50, 0.4));
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    margin-left: auto;
+}
+
+.cms-sidebar-btn.admin-only:hover .admin-badge {
+    background: linear-gradient(135deg, rgba(255, 0, 0, 0.4), rgba(200, 50, 50, 0.5));
+    border-color: rgba(255, 0, 0, 0.5);
+}
+
+/* Sale toggle status indicator */
+.cms-sale-toggle-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.cms-sale-toggle-status.enabled {
+    background: rgba(46, 204, 113, 0.15);
+    color: #2ecc71;
+    border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.cms-sale-toggle-status.disabled {
+    background: rgba(255, 100, 100, 0.15);
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 100, 100, 0.3);
+}

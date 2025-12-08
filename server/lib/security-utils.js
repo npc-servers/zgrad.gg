@@ -291,6 +291,54 @@ export async function verifyDiscordRoles(userId) {
   }
 }
 
+/**
+ * Verify user has admin Discord roles using the bot token
+ * Admin roles are defined in DISCORD_ADMIN_ROLES environment variable
+ */
+export async function verifyAdminRole(userId) {
+  try {
+    const botToken = process.env.DISCORD_BOT_TOKEN;
+    const guildId = process.env.DISCORD_GUILD_ID;
+    const adminRolesStr = process.env.DISCORD_ADMIN_ROLES;
+
+    if (!botToken || !guildId) {
+      console.warn('Admin verification skipped: Missing configuration');
+      return { isAdmin: false, error: 'missing_config' };
+    }
+
+    // If no admin roles are configured, no one is an admin
+    if (!adminRolesStr) {
+      return { isAdmin: false, error: 'no_admin_roles_configured' };
+    }
+
+    const response = await fetch(
+      `https://discord.com/api/v10/guilds/${guildId}/members/${userId}`,
+      {
+        headers: {
+          'Authorization': `Bot ${botToken}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        return { isAdmin: false, error: 'not_in_guild' };
+      }
+      console.error('Discord API error:', response.status);
+      return { isAdmin: false, error: 'api_error' };
+    }
+
+    const memberData = await response.json();
+    const adminRoles = adminRolesStr.split(',').map(r => r.trim());
+    const isAdmin = memberData.roles.some(role => adminRoles.includes(role));
+
+    return { isAdmin, userRoles: memberData.roles };
+  } catch (error) {
+    console.error('Error verifying admin roles:', error);
+    return { isAdmin: false, error: 'verification_failed' };
+  }
+}
+
 // Run cleanup every hour
 setInterval(cleanupExpiredSessions, 3600000);
 

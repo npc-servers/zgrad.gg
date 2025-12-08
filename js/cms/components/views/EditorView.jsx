@@ -87,9 +87,19 @@ export function EditorView({
     }, [editor]);
 
     const handleSave = (status) => {
-        if (!form.title || !form.slug) {
-            alert('Please fill in all required fields (Title and Slug)');
-            return;
+        // For sales, check different required fields (no slug needed)
+        const isSales = contentType === 'sales';
+        
+        if (isSales) {
+            if (!form.title || !form.percentage || !form.link_url) {
+                alert('Please fill in all required fields (Title, Percentage, and Link URL)');
+                return;
+            }
+        } else {
+            if (!form.title || !form.slug) {
+                alert('Please fill in all required fields (Title and Slug)');
+                return;
+            }
         }
 
         let content = editor ? editor.getHTML() : '';
@@ -97,9 +107,16 @@ export function EditorView({
 
         const saveData = {
             ...form,
-            status,
             content,
         };
+
+        // For sales, use 'enabled' instead of 'status'
+        if (isSales) {
+            saveData.enabled = status === 'published';
+            delete saveData.status;
+        } else {
+            saveData.status = status;
+        }
 
         // Handle "use publication date" option for event start date
         if (status === 'published' && form.use_publication_date_for_start && !form.event_start_date) {
@@ -163,8 +180,25 @@ export function EditorView({
         setIconPickerOpen(false);
     };
 
+    // Check if this is a sales content type
+    const isSales = contentType === 'sales';
+
     // Determine button text based on item state
     const getButtonText = () => {
+        // For sales, use enable/disable terminology
+        if (isSales) {
+            if (!item || !item.id) {
+                return {
+                    publish: 'Create & Enable',
+                    draft: 'Create Disabled'
+                };
+            }
+            return {
+                publish: item.enabled ? 'Save & Keep Enabled' : 'Save & Enable',
+                draft: item.enabled ? 'Save & Disable' : 'Save Disabled'
+            };
+        }
+
         if (!item || !item.id) {
             return {
                 publish: 'Publish',
@@ -209,87 +243,90 @@ export function EditorView({
                 </div>
             </div>
 
-            <DraftNotice guide={item} onDiscardDraft={onDiscardDraft} />
+            {!isSales && <DraftNotice guide={item} onDiscardDraft={onDiscardDraft} />}
 
-            <GuideMetadata guide={item} />
+            {!isSales && <GuideMetadata guide={item} />}
 
             <div className="cms-editor-container">
                 <ContentForm contentType={contentType} onImageUpload={onImageUpload} />
 
-                <div className="cms-form-section">
-                    <label className="cms-label">Content</label>
-                    <EditorToolbar editor={editor} onAddLink={handleOpenLinkModal} />
-                    
-                    {/* Custom Editor Elements */}
-                    <div className="cms-toolbar-group" style={{ marginTop: '12px', marginBottom: '12px', display: 'flex', gap: '4px', width: 'fit-content' }}>
-                        <button
-                            type="button"
-                            className="cms-editor-btn cms-btn-indigo"
-                            onClick={onInsertImage}
-                            title="Insert Image"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                <polyline points="21 15 16 10 5 21"></polyline>
-                            </svg>
-                            Insert Image
-                        </button>
+                {/* Content editor - skip for sales which uses richtext description field */}
+                {!isSales && (
+                    <div className="cms-form-section">
+                        <label className="cms-label">Content</label>
+                        <EditorToolbar editor={editor} onAddLink={handleOpenLinkModal} />
                         
-                        <button
-                            type="button"
-                            className="cms-editor-btn cms-btn-pink"
-                            onClick={() => setIconPickerOpen(true)}
-                            title="Insert Icon"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                            </svg>
-                            Insert Icon
-                        </button>
-                        
-                        {editorFeatures.stepCards && (
+                        {/* Custom Editor Elements */}
+                        <div className="cms-toolbar-group" style={{ marginTop: '12px', marginBottom: '12px', display: 'flex', gap: '4px', width: 'fit-content' }}>
                             <button
                                 type="button"
-                                className="cms-editor-btn cms-btn-purple"
-                                onClick={handleAddStepCard}
-                                title="Add Step Card"
+                                className="cms-editor-btn cms-btn-indigo"
+                                onClick={onInsertImage}
+                                title="Insert Image"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="9" y1="9" x2="15" y2="9"></line>
-                                    <line x1="9" y1="15" x2="15" y2="15"></line>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
                                 </svg>
-                                Add Step Card
+                                Insert Image
                             </button>
-                        )}
-                        
-                        {editorFeatures.infoBoxes && (
+                            
                             <button
                                 type="button"
-                                className="cms-editor-btn cms-btn-teal"
-                                onClick={handleAddInfoBox}
-                                title="Add Info Box"
+                                className="cms-editor-btn cms-btn-pink"
+                                onClick={() => setIconPickerOpen(true)}
+                                title="Insert Icon"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                     <circle cx="12" cy="12" r="10"></circle>
-                                    <line x1="12" y1="16" x2="12" y2="12"></line>
-                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                    <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                                    <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                    <line x1="15" y1="9" x2="15.01" y2="9"></line>
                                 </svg>
-                                Add Info Box
+                                Insert Icon
                             </button>
-                        )}
-                        
-                    </div>
+                            
+                            {editorFeatures.stepCards && (
+                                <button
+                                    type="button"
+                                    className="cms-editor-btn cms-btn-purple"
+                                    onClick={handleAddStepCard}
+                                    title="Add Step Card"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="9" y1="9" x2="15" y2="9"></line>
+                                        <line x1="9" y1="15" x2="15" y2="15"></line>
+                                    </svg>
+                                    Add Step Card
+                                </button>
+                            )}
+                            
+                            {editorFeatures.infoBoxes && (
+                                <button
+                                    type="button"
+                                    className="cms-editor-btn cms-btn-teal"
+                                    onClick={handleAddInfoBox}
+                                    title="Add Info Box"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                    </svg>
+                                    Add Info Box
+                                </button>
+                            )}
+                            
+                        </div>
 
-                    <TipTapEditor 
-                        content={form.content || ''}
-                        onChange={handleContentChange}
-                    />
-                </div>
+                        <TipTapEditor 
+                            content={form.content || ''}
+                            onChange={handleContentChange}
+                        />
+                    </div>
+                )}
             </div>
             
             {/* Link Modal */}

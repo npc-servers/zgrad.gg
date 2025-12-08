@@ -2,13 +2,22 @@
  * CMS Sidebar Component
  */
 
-import { activeContentType, currentView } from '../../store/state.js';
+import { activeContentType, currentView, isAdmin } from '../../store/state.js';
 import { getAvailableContentTypes } from '../../config/contentTypes.js';
 
 export function Sidebar({ onViewChange, onContentTypeChange }) {
     const view = currentView.value;
     const activeType = activeContentType.value;
-    const contentTypes = getAvailableContentTypes();
+    const userIsAdmin = isAdmin.value;
+    
+    // Filter content types based on admin status
+    const contentTypes = getAvailableContentTypes().filter(type => {
+        // If the content type requires admin, only show to admins
+        if (type.requiresAdmin && !userIsAdmin) {
+            return false;
+        }
+        return true;
+    });
 
     return (
         <aside className="cms-sidebar">
@@ -17,11 +26,15 @@ export function Sidebar({ onViewChange, onContentTypeChange }) {
                 {contentTypes.map(type => (
                     <button
                         key={type.id}
-                        className={`cms-sidebar-btn ${activeType === type.id && view === 'list' ? 'active' : ''}`}
+                        className={`cms-sidebar-btn ${activeType === type.id && view === 'list' ? 'active' : ''} ${type.requiresAdmin ? 'admin-only' : ''}`}
                         onClick={() => onContentTypeChange(type.id)}
+                        title={type.requiresAdmin ? 'Admin Only' : ''}
                     >
                         <span className="cms-nav-icon">{type.icon}</span>
                         <span>{type.label}</span>
+                        {type.requiresAdmin && (
+                            <span className="admin-badge">Admin</span>
+                        )}
                     </button>
                 ))}
             </div>

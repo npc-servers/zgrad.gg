@@ -197,6 +197,26 @@ const initSchema = () => {
     CREATE INDEX IF NOT EXISTS idx_editing_locks_content ON editing_locks(content_type, content_id);
     CREATE INDEX IF NOT EXISTS idx_editing_locks_user ON editing_locks(user_id);
     CREATE INDEX IF NOT EXISTS idx_editing_locks_expires ON editing_locks(expires_at);
+
+    -- Sales table for loading screen promotions (admin only)
+    CREATE TABLE IF NOT EXISTS sales (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      percentage TEXT NOT NULL,
+      description TEXT NOT NULL,
+      link_text TEXT NOT NULL,
+      link_url TEXT NOT NULL,
+      enabled INTEGER NOT NULL DEFAULT 0,
+      start_date INTEGER,
+      end_date INTEGER,
+      author_id TEXT NOT NULL,
+      author_name TEXT NOT NULL,
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_sales_enabled ON sales(enabled);
+    CREATE INDEX IF NOT EXISTS idx_sales_dates ON sales(start_date, end_date);
   `);
   console.log('✅ Database schema initialized successfully');
 };
@@ -242,6 +262,31 @@ const runMigrations = () => {
     db.exec('CREATE INDEX IF NOT EXISTS idx_news_loading_screen ON news(show_on_loading_screen)');
   } catch (e) {
     // Index might already exist
+  }
+  
+  // Check if sales table exists, create if not
+  const salesTableExists = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='sales'").get();
+  if (!salesTableExists) {
+    console.log('  Creating sales table...');
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS sales (
+        id TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        percentage TEXT NOT NULL,
+        description TEXT NOT NULL,
+        link_text TEXT NOT NULL,
+        link_url TEXT NOT NULL,
+        enabled INTEGER NOT NULL DEFAULT 0,
+        start_date INTEGER,
+        end_date INTEGER,
+        author_id TEXT NOT NULL,
+        author_name TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+      );
+      CREATE INDEX IF NOT EXISTS idx_sales_enabled ON sales(enabled);
+      CREATE INDEX IF NOT EXISTS idx_sales_dates ON sales(start_date, end_date);
+    `);
   }
   
   console.log('✅ Migrations complete');

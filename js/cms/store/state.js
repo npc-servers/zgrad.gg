@@ -8,6 +8,7 @@ import { CONTENT_TYPES, getDefaultFormValues } from '../config/contentTypes.js';
 // Auth state
 export const currentUser = signal(null);
 export const isAuthenticated = computed(() => currentUser.value !== null);
+export const isAdmin = computed(() => currentUser.value?.isAdmin || false);
 
 // Content type state
 export const activeContentType = signal(CONTENT_TYPES.GUIDES); // Current content type being managed
@@ -16,6 +17,7 @@ export const activeContentType = signal(CONTENT_TYPES.GUIDES); // Current conten
 export const contentByType = signal({
     [CONTENT_TYPES.GUIDES]: [],
     [CONTENT_TYPES.NEWS]: [],
+    [CONTENT_TYPES.SALES]: [],
 });
 
 export const currentContent = signal(null); // Currently selected/editing content item

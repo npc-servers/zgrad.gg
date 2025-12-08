@@ -3,7 +3,7 @@
  */
 
 import { query } from '../lib/database.js';
-import { verifyDiscordRoles, verifyOrigin } from '../lib/security-utils.js';
+import { verifyDiscordRoles, verifyAdminRole, verifyOrigin } from '../lib/security-utils.js';
 
 /**
  * Validate session from cookies
@@ -99,6 +99,28 @@ export function requireAuthWithCsrf(verifyRoles = true) {
 export function optionalAuth(verifyRoles = false) {
   return async (req, res, next) => {
     req.session = await validateSession(req, verifyRoles);
+    next();
+  };
+}
+
+/**
+ * Express middleware to require admin authentication
+ */
+export function requireAdmin() {
+  return async (req, res, next) => {
+    const session = await validateSessionWithCsrf(req, true);
+    if (!session) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // Verify admin role
+    const adminCheck = await verifyAdminRole(session.user_id);
+    if (!adminCheck.isAdmin) {
+      return res.status(403).json({ error: 'Forbidden: Admin access required' });
+    }
+
+    req.session = session;
+    req.isAdmin = true;
     next();
   };
 }

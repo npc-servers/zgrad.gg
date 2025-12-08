@@ -167,6 +167,33 @@ class APIService {
             body: JSON.stringify({ content_type: contentType, content_id: contentId }),
         });
     }
+
+    // Sales-specific methods (admin only)
+    async listSales() {
+        return await this.listContent('sales');
+    }
+
+    async getSale(id) {
+        return await this.getContent('sales', id);
+    }
+
+    async createSale(data) {
+        return await this.createContent('sales', data);
+    }
+
+    async updateSale(id, data) {
+        return await this.updateContent('sales', id, data);
+    }
+
+    async deleteSale(id) {
+        return await this.deleteContent('sales', id);
+    }
+
+    async toggleSale(id) {
+        return await this.request(`/api/sales/${id}/toggle`, {
+            method: 'POST',
+        });
+    }
 }
 
 export default new APIService();

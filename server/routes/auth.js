@@ -10,7 +10,8 @@ import {
   secureJsonResponse, 
   errorResponse, 
   checkRateLimit, 
-  encryptData 
+  encryptData,
+  verifyAdminRole
 } from '../lib/security-utils.js';
 
 const router = Router();
@@ -182,11 +183,15 @@ router.get('/me', async (req, res) => {
     return secureJsonResponse(res, { error: 'Not authenticated' }, 401);
   }
 
+  // Check if user is admin
+  const adminCheck = await verifyAdminRole(session.user_id);
+
   return secureJsonResponse(res, {
     id: session.user_id,
     username: session.username,
     discriminator: session.discriminator,
     avatar: session.avatar,
+    isAdmin: adminCheck.isAdmin || false,
   });
 });
 

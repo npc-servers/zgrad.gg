@@ -426,8 +426,11 @@ function initializeUI() {
     // Initialize background queue
     initializeBackgroundQueue();
     
-    // Initialize sale banner from config
-    initializeSaleBanner();
+    // Fetch sale from CMS API, then initialize sale banner
+    fetchActiveSale().then(function() {
+        // Initialize sale banner from config (populated by API)
+        initializeSaleBanner();
+    });
     
     // Fetch event/news from CMS API, then initialize event banner
     fetchLoadingScreenNews().then(function() {
@@ -453,14 +456,14 @@ var allUpdates = [];
 var currentUpdateIndex = 0;
 var updateCycleInterval = null;
 
-// Sale banner configuration
+// Sale banner configuration - will be populated from API
 var saleConfig = {
-    enabled: true,
-    percentage: "35%",
-    title: "WINTER SALE",
-    description: "Get <strong>35% off</strong> on all ranks until <strong>December 31st!</strong>",
-    linkText: "STORE.ZMOD.GG",
-    linkUrl: "https://store.zmod.gg"
+    enabled: false,
+    percentage: "",
+    title: "",
+    description: "",
+    linkText: "",
+    linkUrl: ""
 };
 
 // Event/News items from CMS API (up to 3 events + 1 news)
@@ -484,6 +487,37 @@ var nextPanelType = 'event'; // Start with event/news first
 var updatesSinceLastSpecial = 0;
 var updatesBeforeSpecial = 5;
 var lastSpecialPanel = null;
+
+/**
+ * Fetch active sale from CMS API for loading screen
+ */
+function fetchActiveSale() {
+    return fetch("/api/sales/active")
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+            if (data.active && data.sale) {
+                // Populate saleConfig from API response
+                saleConfig.enabled = true;
+                saleConfig.percentage = data.sale.percentage || "";
+                saleConfig.title = data.sale.title || "";
+                saleConfig.description = data.sale.description || "";
+                saleConfig.linkText = data.sale.linkText || "";
+                saleConfig.linkUrl = data.sale.linkUrl || "";
+                
+                console.log("[LoadingScreen] Loaded active sale from CMS:", saleConfig.title);
+                return true;
+            } else {
+                saleConfig.enabled = false;
+                console.log("[LoadingScreen] No active sale from CMS");
+                return false;
+            }
+        })
+        .catch(function(error) {
+            console.error("[LoadingScreen] Error fetching sale:", error);
+            saleConfig.enabled = false;
+            return false;
+        });
+}
 
 /**
  * Fetch event/news from CMS API for loading screen

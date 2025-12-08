@@ -12,13 +12,14 @@ import { MiniRichTextEditor } from '../editor/MiniRichTextEditor.jsx';
 export function ContentForm({ contentType, onImageUpload }) {
     const form = contentForm.value;
     const config = getContentTypeConfig(contentType);
+    const isSales = contentType === 'sales';
 
     if (!config) return null;
 
     const handleTitleChange = (value) => {
         updateContentForm('title', value);
-        // Auto-generate slug if creating new content
-        if (!form.id) {
+        // Auto-generate slug if creating new content (but not for sales which don't have slugs)
+        if (!form.id && !isSales && config.fields.slug) {
             updateContentForm('slug', generateSlug(value));
         }
     };

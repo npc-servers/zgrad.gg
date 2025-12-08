@@ -6,6 +6,7 @@
 export const CONTENT_TYPES = {
     GUIDES: 'guides',
     NEWS: 'news',
+    SALES: 'sales',
 };
 
 /**
@@ -126,6 +127,77 @@ export const contentTypeConfig = {
         supportsDrafts: true,
         supportsContributors: false,
         listColumns: ['cover_image', 'title', 'category', 'status', 'views', 'created'],
+        editorFeatures: {
+            stepCards: false,
+            infoBoxes: false,
+        },
+    },
+
+    [CONTENT_TYPES.SALES]: {
+        id: CONTENT_TYPES.SALES,
+        label: 'Sales',
+        labelSingular: 'Sale',
+        icon: '💰',
+        apiEndpoint: 'sales',
+        requiresAdmin: true, // Only admins can see/manage this content type
+        fields: {
+            title: { 
+                type: 'text', 
+                required: true, 
+                label: 'Sale Title',
+                placeholder: 'e.g., WINTER SALE',
+                description: 'The headline shown on the loading screen'
+            },
+            percentage: { 
+                type: 'text', 
+                required: true, 
+                label: 'Discount Percentage',
+                placeholder: 'e.g., 35%',
+                description: 'The discount amount (include % sign)'
+            },
+            description: { 
+                type: 'richtext', 
+                required: true, 
+                label: 'Sale Description',
+                description: 'Short description shown on loading screen. Supports basic HTML like <strong> for bold.'
+            },
+            link_text: { 
+                type: 'text', 
+                required: true, 
+                label: 'Link Text',
+                placeholder: 'e.g., STORE.ZMOD.GG',
+                description: 'The clickable link text'
+            },
+            link_url: { 
+                type: 'text', 
+                required: true, 
+                label: 'Link URL',
+                placeholder: 'e.g., https://store.zmod.gg',
+                description: 'Full URL to the store/sale page'
+            },
+            enabled: {
+                type: 'checkbox',
+                required: false,
+                label: 'Enable Sale',
+                description: 'When enabled, this sale will be shown on the loading screen (if within date range)',
+                default: false
+            },
+            start_date: {
+                type: 'datetime',
+                required: false,
+                label: 'Start Date',
+                description: 'Optional: When the sale should start showing (leave empty for immediate)'
+            },
+            end_date: {
+                type: 'datetime',
+                required: false,
+                label: 'End Date',
+                description: 'Optional: When the sale should stop showing (leave empty for indefinite)'
+            },
+        },
+        supportsDrafts: false, // Sales don't need drafts
+        supportsContributors: false,
+        listColumns: ['title', 'percentage', 'enabled', 'created'],
         editorFeatures: {
             stepCards: false,
             infoBoxes: false,
