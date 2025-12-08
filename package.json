@@ -38,7 +38,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "multer": "^2.0.0",
-    "preact": "^10.24.3",
+    "preact": "^10.28.0",
     "preact-router": "^4.1.2",
     "vite-plugin-html-minifier": "^1.0.5",
     "vite-plugin-image-optimizer": "^2.0.3"
