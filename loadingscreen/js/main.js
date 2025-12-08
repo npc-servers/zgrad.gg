@@ -483,6 +483,7 @@ var nextPanelType = 'event'; // Start with event/news first
 // Track how many updates have been shown since last special panel
 var updatesSinceLastSpecial = 0;
 var updatesBeforeSpecial = 5;
+var lastSpecialPanel = null;
 
 /**
  * Fetch event/news from CMS API for loading screen
