@@ -187,7 +187,7 @@ function createNewsCard(news, index) {
                         ${categoryInfo.label}
                     </span>
                 </div>
-                <p class="news-card-description">${escapeHtml(description)}</p>
+                <p class="news-card-description">${description}</p>
             </div>
             <div class="news-card-meta">
                 <div class="news-card-author">
@@ -256,38 +256,39 @@ function getCategoryInfo(category) {
 }
 
 function getNewsDescription(news) {
-    // Helper to strip HTML and get plain text
-    const stripHtml = (html) => {
+    // Helper to sanitize HTML - keep only safe formatting tags
+    const sanitizeHtml = (html) => {
         if (!html) return '';
         const temp = document.createElement('div');
         temp.innerHTML = html;
-        return temp.textContent || temp.innerText || '';
+        
+        // Get plain text length for truncation
+        const plainText = temp.textContent || temp.innerText || '';
+        
+        // If short enough, sanitize and return with formatting
+        if (plainText.length <= 200) {
+            // Remove all tags except allowed ones
+            return html
+                .replace(/<(?!\/?(?:strong|b|em|i|u|s)(?:\s|>))[^>]*>/gi, '')
+                .replace(/<\/p>\s*<p>/gi, ' ')
+                .replace(/<\/?p>/gi, '')
+                .trim();
+        }
+        
+        // If too long, strip HTML and truncate
+        return plainText.substring(0, 200).trim() + '...';
     };
-    
+
     // If there's a loading_screen_description, use it as a short description
     if (news.loading_screen_description) {
-        let text = stripHtml(news.loading_screen_description);
-        
-        // Truncate to ~200 characters
-        if (text.length > 200) {
-            text = text.substring(0, 200).trim() + '...';
-        }
-        
-        return text;
+        return sanitizeHtml(news.loading_screen_description);
     }
-    
-    // Otherwise, extract from content (strip HTML and truncate)
+
+    // Otherwise, extract from content (sanitize and truncate)
     if (news.content) {
-        let text = stripHtml(news.content);
-        
-        // Truncate to ~200 characters
-        if (text.length > 200) {
-            text = text.substring(0, 200).trim() + '...';
-        }
-        
-        return text;
+        return sanitizeHtml(news.content);
     }
-    
+
     return 'Click to read more...';
 }
 
