@@ -426,9 +426,8 @@ body, html {
     font-weight: 500;
     opacity: 0.9;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
-    line-height: 1.3;
+    line-height: 1.4;
     max-width: 600px;
-    overflow: hidden;
     margin-bottom: 12px;
 }
 
@@ -716,10 +715,6 @@ body, html {
         max-width: min(750px, 45vw);
     }
     
-    .advert-section {
-        height: 150px;
-    }
-    
     .blood-splatter {
         width: min(1500px, 85vw);
         height: min(1125px, 64vw);
@@ -874,10 +869,6 @@ body, html {
     .advert-subtext {
         font-size: clamp(1.5rem, 1.6vw, 1.6rem);
         max-width: min(900px, 50vw);
-    }
-    
-    .advert-section {
-        height: 180px;
     }
     
     .blood-splatter {
@@ -1112,10 +1103,6 @@ body, html {
     .advert-subtext {
         font-size: 3.2rem;
         max-width: 1800px;
-    }
-    
-    .advert-section {
-        height: 300px;
     }
     
     .blood-splatter {
