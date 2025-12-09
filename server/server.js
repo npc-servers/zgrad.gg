@@ -28,6 +28,7 @@ import { validateSession } from './middleware/auth.js';
 import { serveGuide } from './routes/guides-page.js';
 import { serveNews } from './routes/news-page.js';
 import { serveImage } from './routes/images-serve.js';
+import { serveAttachment } from './lib/attachment-cache.js';
 import { startDiscordBot, stopDiscordBot } from './lib/discord-bot.js';
 
 // Load environment variables
@@ -80,6 +81,9 @@ app.get('/news/:slug', serveNews);
 
 // Serve uploaded images
 app.get('/images/guides/:filename', serveImage);
+
+// Serve cached Discord attachments
+app.get('/api/attachments/:filename', serveAttachment);
 
 // Protect CMS routes - redirect to login if not authenticated
 app.use('/cms', async (req, res, next) => {

@@ -217,6 +217,21 @@ const initSchema = () => {
 
     CREATE INDEX IF NOT EXISTS idx_sales_enabled ON sales(enabled);
     CREATE INDEX IF NOT EXISTS idx_sales_dates ON sales(start_date, end_date);
+
+    -- Cached attachments table (for Discord CDN files that expire)
+    CREATE TABLE IF NOT EXISTS cached_attachments (
+      id TEXT PRIMARY KEY,
+      discord_url TEXT NOT NULL,
+      discord_url_hash TEXT NOT NULL UNIQUE,
+      local_path TEXT NOT NULL,
+      filename TEXT NOT NULL,
+      content_type TEXT NOT NULL,
+      size INTEGER NOT NULL,
+      cached_at INTEGER NOT NULL
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_cached_attachments_discord_url_hash ON cached_attachments(discord_url_hash);
+    CREATE INDEX IF NOT EXISTS idx_cached_attachments_filename ON cached_attachments(filename);
   `);
   console.log('✅ Database schema initialized successfully');
 };
@@ -262,6 +277,26 @@ const runMigrations = () => {
     db.exec('CREATE INDEX IF NOT EXISTS idx_news_loading_screen ON news(show_on_loading_screen)');
   } catch (e) {
     // Index might already exist
+  }
+  
+  // Check if cached_attachments table exists, create if not
+  const cachedAttachmentsTableExists = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='cached_attachments'").get();
+  if (!cachedAttachmentsTableExists) {
+    console.log('  Creating cached_attachments table...');
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS cached_attachments (
+        id TEXT PRIMARY KEY,
+        discord_url TEXT NOT NULL,
+        discord_url_hash TEXT NOT NULL UNIQUE,
+        local_path TEXT NOT NULL,
+        filename TEXT NOT NULL,
+        content_type TEXT NOT NULL,
+        size INTEGER NOT NULL,
+        cached_at INTEGER NOT NULL
+      );
+      CREATE INDEX IF NOT EXISTS idx_cached_attachments_discord_url_hash ON cached_attachments(discord_url_hash);
+      CREATE INDEX IF NOT EXISTS idx_cached_attachments_filename ON cached_attachments(filename);
+    `);
   }
   
   // Check if sales table exists, create if not

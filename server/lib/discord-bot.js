@@ -6,6 +6,7 @@
 import { Client, GatewayIntentBits, Partials } from 'discord.js';
 import crypto from 'crypto';
 import { query } from './database.js';
+import { cacheAttachments } from './attachment-cache.js';
 
 let client = null;
 let isReady = false;
@@ -242,11 +243,23 @@ async function storeGroupedUpdate(group, guildId) {
     title = group.embeds[0].title;
   }
 
+  // Cache attachments to prevent Discord CDN expiration
+  const attachmentsList = group.attachments.map(a => ({
+    url: a.url,
+    filename: a.name,
+    contentType: a.contentType,
+  }));
+  
+  const cachedResults = await cacheAttachments(attachmentsList);
+  
+  // Build attachments with cached URLs
   const attachments = JSON.stringify(
-    group.attachments.map(a => ({
-      url: a.url,
-      filename: a.name,
-      contentType: a.contentType,
+    attachmentsList.map((att, index) => ({
+      url: cachedResults[index]?.localUrl || att.url,
+      originalUrl: att.url,
+      filename: att.filename,
+      contentType: att.contentType,
+      cached: cachedResults[index]?.success || false,
     }))
   );
 
@@ -373,11 +386,22 @@ async function mergeIntoExistingUpdate(existingUpdate, message) {
         : newContent;
     }
 
-    // Merge attachments
-    const newAttachments = [...message.attachments.values()].map(a => ({
+    // Merge attachments - cache new ones first
+    const newAttachmentsList = [...message.attachments.values()].map(a => ({
       url: a.url,
       filename: a.name,
       contentType: a.contentType,
+    }));
+    
+    // Cache new attachments
+    const cachedResults = await cacheAttachments(newAttachmentsList);
+    
+    const newAttachments = newAttachmentsList.map((att, index) => ({
+      url: cachedResults[index]?.localUrl || att.url,
+      originalUrl: att.url,
+      filename: att.filename,
+      contentType: att.contentType,
+      cached: cachedResults[index]?.success || false,
     }));
     existingAttachments = existingAttachments.concat(newAttachments);
 
@@ -468,12 +492,22 @@ async function createNewUpdate(message, guildId) {
     }
   }
 
-  // Process attachments
+  // Process attachments - cache them to prevent Discord CDN expiration
+  const attachmentsList = [...message.attachments.values()].map(a => ({
+    url: a.url,
+    filename: a.name,
+    contentType: a.contentType,
+  }));
+  
+  const cachedResults = await cacheAttachments(attachmentsList);
+  
   const attachments = JSON.stringify(
-    [...message.attachments.values()].map(a => ({
-      url: a.url,
-      filename: a.name,
-      contentType: a.contentType,
+    attachmentsList.map((att, index) => ({
+      url: cachedResults[index]?.localUrl || att.url,
+      originalUrl: att.url,
+      filename: att.filename,
+      contentType: att.contentType,
+      cached: cachedResults[index]?.success || false,
     }))
   );
 
@@ -551,11 +585,22 @@ async function updateExistingMessage(message) {
       content = lines.slice(1).join('\n').trim();
     }
 
+    // Cache attachments to prevent Discord CDN expiration
+    const attachmentsList = [...message.attachments.values()].map(a => ({
+      url: a.url,
+      filename: a.name,
+      contentType: a.contentType,
+    }));
+    
+    const cachedResults = await cacheAttachments(attachmentsList);
+    
     const attachments = JSON.stringify(
-      [...message.attachments.values()].map(a => ({
-        url: a.url,
-        filename: a.name,
-        contentType: a.contentType,
+      attachmentsList.map((att, index) => ({
+        url: cachedResults[index]?.localUrl || att.url,
+        originalUrl: att.url,
+        filename: att.filename,
+        contentType: att.contentType,
+        cached: cachedResults[index]?.success || false,
       }))
     );
 
