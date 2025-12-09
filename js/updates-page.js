@@ -188,13 +188,20 @@ function createUpdateElement(update) {
         ${update.attachments && update.attachments.length > 0 ? `
             <div class="update-attachments">
                 ${update.attachments.map(att => {
+                    // Skip uncached Discord CDN attachments (they've expired)
+                    const isDiscordCdn = att.url && att.url.includes('cdn.discordapp.com');
+                    const isCached = att.cached || (att.url && att.url.startsWith('/api/attachments/'));
+                    if (isDiscordCdn && !isCached) {
+                        return ''; // Don't show expired attachments
+                    }
+                    
                     if (att.contentType && (att.contentType.startsWith('image/') || att.contentType === 'image/gif')) {
                         return `<a href="${att.url}" target="_blank" rel="noopener" class="update-attachment">
                             <img src="${att.url}" alt="${escapeHtml(att.filename)}" loading="lazy" onerror="this.parentElement.style.display='none'">
                         </a>`;
                     } else if (att.contentType && att.contentType.startsWith('video/')) {
-                        return `<video controls class="update-attachment" style="max-width: 600px; border-radius: 8px;">
-                            <source src="${att.url}" type="${att.contentType}">
+                        return `<video controls class="update-attachment" style="max-width: 600px; border-radius: 8px;" onerror="this.style.display='none'">
+                            <source src="${att.url}" type="${att.contentType}" onerror="this.parentElement.style.display='none'">
                         </video>`;
                     }
                     return '';
