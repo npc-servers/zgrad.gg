@@ -107,7 +107,7 @@ app.use('/cms', async (req, res, next) => {
 app.use(express.static(path.join(__dirname, '../dist')));
 
 // Handle extensionless URLs and fallback routing
-app.get('*', (req, res, next) => {
+app.get('/*', (req, res, next) => {
   // Skip API routes
   if (req.path.startsWith('/api/')) {
     return next();
