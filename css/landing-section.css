@@ -1807,16 +1807,16 @@ z-index: 2;
     transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
 
-/* Carousel overlay container - hard left aligned */
+/* Carousel overlay container - centered */
 .landing-carousel-overlay {
     position: absolute;
-    top: 45%;
-    left: 5%;
-    transform: translateY(-50%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 20;
-    width: 60%;
-    max-width: 800px;
-    text-align: left;
+    width: 80%;
+    max-width: 900px;
+    text-align: center;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.6s ease-out;
@@ -1832,8 +1832,8 @@ z-index: 2;
     position: relative;
     min-height: 300px;
     display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Individual carousel content panels */
@@ -1844,36 +1844,93 @@ z-index: 2;
     width: 100%;
     opacity: 0;
     pointer-events: none;
-    transform: translateX(-30px);
+    transform: translateY(20px);
     transition: opacity 0.5s ease-out, transform 0.5s ease-out;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
 }
 
 .carousel-content.active {
     opacity: 1;
     pointer-events: auto;
-    transform: translateX(0);
+    transform: translateY(0);
 }
 
-/* Carousel badge - simple white text */
-.carousel-badge {
-    font-size: 1.2rem;
-    font-weight: 600;
-    letter-spacing: 4px;
-    color: rgba(255, 255, 255, 0.7);
-    margin-bottom: 15px;
+/* Carousel badge - simple white text, positioned top-left of landing section */
+.landing-section .carousel-badge-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 50;
+}
+
+.landing-section .carousel-badge {
+    position: absolute;
+    top: 80px;
+    left: 5%;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 5px;
+    color: rgba(255, 255, 255, 0.9);
     text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+    text-shadow: 
+        0 0 10px rgba(255, 0, 0, 0.3),
+        0 0 20px rgba(255, 0, 0, 0.15),
+        0 4px 20px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-/* Event countdown - inline */
-.carousel-event-countdown {
+.landing-section .carousel-badge svg {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+}
+
+.landing-section .carousel-badge.active {
+    opacity: 1;
+}
+
+/* News date - positioned below the badge */
+.landing-section .carousel-news-date {
+    position: absolute;
+    top: 145px;
+    left: 5%;
+    font-size: 1rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+}
+
+.landing-section .carousel-news-date.active {
+    opacity: 1;
+}
+
+/* Event countdown - inline, positioned at top-left of landing section */
+.landing-section .carousel-event-countdown {
+    position: absolute;
+    top: 120px;
+    left: 5%;
     display: flex;
     flex-direction: row;
     align-items: baseline;
     gap: 10px;
-    margin-bottom: 20px;
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+}
+
+.landing-section .carousel-event-countdown.active {
+    opacity: 1;
 }
 
 .countdown-label {
@@ -1892,27 +1949,84 @@ z-index: 2;
     letter-spacing: 1px;
 }
 
-/* Carousel title - massive with red glow */
+/* Carousel title - massive with red glow, centered */
 .carousel-title {
     font-size: 5rem;
     font-weight: 700;
     color: #ffffff;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     text-transform: uppercase;
     letter-spacing: 3px;
-    line-height: 1;
+    line-height: 1.1;
     text-shadow: 
         0 0 10px rgba(255, 0, 0, 0.4),
         0 0 20px rgba(255, 0, 0, 0.2),
         0 4px 30px rgba(0, 0, 0, 0.5);
+    text-align: center;
 }
 
-/* Carousel description - supports formatting */
+/* Carousel author - with avatar and blood splatter */
+.carousel-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 25px;
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.author-avatar-wrapper {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+}
+
+.author-avatar-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 54px;
+    height: 54px;
+    background-image: url('/images/textures/bloody-icon-background.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.author-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+    z-index: 1;
+}
+
+.author-text {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.author-name {
+    font-weight: 700;
+    color: #ffffff;
+}
+
+/* Carousel description - supports formatting, centered */
 .carousel-description {
     font-size: 1.3rem;
     color: rgba(255, 255, 255, 0.7);
     line-height: 1.6;
-    max-width: 600px;
+    max-width: 700px;
+    text-align: center;
+    margin-bottom: 30px;
 }
 
 .carousel-description strong,
@@ -1926,11 +2040,12 @@ z-index: 2;
     font-style: italic;
 }
 
-/* Carousel link button - very bottom left of landing section */
+/* Carousel link button - centered below description */
 .landing-section > .carousel-link {
     position: absolute;
-    bottom: 80px;
-    left: 5%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 180px);
     display: inline-flex;
     align-items: center;
     gap: 12px;
@@ -1961,7 +2076,7 @@ z-index: 2;
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.4);
     color: #ffffff;
-    transform: translateY(-2px);
+    transform: translate(-50%, 178px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
@@ -1975,23 +2090,28 @@ z-index: 2;
     transform: translateX(5px);
 }
 
-/* Sale percentage - huge */
-.carousel-sale-percentage {
+/* Sale percentage - huge, positioned at top-left of landing section */
+.landing-section .carousel-sale-percentage {
+    position: absolute;
+    top: 120px;
+    left: 5%;
     font-size: 7rem;
     font-weight: 800;
     color: #ffffff;
-    margin-bottom: 15px;
     line-height: 1;
     text-shadow: 
         0 0 10px rgba(255, 0, 0, 0.4),
         0 0 20px rgba(255, 0, 0, 0.2),
         0 4px 30px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
 }
 
-/* News spacing */
-.carousel-news .carousel-badge {
-    margin-bottom: 25px;
+.landing-section .carousel-sale-percentage.active {
+    opacity: 1;
 }
+
+/* News spacing - removed since badge is now absolutely positioned */
 
 /* Full-width progress bar at bottom with padding */
 .carousel-progress-bar {
@@ -2041,12 +2161,25 @@ z-index: 2;
 
 @media (max-width: 1200px) {
     .landing-carousel-overlay {
-        width: 65%;
-        left: 4%;
+        width: 85%;
     }
     
     .carousel-title {
         font-size: 3.5rem;
+    }
+    
+    .carousel-author {
+        font-size: 1rem;
+    }
+    
+    .author-avatar-wrapper {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .author-avatar-wrapper::before {
+        width: 48px;
+        height: 48px;
     }
     
     .carousel-sale-percentage {
@@ -2065,16 +2198,56 @@ z-index: 2;
 
 @media (max-width: 992px) {
     .landing-carousel-overlay {
-        width: 70%;
+        width: 88%;
+    }
+    
+    .landing-section .carousel-badge {
+        top: 75px;
         left: 4%;
+        font-size: 1.8rem;
+        letter-spacing: 4px;
+        gap: 10px;
+    }
+    
+    .landing-section .carousel-badge svg {
+        width: 42px;
+        height: 42px;
+    }
+    
+    .landing-section .carousel-news-date {
+        top: 135px;
+        left: 4%;
+        font-size: 0.9rem;
+    }
+    
+    .landing-section .carousel-event-countdown {
+        top: 110px;
+        left: 4%;
+    }
+    
+    .landing-section .carousel-sale-percentage {
+        top: 115px;
+        left: 4%;
+        font-size: 4rem;
     }
     
     .carousel-title {
         font-size: 3rem;
     }
     
-    .carousel-sale-percentage {
-        font-size: 4rem;
+    .carousel-author {
+        font-size: 0.95rem;
+        gap: 10px;
+    }
+    
+    .author-avatar-wrapper {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .author-avatar-wrapper::before {
+        width: 45px;
+        height: 45px;
     }
     
     .countdown-time {
@@ -2086,32 +2259,74 @@ z-index: 2;
     }
     
     .landing-section > .carousel-link {
-        bottom: 70px;
-        left: 4%;
+        transform: translate(-50%, 150px);
+    }
+    
+    .landing-section > .carousel-link:hover {
+        transform: translate(-50%, 148px);
     }
 }
 
 @media (max-width: 768px) {
     .landing-carousel-overlay {
         width: 90%;
-        left: 5%;
-        transform: translateY(-50%);
     }
     
     .carousel-content-wrapper {
         min-height: 280px;
     }
     
+    .landing-section .carousel-badge {
+        top: 70px;
+        left: 5%;
+        font-size: 1.5rem;
+        letter-spacing: 3px;
+        gap: 8px;
+    }
+    
+    .landing-section .carousel-badge svg {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .landing-section .carousel-news-date {
+        top: 125px;
+        left: 5%;
+        font-size: 0.85rem;
+    }
+    
+    .landing-section .carousel-event-countdown {
+        top: 100px;
+        left: 5%;
+    }
+    
+    .landing-section .carousel-sale-percentage {
+        top: 105px;
+        left: 5%;
+        font-size: 3.5rem;
+    }
+    
     .carousel-title {
         font-size: 2.5rem;
     }
     
-    .carousel-description {
-        font-size: 1rem;
+    .carousel-author {
+        font-size: 0.9rem;
+        gap: 8px;
     }
     
-    .carousel-sale-percentage {
-        font-size: 3.5rem;
+    .author-avatar-wrapper {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .author-avatar-wrapper::before {
+        width: 42px;
+        height: 42px;
+    }
+    
+    .carousel-description {
+        font-size: 1rem;
     }
     
     .countdown-time {
@@ -2121,8 +2336,11 @@ z-index: 2;
     .landing-section > .carousel-link {
         padding: 14px 30px;
         font-size: 1rem;
-        bottom: 60px;
-        left: 5%;
+        transform: translate(-50%, 130px);
+    }
+    
+    .landing-section > .carousel-link:hover {
+        transform: translate(-50%, 128px);
     }
     
     .carousel-progress-bar {
@@ -2132,29 +2350,68 @@ z-index: 2;
 
 @media (max-width: 480px) {
     .landing-carousel-overlay {
-        width: 90%;
-        left: 5%;
+        width: 92%;
     }
     
     .carousel-content-wrapper {
-        min-height: 260px;
+        min-height: 240px;
     }
     
-    .carousel-badge {
-        font-size: 1rem;
-        letter-spacing: 3px;
+    .landing-section .carousel-badge {
+        font-size: 1.2rem;
+        letter-spacing: 2px;
+        top: 65px;
+        left: 5%;
+        gap: 6px;
+    }
+    
+    .landing-section .carousel-badge svg {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .landing-section .carousel-news-date {
+        top: 115px;
+        left: 5%;
+        font-size: 0.8rem;
+    }
+    
+    .landing-section .carousel-event-countdown {
+        top: 90px;
+        left: 5%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .landing-section .carousel-sale-percentage {
+        top: 95px;
+        left: 5%;
+        font-size: 2.5rem;
     }
     
     .carousel-title {
-        font-size: 2rem;
+        font-size: 1.8rem;
+    }
+    
+    .carousel-author {
+        font-size: 0.85rem;
+        gap: 8px;
+    }
+    
+    .author-avatar-wrapper {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .author-avatar-wrapper::before {
+        width: 36px;
+        height: 36px;
     }
     
     .carousel-description {
-        font-size: 0.95rem;
-    }
-    
-    .carousel-sale-percentage {
-        font-size: 3rem;
+        font-size: 0.9rem;
+        max-width: 100%;
     }
     
     .countdown-time {
@@ -2164,7 +2421,11 @@ z-index: 2;
     .landing-section > .carousel-link {
         padding: 12px 25px;
         font-size: 0.9rem;
-        bottom: 50px;
+        transform: translate(-50%, 110px);
+    }
+    
+    .landing-section > .carousel-link:hover {
+        transform: translate(-50%, 108px);
     }
     
     .carousel-progress-bar {

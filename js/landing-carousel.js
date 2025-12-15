@@ -170,26 +170,55 @@ function createCarouselUI(section) {
     carouselOverlay.innerHTML = `
         <div class="carousel-content-wrapper">
             <div class="carousel-content carousel-news" data-type="news">
-                <div class="carousel-badge">LATEST NEWS</div>
                 <h2 class="carousel-title"></h2>
+                <div class="carousel-author carousel-author-news">
+                    <div class="author-avatar-wrapper">
+                        <img class="author-avatar" src="" alt="Author">
+                    </div>
+                    <span class="author-text">Posted by <span class="author-name"></span></span>
+                </div>
                 <p class="carousel-description"></p>
             </div>
             <div class="carousel-content carousel-event" data-type="event">
-                <div class="carousel-badge carousel-badge-event">ACTIVE EVENT</div>
-                <div class="carousel-event-countdown">
-                    <span class="countdown-label">ENDS IN</span>
-                    <span class="countdown-time"></span>
-                </div>
                 <h2 class="carousel-title"></h2>
+                <div class="carousel-author carousel-author-event">
+                    <div class="author-avatar-wrapper">
+                        <img class="author-avatar" src="" alt="Host">
+                    </div>
+                    <span class="author-text">Hosted by <span class="author-name"></span></span>
+                </div>
                 <p class="carousel-description"></p>
             </div>
             <div class="carousel-content carousel-sale" data-type="sale">
-                <div class="carousel-badge carousel-badge-sale">STORE SALE</div>
-                <div class="carousel-sale-percentage"></div>
                 <h2 class="carousel-title"></h2>
                 <p class="carousel-description"></p>
             </div>
         </div>
+    `;
+
+    // Create badges and special elements as direct children of landing-section
+    const badgeContainer = document.createElement('div');
+    badgeContainer.className = 'carousel-badge-container';
+    badgeContainer.innerHTML = `
+        <div class="carousel-badge carousel-badge-news" data-type="news">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 48 48">
+                <path fill="currentColor" fill-rule="evenodd" d="M25.5.5a2 2 0 0 0-2 2v3a2 2 0 1 0 4 0v-3a2 2 0 0 0-2-2m-17 21a2 2 0 1 1 0-4h3a2 2 0 1 1 0 4zm34 0a2 2 0 1 0 0-4h-3a2 2 0 1 0 0 4zM12.064 8.895a2 2 0 0 1 2.829-2.828l2.121 2.12a2 2 0 1 1-2.828 2.83zm26.87-2.828a2 2 0 0 1 0 2.828l-2.122 2.121a2 2 0 1 1-2.828-2.828l2.121-2.121a2 2 0 0 1 2.829 0M25.049 10.04a1.5 1.5 0 0 1 2.119.095l.003.003l.003.004l.01.01l.03.034l.1.117q.13.15.368.447c.319.4.785 1.008 1.398 1.874c1.225 1.73 3.042 4.491 5.446 8.656c2.405 4.164 3.887 7.117 4.773 9.045a41 41 0 0 1 .924 2.147a18 18 0 0 1 .254.687l.014.043l.005.014l.002.007v.002a1.5 1.5 0 0 1-2.85.935c-1.245.418-2.51.83-3.782 1.233a72 72 0 0 0-1.257-2.881a98 98 0 0 0-4.047-7.789a98 98 0 0 0-4.72-7.399a72 72 0 0 0-1.865-2.526c.985-.9 1.974-1.79 2.959-2.659a1.5 1.5 0 0 1 .113-2.099m5.81 25.93q.068.159.133.318c-2.04.625-4.07 1.224-6.032 1.786l.277 1.032a6.59 6.59 0 1 1-12.733 3.412l-.266-.992c-.98.25-1.82.463-2.49.63c-1.649.412-3.445-.144-4.503-1.582c-.38-.518-.805-1.13-1.147-1.724a19 19 0 0 1-.92-1.855c-.716-1.635-.3-3.469.882-4.691c2.61-2.7 8.892-9.116 15.704-15.464l.207.27c.335.442.822 1.098 1.419 1.944a95 95 0 0 1 4.574 7.17a95 95 0 0 1 3.922 7.546c.435.94.76 1.69.974 2.2Zm-14.75 4.546l.259.966a2.59 2.59 0 1 0 5.005-1.34l-.263-.982c-1.787.495-3.472.95-5.001 1.356" clip-rule="evenodd"/>
+            </svg>
+            <span>LATEST NEWS</span>
+        </div>
+        <div class="carousel-news-date" data-type="news"></div>
+        <div class="carousel-badge carousel-badge-event" data-type="event">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5zM5 8h14V6H5zm0 0V6zm7 6q-.425 0-.712-.288T11 13t.288-.712T12 12t.713.288T13 13t-.288.713T12 14m-4 0q-.425 0-.712-.288T7 13t.288-.712T8 12t.713.288T9 13t-.288.713T8 14m8 0q-.425 0-.712-.288T15 13t.288-.712T16 12t.713.288T17 13t-.288.713T16 14m-4 4q-.425 0-.712-.288T11 17t.288-.712T12 16t.713.288T13 17t-.288.713T12 18m-4 0q-.425 0-.712-.288T7 17t.288-.712T8 16t.713.288T9 17t-.288.713T8 18m8 0q-.425 0-.712-.288T15 17t.288-.712T16 16t.713.288T17 17t-.288.713T16 18"/>
+            </svg>
+            <span>ACTIVE EVENT</span>
+        </div>
+        <div class="carousel-badge carousel-badge-sale" data-type="sale">STORE SALE</div>
+        <div class="carousel-event-countdown" data-type="event">
+            <span class="countdown-label">ENDS IN</span>
+            <span class="countdown-time"></span>
+        </div>
+        <div class="carousel-sale-percentage" data-type="sale"></div>
     `;
 
     // Create carousel link button (positioned at bottom left of section)
@@ -208,6 +237,7 @@ function createCarouselUI(section) {
     progressBar.className = 'carousel-progress-bar';
     progressBar.innerHTML = `<div class="carousel-progress-fill"></div>`;
 
+    section.appendChild(badgeContainer);
     section.appendChild(carouselOverlay);
     section.appendChild(carouselLink);
     section.appendChild(progressBar);
@@ -284,12 +314,24 @@ function updateCarouselDisplay(item, previousIndex) {
     const joinContainer = document.querySelector('.join-button-container');
     const carouselLink = document.querySelector('.landing-section > .carousel-link');
     
+    // Get all badge elements
+    const allBadges = document.querySelectorAll('.landing-section .carousel-badge');
+    const countdown = document.querySelector('.landing-section .carousel-event-countdown');
+    const salePercentage = document.querySelector('.landing-section .carousel-sale-percentage');
+    const newsDate = document.querySelector('.landing-section .carousel-news-date');
+    
     if (!overlay) return;
 
     // Hide all carousel content first
     overlay.querySelectorAll('.carousel-content').forEach(content => {
         content.classList.remove('active');
     });
+    
+    // Hide all badges and special elements
+    allBadges.forEach(badge => badge.classList.remove('active'));
+    if (countdown) countdown.classList.remove('active');
+    if (salePercentage) salePercentage.classList.remove('active');
+    if (newsDate) newsDate.classList.remove('active');
 
     if (item.type === 'default') {
         // Show default landing content
@@ -302,6 +344,33 @@ function updateCarouselDisplay(item, previousIndex) {
         if (defaultContent) defaultContent.classList.add('carousel-hidden');
         if (joinContainer) joinContainer.classList.add('carousel-hidden');
         overlay.classList.add('active');
+        
+        // Show the appropriate badge
+        const badge = document.querySelector(`.landing-section .carousel-badge-${item.type}`);
+        if (badge) badge.classList.add('active');
+        
+        // Show and populate news date
+        if (item.type === 'news' && newsDate && item.data) {
+            const date = new Date(item.data.created_at);
+            const formattedDate = date.toLocaleDateString('en-US', { 
+                month: 'long', 
+                day: 'numeric', 
+                year: 'numeric' 
+            });
+            newsDate.textContent = `Posted ${formattedDate}`;
+            newsDate.classList.add('active');
+        }
+        
+        // Show countdown for events
+        if (item.type === 'event' && countdown) {
+            countdown.classList.add('active');
+        }
+        
+        // Show and populate sale percentage
+        if (item.type === 'sale' && salePercentage && item.data) {
+            salePercentage.textContent = `${item.data.percentage}% OFF`;
+            salePercentage.classList.add('active');
+        }
 
         // Update and show the appropriate content
         const contentEl = overlay.querySelector(`.carousel-${item.type}`);
@@ -330,6 +399,24 @@ function populateCarouselContent(element, item) {
 
     if (item.type === 'news' && item.data) {
         if (titleEl) titleEl.textContent = item.data.title || 'News Update';
+        
+        // Populate author info
+        const authorEl = element.querySelector('.carousel-author');
+        const avatarEl = authorEl?.querySelector('.author-avatar');
+        const nameEl = authorEl?.querySelector('.author-name');
+        
+        if (authorEl && item.data.author_name) {
+            if (avatarEl && item.data.author_avatar && item.data.author_id) {
+                avatarEl.src = `https://cdn.discordapp.com/avatars/${item.data.author_id}/${item.data.author_avatar}.png`;
+                avatarEl.alt = item.data.author_name;
+                avatarEl.onerror = function() { this.src = '/images/logos/zgrad-logopiece-z.png'; };
+            } else if (avatarEl) {
+                avatarEl.src = '/images/logos/zgrad-logopiece-z.png';
+                avatarEl.alt = item.data.author_name || 'ZGRAD';
+            }
+            if (nameEl) nameEl.textContent = item.data.author_name;
+        }
+        
         if (descEl) descEl.innerHTML = getShortDescription(item.data);
         if (linkEl) {
             linkEl.href = `/news/${item.data.slug}`;
@@ -339,6 +426,24 @@ function populateCarouselContent(element, item) {
         if (linkTextEl) linkTextEl.textContent = 'READ MORE';
     } else if (item.type === 'event' && item.data) {
         if (titleEl) titleEl.textContent = item.data.title || 'Active Event';
+        
+        // Populate host info
+        const authorEl = element.querySelector('.carousel-author');
+        const avatarEl = authorEl?.querySelector('.author-avatar');
+        const nameEl = authorEl?.querySelector('.author-name');
+        
+        if (authorEl && item.data.author_name) {
+            if (avatarEl && item.data.author_avatar && item.data.author_id) {
+                avatarEl.src = `https://cdn.discordapp.com/avatars/${item.data.author_id}/${item.data.author_avatar}.png`;
+                avatarEl.alt = item.data.author_name;
+                avatarEl.onerror = function() { this.src = '/images/logos/zgrad-logopiece-z.png'; };
+            } else if (avatarEl) {
+                avatarEl.src = '/images/logos/zgrad-logopiece-z.png';
+                avatarEl.alt = item.data.author_name || 'ZGRAD';
+            }
+            if (nameEl) nameEl.textContent = item.data.author_name;
+        }
+        
         if (descEl) descEl.innerHTML = getShortDescription(item.data);
         if (linkEl) {
             linkEl.href = `/news/${item.data.slug}`;
@@ -347,13 +452,13 @@ function populateCarouselContent(element, item) {
         }
         if (linkTextEl) linkTextEl.textContent = 'VIEW EVENT';
         
-        // Store end date for countdown
-        element.dataset.eventEnd = item.data.event_end_date || '';
+        // Store end date for countdown on the countdown element itself
+        const countdown = document.querySelector('.landing-section .carousel-event-countdown');
+        if (countdown) {
+            countdown.dataset.eventEnd = item.data.event_end_date || '';
+        }
         updateEventCountdown();
     } else if (item.type === 'sale' && item.data) {
-        const percentageEl = element.querySelector('.carousel-sale-percentage');
-        
-        if (percentageEl) percentageEl.textContent = `${item.data.percentage}% OFF`;
         if (titleEl) titleEl.textContent = item.data.title || 'Store Sale';
         if (descEl) descEl.innerHTML = sanitizeHtml(item.data.description) || '';
         if (linkTextEl) linkTextEl.textContent = item.data.linkText || 'SHOP NOW';
@@ -414,16 +519,15 @@ function stripHtml(html) {
  * Update event countdown display
  */
 function updateEventCountdown() {
-    const eventContent = document.querySelector('.carousel-event');
-    if (!eventContent) return;
+    const countdownEl = document.querySelector('.landing-section .carousel-event-countdown');
+    if (!countdownEl) return;
 
-    const endDate = parseInt(eventContent.dataset.eventEnd);
-    const countdownEl = eventContent.querySelector('.carousel-event-countdown');
-    const countdownTime = eventContent.querySelector('.countdown-time');
-    const countdownLabel = eventContent.querySelector('.countdown-label');
+    const endDate = parseInt(countdownEl.dataset.eventEnd);
+    const countdownTime = countdownEl.querySelector('.countdown-time');
+    const countdownLabel = countdownEl.querySelector('.countdown-label');
     
-    if (!endDate || !countdownEl || !countdownTime) {
-        if (countdownEl) countdownEl.style.display = 'none';
+    if (!endDate || !countdownTime) {
+        countdownEl.style.display = 'none';
         return;
     }
 
