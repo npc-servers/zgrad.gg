@@ -35,7 +35,7 @@
     "better-sqlite3": "^12.5.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
+    "dotenv": "^17.2.3",
     "express": "^4.21.2",
     "multer": "^2.0.0",
     "preact": "^10.28.0",
