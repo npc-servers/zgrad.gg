@@ -634,15 +634,16 @@ function updateEventCountdown() {
     
     var days = Math.floor(diff / (1000 * 60 * 60 * 24));
     var hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    
-    if (days > 0) {
-        countdownEl.textContent = 'Event ends in ' + days + ' day' + (days !== 1 ? 's' : '') + ', ' + hours + ' hour' + (hours !== 1 ? 's' : '');
-    } else if (hours > 0) {
-        countdownEl.textContent = 'Event ends in ' + hours + ' hour' + (hours !== 1 ? 's' : '');
-    } else {
-        var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        countdownEl.textContent = 'Event ends in ' + minutes + ' minute' + (minutes !== 1 ? 's' : '');
-    }
+    var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    var parts = [];
+    if (days > 0) parts.push(days + 'd');
+    if (hours > 0) parts.push(hours + 'h');
+    if (minutes > 0) parts.push(minutes + 'm');
+    parts.push(seconds + 's');
+
+    countdownEl.textContent = 'Event ends in ' + parts.join(' ');
 }
 
 function fetchAllUpdates() {
@@ -675,6 +676,28 @@ function fetchLatestUpdate() {
             console.error("[LoadingScreen] Error fetching updates:", error);
             return null;
         });
+}
+
+/**
+ * Check if update content has actual text (not just images/links)
+ */
+function hasTextContent(content) {
+    if (!content) return false;
+    
+    // Remove Discord CDN links (images)
+    var stripped = content.replace(
+        /https:\/\/cdn\.discordapp\.com\/attachments\/[\d]+\/[\d]+\/[^\s<]+(\?[^\s<]*)?/gi,
+        ''
+    );
+    
+    // Remove Discord references like <@123>, <#channel>, <:emoji:123>
+    stripped = stripped.replace(/<[@#:][^>]+>/g, '');
+    
+    // Remove any remaining URLs
+    stripped = stripped.replace(/https?:\/\/[^\s]+/gi, '');
+    
+    // Check if there's any actual text left after trimming whitespace
+    return stripped.trim().length > 0;
 }
 
 function processUpdateContent(content) {
@@ -1003,13 +1026,20 @@ function showLatestUpdate() {
         if (!updates || updates.length === 0) {
             console.log("[LoadingScreen] No updates found to display");
         } else {
-            // Store all updates
-            allUpdates = updates;
-            currentUpdateIndex = -1; // Start at -1 so first showNextUpdate goes to index 0
+            // Filter out image-only updates (no text content)
+            allUpdates = updates.filter(function(update) {
+                return hasTextContent(update.content);
+            });
             
-            // Display the first (latest) update content but don't show yet
-            var latestUpdate = allUpdates[0];
-            displayUpdate(latestUpdate, true);
+            if (allUpdates.length === 0) {
+                console.log("[LoadingScreen] No updates with text content to display");
+            } else {
+                currentUpdateIndex = -1; // Start at -1 so first showNextUpdate goes to index 0
+                
+                // Display the first (latest) update content but don't show yet
+                var latestUpdate = allUpdates[0];
+                displayUpdate(latestUpdate, true);
+            }
         }
         
         // Always start with event/news if available, then sale, then updates
