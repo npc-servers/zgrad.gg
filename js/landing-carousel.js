@@ -170,6 +170,9 @@ function createCarouselUI(section) {
     carouselOverlay.innerHTML = `
         <div class="carousel-content-wrapper">
             <div class="carousel-content carousel-news" data-type="news">
+                <div class="carousel-cover-image-wrapper">
+                    <img class="carousel-cover-image" src="" alt="">
+                </div>
                 <h2 class="carousel-title"></h2>
                 <div class="carousel-author carousel-author-news">
                     <div class="author-avatar-wrapper">
@@ -178,8 +181,17 @@ function createCarouselUI(section) {
                     <span class="author-text">Posted by <span class="author-name"></span></span>
                 </div>
                 <p class="carousel-description"></p>
+                <a href="#" class="carousel-link">
+                    <span class="carousel-link-text">READ MORE</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
             </div>
             <div class="carousel-content carousel-event" data-type="event">
+                <div class="carousel-cover-image-wrapper">
+                    <img class="carousel-cover-image" src="" alt="">
+                </div>
                 <h2 class="carousel-title"></h2>
                 <div class="carousel-author carousel-author-event">
                     <div class="author-avatar-wrapper">
@@ -188,10 +200,22 @@ function createCarouselUI(section) {
                     <span class="author-text">Hosted by <span class="author-name"></span></span>
                 </div>
                 <p class="carousel-description"></p>
+                <a href="#" class="carousel-link">
+                    <span class="carousel-link-text">VIEW EVENT</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
             </div>
             <div class="carousel-content carousel-sale" data-type="sale">
                 <h2 class="carousel-title"></h2>
                 <p class="carousel-description"></p>
+                <a href="#" class="carousel-link">
+                    <span class="carousel-link-text">SHOP NOW</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
             </div>
         </div>
     `;
@@ -221,17 +245,6 @@ function createCarouselUI(section) {
         <div class="carousel-sale-percentage" data-type="sale"></div>
     `;
 
-    // Create carousel link button (positioned at bottom left of section)
-    const carouselLink = document.createElement('a');
-    carouselLink.className = 'carousel-link';
-    carouselLink.href = '#';
-    carouselLink.innerHTML = `
-        <span class="carousel-link-text">VIEW</span>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-        </svg>
-    `;
-
     // Create full-width progress bar
     const progressBar = document.createElement('div');
     progressBar.className = 'carousel-progress-bar';
@@ -239,7 +252,6 @@ function createCarouselUI(section) {
 
     section.appendChild(badgeContainer);
     section.appendChild(carouselOverlay);
-    section.appendChild(carouselLink);
     section.appendChild(progressBar);
 
     // Start countdown update interval for events
@@ -312,7 +324,6 @@ function updateCarouselDisplay(item, previousIndex) {
     const overlay = document.querySelector('.landing-carousel-overlay');
     const defaultContent = document.querySelector('.logo-container');
     const joinContainer = document.querySelector('.join-button-container');
-    const carouselLink = document.querySelector('.landing-section > .carousel-link');
     
     // Get all badge elements
     const allBadges = document.querySelectorAll('.landing-section .carousel-badge');
@@ -338,7 +349,6 @@ function updateCarouselDisplay(item, previousIndex) {
         overlay.classList.remove('active');
         if (defaultContent) defaultContent.classList.remove('carousel-hidden');
         if (joinContainer) joinContainer.classList.remove('carousel-hidden');
-        if (carouselLink) carouselLink.classList.remove('active');
     } else {
         // Hide default content and show carousel overlay
         if (defaultContent) defaultContent.classList.add('carousel-hidden');
@@ -380,7 +390,6 @@ function updateCarouselDisplay(item, previousIndex) {
             // Small delay to ensure content is populated before animation
             setTimeout(() => {
                 contentEl.classList.add('active');
-                if (carouselLink) carouselLink.classList.add('active');
             }, 50);
         }
     }
@@ -393,12 +402,26 @@ function populateCarouselContent(element, item) {
     const titleEl = element.querySelector('.carousel-title');
     const descEl = element.querySelector('.carousel-description');
     
-    // Get the separate link element
-    const linkEl = document.querySelector('.landing-section > .carousel-link');
+    // Get the link element inside this content panel
+    const linkEl = element.querySelector('.carousel-link');
     const linkTextEl = linkEl?.querySelector('.carousel-link-text');
 
     if (item.type === 'news' && item.data) {
         if (titleEl) titleEl.textContent = item.data.title || 'News Update';
+        
+        // Populate cover image
+        const coverWrapper = element.querySelector('.carousel-cover-image-wrapper');
+        const coverImg = element.querySelector('.carousel-cover-image');
+        if (coverWrapper && coverImg) {
+            if (item.data.cover_image) {
+                coverImg.src = item.data.cover_image;
+                coverImg.alt = item.data.title || 'News Cover';
+                coverWrapper.classList.add('has-image');
+            } else {
+                coverWrapper.classList.remove('has-image');
+                coverImg.src = '';
+            }
+        }
         
         // Populate author info
         const authorEl = element.querySelector('.carousel-author');
@@ -426,6 +449,20 @@ function populateCarouselContent(element, item) {
         if (linkTextEl) linkTextEl.textContent = 'READ MORE';
     } else if (item.type === 'event' && item.data) {
         if (titleEl) titleEl.textContent = item.data.title || 'Active Event';
+        
+        // Populate cover image
+        const coverWrapper = element.querySelector('.carousel-cover-image-wrapper');
+        const coverImg = element.querySelector('.carousel-cover-image');
+        if (coverWrapper && coverImg) {
+            if (item.data.cover_image) {
+                coverImg.src = item.data.cover_image;
+                coverImg.alt = item.data.title || 'Event Cover';
+                coverWrapper.classList.add('has-image');
+            } else {
+                coverWrapper.classList.remove('has-image');
+                coverImg.src = '';
+            }
+        }
         
         // Populate host info
         const authorEl = element.querySelector('.carousel-author');

@@ -1839,12 +1839,12 @@ z-index: 2;
 /* Individual carousel content panels */
 .carousel-content {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateY(20px);
     width: 100%;
     opacity: 0;
     pointer-events: none;
-    transform: translateY(20px);
     transition: opacity 0.5s ease-out, transform 0.5s ease-out;
     display: flex;
     flex-direction: column;
@@ -1854,7 +1854,7 @@ z-index: 2;
 .carousel-content.active {
     opacity: 1;
     pointer-events: auto;
-    transform: translateY(0);
+    transform: translate(-50%, -50%);
 }
 
 /* Carousel badge - simple white text, positioned top-left of landing section */
@@ -2019,6 +2019,30 @@ z-index: 2;
     color: #ffffff;
 }
 
+/* Carousel cover image - displayed above title */
+.carousel-cover-image-wrapper {
+    display: none;
+    width: 100%;
+    max-width: 600px;
+    max-height: 180px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+.carousel-cover-image-wrapper.has-image {
+    display: block;
+}
+
+.carousel-cover-image {
+    width: 100%;
+    height: auto;
+    max-height: 180px;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+}
+
 /* Carousel description - supports formatting, centered */
 .carousel-description {
     font-size: 1.3rem;
@@ -2040,54 +2064,48 @@ z-index: 2;
     font-style: italic;
 }
 
-/* Carousel link button - centered below description */
-.landing-section > .carousel-link {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, 180px);
+/* Carousel link button - inside content panels */
+.carousel-content .carousel-link {
     display: inline-flex;
     align-items: center;
     gap: 12px;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: #ffffff;
-    padding: 16px 40px;
+    padding: 14px 35px;
     border-radius: 8px;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 2px;
-    transition: all 0.3s ease, opacity 0.5s ease;
+    transition: all 0.3s ease;
     text-decoration: none;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    z-index: 30;
-    opacity: 0;
-    pointer-events: none;
+    margin-top: 10px;
 }
 
-.landing-section > .carousel-link.active {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.landing-section > .carousel-link:hover {
+.carousel-content .carousel-link:hover {
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.4);
     color: #ffffff;
-    transform: translate(-50%, 178px);
+    transform: translateY(-2px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-.landing-section > .carousel-link svg {
-    width: 20px;
-    height: 20px;
+.carousel-content .carousel-link svg {
+    width: 18px;
+    height: 18px;
     transition: transform 0.3s ease;
 }
 
-.landing-section > .carousel-link:hover svg {
+.carousel-content .carousel-link:hover svg {
     transform: translateX(5px);
+}
+
+/* Legacy styles for backward compatibility - can be removed */
+.landing-section > .carousel-link {
+    display: none;
 }
 
 /* Sale percentage - huge, positioned at top-left of landing section */
@@ -2164,6 +2182,20 @@ z-index: 2;
         width: 85%;
     }
     
+    .carousel-cover-image-wrapper {
+        max-width: 550px;
+        max-height: 160px;
+    }
+    
+    .carousel-cover-image {
+        max-height: 160px;
+    }
+    
+    .carousel-content .carousel-link {
+        padding: 12px 30px;
+        font-size: 0.95rem;
+    }
+    
     .carousel-title {
         font-size: 3.5rem;
     }
@@ -2199,6 +2231,22 @@ z-index: 2;
 @media (max-width: 992px) {
     .landing-carousel-overlay {
         width: 88%;
+    }
+    
+    .carousel-cover-image-wrapper {
+        max-width: 480px;
+        max-height: 140px;
+        margin-bottom: 15px;
+    }
+    
+    .carousel-cover-image {
+        max-height: 140px;
+    }
+    
+    .carousel-content .carousel-link {
+        padding: 11px 25px;
+        font-size: 0.9rem;
+        gap: 10px;
     }
     
     .landing-section .carousel-badge {
@@ -2257,14 +2305,6 @@ z-index: 2;
     .carousel-description {
         font-size: 1.1rem;
     }
-    
-    .landing-section > .carousel-link {
-        transform: translate(-50%, 150px);
-    }
-    
-    .landing-section > .carousel-link:hover {
-        transform: translate(-50%, 148px);
-    }
 }
 
 @media (max-width: 768px) {
@@ -2274,6 +2314,28 @@ z-index: 2;
     
     .carousel-content-wrapper {
         min-height: 280px;
+    }
+    
+    .carousel-cover-image-wrapper {
+        max-width: 400px;
+        max-height: 120px;
+        margin-bottom: 12px;
+    }
+    
+    .carousel-cover-image {
+        max-height: 120px;
+    }
+    
+    .carousel-content .carousel-link {
+        padding: 10px 22px;
+        font-size: 0.85rem;
+        gap: 8px;
+        margin-top: 8px;
+    }
+    
+    .carousel-content .carousel-link svg {
+        width: 16px;
+        height: 16px;
     }
     
     .landing-section .carousel-badge {
@@ -2333,16 +2395,6 @@ z-index: 2;
         font-size: 1.4rem;
     }
     
-    .landing-section > .carousel-link {
-        padding: 14px 30px;
-        font-size: 1rem;
-        transform: translate(-50%, 130px);
-    }
-    
-    .landing-section > .carousel-link:hover {
-        transform: translate(-50%, 128px);
-    }
-    
     .carousel-progress-bar {
         bottom: 20px;
     }
@@ -2355,6 +2407,30 @@ z-index: 2;
     
     .carousel-content-wrapper {
         min-height: 240px;
+    }
+    
+    .carousel-cover-image-wrapper {
+        max-width: 300px;
+        max-height: 100px;
+        margin-bottom: 10px;
+        border-radius: 6px;
+    }
+    
+    .carousel-cover-image {
+        max-height: 100px;
+    }
+    
+    .carousel-content .carousel-link {
+        padding: 9px 18px;
+        font-size: 0.8rem;
+        gap: 6px;
+        margin-top: 6px;
+        letter-spacing: 1px;
+    }
+    
+    .carousel-content .carousel-link svg {
+        width: 14px;
+        height: 14px;
     }
     
     .landing-section .carousel-badge {
@@ -2416,16 +2492,6 @@ z-index: 2;
     
     .countdown-time {
         font-size: 1.3rem;
-    }
-    
-    .landing-section > .carousel-link {
-        padding: 12px 25px;
-        font-size: 0.9rem;
-        transform: translate(-50%, 110px);
-    }
-    
-    .landing-section > .carousel-link:hover {
-        transform: translate(-50%, 108px);
     }
     
     .carousel-progress-bar {
