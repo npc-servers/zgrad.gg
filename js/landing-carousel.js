@@ -237,12 +237,18 @@ function createCarouselUI(section) {
             </svg>
             <span>ACTIVE EVENT</span>
         </div>
-        <div class="carousel-badge carousel-badge-sale" data-type="sale">STORE SALE</div>
         <div class="carousel-event-countdown" data-type="event">
             <span class="countdown-label">ENDS IN</span>
             <span class="countdown-time"></span>
         </div>
-        <div class="carousel-sale-percentage" data-type="sale"></div>
+        <div class="carousel-sale-percentage" data-type="sale">
+            <img src="/images/textures/circlular-splatter.png" alt="" class="sale-splatter-image">
+            <span class="sale-percentage-text"></span>
+        </div>
+        <div class="carousel-sale-countdown" data-type="sale">
+            <span class="sale-countdown-label">UNTIL</span>
+            <span class="sale-countdown-date"></span>
+        </div>
     `;
 
     // Create full-width progress bar
@@ -329,6 +335,7 @@ function updateCarouselDisplay(item, previousIndex) {
     const allBadges = document.querySelectorAll('.landing-section .carousel-badge');
     const countdown = document.querySelector('.landing-section .carousel-event-countdown');
     const salePercentage = document.querySelector('.landing-section .carousel-sale-percentage');
+    const saleCountdown = document.querySelector('.landing-section .carousel-sale-countdown');
     const newsDate = document.querySelector('.landing-section .carousel-news-date');
     
     if (!overlay) return;
@@ -342,6 +349,7 @@ function updateCarouselDisplay(item, previousIndex) {
     allBadges.forEach(badge => badge.classList.remove('active'));
     if (countdown) countdown.classList.remove('active');
     if (salePercentage) salePercentage.classList.remove('active');
+    if (saleCountdown) saleCountdown.classList.remove('active');
     if (newsDate) newsDate.classList.remove('active');
 
     if (item.type === 'default') {
@@ -378,8 +386,22 @@ function updateCarouselDisplay(item, previousIndex) {
         
         // Show and populate sale percentage
         if (item.type === 'sale' && salePercentage && item.data) {
-            salePercentage.textContent = `${item.data.percentage}% OFF`;
+            const percentageText = salePercentage.querySelector('.sale-percentage-text');
+            // Strip any existing % sign from the percentage value
+            const percentValue = String(item.data.percentage || '').replace(/%/g, '');
+            if (percentageText) percentageText.innerHTML = `${percentValue}%<br>OFF`;
             salePercentage.classList.add('active');
+            
+            // Show sale countdown with end date (API returns camelCase: endDate)
+            if (saleCountdown && item.data.endDate) {
+                const countdownDate = saleCountdown.querySelector('.sale-countdown-date');
+                if (countdownDate) {
+                    const endDate = new Date(item.data.endDate);
+                    const options = { month: 'short', day: 'numeric' };
+                    countdownDate.textContent = endDate.toLocaleDateString('en-US', options).toUpperCase();
+                }
+                saleCountdown.classList.add('active');
+            }
         }
 
         // Update and show the appropriate content
@@ -498,7 +520,7 @@ function populateCarouselContent(element, item) {
     } else if (item.type === 'sale' && item.data) {
         if (titleEl) titleEl.textContent = item.data.title || 'Store Sale';
         if (descEl) descEl.innerHTML = sanitizeHtml(item.data.description) || '';
-        if (linkTextEl) linkTextEl.textContent = item.data.linkText || 'SHOP NOW';
+        if (linkTextEl) linkTextEl.textContent = 'VISIT STORE';
         if (linkEl) {
             linkEl.href = item.data.linkUrl || 'https://store.zmod.gg';
             linkEl.setAttribute('target', '_blank');

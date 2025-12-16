@@ -152,8 +152,8 @@ export const contentTypeConfig = {
                 type: 'text', 
                 required: true, 
                 label: 'Discount Percentage',
-                placeholder: 'e.g., 35%',
-                description: 'The discount amount (include % sign)'
+                placeholder: 'e.g., 35',
+                description: 'The discount amount (% sign will be added automatically)'
             },
             description: { 
                 type: 'richtext', 

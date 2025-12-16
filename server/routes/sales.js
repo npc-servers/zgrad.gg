@@ -125,6 +125,9 @@ router.post('/create', requireAdmin(), async (req, res) => {
       }, 400);
     }
 
+    // Strip any % sign from percentage to prevent double %%
+    const cleanPercentage = String(percentage).replace(/%/g, '');
+
     const id = crypto.randomUUID();
     const now = Date.now();
     
@@ -137,7 +140,7 @@ router.post('/create', requireAdmin(), async (req, res) => {
     ).bind(
       id, 
       title, 
-      percentage, 
+      cleanPercentage, 
       description, 
       link_text, 
       link_url,
@@ -152,7 +155,7 @@ router.post('/create', requireAdmin(), async (req, res) => {
 
     return secureJsonResponse(res, {
       success: true,
-      sale: { id, title, percentage, description, link_text, link_url, enabled, start_date: effectiveStartDate, end_date, created_at: now },
+      sale: { id, title, percentage: cleanPercentage, description, link_text, link_url, enabled, start_date: effectiveStartDate, end_date, created_at: now },
     }, 201);
   } catch (error) {
     console.error('Error creating sale:', error);
@@ -224,6 +227,11 @@ router.put('/:id', requireAdmin(), async (req, res) => {
       return val;
     };
 
+    // Strip any % sign from percentage to prevent double %%
+    const cleanPercentage = percentage !== undefined 
+      ? String(percentage).replace(/%/g, '') 
+      : existingSale.percentage;
+
     query.prepare(
       `UPDATE sales 
        SET title = ?, percentage = ?, description = ?, link_text = ?, link_url = ?, 
@@ -231,7 +239,7 @@ router.put('/:id', requireAdmin(), async (req, res) => {
        WHERE id = ?`
     ).bind(
       title !== undefined ? title : existingSale.title,
-      percentage !== undefined ? percentage : existingSale.percentage,
+      cleanPercentage,
       description !== undefined ? description : existingSale.description,
       link_text !== undefined ? link_text : existingSale.link_text,
       link_url !== undefined ? link_url : existingSale.link_url,

@@ -2108,24 +2108,83 @@ z-index: 2;
     display: none;
 }
 
-/* Sale percentage - huge, positioned at top-left of landing section */
+/* Sale percentage with blood splatter - positioned at top-left of landing section */
 .landing-section .carousel-sale-percentage {
     position: absolute;
-    top: 120px;
-    left: 5%;
-    font-size: 7rem;
-    font-weight: 800;
-    color: #ffffff;
-    line-height: 1;
-    text-shadow: 
-        0 0 10px rgba(255, 0, 0, 0.4),
-        0 0 20px rgba(255, 0, 0, 0.2),
-        0 4px 30px rgba(0, 0, 0, 0.4);
+    top: 75px;
+    left: 2%;
+    width: 240px;
+    height: 240px;
     opacity: 0;
     transition: opacity 0.5s ease-out;
 }
 
+.landing-section .carousel-sale-percentage .sale-splatter-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+    -webkit-mask: radial-gradient(ellipse at center, rgba(0,0,0,1) 30%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0.4) 70%, rgba(0,0,0,0) 90%);
+    mask: radial-gradient(ellipse at center, rgba(0,0,0,1) 30%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0.4) 70%, rgba(0,0,0,0) 90%);
+}
+
+.landing-section .carousel-sale-percentage .sale-percentage-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Oxanium', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-align: center;
+    line-height: 1;
+    text-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.8),
+        0 0 10px rgba(0, 0, 0, 0.5);
+    letter-spacing: -0.5px;
+}
+
 .landing-section .carousel-sale-percentage.active {
+    opacity: 1;
+}
+
+/* Sale countdown - positioned next to the percentage splatter, vertically centered */
+.landing-section .carousel-sale-countdown {
+    position: absolute;
+    top: 75px;
+    left: calc(2% + 220px);
+    height: 240px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+}
+
+.landing-section .carousel-sale-countdown .sale-countdown-label {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.landing-section .carousel-sale-countdown .sale-countdown-date {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.8),
+        0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.landing-section .carousel-sale-countdown.active {
     opacity: 1;
 }
 
@@ -2172,8 +2231,18 @@ z-index: 2;
         font-size: 4rem;
     }
     
-    .carousel-sale-percentage {
-        font-size: 6rem;
+    .landing-section .carousel-sale-percentage {
+        width: 220px;
+        height: 220px;
+    }
+    
+    .landing-section .carousel-sale-percentage .sale-percentage-text {
+        font-size: 2.8rem;
+    }
+    
+    .landing-section .carousel-sale-countdown {
+        left: calc(2% + 200px);
+        height: 220px;
     }
 }
 
@@ -2214,8 +2283,26 @@ z-index: 2;
         height: 48px;
     }
     
-    .carousel-sale-percentage {
-        font-size: 5rem;
+    .landing-section .carousel-sale-percentage {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .landing-section .carousel-sale-percentage .sale-percentage-text {
+        font-size: 2.5rem;
+    }
+    
+    .landing-section .carousel-sale-countdown {
+        left: calc(2% + 180px);
+        height: 200px;
+    }
+    
+    .landing-section .carousel-sale-countdown .sale-countdown-label {
+        font-size: 1.1rem;
+    }
+    
+    .landing-section .carousel-sale-countdown .sale-countdown-date {
+        font-size: 1.8rem;
     }
     
     .countdown-time {
@@ -2274,9 +2361,28 @@ z-index: 2;
     }
     
     .landing-section .carousel-sale-percentage {
-        top: 115px;
+        top: 75px;
         left: 4%;
-        font-size: 4rem;
+        width: 180px;
+        height: 180px;
+    }
+    
+    .landing-section .carousel-sale-percentage .sale-percentage-text {
+        font-size: 2.2rem;
+    }
+    
+    .landing-section .carousel-sale-countdown {
+        top: 75px;
+        left: calc(4% + 160px);
+        height: 180px;
+    }
+    
+    .landing-section .carousel-sale-countdown .sale-countdown-label {
+        font-size: 0.9rem;
+    }
+    
+    .landing-section .carousel-sale-countdown .sale-countdown-date {
+        font-size: 1.6rem;
     }
     
     .carousel-title {
@@ -2363,9 +2469,28 @@ z-index: 2;
     }
     
     .landing-section .carousel-sale-percentage {
-        top: 105px;
+        top: 70px;
         left: 5%;
-        font-size: 3.5rem;
+        width: 160px;
+        height: 160px;
+    }
+    
+    .landing-section .carousel-sale-percentage .sale-percentage-text {
+        font-size: 2rem;
+    }
+    
+    .landing-section .carousel-sale-countdown {
+        top: 70px;
+        left: calc(5% + 140px);
+        height: 160px;
+    }
+    
+    .landing-section .carousel-sale-countdown .sale-countdown-label {
+        font-size: 0.85rem;
+    }
+    
+    .landing-section .carousel-sale-countdown .sale-countdown-date {
+        font-size: 1.4rem;
     }
     
     .carousel-title {
@@ -2461,9 +2586,29 @@ z-index: 2;
     }
     
     .landing-section .carousel-sale-percentage {
-        top: 95px;
+        top: 65px;
         left: 5%;
-        font-size: 2.5rem;
+        width: 130px;
+        height: 130px;
+    }
+    
+    .landing-section .carousel-sale-percentage .sale-percentage-text {
+        font-size: 1.6rem;
+    }
+    
+    .landing-section .carousel-sale-countdown {
+        top: 65px;
+        left: calc(5% + 115px);
+        height: 130px;
+    }
+    
+    .landing-section .carousel-sale-countdown .sale-countdown-label {
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+    }
+    
+    .landing-section .carousel-sale-countdown .sale-countdown-date {
+        font-size: 1.2rem;
     }
     
     .carousel-title {
