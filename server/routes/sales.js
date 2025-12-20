@@ -125,8 +125,14 @@ router.post('/create', requireAdmin(), async (req, res) => {
       }, 400);
     }
 
+    // Strip any % sign from percentage to prevent double %%
+    const cleanPercentage = String(percentage).replace(/%/g, '');
+
     const id = crypto.randomUUID();
     const now = Date.now();
+    
+    // If no start_date provided, use current time for "immediate" start
+    const effectiveStartDate = start_date || now;
 
     query.prepare(
       `INSERT INTO sales (id, title, percentage, description, link_text, link_url, enabled, start_date, end_date, author_id, author_name, created_at, updated_at) 
@@ -134,12 +140,12 @@ router.post('/create', requireAdmin(), async (req, res) => {
     ).bind(
       id, 
       title, 
-      percentage, 
+      cleanPercentage, 
       description, 
       link_text, 
       link_url,
       enabled ? 1 : 0,
-      start_date || null,
+      effectiveStartDate,
       end_date || null,
       req.session.user_id, 
       req.session.username,
@@ -149,7 +155,7 @@ router.post('/create', requireAdmin(), async (req, res) => {
 
     return secureJsonResponse(res, {
       success: true,
-      sale: { id, title, percentage, description, link_text, link_url, enabled, start_date, end_date, created_at: now },
+      sale: { id, title, percentage: cleanPercentage, description, link_text, link_url, enabled, start_date: effectiveStartDate, end_date, created_at: now },
     }, 201);
   } catch (error) {
     console.error('Error creating sale:', error);
@@ -214,6 +220,18 @@ router.put('/:id', requireAdmin(), async (req, res) => {
 
     const now = Date.now();
 
+    // Normalize date values - convert empty strings, 0, and falsy values to null
+    const normalizeDate = (val, fallback) => {
+      if (val === undefined) return fallback;
+      if (val === null || val === '' || val === 0) return null;
+      return val;
+    };
+
+    // Strip any % sign from percentage to prevent double %%
+    const cleanPercentage = percentage !== undefined 
+      ? String(percentage).replace(/%/g, '') 
+      : existingSale.percentage;
+
     query.prepare(
       `UPDATE sales 
        SET title = ?, percentage = ?, description = ?, link_text = ?, link_url = ?, 
@@ -221,13 +239,13 @@ router.put('/:id', requireAdmin(), async (req, res) => {
        WHERE id = ?`
     ).bind(
       title !== undefined ? title : existingSale.title,
-      percentage !== undefined ? percentage : existingSale.percentage,
+      cleanPercentage,
       description !== undefined ? description : existingSale.description,
       link_text !== undefined ? link_text : existingSale.link_text,
       link_url !== undefined ? link_url : existingSale.link_url,
       enabled !== undefined ? (enabled ? 1 : 0) : existingSale.enabled,
-      start_date !== undefined ? start_date : existingSale.start_date,
-      end_date !== undefined ? end_date : existingSale.end_date,
+      normalizeDate(start_date, existingSale.start_date),
+      normalizeDate(end_date, existingSale.end_date),
       now,
       saleId
     ).run();

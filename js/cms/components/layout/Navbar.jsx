@@ -2,7 +2,7 @@
  * CMS Navbar Component
  */
 
-import { currentUser } from '../../store/state.js';
+import { currentUser, triggerLogout } from '../../store/state.js';
 import API from '../../services/api.js';
 import { Button } from '../ui/Button.jsx';
 
@@ -10,7 +10,20 @@ export function Navbar() {
     const user = currentUser.value;
 
     const handleLogout = async () => {
-        await API.logout();
+        // Stop all background processes first
+        triggerLogout();
+        
+        // Call logout API BEFORE setting the blocking flag
+        try {
+            await API.logout();
+        } catch (error) {
+            // Ignore errors during logout - we're leaving anyway
+            console.log('Logout request:', error.message);
+        }
+        
+        // Now set the flag to block any further requests
+        API.setLoggingOut(true);
+        
         window.location.href = '/';
     };
 

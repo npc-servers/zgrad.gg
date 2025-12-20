@@ -8,9 +8,20 @@ import { getContentTypeConfig } from '../config/contentTypes.js';
 class APIService {
     constructor() {
         this.baseURL = '';
+        this.isLoggingOut = false;
+    }
+
+    // Call this before logout to prevent further API errors
+    setLoggingOut(value) {
+        this.isLoggingOut = value;
     }
 
     async request(endpoint, options = {}) {
+        // If we're logging out, don't make any more requests
+        if (this.isLoggingOut) {
+            throw new Error('Session ended');
+        }
+
         const response = await fetch(`${this.baseURL}${endpoint}`, {
             headers: {
                 'Content-Type': 'application/json',
@@ -20,7 +31,18 @@ class APIService {
         });
 
         if (!response.ok) {
-            const error = await response.json().catch(() => ({ error: 'Request failed' }));
+            // Handle 401 Unauthorized - user is logged out
+            if (response.status === 401) {
+                this.isLoggingOut = true;
+                throw new Error('Unauthorized');
+            }
+            
+            // Try to parse JSON error, but handle HTML responses gracefully
+            let error = { error: 'Request failed' };
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                error = await response.json().catch(() => ({ error: 'Request failed' }));
+            }
             throw new Error(error.error || error.details || `HTTP ${response.status}`);
         }
 
@@ -119,6 +141,11 @@ class APIService {
 
     // Image endpoints
     async uploadImage(file) {
+        // If we're logging out, don't make any more requests
+        if (this.isLoggingOut) {
+            throw new Error('Session ended');
+        }
+
         const formData = new FormData();
         formData.append('image', file);
 
@@ -128,7 +155,16 @@ class APIService {
         });
 
         if (!response.ok) {
-            const error = await response.json().catch(() => ({ error: 'Upload failed' }));
+            if (response.status === 401) {
+                this.isLoggingOut = true;
+                throw new Error('Unauthorized');
+            }
+            
+            let error = { error: 'Upload failed' };
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                error = await response.json().catch(() => ({ error: 'Upload failed' }));
+            }
             throw new Error(error.error || error.details || 'Upload failed');
         }
 

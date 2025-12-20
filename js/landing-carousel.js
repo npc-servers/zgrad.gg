@@ -64,11 +64,8 @@ async function initLandingCarousel() {
             createCarouselUI(landingSection);
             carouselState.isInitialized = true;
 
-            // Show progress bar immediately
-            const progressBar = document.querySelector('.carousel-progress-bar');
-            if (progressBar) {
-                progressBar.classList.add('visible');
-            }
+            // Create navigation dots based on number of items
+            createNavigationDots();
 
             // Start the carousel immediately
             startCarousel();
@@ -170,6 +167,9 @@ function createCarouselUI(section) {
     carouselOverlay.innerHTML = `
         <div class="carousel-content-wrapper">
             <div class="carousel-content carousel-news" data-type="news">
+                <div class="carousel-cover-image-wrapper">
+                    <img class="carousel-cover-image" src="" alt="">
+                </div>
                 <h2 class="carousel-title"></h2>
                 <div class="carousel-author carousel-author-news">
                     <div class="author-avatar-wrapper">
@@ -178,8 +178,17 @@ function createCarouselUI(section) {
                     <span class="author-text">Posted by <span class="author-name"></span></span>
                 </div>
                 <p class="carousel-description"></p>
+                <a href="#" class="carousel-link">
+                    <span class="carousel-link-text">READ MORE</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
             </div>
             <div class="carousel-content carousel-event" data-type="event">
+                <div class="carousel-cover-image-wrapper">
+                    <img class="carousel-cover-image" src="" alt="">
+                </div>
                 <h2 class="carousel-title"></h2>
                 <div class="carousel-author carousel-author-event">
                     <div class="author-avatar-wrapper">
@@ -188,10 +197,22 @@ function createCarouselUI(section) {
                     <span class="author-text">Hosted by <span class="author-name"></span></span>
                 </div>
                 <p class="carousel-description"></p>
+                <a href="#" class="carousel-link">
+                    <span class="carousel-link-text">VIEW EVENT</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
             </div>
             <div class="carousel-content carousel-sale" data-type="sale">
                 <h2 class="carousel-title"></h2>
                 <p class="carousel-description"></p>
+                <a href="#" class="carousel-link">
+                    <span class="carousel-link-text">SHOP NOW</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
             </div>
         </div>
     `;
@@ -213,34 +234,27 @@ function createCarouselUI(section) {
             </svg>
             <span>ACTIVE EVENT</span>
         </div>
-        <div class="carousel-badge carousel-badge-sale" data-type="sale">STORE SALE</div>
         <div class="carousel-event-countdown" data-type="event">
             <span class="countdown-label">ENDS IN</span>
             <span class="countdown-time"></span>
         </div>
-        <div class="carousel-sale-percentage" data-type="sale"></div>
+        <div class="carousel-sale-percentage" data-type="sale">
+            <img src="/images/textures/circlular-splatter.png" alt="" class="sale-splatter-image">
+            <span class="sale-percentage-text"></span>
+        </div>
+        <div class="carousel-sale-countdown" data-type="sale">
+            <span class="sale-countdown-label">UNTIL</span>
+            <span class="sale-countdown-date"></span>
+        </div>
     `;
 
-    // Create carousel link button (positioned at bottom left of section)
-    const carouselLink = document.createElement('a');
-    carouselLink.className = 'carousel-link';
-    carouselLink.href = '#';
-    carouselLink.innerHTML = `
-        <span class="carousel-link-text">VIEW</span>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-        </svg>
-    `;
-
-    // Create full-width progress bar
-    const progressBar = document.createElement('div');
-    progressBar.className = 'carousel-progress-bar';
-    progressBar.innerHTML = `<div class="carousel-progress-fill"></div>`;
+    // Create dots navigation container (dots will be added dynamically when items are loaded)
+    const dotsContainer = document.createElement('div');
+    dotsContainer.className = 'carousel-dots';
 
     section.appendChild(badgeContainer);
     section.appendChild(carouselOverlay);
-    section.appendChild(carouselLink);
-    section.appendChild(progressBar);
+    section.appendChild(dotsContainer);
 
     // Start countdown update interval for events
     setInterval(updateEventCountdown, 1000);
@@ -254,17 +268,14 @@ function startCarousel() {
         clearInterval(carouselState.intervalId);
     }
 
-    // Reset and start progress bar
-    resetProgressBar();
+    // Start dot fill animation for current slide
+    updateActiveDot(carouselState.currentIndex);
 
     carouselState.intervalId = setInterval(() => {
         if (!carouselState.isPaused) {
             nextSlide();
         }
     }, CAROUSEL_CONFIG.rotationInterval);
-
-    // Start progress animation
-    startProgressAnimation();
 }
 
 /**
@@ -288,7 +299,9 @@ function goToSlide(index) {
     
     // Update UI
     updateCarouselDisplay(currentItem, previousIndex);
-    resetProgressBar();
+    
+    // Update active dot and start its fill animation
+    updateActiveDot(index);
     
     // Restart the interval
     if (carouselState.intervalId) {
@@ -300,9 +313,6 @@ function goToSlide(index) {
             nextSlide();
         }
     }, CAROUSEL_CONFIG.rotationInterval);
-
-    // Restart progress animation
-    startProgressAnimation();
 }
 
 /**
@@ -312,12 +322,12 @@ function updateCarouselDisplay(item, previousIndex) {
     const overlay = document.querySelector('.landing-carousel-overlay');
     const defaultContent = document.querySelector('.logo-container');
     const joinContainer = document.querySelector('.join-button-container');
-    const carouselLink = document.querySelector('.landing-section > .carousel-link');
     
     // Get all badge elements
     const allBadges = document.querySelectorAll('.landing-section .carousel-badge');
     const countdown = document.querySelector('.landing-section .carousel-event-countdown');
     const salePercentage = document.querySelector('.landing-section .carousel-sale-percentage');
+    const saleCountdown = document.querySelector('.landing-section .carousel-sale-countdown');
     const newsDate = document.querySelector('.landing-section .carousel-news-date');
     
     if (!overlay) return;
@@ -331,6 +341,7 @@ function updateCarouselDisplay(item, previousIndex) {
     allBadges.forEach(badge => badge.classList.remove('active'));
     if (countdown) countdown.classList.remove('active');
     if (salePercentage) salePercentage.classList.remove('active');
+    if (saleCountdown) saleCountdown.classList.remove('active');
     if (newsDate) newsDate.classList.remove('active');
 
     if (item.type === 'default') {
@@ -338,7 +349,6 @@ function updateCarouselDisplay(item, previousIndex) {
         overlay.classList.remove('active');
         if (defaultContent) defaultContent.classList.remove('carousel-hidden');
         if (joinContainer) joinContainer.classList.remove('carousel-hidden');
-        if (carouselLink) carouselLink.classList.remove('active');
     } else {
         // Hide default content and show carousel overlay
         if (defaultContent) defaultContent.classList.add('carousel-hidden');
@@ -368,8 +378,22 @@ function updateCarouselDisplay(item, previousIndex) {
         
         // Show and populate sale percentage
         if (item.type === 'sale' && salePercentage && item.data) {
-            salePercentage.textContent = `${item.data.percentage}% OFF`;
+            const percentageText = salePercentage.querySelector('.sale-percentage-text');
+            // Strip any existing % sign from the percentage value
+            const percentValue = String(item.data.percentage || '').replace(/%/g, '');
+            if (percentageText) percentageText.innerHTML = `${percentValue}%<br>OFF`;
             salePercentage.classList.add('active');
+            
+            // Show sale countdown with end date (API returns camelCase: endDate)
+            if (saleCountdown && item.data.endDate) {
+                const countdownDate = saleCountdown.querySelector('.sale-countdown-date');
+                if (countdownDate) {
+                    const endDate = new Date(item.data.endDate);
+                    const options = { month: 'short', day: 'numeric' };
+                    countdownDate.textContent = endDate.toLocaleDateString('en-US', options).toUpperCase();
+                }
+                saleCountdown.classList.add('active');
+            }
         }
 
         // Update and show the appropriate content
@@ -380,7 +404,6 @@ function updateCarouselDisplay(item, previousIndex) {
             // Small delay to ensure content is populated before animation
             setTimeout(() => {
                 contentEl.classList.add('active');
-                if (carouselLink) carouselLink.classList.add('active');
             }, 50);
         }
     }
@@ -393,12 +416,26 @@ function populateCarouselContent(element, item) {
     const titleEl = element.querySelector('.carousel-title');
     const descEl = element.querySelector('.carousel-description');
     
-    // Get the separate link element
-    const linkEl = document.querySelector('.landing-section > .carousel-link');
+    // Get the link element inside this content panel
+    const linkEl = element.querySelector('.carousel-link');
     const linkTextEl = linkEl?.querySelector('.carousel-link-text');
 
     if (item.type === 'news' && item.data) {
         if (titleEl) titleEl.textContent = item.data.title || 'News Update';
+        
+        // Populate cover image
+        const coverWrapper = element.querySelector('.carousel-cover-image-wrapper');
+        const coverImg = element.querySelector('.carousel-cover-image');
+        if (coverWrapper && coverImg) {
+            if (item.data.cover_image) {
+                coverImg.src = item.data.cover_image;
+                coverImg.alt = item.data.title || 'News Cover';
+                coverWrapper.classList.add('has-image');
+            } else {
+                coverWrapper.classList.remove('has-image');
+                coverImg.src = '';
+            }
+        }
         
         // Populate author info
         const authorEl = element.querySelector('.carousel-author');
@@ -426,6 +463,20 @@ function populateCarouselContent(element, item) {
         if (linkTextEl) linkTextEl.textContent = 'READ MORE';
     } else if (item.type === 'event' && item.data) {
         if (titleEl) titleEl.textContent = item.data.title || 'Active Event';
+        
+        // Populate cover image
+        const coverWrapper = element.querySelector('.carousel-cover-image-wrapper');
+        const coverImg = element.querySelector('.carousel-cover-image');
+        if (coverWrapper && coverImg) {
+            if (item.data.cover_image) {
+                coverImg.src = item.data.cover_image;
+                coverImg.alt = item.data.title || 'Event Cover';
+                coverWrapper.classList.add('has-image');
+            } else {
+                coverWrapper.classList.remove('has-image');
+                coverImg.src = '';
+            }
+        }
         
         // Populate host info
         const authorEl = element.querySelector('.carousel-author');
@@ -461,7 +512,7 @@ function populateCarouselContent(element, item) {
     } else if (item.type === 'sale' && item.data) {
         if (titleEl) titleEl.textContent = item.data.title || 'Store Sale';
         if (descEl) descEl.innerHTML = sanitizeHtml(item.data.description) || '';
-        if (linkTextEl) linkTextEl.textContent = item.data.linkText || 'SHOP NOW';
+        if (linkTextEl) linkTextEl.textContent = 'VISIT STORE';
         if (linkEl) {
             linkEl.href = item.data.linkUrl || 'https://store.zmod.gg';
             linkEl.setAttribute('target', '_blank');
@@ -557,26 +608,102 @@ function updateEventCountdown() {
 }
 
 /**
- * Reset progress bar animation
+ * Create navigation dots based on number of carousel items
  */
-function resetProgressBar() {
-    const fill = document.querySelector('.carousel-progress-fill');
-    if (fill) {
-        fill.style.animation = 'none';
-        fill.offsetHeight; // Trigger reflow
-        fill.style.animation = '';
+function createNavigationDots() {
+    const dotsContainer = document.querySelector('.carousel-dots');
+    if (!dotsContainer) return;
+
+    dotsContainer.innerHTML = '';
+    
+    // Add "NEXT" text above the dots
+    const nextLabel = document.createElement('button');
+    nextLabel.className = 'carousel-next-label';
+    nextLabel.textContent = 'NEXT';
+    nextLabel.setAttribute('aria-label', 'Go to next slide');
+    nextLabel.addEventListener('click', () => {
+        nextSlide();
+    });
+    dotsContainer.appendChild(nextLabel);
+    
+    // Create a wrapper for the dots to keep them horizontal
+    const dotsWrapper = document.createElement('div');
+    dotsWrapper.className = 'carousel-dots-wrapper';
+    
+    carouselState.items.forEach((item, index) => {
+        const dot = document.createElement('button');
+        dot.className = 'carousel-dot';
+        dot.setAttribute('aria-label', `Go to slide ${index + 1}`);
+        dot.innerHTML = '<span class="dot-fill"></span>';
+        
+        dot.addEventListener('click', () => {
+            goToSlide(index);
+        });
+        
+        dotsWrapper.appendChild(dot);
+    });
+    
+    dotsContainer.appendChild(dotsWrapper);
+    
+    // Set first dot as active
+    updateActiveDot(0);
+}
+
+/**
+ * Update active dot and restart its fill animation
+ */
+function updateActiveDot(index) {
+    const dots = document.querySelectorAll('.carousel-dot');
+    dots.forEach((dot, i) => {
+        dot.classList.remove('active', 'filled');
+        const fill = dot.querySelector('.dot-fill');
+        if (fill) {
+            fill.style.animation = 'none';
+        }
+        
+        // Mark previous dots as filled
+        if (i < index) {
+            dot.classList.add('filled');
+        }
+    });
+    
+    const activeDot = dots[index];
+    if (activeDot) {
+        activeDot.classList.add('active');
+        startDotFillAnimation(activeDot);
+        
+        // If currently paused (e.g., user is hovering), pause the new animation too
+        if (carouselState.isPaused) {
+            const fill = activeDot.querySelector('.dot-fill');
+            if (fill) {
+                fill.style.animationPlayState = 'paused';
+            }
+        }
     }
 }
 
 /**
- * Start progress bar animation
+ * Start fill animation for a dot
  */
-function startProgressAnimation() {
-    const fill = document.querySelector('.carousel-progress-fill');
+function startDotFillAnimation(dot) {
+    const fill = dot.querySelector('.dot-fill');
     if (fill) {
         fill.style.animation = 'none';
         fill.offsetHeight; // Trigger reflow
-        fill.style.animation = `progressFill ${CAROUSEL_CONFIG.rotationInterval}ms linear forwards`;
+        fill.style.animation = `dotFill ${CAROUSEL_CONFIG.rotationInterval}ms linear forwards`;
+    }
+}
+
+/**
+ * Pause/resume dot fill animation
+ */
+function setDotAnimationState(paused) {
+    const activeDot = document.querySelector('.carousel-dot.active');
+    if (activeDot) {
+        const fill = activeDot.querySelector('.dot-fill');
+        if (fill) {
+            fill.style.animationPlayState = paused ? 'paused' : 'running';
+        }
     }
 }
 
@@ -585,26 +712,36 @@ function startProgressAnimation() {
  */
 function setupPauseOnHover() {
     const overlay = document.querySelector('.landing-carousel-overlay');
-    const progressBar = document.querySelector('.carousel-progress-bar');
+    const dotsContainer = document.querySelector('.carousel-dots');
     
-    const pauseElements = [overlay, progressBar].filter(Boolean);
+    const pauseElements = [overlay, dotsContainer].filter(Boolean);
+    
+    // Track if mouse is over any pause element
+    let hoverCount = 0;
     
     pauseElements.forEach(el => {
         el.addEventListener('mouseenter', () => {
-            carouselState.isPaused = true;
-            const fill = document.querySelector('.carousel-progress-fill');
-            if (fill) {
-                fill.style.animationPlayState = 'paused';
+            hoverCount++;
+            if (hoverCount > 0) {
+                carouselState.isPaused = true;
+                setDotAnimationState(true);
             }
         });
         
         el.addEventListener('mouseleave', () => {
-            carouselState.isPaused = false;
-            const fill = document.querySelector('.carousel-progress-fill');
-            if (fill) {
-                fill.style.animationPlayState = 'running';
+            hoverCount = Math.max(0, hoverCount - 1);
+            if (hoverCount === 0) {
+                carouselState.isPaused = false;
+                setDotAnimationState(false);
             }
         });
+    });
+    
+    // Safety: if mouse leaves the window entirely, resume
+    document.addEventListener('mouseleave', () => {
+        hoverCount = 0;
+        carouselState.isPaused = false;
+        setDotAnimationState(false);
     });
 }
 

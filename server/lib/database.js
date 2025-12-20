@@ -324,6 +324,14 @@ const runMigrations = () => {
     `);
   }
   
+  // Fix any sales with empty string dates (should be NULL for SQL IS NULL checks)
+  try {
+    db.exec(`UPDATE sales SET start_date = NULL WHERE start_date = ''`);
+    db.exec(`UPDATE sales SET end_date = NULL WHERE end_date = ''`);
+  } catch (e) {
+    // Table might not exist yet
+  }
+  
   console.log('✅ Migrations complete');
 };
 

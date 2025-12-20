@@ -205,7 +205,19 @@ router.get('/logout', (req, res) => {
     query.prepare('DELETE FROM sessions WHERE id = ?').bind(sessionId).run();
   }
 
-  res.clearCookie('session_id', { path: '/' });
+  // Clear cookie with same options used when setting it
+  res.clearCookie('session_id', {
+    path: '/',
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+  });
+  
+  // Return JSON for API calls, or redirect for direct browser access
+  if (req.headers.accept?.includes('application/json') || req.headers['content-type']?.includes('application/json')) {
+    return res.json({ success: true, message: 'Logged out' });
+  }
+  
   res.redirect('/');
 });
 

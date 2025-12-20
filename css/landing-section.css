@@ -573,7 +573,7 @@ background: linear-gradient(90deg,
     transform: translateX(-50%);
     z-index: 10;
     cursor: pointer;
-    width: 100%;
+    width: auto;
     display: flex;
     justify-content: center;
     pointer-events: auto;
@@ -601,10 +601,10 @@ background: linear-gradient(90deg,
     font-size: 0.8rem;
     font-weight: 600;
     letter-spacing: 2px;
-    color: rgba(255, 255, 255, 0.8);
+    color: #dc3545;
     text-transform: uppercase;
     margin-bottom: 5px;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.4);
+    text-shadow: 0 0 10px rgba(220, 53, 69, 0.8), 0 0 20px rgba(220, 53, 69, 0.4);
     animation: fadeInUp 1s ease-out forwards, textGlowPulse 2s ease-in-out 1.5s 3;
 }
 
@@ -612,7 +612,7 @@ background: linear-gradient(90deg,
 .mouse {
     width: 26px;
     height: 42px;
-    border: 2px solid rgba(255, 255, 255, 0.6);
+    border: 2px solid rgba(220, 53, 69, 0.6);
     border-radius: 20px;
     position: relative;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -621,7 +621,7 @@ background: linear-gradient(90deg,
 .wheel {
     width: 4px;
     height: 8px;
-    background-color: #fff;
+    background-color: rgba(220, 53, 69, 0.9);
     border-radius: 2px;
     position: absolute;
     top: 8px;
@@ -655,7 +655,7 @@ background: linear-gradient(90deg,
 .swipe-circle {
     width: 8px;
     height: 8px;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(220, 53, 69, 0.8);
     border-radius: 50%;
     margin: 4px 0;
     animation: swipeUp 1.5s infinite ease-in-out;
@@ -696,17 +696,17 @@ background: linear-gradient(90deg,
 
 .scroll-indicator-mobile .scroll-text {
     animation: fadeInUp 1s ease-out forwards, textGlowPulse 2s ease-in-out 1.5s 3;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.4);
+    text-shadow: 0 0 10px rgba(220, 53, 69, 0.8), 0 0 20px rgba(220, 53, 69, 0.4);
 }
 
 @keyframes textGlowPulse {
     0%, 100% {
-        text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.4);
-        color: rgba(255, 255, 255, 1);
+        text-shadow: 0 0 10px rgba(220, 53, 69, 0.8), 0 0 20px rgba(220, 53, 69, 0.4);
+        color: #dc3545;
     }
     50% {
-        text-shadow: 0 0 20px rgba(255, 255, 255, 1), 0 0 40px rgba(255, 255, 255, 0.6), 0 0 60px rgba(255, 255, 255, 0.3);
-        color: #ffffff;
+        text-shadow: 0 0 20px rgba(220, 53, 69, 1), 0 0 40px rgba(220, 53, 69, 0.6), 0 0 60px rgba(220, 53, 69, 0.3);
+        color: #dc3545;
     }
 }
 
@@ -1839,12 +1839,12 @@ z-index: 2;
 /* Individual carousel content panels */
 .carousel-content {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateY(20px);
     width: 100%;
     opacity: 0;
     pointer-events: none;
-    transform: translateY(20px);
     transition: opacity 0.5s ease-out, transform 0.5s ease-out;
     display: flex;
     flex-direction: column;
@@ -1854,7 +1854,7 @@ z-index: 2;
 .carousel-content.active {
     opacity: 1;
     pointer-events: auto;
-    transform: translateY(0);
+    transform: translate(-50%, -50%);
 }
 
 /* Carousel badge - simple white text, positioned top-left of landing section */
@@ -2019,6 +2019,30 @@ z-index: 2;
     color: #ffffff;
 }
 
+/* Carousel cover image - displayed above title */
+.carousel-cover-image-wrapper {
+    display: none;
+    width: 100%;
+    max-width: 600px;
+    max-height: 180px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+.carousel-cover-image-wrapper.has-image {
+    display: block;
+}
+
+.carousel-cover-image {
+    width: 100%;
+    height: auto;
+    max-height: 180px;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+}
+
 /* Carousel description - supports formatting, centered */
 .carousel-description {
     font-size: 1.3rem;
@@ -2040,106 +2064,215 @@ z-index: 2;
     font-style: italic;
 }
 
-/* Carousel link button - centered below description */
-.landing-section > .carousel-link {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, 180px);
+/* Carousel link button - inside content panels */
+.carousel-content .carousel-link {
     display: inline-flex;
     align-items: center;
     gap: 12px;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: #ffffff;
-    padding: 16px 40px;
+    padding: 14px 35px;
     border-radius: 8px;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 2px;
-    transition: all 0.3s ease, opacity 0.5s ease;
+    transition: all 0.3s ease;
     text-decoration: none;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    z-index: 30;
-    opacity: 0;
-    pointer-events: none;
+    margin-top: 10px;
 }
 
-.landing-section > .carousel-link.active {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.landing-section > .carousel-link:hover {
+.carousel-content .carousel-link:hover {
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.4);
     color: #ffffff;
-    transform: translate(-50%, 178px);
+    transform: translateY(-2px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-.landing-section > .carousel-link svg {
-    width: 20px;
-    height: 20px;
+.carousel-content .carousel-link svg {
+    width: 18px;
+    height: 18px;
     transition: transform 0.3s ease;
 }
 
-.landing-section > .carousel-link:hover svg {
+.carousel-content .carousel-link:hover svg {
     transform: translateX(5px);
 }
 
-/* Sale percentage - huge, positioned at top-left of landing section */
+/* Legacy styles for backward compatibility - can be removed */
+.landing-section > .carousel-link {
+    display: none;
+}
+
+/* Sale percentage with blood splatter - positioned at top-left of landing section */
 .landing-section .carousel-sale-percentage {
     position: absolute;
-    top: 120px;
-    left: 5%;
-    font-size: 7rem;
-    font-weight: 800;
-    color: #ffffff;
-    line-height: 1;
-    text-shadow: 
-        0 0 10px rgba(255, 0, 0, 0.4),
-        0 0 20px rgba(255, 0, 0, 0.2),
-        0 4px 30px rgba(0, 0, 0, 0.4);
+    top: 75px;
+    left: 2%;
+    width: 240px;
+    height: 240px;
     opacity: 0;
     transition: opacity 0.5s ease-out;
+}
+
+.landing-section .carousel-sale-percentage .sale-splatter-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+    -webkit-mask: radial-gradient(ellipse at center, rgba(0,0,0,1) 30%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0.4) 70%, rgba(0,0,0,0) 90%);
+    mask: radial-gradient(ellipse at center, rgba(0,0,0,1) 30%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0.4) 70%, rgba(0,0,0,0) 90%);
+}
+
+.landing-section .carousel-sale-percentage .sale-percentage-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Oxanium', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-align: center;
+    line-height: 1;
+    text-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.8),
+        0 0 10px rgba(0, 0, 0, 0.5);
+    letter-spacing: -0.5px;
 }
 
 .landing-section .carousel-sale-percentage.active {
     opacity: 1;
 }
 
-/* News spacing - removed since badge is now absolutely positioned */
-
-/* Full-width progress bar at bottom with padding */
-.carousel-progress-bar {
+/* Sale countdown - positioned next to the percentage splatter, vertically centered */
+.landing-section .carousel-sale-countdown {
     position: absolute;
-    bottom: 30px;
-    left: 5%;
-    width: 90%;
-    height: 3px;
-    background: rgba(255, 255, 255, 0.05);
-    z-index: 25;
+    top: 75px;
+    left: calc(2% + 220px);
+    height: 240px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
     opacity: 0;
-    transition: opacity 0.5s ease;
-    border-radius: 2px;
+    transition: opacity 0.5s ease-out;
 }
 
-.carousel-progress-bar.visible {
+.landing-section .carousel-sale-countdown .sale-countdown-label {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.landing-section .carousel-sale-countdown .sale-countdown-date {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.8),
+        0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.landing-section .carousel-sale-countdown.active {
     opacity: 1;
 }
 
-.carousel-progress-fill {
-    height: 100%;
-    width: 0%;
-    background: rgba(255, 255, 255, 0.25);
-    border-radius: 2px;
-    transition: width 0.1s linear;
+/* News spacing - removed since badge is now absolutely positioned */
+
+/* Carousel navigation dots - bottom left */
+.carousel-dots {
+    position: absolute;
+    bottom: 30px;
+    left: 5%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    z-index: 25;
 }
 
-@keyframes progressFill {
+.carousel-next-label {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    margin-bottom: 0;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.2s ease, opacity 0.3s ease;
+}
+
+.carousel-next-label:hover {
+    color: rgba(255, 255, 255, 1);
+    transform: translateX(3px);
+}
+
+.carousel-next-label:active {
+    transform: translateX(5px);
+    opacity: 0.8;
+}
+
+.carousel-dots-wrapper {
+    display: flex;
+    gap: 12px;
+}
+
+.carousel-dot {
+    width: 40px;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.carousel-dot:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: scaleY(1.3);
+}
+
+.carousel-dot .dot-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 2px;
+}
+
+.carousel-dot.active .dot-fill {
+    animation: dotFill 8000ms linear forwards;
+}
+
+.carousel-dot.filled {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.carousel-dot.filled .dot-fill {
+    width: 100%;
+}
+
+@keyframes dotFill {
     from {
         width: 0%;
     }
@@ -2154,14 +2287,38 @@ z-index: 2;
         font-size: 4rem;
     }
     
-    .carousel-sale-percentage {
-        font-size: 6rem;
+    .landing-section .carousel-sale-percentage {
+        width: 220px;
+        height: 220px;
+    }
+    
+    .landing-section .carousel-sale-percentage .sale-percentage-text {
+        font-size: 2.8rem;
+    }
+    
+    .landing-section .carousel-sale-countdown {
+        left: calc(2% + 200px);
+        height: 220px;
     }
 }
 
 @media (max-width: 1200px) {
     .landing-carousel-overlay {
         width: 85%;
+    }
+    
+    .carousel-cover-image-wrapper {
+        max-width: 550px;
+        max-height: 160px;
+    }
+    
+    .carousel-cover-image {
+        max-height: 160px;
+    }
+    
+    .carousel-content .carousel-link {
+        padding: 12px 30px;
+        font-size: 0.95rem;
     }
     
     .carousel-title {
@@ -2182,23 +2339,56 @@ z-index: 2;
         height: 48px;
     }
     
-    .carousel-sale-percentage {
-        font-size: 5rem;
+    .landing-section .carousel-sale-percentage {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .landing-section .carousel-sale-percentage .sale-percentage-text {
+        font-size: 2.5rem;
+    }
+    
+    .landing-section .carousel-sale-countdown {
+        left: calc(2% + 180px);
+        height: 200px;
+    }
+    
+    .landing-section .carousel-sale-countdown .sale-countdown-label {
+        font-size: 1.1rem;
+    }
+    
+    .landing-section .carousel-sale-countdown .sale-countdown-date {
+        font-size: 1.8rem;
     }
     
     .countdown-time {
         font-size: 1.6rem;
     }
     
-    .carousel-progress-bar {
+    .carousel-dots {
         left: 4%;
-        width: 92%;
     }
 }
 
 @media (max-width: 992px) {
     .landing-carousel-overlay {
         width: 88%;
+    }
+    
+    .carousel-cover-image-wrapper {
+        max-width: 480px;
+        max-height: 140px;
+        margin-bottom: 15px;
+    }
+    
+    .carousel-cover-image {
+        max-height: 140px;
+    }
+    
+    .carousel-content .carousel-link {
+        padding: 11px 25px;
+        font-size: 0.9rem;
+        gap: 10px;
     }
     
     .landing-section .carousel-badge {
@@ -2226,9 +2416,28 @@ z-index: 2;
     }
     
     .landing-section .carousel-sale-percentage {
-        top: 115px;
+        top: 75px;
         left: 4%;
-        font-size: 4rem;
+        width: 180px;
+        height: 180px;
+    }
+    
+    .landing-section .carousel-sale-percentage .sale-percentage-text {
+        font-size: 2.2rem;
+    }
+    
+    .landing-section .carousel-sale-countdown {
+        top: 75px;
+        left: calc(4% + 160px);
+        height: 180px;
+    }
+    
+    .landing-section .carousel-sale-countdown .sale-countdown-label {
+        font-size: 0.9rem;
+    }
+    
+    .landing-section .carousel-sale-countdown .sale-countdown-date {
+        font-size: 1.6rem;
     }
     
     .carousel-title {
@@ -2257,14 +2466,6 @@ z-index: 2;
     .carousel-description {
         font-size: 1.1rem;
     }
-    
-    .landing-section > .carousel-link {
-        transform: translate(-50%, 150px);
-    }
-    
-    .landing-section > .carousel-link:hover {
-        transform: translate(-50%, 148px);
-    }
 }
 
 @media (max-width: 768px) {
@@ -2274,6 +2475,28 @@ z-index: 2;
     
     .carousel-content-wrapper {
         min-height: 280px;
+    }
+    
+    .carousel-cover-image-wrapper {
+        max-width: 400px;
+        max-height: 120px;
+        margin-bottom: 12px;
+    }
+    
+    .carousel-cover-image {
+        max-height: 120px;
+    }
+    
+    .carousel-content .carousel-link {
+        padding: 10px 22px;
+        font-size: 0.85rem;
+        gap: 8px;
+        margin-top: 8px;
+    }
+    
+    .carousel-content .carousel-link svg {
+        width: 16px;
+        height: 16px;
     }
     
     .landing-section .carousel-badge {
@@ -2301,9 +2524,28 @@ z-index: 2;
     }
     
     .landing-section .carousel-sale-percentage {
-        top: 105px;
+        top: 70px;
         left: 5%;
-        font-size: 3.5rem;
+        width: 160px;
+        height: 160px;
+    }
+    
+    .landing-section .carousel-sale-percentage .sale-percentage-text {
+        font-size: 2rem;
+    }
+    
+    .landing-section .carousel-sale-countdown {
+        top: 70px;
+        left: calc(5% + 140px);
+        height: 160px;
+    }
+    
+    .landing-section .carousel-sale-countdown .sale-countdown-label {
+        font-size: 0.85rem;
+    }
+    
+    .landing-section .carousel-sale-countdown .sale-countdown-date {
+        font-size: 1.4rem;
     }
     
     .carousel-title {
@@ -2333,18 +2575,14 @@ z-index: 2;
         font-size: 1.4rem;
     }
     
-    .landing-section > .carousel-link {
-        padding: 14px 30px;
-        font-size: 1rem;
-        transform: translate(-50%, 130px);
-    }
-    
-    .landing-section > .carousel-link:hover {
-        transform: translate(-50%, 128px);
-    }
-    
-    .carousel-progress-bar {
+    .carousel-dots {
         bottom: 20px;
+        gap: 10px;
+    }
+    
+    .carousel-dot {
+        width: 10px;
+        height: 10px;
     }
 }
 
@@ -2355,6 +2593,30 @@ z-index: 2;
     
     .carousel-content-wrapper {
         min-height: 240px;
+    }
+    
+    .carousel-cover-image-wrapper {
+        max-width: 300px;
+        max-height: 100px;
+        margin-bottom: 10px;
+        border-radius: 6px;
+    }
+    
+    .carousel-cover-image {
+        max-height: 100px;
+    }
+    
+    .carousel-content .carousel-link {
+        padding: 9px 18px;
+        font-size: 0.8rem;
+        gap: 6px;
+        margin-top: 6px;
+        letter-spacing: 1px;
+    }
+    
+    .carousel-content .carousel-link svg {
+        width: 14px;
+        height: 14px;
     }
     
     .landing-section .carousel-badge {
@@ -2385,9 +2647,29 @@ z-index: 2;
     }
     
     .landing-section .carousel-sale-percentage {
-        top: 95px;
+        top: 65px;
         left: 5%;
-        font-size: 2.5rem;
+        width: 130px;
+        height: 130px;
+    }
+    
+    .landing-section .carousel-sale-percentage .sale-percentage-text {
+        font-size: 1.6rem;
+    }
+    
+    .landing-section .carousel-sale-countdown {
+        top: 65px;
+        left: calc(5% + 115px);
+        height: 130px;
+    }
+    
+    .landing-section .carousel-sale-countdown .sale-countdown-label {
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+    }
+    
+    .landing-section .carousel-sale-countdown .sale-countdown-date {
+        font-size: 1.2rem;
     }
     
     .carousel-title {
@@ -2418,18 +2700,14 @@ z-index: 2;
         font-size: 1.3rem;
     }
     
-    .landing-section > .carousel-link {
-        padding: 12px 25px;
-        font-size: 0.9rem;
-        transform: translate(-50%, 110px);
-    }
-    
-    .landing-section > .carousel-link:hover {
-        transform: translate(-50%, 108px);
-    }
-    
-    .carousel-progress-bar {
+    .carousel-dots {
         bottom: 15px;
+        gap: 8px;
+    }
+    
+    .carousel-dot {
+        width: 8px;
+        height: 8px;
     }
 }
 
@@ -2439,7 +2717,7 @@ z-index: 2;
     .logo-container.carousel-hidden,
     .join-button-container.carousel-hidden,
     .landing-carousel-overlay,
-    .carousel-progress-fill {
+    .carousel-dot .dot-fill {
         transition: none;
         animation: none;
     }
