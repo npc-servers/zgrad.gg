@@ -64,11 +64,8 @@ async function initLandingCarousel() {
             createCarouselUI(landingSection);
             carouselState.isInitialized = true;
 
-            // Show progress bar immediately
-            const progressBar = document.querySelector('.carousel-progress-bar');
-            if (progressBar) {
-                progressBar.classList.add('visible');
-            }
+            // Create navigation dots based on number of items
+            createNavigationDots();
 
             // Start the carousel immediately
             startCarousel();
@@ -251,14 +248,13 @@ function createCarouselUI(section) {
         </div>
     `;
 
-    // Create full-width progress bar
-    const progressBar = document.createElement('div');
-    progressBar.className = 'carousel-progress-bar';
-    progressBar.innerHTML = `<div class="carousel-progress-fill"></div>`;
+    // Create dots navigation container (dots will be added dynamically when items are loaded)
+    const dotsContainer = document.createElement('div');
+    dotsContainer.className = 'carousel-dots';
 
     section.appendChild(badgeContainer);
     section.appendChild(carouselOverlay);
-    section.appendChild(progressBar);
+    section.appendChild(dotsContainer);
 
     // Start countdown update interval for events
     setInterval(updateEventCountdown, 1000);
@@ -272,17 +268,14 @@ function startCarousel() {
         clearInterval(carouselState.intervalId);
     }
 
-    // Reset and start progress bar
-    resetProgressBar();
+    // Start dot fill animation for current slide
+    updateActiveDot(carouselState.currentIndex);
 
     carouselState.intervalId = setInterval(() => {
         if (!carouselState.isPaused) {
             nextSlide();
         }
     }, CAROUSEL_CONFIG.rotationInterval);
-
-    // Start progress animation
-    startProgressAnimation();
 }
 
 /**
@@ -306,7 +299,9 @@ function goToSlide(index) {
     
     // Update UI
     updateCarouselDisplay(currentItem, previousIndex);
-    resetProgressBar();
+    
+    // Update active dot and start its fill animation
+    updateActiveDot(index);
     
     // Restart the interval
     if (carouselState.intervalId) {
@@ -318,9 +313,6 @@ function goToSlide(index) {
             nextSlide();
         }
     }, CAROUSEL_CONFIG.rotationInterval);
-
-    // Restart progress animation
-    startProgressAnimation();
 }
 
 /**
@@ -616,26 +608,102 @@ function updateEventCountdown() {
 }
 
 /**
- * Reset progress bar animation
+ * Create navigation dots based on number of carousel items
  */
-function resetProgressBar() {
-    const fill = document.querySelector('.carousel-progress-fill');
-    if (fill) {
-        fill.style.animation = 'none';
-        fill.offsetHeight; // Trigger reflow
-        fill.style.animation = '';
+function createNavigationDots() {
+    const dotsContainer = document.querySelector('.carousel-dots');
+    if (!dotsContainer) return;
+
+    dotsContainer.innerHTML = '';
+    
+    // Add "NEXT" text above the dots
+    const nextLabel = document.createElement('button');
+    nextLabel.className = 'carousel-next-label';
+    nextLabel.textContent = 'NEXT';
+    nextLabel.setAttribute('aria-label', 'Go to next slide');
+    nextLabel.addEventListener('click', () => {
+        nextSlide();
+    });
+    dotsContainer.appendChild(nextLabel);
+    
+    // Create a wrapper for the dots to keep them horizontal
+    const dotsWrapper = document.createElement('div');
+    dotsWrapper.className = 'carousel-dots-wrapper';
+    
+    carouselState.items.forEach((item, index) => {
+        const dot = document.createElement('button');
+        dot.className = 'carousel-dot';
+        dot.setAttribute('aria-label', `Go to slide ${index + 1}`);
+        dot.innerHTML = '<span class="dot-fill"></span>';
+        
+        dot.addEventListener('click', () => {
+            goToSlide(index);
+        });
+        
+        dotsWrapper.appendChild(dot);
+    });
+    
+    dotsContainer.appendChild(dotsWrapper);
+    
+    // Set first dot as active
+    updateActiveDot(0);
+}
+
+/**
+ * Update active dot and restart its fill animation
+ */
+function updateActiveDot(index) {
+    const dots = document.querySelectorAll('.carousel-dot');
+    dots.forEach((dot, i) => {
+        dot.classList.remove('active', 'filled');
+        const fill = dot.querySelector('.dot-fill');
+        if (fill) {
+            fill.style.animation = 'none';
+        }
+        
+        // Mark previous dots as filled
+        if (i < index) {
+            dot.classList.add('filled');
+        }
+    });
+    
+    const activeDot = dots[index];
+    if (activeDot) {
+        activeDot.classList.add('active');
+        startDotFillAnimation(activeDot);
+        
+        // If currently paused (e.g., user is hovering), pause the new animation too
+        if (carouselState.isPaused) {
+            const fill = activeDot.querySelector('.dot-fill');
+            if (fill) {
+                fill.style.animationPlayState = 'paused';
+            }
+        }
     }
 }
 
 /**
- * Start progress bar animation
+ * Start fill animation for a dot
  */
-function startProgressAnimation() {
-    const fill = document.querySelector('.carousel-progress-fill');
+function startDotFillAnimation(dot) {
+    const fill = dot.querySelector('.dot-fill');
     if (fill) {
         fill.style.animation = 'none';
         fill.offsetHeight; // Trigger reflow
-        fill.style.animation = `progressFill ${CAROUSEL_CONFIG.rotationInterval}ms linear forwards`;
+        fill.style.animation = `dotFill ${CAROUSEL_CONFIG.rotationInterval}ms linear forwards`;
+    }
+}
+
+/**
+ * Pause/resume dot fill animation
+ */
+function setDotAnimationState(paused) {
+    const activeDot = document.querySelector('.carousel-dot.active');
+    if (activeDot) {
+        const fill = activeDot.querySelector('.dot-fill');
+        if (fill) {
+            fill.style.animationPlayState = paused ? 'paused' : 'running';
+        }
     }
 }
 
@@ -644,26 +712,36 @@ function startProgressAnimation() {
  */
 function setupPauseOnHover() {
     const overlay = document.querySelector('.landing-carousel-overlay');
-    const progressBar = document.querySelector('.carousel-progress-bar');
+    const dotsContainer = document.querySelector('.carousel-dots');
     
-    const pauseElements = [overlay, progressBar].filter(Boolean);
+    const pauseElements = [overlay, dotsContainer].filter(Boolean);
+    
+    // Track if mouse is over any pause element
+    let hoverCount = 0;
     
     pauseElements.forEach(el => {
         el.addEventListener('mouseenter', () => {
-            carouselState.isPaused = true;
-            const fill = document.querySelector('.carousel-progress-fill');
-            if (fill) {
-                fill.style.animationPlayState = 'paused';
+            hoverCount++;
+            if (hoverCount > 0) {
+                carouselState.isPaused = true;
+                setDotAnimationState(true);
             }
         });
         
         el.addEventListener('mouseleave', () => {
-            carouselState.isPaused = false;
-            const fill = document.querySelector('.carousel-progress-fill');
-            if (fill) {
-                fill.style.animationPlayState = 'running';
+            hoverCount = Math.max(0, hoverCount - 1);
+            if (hoverCount === 0) {
+                carouselState.isPaused = false;
+                setDotAnimationState(false);
             }
         });
+    });
+    
+    // Safety: if mouse leaves the window entirely, resume
+    document.addEventListener('mouseleave', () => {
+        hoverCount = 0;
+        carouselState.isPaused = false;
+        setDotAnimationState(false);
     });
 }
 
