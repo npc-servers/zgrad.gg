@@ -77,6 +77,7 @@ export default defineConfig({
         connectUs2: resolve(__dirname, 'connect/us2.html'),
         connectUs3: resolve(__dirname, 'connect/us3.html'),
         connectUs4: resolve(__dirname, 'connect/us4.html'),
+        connectEu1: resolve(__dirname, 'connect/eu1.html'),
         // Guide pages
         guidesIndex: resolve(__dirname, 'guides/index.html'),
         guideTemplate: resolve(__dirname, 'guides/template.html'),

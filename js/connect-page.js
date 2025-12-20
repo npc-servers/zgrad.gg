@@ -1,15 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Get server ID from URL path
     const path = window.location.pathname;
-    const serverMatch = path.match(/\/connect\/us(\d+)(?:\.html)?/);
+    const serverMatch = path.match(/\/connect\/(us|eu)(\d+)(?:\.html)?/);
     
     if (!serverMatch) {
         console.error('Could not determine server from URL:', path);
         return;
     }
     
-    const serverNumber = serverMatch[1];
-    const serverId = `zgrad${serverNumber}`;
+    const serverRegion = serverMatch[1].toLowerCase();
+    const serverNumber = serverMatch[2];
+    // US servers use zgrad1, zgrad2, etc. EU servers use zgradeu1, zgradeu2, etc.
+    const serverId = serverRegion === 'us' 
+        ? `zgrad${serverNumber}` 
+        : `zgrad${serverRegion}${serverNumber}`;
     
     // Server configuration - same as servers-page.js
     const servers = {
@@ -48,6 +52,15 @@ document.addEventListener('DOMContentLoaded', () => {
             port: 27052,
             region: 'US',
             gamemode: 'Homicide Only'
+        },
+        'zgradeu1': {
+            id: 'zgradeu1',
+            title: 'ZGRAD EU1',
+            suffix: 'EU1',
+            ip: '23.161.169.60',
+            port: 27015,
+            region: 'EU',
+            gamemode: 'All Gamemodes'
         }
     };
     

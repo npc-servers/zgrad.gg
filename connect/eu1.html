@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="origin-when-cross-origin">
+    <title>Connect to EU1 - ZGRAD</title>
+    <link rel="canonical" href="https://zgrad.gg/connect/eu1">
+    <!-- CSS and JS bundled via Vite in /src/connect.js -->
+    
+    <!-- Redirect eu1.html to extensionless URL to prevent duplicate content -->
+    <script>
+        if (window.location.pathname === '/connect/eu1.html') {
+            window.location.replace(window.location.origin + '/connect/eu1');
+        }
+    </script>
+</head>
+<body>
+    <div class="connect-page">
+        <div class="connect-title-splatter">
+            <img src="../images/textures/connect-title-splatter.png" alt="Connect Title Splatter">
+        </div>
+        
+        <div class="connect-content">
+            <h1 class="connect-server-title" data-text="ZGRAD EU1">ZGRAD EU1</h1>
+            <div class="connect-server-info">
+                <span class="loading">Loading server information...</span>
+            </div>
+            
+            <div class="connect-support-ad">
+                <div class="connect-support-ad-content">
+                    <span class="connect-support-ad-text">Enjoying our servers? <a href="https://store.zmod.gg" target="_blank" class="connect-support-link">Consider supporting us!</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main module entry point (Vite) -->
+    <script type="module" src="/src/connect.js"></script>
+</body>
+</html>
+

@@ -128,6 +128,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     gamemode: 'Homicide Only',
                     link: 'connect/us4',
                     backgroundImage: '/images/loadingscreen/eigth.jpg'
+                },
+                {
+                    id: 'zgradeu1',
+                    title: 'ZGRAD EU1',
+                    ip: '23.161.169.60',
+                    port: 27015,
+                    region: 'EU',
+                    gamemode: 'All Gamemodes',
+                    link: 'connect/eu1',
+                    backgroundImage: '/images/loadingscreen/thirteenth.jpg'
                 }
             ];
             
