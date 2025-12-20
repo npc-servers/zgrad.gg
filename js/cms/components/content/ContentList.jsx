@@ -1,6 +1,8 @@
 /**
  * Generic Content List Component
  * Works with any content type based on configuration
+ * 
+ * Note: We access .value inside the render to ensure Preact signals auto-subscribe
  */
 
 import { activeContentType, activeContentList, isLoadingContent, activeLocks, currentUser } from '../../store/state.js';
@@ -10,12 +12,14 @@ import { LoadingSpinner } from '../ui/Loading.jsx';
 import { ContentCard } from './ContentCard.jsx';
 
 export function ContentList({ onCreateNew, onEdit, onDelete }) {
+    // Access signals directly - Preact will auto-subscribe to changes
+    // By accessing .value here, the component re-renders when any of these change
     const contentType = activeContentType.value;
     const items = activeContentList.value;
     const isLoading = isLoadingContent.value;
-    const config = getContentTypeConfig(contentType);
     const locks = activeLocks.value;
     const user = currentUser.value;
+    const config = getContentTypeConfig(contentType);
 
     // Helper to find lock for an item
     const getLockForItem = (itemId) => {

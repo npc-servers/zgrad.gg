@@ -12,14 +12,17 @@ export function Navbar() {
     const handleLogout = async () => {
         // Stop all background processes first
         triggerLogout();
-        API.setLoggingOut(true);
         
+        // Call logout API BEFORE setting the blocking flag
         try {
             await API.logout();
         } catch (error) {
             // Ignore errors during logout - we're leaving anyway
             console.log('Logout request:', error.message);
         }
+        
+        // Now set the flag to block any further requests
+        API.setLoggingOut(true);
         
         window.location.href = '/';
     };

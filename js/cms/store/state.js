@@ -96,9 +96,10 @@ export function updateContentForm(field, value) {
 
 // Set content for a specific type
 export function setContentForType(type, content) {
+    // Create new array reference to ensure signal reactivity
     contentByType.value = {
         ...contentByType.value,
-        [type]: content,
+        [type]: [...content],
     };
 }
 

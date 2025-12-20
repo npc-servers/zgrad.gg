@@ -20,6 +20,7 @@ import {
     activeLocks,
     currentLock,
     onLogout,
+    isDirty,
 } from '../store/state.js';
 import API from '../services/api.js';
 import ImageService from '../services/image.js';
@@ -87,7 +88,7 @@ export function App() {
     // Lock polling functions
     const startLockPolling = () => {
         fetchLocks();
-        lockPollInterval.current = setInterval(fetchLocks, 10000); // Poll every 10 seconds
+        lockPollInterval.current = setInterval(fetchLocks, 5000); // Poll every 5 seconds for faster updates
     };
 
     const stopLockPolling = () => {
@@ -100,7 +101,8 @@ export function App() {
     const fetchLocks = async () => {
         try {
             const data = await API.getLocks();
-            activeLocks.value = data.locks || [];
+            // Create a new array to ensure signal reactivity
+            activeLocks.value = [...(data.locks || [])];
         } catch (error) {
             // Don't log errors if we're logging out or session ended
             if (error.message !== 'Session ended' && error.message !== 'Unauthorized') {
@@ -158,6 +160,8 @@ export function App() {
         if (lock) {
             try {
                 await API.releaseLock(lock.content_type, lock.content_id);
+                // Immediately refresh locks to update the UI
+                await fetchLocks();
             } catch (error) {
                 console.error('Error releasing lock:', error);
             }
@@ -186,6 +190,23 @@ export function App() {
     };
 
     const handleContentTypeChange = async (type) => {
+        // Check for unsaved changes before switching
+        if (isDirty.value && currentView.value === 'editor') {
+            setConfirmModal({
+                isOpen: true,
+                message: 'You have unsaved changes. Are you sure you want to switch? Your changes will be lost.',
+                onConfirm: async () => {
+                    await releaseCurrentLock();
+                    switchContentType(type);
+                    await loadContentForType(type);
+                    setConfirmModal({ isOpen: false, message: '', onConfirm: null });
+                },
+            });
+            return;
+        }
+        
+        // Release any existing lock before switching
+        await releaseCurrentLock();
         switchContentType(type);
         await loadContentForType(type);
     };
@@ -267,15 +288,26 @@ export function App() {
             return;
         }
 
+        const type = activeContentType.value;
+        
+        // Optimistic update - remove from list immediately for instant feedback
+        const currentList = contentByType.value[type] || [];
+        const updatedList = currentList.filter(i => i.id !== item.id);
+        setContentForType(type, updatedList);
+        
+        // Close modal immediately
+        setConfirmModal({ isOpen: false, message: '', onConfirm: null });
+
         try {
-            const type = activeContentType.value;
             await API.deleteContent(type, item.id);
             showToast('Deleted successfully', 'success');
+            // Refresh to sync with server (in case of any discrepancies)
             await loadContentForType(type);
-            setConfirmModal({ isOpen: false, message: '', onConfirm: null });
         } catch (error) {
             console.error('Error deleting content:', error);
             showToast('Failed to delete', 'error');
+            // Revert optimistic update on error
+            await loadContentForType(type);
         }
     };
 
@@ -463,6 +495,24 @@ export function App() {
     };
 
     const handleCancelEdit = async () => {
+        // Check for unsaved changes
+        if (isDirty.value) {
+            setConfirmModal({
+                isOpen: true,
+                message: 'You have unsaved changes. Are you sure you want to leave? Your changes will be lost.',
+                onConfirm: async () => {
+                    // Release lock when canceling
+                    await releaseCurrentLock();
+                    
+                    currentView.value = 'list';
+                    resetContentForm();
+                    currentContent.value = null;
+                    setConfirmModal({ isOpen: false, message: '', onConfirm: null });
+                },
+            });
+            return;
+        }
+        
         // Release lock when canceling
         await releaseCurrentLock();
         
