@@ -37,6 +37,28 @@ export const activeModal = signal(null); // null | 'image-settings' | 'icon-pick
 export const activeLocks = signal([]); // Array of active locks from server
 export const currentLock = signal(null); // Lock held by current user for current content
 
+// Logout state - used to signal components to clean up
+export const isLoggingOut = signal(false);
+const logoutCallbacks = [];
+
+// Register a cleanup callback for logout
+export function onLogout(callback) {
+    logoutCallbacks.push(callback);
+    // Return unsubscribe function
+    return () => {
+        const index = logoutCallbacks.indexOf(callback);
+        if (index > -1) logoutCallbacks.splice(index, 1);
+    };
+}
+
+// Trigger all logout callbacks
+export function triggerLogout() {
+    isLoggingOut.value = true;
+    logoutCallbacks.forEach(cb => {
+        try { cb(); } catch (e) { console.error('Logout callback error:', e); }
+    });
+}
+
 // Generic content form state
 export const contentForm = signal({
     type: CONTENT_TYPES.GUIDES,
