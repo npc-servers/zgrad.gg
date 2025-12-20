@@ -2,24 +2,33 @@
  * TipTap Editor Toolbar Component
  */
 
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useState, useRef, useCallback } from 'preact/hooks';
 
 export function EditorToolbar({ editor, onAddLink }) {
-    const [, forceUpdate] = useState({});
+    const [updateKey, setUpdateKey] = useState(0);
+    const lastUpdateRef = useRef(0);
+
+    // Throttled update to prevent excessive re-renders
+    const throttledUpdate = useCallback(() => {
+        const now = Date.now();
+        // Only update at most every 100ms
+        if (now - lastUpdateRef.current > 100) {
+            lastUpdateRef.current = now;
+            setUpdateKey(k => k + 1);
+        }
+    }, []);
 
     useEffect(() => {
         if (!editor) return;
 
-        const updateHandler = () => forceUpdate({});
-        
-        editor.on('selectionUpdate', updateHandler);
-        editor.on('transaction', updateHandler);
+        // Only listen to selectionUpdate - transaction fires too often (every keystroke)
+        // selectionUpdate is sufficient for toolbar button active states
+        editor.on('selectionUpdate', throttledUpdate);
 
         return () => {
-            editor.off('selectionUpdate', updateHandler);
-            editor.off('transaction', updateHandler);
+            editor.off('selectionUpdate', throttledUpdate);
         };
-    }, [editor]);
+    }, [editor, throttledUpdate]);
 
     if (!editor) return null;
 

@@ -3,11 +3,19 @@
  * Prompts for URL and optionally display text
  */
 
-import { useState } from 'preact/hooks';
+import { useState, useEffect } from 'preact/hooks';
 
 export function LinkModal({ isOpen, onSubmit, onCancel, hasSelection }) {
     const [url, setUrl] = useState('https://');
     const [text, setText] = useState('');
+
+    // Reset state when modal opens
+    useEffect(() => {
+        if (isOpen) {
+            setUrl('https://');
+            setText('');
+        }
+    }, [isOpen]);
 
     const handleSubmit = () => {
         if (url.trim()) {

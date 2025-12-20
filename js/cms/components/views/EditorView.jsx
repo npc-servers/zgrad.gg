@@ -39,6 +39,10 @@ export function EditorView({
     useEffect(() => {
         if (!editor) return;
 
+        // Track timeouts and event listeners for cleanup
+        const timeoutIds = [];
+        const buttonClickHandlers = new Map();
+
         const addImageOverlays = () => {
             const editorElement = document.querySelector('.tiptap-editor');
             if (!editorElement) return;
@@ -59,29 +63,51 @@ export function EditorView({
                     </svg>
                 `;
                 
-                editBtn.addEventListener('click', (e) => {
+                const clickHandler = (e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     
                     const pos = editor.view.posAtDOM(imageWrapper, 0);
                     editor.chain().focus().setNodeSelection(pos).run();
                     
-                    setTimeout(() => setImageSettingsOpen(true), 50);
-                });
+                    const timeoutId = setTimeout(() => setImageSettingsOpen(true), 50);
+                    timeoutIds.push(timeoutId);
+                };
+                
+                editBtn.addEventListener('click', clickHandler);
+                buttonClickHandlers.set(editBtn, clickHandler);
                 
                 imageWrapper.appendChild(editBtn);
                 imageWrapper.style.position = 'relative';
             });
         };
 
+        // Debounce the update handler to avoid excessive calls
+        let debounceTimeout = null;
         const updateHandler = () => {
-            setTimeout(addImageOverlays, 0);
+            if (debounceTimeout) {
+                clearTimeout(debounceTimeout);
+            }
+            debounceTimeout = setTimeout(addImageOverlays, 100);
+            timeoutIds.push(debounceTimeout);
         };
 
         editor.on('update', updateHandler);
-        setTimeout(addImageOverlays, 100);
+        const initialTimeout = setTimeout(addImageOverlays, 100);
+        timeoutIds.push(initialTimeout);
 
         return () => {
+            // Clear all timeouts
+            timeoutIds.forEach(id => clearTimeout(id));
+            if (debounceTimeout) clearTimeout(debounceTimeout);
+            
+            // Remove all click handlers
+            buttonClickHandlers.forEach((handler, btn) => {
+                btn.removeEventListener('click', handler);
+            });
+            buttonClickHandlers.clear();
+            
+            // Remove the update handler
             editor.off('update', updateHandler);
         };
     }, [editor]);

@@ -3,7 +3,7 @@
  * A simpler TipTap editor for secondary content fields like descriptions
  */
 
-import { useEffect, useRef, useState } from 'preact/hooks';
+import { useEffect, useRef, useState, useCallback } from 'preact/hooks';
 import { Editor } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
@@ -13,7 +13,18 @@ export function MiniRichTextEditor({ content, onChange, placeholder }) {
     const editorRef = useRef(null);
     const editorInstanceRef = useRef(null);
     const [isReady, setIsReady] = useState(false);
-    const [, forceUpdate] = useState(0);
+    const [updateKey, setUpdateKey] = useState(0);
+    const lastUpdateRef = useRef(0);
+
+    // Throttled update to prevent excessive re-renders
+    const throttledUpdate = useCallback(() => {
+        const now = Date.now();
+        // Only update at most every 150ms
+        if (now - lastUpdateRef.current > 150) {
+            lastUpdateRef.current = now;
+            setUpdateKey(k => k + 1);
+        }
+    }, []);
 
     useEffect(() => {
         if (!editorRef.current) return;
@@ -48,10 +59,7 @@ export function MiniRichTextEditor({ content, onChange, placeholder }) {
                     onChange(ed.getHTML());
                 }
             },
-            onSelectionUpdate: () => {
-                // Force re-render to update active states
-                forceUpdate(n => n + 1);
-            },
+            onSelectionUpdate: throttledUpdate,
         });
 
         editorInstanceRef.current = editor;
@@ -95,8 +103,9 @@ export function MiniRichTextEditor({ content, onChange, placeholder }) {
                 editor.chain().focus().toggleOrderedList().run();
                 break;
         }
-        // Force re-render after format
-        forceUpdate(n => n + 1);
+        // Trigger immediate update for button states after formatting
+        lastUpdateRef.current = 0; // Reset throttle to allow immediate update
+        throttledUpdate();
     };
 
     const isActive = (command) => {

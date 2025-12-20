@@ -3,7 +3,7 @@
  * Allows users to search and select icons from Iconify
  */
 
-import { useState, useEffect } from 'preact/hooks';
+import { useState, useEffect, useRef } from 'preact/hooks';
 
 export function IconPickerModal({ isOpen, onClose, onSelectIcon }) {
     const [searchQuery, setSearchQuery] = useState('');
@@ -11,6 +11,7 @@ export function IconPickerModal({ isOpen, onClose, onSelectIcon }) {
     const [isLoading, setIsLoading] = useState(false);
     const [selectedCollection, setSelectedCollection] = useState('favorites');
     const [favorites, setFavorites] = useState([]);
+    const searchDebounceRef = useRef(null);
     
     // Popular icon collections
     const collections = [
@@ -68,13 +69,36 @@ export function IconPickerModal({ isOpen, onClose, onSelectIcon }) {
     };
 
     useEffect(() => {
+        // Track if this effect is still active (for async cleanup)
+        let isActive = true;
+        
+        // Clear any pending debounced search
+        if (searchDebounceRef.current) {
+            clearTimeout(searchDebounceRef.current);
+            searchDebounceRef.current = null;
+        }
+        
         if (isOpen && searchQuery.length > 0 && selectedCollection !== 'favorites') {
-            searchIcons(searchQuery);
+            // Debounce the search to prevent excessive API calls while typing
+            searchDebounceRef.current = setTimeout(() => {
+                if (isActive) {
+                    searchIcons(searchQuery, isActive);
+                }
+            }, 300);
         } else if (selectedCollection === 'favorites') {
             setIcons(favorites);
         } else {
             setIcons([]);
         }
+        
+        // Cleanup function - cancel pending updates and debounced searches
+        return () => {
+            isActive = false;
+            if (searchDebounceRef.current) {
+                clearTimeout(searchDebounceRef.current);
+                searchDebounceRef.current = null;
+            }
+        };
     }, [searchQuery, selectedCollection, isOpen, favorites]);
 
     // Calculate dynamic height for icon results based on number of icons
@@ -91,7 +115,7 @@ export function IconPickerModal({ isOpen, onClose, onSelectIcon }) {
         return { height: `${calculatedHeight}px` };
     };
 
-    const searchIcons = async (query) => {
+    const searchIcons = async (query, isActive = true) => {
         if (!query || query.trim().length === 0) {
             setIcons([]);
             return;
@@ -103,7 +127,14 @@ export function IconPickerModal({ isOpen, onClose, onSelectIcon }) {
             const response = await fetch(
                 `https://api.iconify.design/search?query=${encodeURIComponent(query)}&prefix=${selectedCollection}&limit=50`
             );
+            
+            // Check if we should still update state
+            if (!isActive) return;
+            
             const data = await response.json();
+            
+            // Check again after parsing JSON
+            if (!isActive) return;
             
             if (data.icons && data.icons.length > 0) {
                 // Use the simple, proven approach: direct SVG URLs
@@ -137,10 +168,15 @@ export function IconPickerModal({ isOpen, onClose, onSelectIcon }) {
                 setIcons([]);
             }
         } catch (error) {
-            console.error('Error fetching icons:', error);
-            setIcons([]);
+            // Only log if still active (not cancelled)
+            if (isActive) {
+                console.error('Error fetching icons:', error);
+                setIcons([]);
+            }
         } finally {
-            setIsLoading(false);
+            if (isActive) {
+                setIsLoading(false);
+            }
         }
     };
 
