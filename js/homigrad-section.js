@@ -175,6 +175,11 @@ document.addEventListener('DOMContentLoaded', function() {
             id: 'zgradeu1',
             ip: '23.161.169.60',
             port: 27015
+        },
+        {
+            id: 'zgrad5',
+            ip: '193.243.190.18',
+            port: 27025
         }
     ];
 

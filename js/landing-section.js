@@ -138,6 +138,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     gamemode: 'All Gamemodes',
                     link: 'connect/eu1',
                     backgroundImage: '/images/loadingscreen/thirteenth.jpg'
+                },
+                {
+                    id: 'zgrad5',
+                    title: 'ZGRAD US5',
+                    ip: '193.243.190.18',
+                    port: 27025,
+                    region: 'US',
+                    gamemode: 'All Gamemodes',
+                    link: 'connect/us5',
+                    backgroundImage: '/images/loadingscreen/fourteenth.jpg'
                 }
             ];
             

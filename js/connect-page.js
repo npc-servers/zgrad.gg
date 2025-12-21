@@ -61,6 +61,15 @@ document.addEventListener('DOMContentLoaded', () => {
             port: 27015,
             region: 'EU',
             gamemode: 'All Gamemodes'
+        },
+        'zgrad5': {
+            id: 'zgrad5',
+            title: 'ZGRAD US5',
+            suffix: 'US5',
+            ip: '193.243.190.18',
+            port: 27025,
+            region: 'US',
+            gamemode: 'All Gamemodes'
         }
     };
     
