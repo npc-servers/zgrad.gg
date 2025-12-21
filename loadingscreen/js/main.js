@@ -1,5 +1,7 @@
 "use strict";
 
+import { SERVER_GROUPS } from '../../js/serverConfig.js';
+
 var isGmod = false;
 var totalFiles = 1;
 var filesNeeded = 1;
@@ -269,90 +271,8 @@ var config = {
     advertInterval: 12000,      // 12 seconds
     backgroundInterval: 15000,  // 15 seconds
     
-    // Server configuration - easily configurable IPs and titles
-    servers: [
-        {
-            id: 'zgrad1',
-            title: 'ZGRAD US1',
-            ip: '193.243.190.18',
-            port: 27066,
-            region: 'US',
-            gamemode: 'All Gamemodes',
-            logo: '../images/logos/zgrad-logopiece-z.png'
-        },
-        {
-            id: 'zgrad2',
-            title: 'ZGRAD US2',
-            ip: '193.243.190.18',
-            port: 27051,
-            region: 'US',
-            gamemode: 'All Gamemodes',
-            logo: '../images/logos/zgrad-logopiece-z.png'
-        },
-        {
-            id: 'zgrad3',
-            title: 'ZGRAD US3',
-            ip: '193.243.190.18',
-            port: 27053,
-            region: 'US',
-            gamemode: 'TDM 24/7',
-            logo: '../images/logos/zgrad-logopiece-z.png'
-        },
-        {
-            id: 'zgrad4',
-            title: 'ZGRAD US4',
-            ip: '193.243.190.18',
-            port: 27052,
-            region: 'US',
-            gamemode: 'Homicide Only',
-            logo: '../images/logos/zgrad-logopiece-z.png'
-        },
-        {
-            id: 'npcz',
-            title: 'NPC Zombies Vs. Players',
-            ip: '193.243.190.18',
-            port: 27015,
-            region: 'US',
-            gamemode: 'Sandbox',
-            logo: '../images/logos/npcz.png'
-        },
-        {
-            id: 'horde',
-            title: 'HORDE',
-            ip: '193.243.190.18',
-            port: 27065,
-            region: 'US',
-            gamemode: 'Horde',
-            logo: '../images/logos/npcz.png'
-        },
-        {
-            id: 'zbox',
-            title: 'ZBOX',
-            ip: '193.243.190.18',
-            port: 27017,
-            region: 'US',
-            gamemode: 'Sandbox',
-            logo: '../images/logos/npcz.png'
-        },
-        {
-            id: 'zscenario',
-            title: 'ZSCENARIO',
-            ip: '193.243.190.18',
-            port: 27018,
-            region: 'US',
-            gamemode: 'Scenario',
-            logo: '../images/logos/npcz.png'
-        },
-        {
-            id: 'mapsweepers',
-            title: 'MAPSWEEPERS',
-            ip: '193.243.190.18',
-            port: 27019,
-            region: 'US',
-            gamemode: 'Minesweeper',
-            logo: '../images/logos/npcz.png'
-        }
-    ]
+    // Server configuration imported from centralized config
+    servers: SERVER_GROUPS
 };
 
 // Rotation state

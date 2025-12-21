@@ -1,4 +1,5 @@
 // Homigrad Section - Consolidated JavaScript for features, gamemodes, and homepage functionality
+import { SERVER_GROUPS } from './serverConfig.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize any global functionality here
@@ -149,39 +150,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Server data
-    const servers = [
-        {
-            id: 'zgrad1',
-            ip: '193.243.190.18',
-            port: 27066
-        },
-        {
-            id: 'zgrad2',
-            ip: '193.243.190.18',
-            port: 27051
-        },
-        {
-            id: 'zgrad3',
-            ip: '193.243.190.18',
-            port: 27053
-        },
-        {
-            id: 'zgrad4',
-            ip: '193.243.190.18',
-            port: 27052
-        },
-        {
-            id: 'zgradeu1',
-            ip: '23.161.169.60',
-            port: 27015
-        },
-        {
-            id: 'zgrad5',
-            ip: '193.243.190.18',
-            port: 27025
-        }
-    ];
+    const servers = SERVER_GROUPS.map(server => ({
+        id: server.id,
+        ip: server.ip,
+        port: server.port
+    }));
 
     async function updateTotalPlayers() {
         const totalPlayersElement = document.getElementById('totalPlayers');

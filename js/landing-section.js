@@ -1,3 +1,5 @@
+import { SERVER_GROUPS } from './serverConfig.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize background slideshow
     const initBackgroundSlideshow = () => {
@@ -87,69 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Function to find the most popular server and update the JOIN button
         const updateServerButtons = () => {
-            // Use the same server data and status fetching as in servers.js
-            const servers = [
-                {
-                    id: 'zgrad1',
-                    title: 'ZGRAD US1',
-                    ip: '193.243.190.18',
-                    port: 27066,
-                    region: 'US',
-                    gamemode: 'All Gamemodes',
-                    link: 'connect/us1',
-                    backgroundImage: '/images/loadingscreen/homigrad-essence.jpg'
-                },
-                {
-                    id: 'zgrad2',
-                    title: 'ZGRAD US2',
-                    ip: '193.243.190.18',
-                    port: 27051,
-                    region: 'US',
-                    gamemode: 'All Gamemodes',
-                    link: 'connect/us2',
-                    backgroundImage: '/images/loadingscreen/eighteenth.jpg'
-                },
-                {
-                    id: 'zgrad3',
-                    title: 'ZGRAD US3',
-                    ip: '193.243.190.18',
-                    port: 27053,
-                    region: 'US',
-                    gamemode: 'TDM 24/7',
-                    link: 'connect/us3',
-                    backgroundImage: '/images/loadingscreen/street-war.jpg'
-                },
-                {
-                    id: 'zgrad4',
-                    title: 'ZGRAD US4',
-                    ip: '193.243.190.18',
-                    port: 27052,
-                    region: 'US',
-                    gamemode: 'Homicide Only',
-                    link: 'connect/us4',
-                    backgroundImage: '/images/loadingscreen/eigth.jpg'
-                },
-                {
-                    id: 'zgradeu1',
-                    title: 'ZGRAD EU1',
-                    ip: '23.161.169.60',
-                    port: 27015,
-                    region: 'EU',
-                    gamemode: 'All Gamemodes',
-                    link: 'connect/eu1',
-                    backgroundImage: '/images/loadingscreen/thirteenth.jpg'
-                },
-                {
-                    id: 'zgrad5',
-                    title: 'ZGRAD US5',
-                    ip: '193.243.190.18',
-                    port: 27025,
-                    region: 'US',
-                    gamemode: 'All Gamemodes',
-                    link: 'connect/us5',
-                    backgroundImage: '/images/loadingscreen/fourteenth.jpg'
-                }
-            ];
+            // Filter to only include the main ZGRAD servers with link property
+            const servers = SERVER_GROUPS.filter(server => server.link);
             
             // Function to fetch server status
             const fetchServerStatus = (server) => {
