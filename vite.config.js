@@ -78,6 +78,7 @@ export default defineConfig({
         connectUs3: resolve(__dirname, 'connect/us3.html'),
         connectUs4: resolve(__dirname, 'connect/us4.html'),
         connectUs5: resolve(__dirname, 'connect/us5.html'),
+        connectUs6: resolve(__dirname, 'connect/us6.html'),
         connectEu1: resolve(__dirname, 'connect/eu1.html'),
         connectEu2: resolve(__dirname, 'connect/eu2.html'),
         // Guide pages

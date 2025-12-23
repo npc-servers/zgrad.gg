@@ -57,6 +57,17 @@ export const SERVER_GROUPS = [
         backgroundImage: '/images/loadingscreen/fourteenth.jpg'
     },
     {
+        id: 'zgrad6',
+        title: 'ZGRAD US6',
+        suffix: 'US6',
+        ip: '193.243.190.18',
+        port: 27026,
+        region: 'US',
+        gamemode: 'Homicide 24/7',
+        link: 'connect/us6',
+        backgroundImage: '/images/loadingscreen/twelth.jpg'
+    },
+    {
         id: 'zgradeu1',
         title: 'ZGRAD EU1',
         suffix: 'EU1',
