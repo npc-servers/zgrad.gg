@@ -10,7 +10,8 @@ export const SERVER_GROUPS = [
         region: 'US',
         gamemode: 'All Gamemodes',
         link: 'connect/us1',
-        backgroundImage: '/images/loadingscreen/homigrad-essence.jpg'
+        backgroundImage: '/images/loadingscreen/homigrad-essence.jpg',
+        logo: '/images/logos/zgrad-logopiece-z.png'
     },
     {
         id: 'zgrad2',
@@ -21,7 +22,8 @@ export const SERVER_GROUPS = [
         region: 'US',
         gamemode: 'All Gamemodes',
         link: 'connect/us2',
-        backgroundImage: '/images/loadingscreen/eighteenth.jpg'
+        backgroundImage: '/images/loadingscreen/eighteenth.jpg',
+        logo: '/images/logos/zgrad-logopiece-z.png'
     },
     {
         id: 'zgrad3',
@@ -32,7 +34,8 @@ export const SERVER_GROUPS = [
         region: 'US',
         gamemode: 'TDM 24/7',
         link: 'connect/us3',
-        backgroundImage: '/images/loadingscreen/street-war.jpg'
+        backgroundImage: '/images/loadingscreen/street-war.jpg',
+        logo: '/images/logos/zgrad-logopiece-z.png'
     },
     {
         id: 'zgrad4',
@@ -43,7 +46,8 @@ export const SERVER_GROUPS = [
         region: 'US',
         gamemode: 'Homicide Only',
         link: 'connect/us4',
-        backgroundImage: '/images/loadingscreen/eigth.jpg'
+        backgroundImage: '/images/loadingscreen/eigth.jpg',
+        logo: '/images/logos/zgrad-logopiece-z.png'
     },
     {
         id: 'zgrad5',
@@ -54,7 +58,8 @@ export const SERVER_GROUPS = [
         region: 'US',
         gamemode: 'All Gamemodes',
         link: 'connect/us5',
-        backgroundImage: '/images/loadingscreen/fourteenth.jpg'
+        backgroundImage: '/images/loadingscreen/fourteenth.jpg',
+        logo: '/images/logos/zgrad-logopiece-z.png'
     },
     {
         id: 'zgrad6',
@@ -65,7 +70,8 @@ export const SERVER_GROUPS = [
         region: 'US',
         gamemode: 'Homicide 24/7',
         link: 'connect/us6',
-        backgroundImage: '/images/loadingscreen/twelth.jpg'
+        backgroundImage: '/images/loadingscreen/twelth.jpg',
+        logo: '/images/logos/zgrad-logopiece-z.png'
     },
     {
         id: 'zgradeu1',
@@ -76,7 +82,8 @@ export const SERVER_GROUPS = [
         region: 'EU',
         gamemode: 'All Gamemodes',
         link: 'connect/eu1',
-        backgroundImage: '/images/loadingscreen/thirteenth.jpg'
+        backgroundImage: '/images/loadingscreen/thirteenth.jpg',
+        logo: '/images/logos/zgrad-logopiece-z.png'
     },
     {
         id: 'zgradeu2',
@@ -87,7 +94,8 @@ export const SERVER_GROUPS = [
         region: 'EU',
         gamemode: 'All Gamemodes',
         link: 'connect/eu2',
-        backgroundImage: '/images/loadingscreen/thirteenth.jpg'
+        backgroundImage: '/images/loadingscreen/thirteenth.jpg',
+        logo: '/images/logos/zgrad-logopiece-z.png'
     },
 ];
 
