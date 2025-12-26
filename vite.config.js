@@ -97,6 +97,8 @@ export default defineConfig({
         newsTemplate: resolve(__dirname, 'news/template.html'),
         // Loading screen
         loadingscreen: resolve(__dirname, 'loadingscreen/index.html'),
+        // Play page (play.zgrad.gg)
+        play: resolve(__dirname, 'play/index.html'),
         // 404 page
         notFound: resolve(__dirname, '404.html')
       },

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="origin-when-cross-origin">
+    
+    <!-- SEO Meta Tags -->
+    <title>Play Now | ZGRAD - Join Our Servers</title>
+    <meta name="description" content="Jump into ZGRAD's Homigrad servers instantly. Quick play with automatic server selection or choose your preferred server. Join thousands of players now!">
+    <meta name="keywords" content="ZGRAD play, Homigrad, Garry's Mod servers, quick play, GMod multiplayer, join server, zmod, npcz">
+    <meta name="author" content="ZGRAD">
+    <link rel="canonical" href="https://play.zgrad.gg">
+    <link rel="icon" href="/favicon.ico">
+    
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="/images/logos/zgrad-logo.png" as="image">
+    <link rel="preload" href="/images/textures/innerborder.png" as="image" fetchpriority="high">
+    <link rel="preload" href="/images/loadingscreen/homigrad-essence.jpg" as="image">
+    
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700&display=swap">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Play Now | ZGRAD">
+    <meta property="og:description" content="Jump into ZGRAD's Homigrad servers instantly. Quick play with automatic server selection or choose your preferred server.">
+    <meta property="og:image" content="https://zgrad.gg/images/logos/zgrad-logo.png">
+    <meta property="og:url" content="https://play.zgrad.gg">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="ZGRAD">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Play Now | ZGRAD">
+    <meta name="twitter:description" content="Jump into ZGRAD's Homigrad servers instantly. Quick play with automatic server selection or choose your preferred server.">
+    <meta name="twitter:image" content="https://zgrad.gg/images/logos/zgrad-logo.png">
+    
+    <!-- CSS and JS bundled via Vite in /src/play.js -->
+</head>
+<body>
+    <!-- Intro Splash Screen -->
+    <div class="intro-splash" id="introSplash">
+        <div class="splash-bg"></div>
+        
+        <!-- Blood Border Effect -->
+        <div class="splash-border splash-border-inner">
+            <img src="/images/textures/innerborder.png" alt="" class="border-img">
+            <div class="inner-gradient-overlay"></div>
+        </div>
+        
+        <!-- Logo -->
+        <div class="splash-logo-container">
+            <img src="/images/logos/zgrad-logo.png" alt="ZGRAD" class="splash-logo" id="splashLogo">
+        </div>
+        
+        <!-- Skip hint -->
+        <div class="splash-skip">Press any key or click to skip</div>
+    </div>
+
+    <!-- First Time Visitor - Immersive Welcome Experience -->
+    <div class="welcome-experience" id="welcomePopup">
+        <!-- Atmospheric Background -->
+        <div class="welcome-atmosphere">
+            <div class="atmo-layer atmo-bg"></div>
+            <div class="atmo-layer atmo-smoke"></div>
+            <div class="atmo-layer atmo-vignette"></div>
+            <div class="atmo-particles"></div>
+        </div>
+        
+        <!-- Choice Screen -->
+        <div class="welcome-screen welcome-choice" id="welcomeChoice">
+            <!-- Central Branding -->
+            <div class="welcome-header">
+                <div class="welcome-emblem">
+                    <div class="emblem-glow"></div>
+                    <img src="/images/logos/zgrad-logo.png" alt="ZGRAD" class="emblem-logo">
+                </div>
+                <div class="welcome-tagline">
+                    <span class="tag-line">Choose Your Path</span>
+                </div>
+            </div>
+            
+            <!-- Path Selection -->
+            <div class="path-selection">
+                <button class="path-card path-new" id="btnNewPlayer">
+                    <div class="path-bg"></div>
+                    <div class="path-border"></div>
+                    <div class="path-content">
+                        <div class="path-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 16v-4M12 8h.01"/>
+                            </svg>
+                        </div>
+                        <h2 class="path-title">New Player</h2>
+                        <p class="path-desc">Learn the basics and get started</p>
+                        <div class="path-cta">
+                            <span>Show me how</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+                        </div>
+                    </div>
+                </button>
+                
+                <div class="path-divider">
+                    <div class="divider-line"></div>
+                    <span class="divider-text">OR</span>
+                    <div class="divider-line"></div>
+                </div>
+                
+                <button class="path-card path-veteran" id="btnReturningPlayer">
+                    <div class="path-bg"></div>
+                    <div class="path-border"></div>
+                    <div class="path-content">
+                        <div class="path-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                            </svg>
+                        </div>
+                        <h2 class="path-title">Returning Player</h2>
+                        <p class="path-desc">Skip the intro and jump in</p>
+                        <div class="path-cta">
+                            <span>Let's go</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+                        </div>
+                    </div>
+                </button>
+            </div>
+            
+            <!-- Subtle skip hint -->
+            <div class="welcome-footer">
+                <span class="footer-hint">Press ESC to skip</span>
+            </div>
+        </div>
+            
+            <!-- Tutorial Slides (for new players) -->
+            <div class="welcome-screen welcome-tutorial" id="welcomeTutorial" style="display: none;">
+                <!-- Progress bar -->
+                <div class="tutorial-progress">
+                    <div class="progress-track">
+                        <div class="progress-fill" id="tutorialProgressFill"></div>
+                    </div>
+                    <div class="progress-steps">
+                        <span class="step active" data-step="1">1</span>
+                        <span class="step" data-step="2">2</span>
+                        <span class="step" data-step="3">3</span>
+                        <span class="step" data-step="4">4</span>
+                    </div>
+                </div>
+                
+                <!-- Slide 1: What is ZGRAD -->
+                <div class="tutorial-slide" data-slide="1">
+                    <div class="slide-content-wrapper">
+                        <div class="slide-icon-large">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                        </div>
+                        <h2 class="slide-title">What is <span class="highlight">ZGRAD</span>?</h2>
+                        <p class="slide-text">
+                            A Garry's Mod server network featuring <strong>Homigrad</strong> — chaotic, 
+                            round-based combat where players fight for survival or complete deadly objectives.
+                        </p>
+                        <div class="slide-features">
+                            <div class="feature-chip"><span>⚔️</span> Intense PvP</div>
+                            <div class="feature-chip"><span>🎭</span> Multiple Modes</div>
+                            <div class="feature-chip"><span>🧗</span> Ragdoll Climbing</div>
+                            <div class="feature-chip"><span>🔫</span> Custom Weapons</div>
+                        </div>
+                    </div>
+                    <div class="slide-nav">
+                        <div class="nav-spacer"></div>
+                        <button class="nav-btn nav-btn-next" data-next="2">
+                            Continue
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Slide 2: Requirements -->
+                <div class="tutorial-slide" data-slide="2" style="display: none;">
+                    <div class="slide-content-wrapper">
+                        <div class="slide-icon-large">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                                <line x1="8" y1="21" x2="16" y2="21"/>
+                                <line x1="12" y1="17" x2="12" y2="21"/>
+                            </svg>
+                        </div>
+                        <h2 class="slide-title">What You <span class="highlight">Need</span></h2>
+                        <div class="requirements-grid">
+                            <div class="req-item">
+                                <div class="req-icon-mini">💻</div>
+                                <div class="req-info">
+                                    <strong>A PC</strong>
+                                    <span>Windows, Mac, or Linux</span>
+                                </div>
+                            </div>
+                            <div class="req-item">
+                                <div class="req-icon-mini steam">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" fill="currentColor"><path d="M496 256c0 137-111.2 248-248.4 248-113.8 0-209.6-76.3-239-180.4l95.2 39.3c6.4 32.1 34.9 56.4 68.9 56.4 39.2 0 71.9-32.4 70.2-73.5l84.5-60.2c52.1 1.3 95.8-40.9 95.8-93.5 0-51.6-42-93.5-93.7-93.5s-93.7 42-93.7 93.5v2.1L123.2 186c-15.9-11.5-35.2-18.3-56-18.3-41.4 0-67.2 30.5-67.2 60.4v.1c0 23.3 15.8 45.2 44 53.8l111.8 46.1c-4.2-11.2-5.4-23.6-3-36.1l-85-35.1c-19.9-8.2-34.9-26.8-35-48.6 0-4.6 2.7-27.1 34.3-27.1 14.7 0 28.4 6.1 39.7 15.8l82.5 62.5c-.3-2.3-.4-4.7-.4-7.1 0-51.6 42-93.5 93.7-93.5s93.7 42 93.7 93.5-42 93.5-93.7 93.5c-4.2 0-8.3-.3-12.3-.8l-87.1 62c.3 2.5.4 5 .4 7.5 0 39.4-32.1 71.4-71.6 71.4s-71.6-32-71.6-71.4c0-7.4 1.2-14.6 3.4-21.3L8 228.1c6.2-2.7 12.9-4.8 19.8-6.3l85.7 35.4c10-7.3 22-11.6 35-11.6 33.5 0 60.7 27.1 60.7 60.6s-27.2 60.6-60.7 60.6-60.7-27.1-60.7-60.6c0-3.2.3-6.3.8-9.3l-91.3-37.7c-.5 2.1-.8 4.3-.8 6.5 0 43.1 35.1 78.1 78.4 78.1s78.4-35 78.4-78.1c0-7.2-1-14.2-2.8-20.8l85.1-60.8c-.2-2.3-.3-4.5-.3-6.8 0-51.6 42-93.5 93.7-93.5S496 152.4 496 204v2.1l.4-.1H496v50z"/></svg>
+                                </div>
+                                <div class="req-info">
+                                    <strong>Steam Account</strong>
+                                    <span>Free to create</span>
+                                </div>
+                            </div>
+                            <div class="req-item highlight-req">
+                                <div class="req-icon-mini gmod">G</div>
+                                <div class="req-info">
+                                    <strong>Garry's Mod</strong>
+                                    <a href="https://store.steampowered.com/app/4000/Garrys_Mod/" target="_blank">$9.99 on Steam →</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slide-nav">
+                        <button class="nav-btn nav-btn-back" data-prev="1">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
+                            Back
+                        </button>
+                        <button class="nav-btn nav-btn-next" data-next="3">
+                            Continue
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Slide 3: Important Setting -->
+                <div class="tutorial-slide" data-slide="3" style="display: none;">
+                    <div class="slide-content-wrapper">
+                        <div class="slide-icon-large warning">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                <line x1="12" y1="9" x2="12" y2="13"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                        </div>
+                        <h2 class="slide-title"><span class="highlight warning">Critical</span> Setting</h2>
+                        <div class="warning-box">
+                            <p class="warning-intro">Enable this in GMod or you'll see missing textures!</p>
+                            <div class="setting-steps-modern">
+                                <div class="step-modern">
+                                    <span class="step-num-modern">1</span>
+                                    <span>Open GMod → <strong>Options</strong></span>
+                                </div>
+                                <div class="step-modern">
+                                    <span class="step-num-modern">2</span>
+                                    <span>Find <strong>"Custom content downloads"</strong></span>
+                                </div>
+                                <div class="step-modern">
+                                    <span class="step-num-modern">3</span>
+                                    <span>Set to <strong>"Allow all custom files"</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slide-nav">
+                        <button class="nav-btn nav-btn-back" data-prev="2">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
+                            Back
+                        </button>
+                        <button class="nav-btn nav-btn-next" data-next="4">
+                            Continue
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Slide 4: How to Join -->
+                <div class="tutorial-slide" data-slide="4" style="display: none;">
+                    <div class="slide-content-wrapper">
+                        <div class="slide-icon-large success">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                <polyline points="22 4 12 14.01 9 11.01"/>
+                            </svg>
+                        </div>
+                        <h2 class="slide-title">You're <span class="highlight success">Ready</span>!</h2>
+                        <div class="ready-content">
+                            <p class="ready-text">Click any server below to connect instantly, or search <strong>"ZGRAD"</strong> in GMod's server browser.</p>
+                            <div class="steam-cta">
+                                <span class="cta-label">📦 Pro tip: Pre-download content for faster loading</span>
+                                <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3043786805" target="_blank" rel="noopener" class="steam-btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" fill="currentColor"><path d="M496 256c0 137-111.2 248-248.4 248-113.8 0-209.6-76.3-239-180.4l95.2 39.3c6.4 32.1 34.9 56.4 68.9 56.4 39.2 0 71.9-32.4 70.2-73.5l84.5-60.2c52.1 1.3 95.8-40.9 95.8-93.5 0-51.6-42-93.5-93.7-93.5s-93.7 42-93.7 93.5v2.1L123.2 186c-15.9-11.5-35.2-18.3-56-18.3-41.4 0-67.2 30.5-67.2 60.4v.1c0 23.3 15.8 45.2 44 53.8l111.8 46.1c-4.2-11.2-5.4-23.6-3-36.1l-85-35.1c-19.9-8.2-34.9-26.8-35-48.6 0-4.6 2.7-27.1 34.3-27.1 14.7 0 28.4 6.1 39.7 15.8l82.5 62.5c-.3-2.3-.4-4.7-.4-7.1 0-51.6 42-93.5 93.7-93.5s93.7 42 93.7 93.5-42 93.5-93.7 93.5c-4.2 0-8.3-.3-12.3-.8l-87.1 62c.3 2.5.4 5 .4 7.5 0 39.4-32.1 71.4-71.6 71.4s-71.6-32-71.6-71.4c0-7.4 1.2-14.6 3.4-21.3L8 228.1c6.2-2.7 12.9-4.8 19.8-6.3l85.7 35.4c10-7.3 22-11.6 35-11.6 33.5 0 60.7 27.1 60.7 60.6s-27.2 60.6-60.7 60.6-60.7-27.1-60.7-60.6c0-3.2.3-6.3.8-9.3l-91.3-37.7c-.5 2.1-.8 4.3-.8 6.5 0 43.1 35.1 78.1 78.4 78.1s78.4-35 78.4-78.1c0-7.2-1-14.2-2.8-20.8l85.1-60.8c-.2-2.3-.3-4.5-.3-6.8 0-51.6 42-93.5 93.7-93.5S496 152.4 496 204v2.1l.4-.1H496v50z"/></svg>
+                                    Steam Collection
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slide-nav">
+                        <button class="nav-btn nav-btn-back" data-prev="3">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
+                            Back
+                        </button>
+                        <button class="nav-btn nav-btn-deploy" id="btnFinishTutorial">
+                            <span>Let's Play</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Play Page -->
+    <div class="play-page">
+        <!-- Background -->
+        <div class="play-background">
+            <div class="play-bg-image"></div>
+            <div class="play-bg-overlay"></div>
+            <div class="play-bg-texture"></div>
+        </div>
+        
+        <!-- Header -->
+        <header class="play-header">
+            <a href="https://zgrad.gg" class="play-logo-link">
+                <img src="/images/logos/zgrad-logo.png" alt="ZGRAD" class="play-logo">
+            </a>
+            <nav class="play-nav">
+                <a href="https://zgrad.gg" class="nav-link">Main Site</a>
+                <a href="https://discord.gg/zgrad" target="_blank" rel="noopener" class="nav-link">Discord</a>
+                <a href="https://store.zmod.gg" target="_blank" rel="noopener" class="nav-link">Store</a>
+            </nav>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="play-main">
+            <!-- Stats Bar -->
+            <div class="play-stats-bar">
+                <div class="stat-chip">
+                    <span class="stat-value" id="totalPlayers">--</span>
+                    <span class="stat-label">Players Online</span>
+                </div>
+                <div class="stat-chip">
+                    <span class="stat-value" id="totalServers">--</span>
+                    <span class="stat-label">Servers</span>
+                </div>
+            </div>
+            
+            <!-- Quick Play -->
+            <div class="quick-play-container">
+                <button class="quick-play-btn" id="quickPlayBtn" disabled>
+                    <div class="qp-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                    </div>
+                    <div class="qp-text">
+                        <span class="qp-title">QUICK PLAY</span>
+                        <span class="qp-subtitle" id="quickPlaySubtitle">Finding best server...</span>
+                    </div>
+                </button>
+            </div>
+            
+            <!-- Server Grid -->
+            <section class="servers-section">
+                <h2 class="section-title">Choose a Server</h2>
+                <div class="server-grid" id="serverGrid">
+                    <div class="server-loading">
+                        <div class="loading-spinner"></div>
+                        <span>Loading servers...</span>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Quick Links -->
+            <section class="quick-links-section">
+                <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3043786805" target="_blank" rel="noopener" class="quick-link steam-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" fill="currentColor"><path d="M496 256c0 137-111.2 248-248.4 248-113.8 0-209.6-76.3-239-180.4l95.2 39.3c6.4 32.1 34.9 56.4 68.9 56.4 39.2 0 71.9-32.4 70.2-73.5l84.5-60.2c52.1 1.3 95.8-40.9 95.8-93.5 0-51.6-42-93.5-93.7-93.5s-93.7 42-93.7 93.5v2.1L123.2 186c-15.9-11.5-35.2-18.3-56-18.3-41.4 0-67.2 30.5-67.2 60.4v.1c0 23.3 15.8 45.2 44 53.8l111.8 46.1c-4.2-11.2-5.4-23.6-3-36.1l-85-35.1c-19.9-8.2-34.9-26.8-35-48.6 0-4.6 2.7-27.1 34.3-27.1 14.7 0 28.4 6.1 39.7 15.8l82.5 62.5c-.3-2.3-.4-4.7-.4-7.1 0-51.6 42-93.5 93.7-93.5s93.7 42 93.7 93.5-42 93.5-93.7 93.5c-4.2 0-8.3-.3-12.3-.8l-87.1 62c.3 2.5.4 5 .4 7.5 0 39.4-32.1 71.4-71.6 71.4s-71.6-32-71.6-71.4c0-7.4 1.2-14.6 3.4-21.3L8 228.1c6.2-2.7 12.9-4.8 19.8-6.3l85.7 35.4c10-7.3 22-11.6 35-11.6 33.5 0 60.7 27.1 60.7 60.6s-27.2 60.6-60.7 60.6-60.7-27.1-60.7-60.6c0-3.2.3-6.3.8-9.3l-91.3-37.7c-.5 2.1-.8 4.3-.8 6.5 0 43.1 35.1 78.1 78.4 78.1s78.4-35 78.4-78.1c0-7.2-1-14.2-2.8-20.8l85.1-60.8c-.2-2.3-.3-4.5-.3-6.8 0-51.6 42-93.5 93.7-93.5S496 152.4 496 204v2.1l.4-.1H496v50z"/></svg>
+                    <span>Steam Collection</span>
+                </a>
+                <button class="quick-link help-link" id="btnShowTutorial">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/></svg>
+                    <span>How to Play</span>
+                </button>
+                <a href="https://discord.gg/zgrad" target="_blank" rel="noopener" class="quick-link discord-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127.14 96.36" fill="currentColor"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>
+                    <span>Join Discord</span>
+                </a>
+            </section>
+        </main>
+        
+        <!-- Footer -->
+        <footer class="play-footer">
+            <p>© 2025 ZGRAD. All rights reserved.</p>
+        </footer>
+    </div>
+    
+    <!-- Main module entry point (Vite) -->
+    <script type="module" src="/src/play.js"></script>
+</body>
+</html>
