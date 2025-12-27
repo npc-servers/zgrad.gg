@@ -392,7 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const card = document.createElement('a');
         card.className = `server-card ${isOnline ? 'online' : 'offline'}`;
-        card.href = isOnline ? `/${server.link}` : '#';
+        card.href = isOnline ? `https://zgrad.gg/${server.link}` : '#';
         if (!isOnline) {
             card.onclick = (e) => e.preventDefault();
         }
@@ -542,7 +542,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (quickPlayBtn) {
         quickPlayBtn.addEventListener('click', () => {
             if (bestServer) {
-                window.location.href = `/${bestServer.server.link}`;
+                window.location.href = `https://zgrad.gg/${bestServer.server.link}`;
             }
         });
     }
