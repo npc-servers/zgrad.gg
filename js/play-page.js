@@ -132,8 +132,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // SPLASH SCREEN FUNCTIONS
     // =========================================
     
-    // Check if splash was shown recently (within 30 minutes)
+    // Check if splash should be shown
+    // Skip if user has visited before OR if shown within last 30 minutes
     function shouldShowSplash() {
+        // Skip splash entirely if user has already completed the welcome flow
+        if (hasVisitedBefore()) return false;
+        
+        // Also skip if splash was shown recently (within 30 minutes) for fresh sessions
         const lastShown = localStorage.getItem(SPLASH_STORAGE_KEY);
         if (!lastShown) return true;
         
