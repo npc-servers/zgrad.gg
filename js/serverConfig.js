@@ -44,7 +44,7 @@ export const SERVER_GROUPS = [
         ip: '193.243.190.18',
         port: 27052,
         region: 'US',
-        gamemode: 'Homicide Only',
+        gamemode: 'Homicide 24/7',
         link: 'connect/us4',
         backgroundImage: '/images/loadingscreen/eigth.jpg',
         logo: '/images/logos/zgrad-logopiece-z.png'

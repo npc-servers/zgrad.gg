@@ -352,6 +352,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.stopPropagation();
             });
         }
+        
+        // Auto-open popup if URL has #guide hash
+        if (window.location.hash === '#guide') {
+            popup.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            // Clear the hash without triggering a page reload
+            history.replaceState(null, '', window.location.pathname);
+        }
     };
     
     // Initialize join guide popup system

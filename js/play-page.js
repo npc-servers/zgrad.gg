@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnNewPlayer = document.getElementById('btnNewPlayer');
     const btnReturningPlayer = document.getElementById('btnReturningPlayer');
     const btnFinishTutorial = document.getElementById('btnFinishTutorial');
-    const btnShowTutorial = document.getElementById('btnShowTutorial');
     
     // Server elements
     const quickPlayBtn = document.getElementById('quickPlayBtn');
@@ -205,12 +204,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // SERVER LIST FUNCTIONS
     // =========================================
     
-    // Detect user's region based on timezone
+    // Detect user's region based on timezone - prioritize EU for European users
     function detectUserRegion() {
         try {
             const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            const europeTimezones = ['Europe/', 'Africa/', 'Atlantic/', 'Arctic/'];
-            const isEurope = europeTimezones.some(tz => timezone.startsWith(tz));
+            
+            // European, African, Middle Eastern, and Western Asian timezones -> EU servers
+            const euTimezones = [
+                'Europe/',      // All of Europe
+                'Africa/',      // Africa (closer to EU servers)
+                'Atlantic/',    // Atlantic islands
+                'Arctic/',      // Arctic regions
+                'Asia/Istanbul', 'Asia/Nicosia', 'Asia/Beirut', 'Asia/Damascus',
+                'Asia/Jerusalem', 'Asia/Tel_Aviv', 'Asia/Amman', 'Asia/Baghdad',
+                'Asia/Kuwait', 'Asia/Riyadh', 'Asia/Dubai', 'Asia/Muscat',
+                'Asia/Bahrain', 'Asia/Qatar', 'Indian/'
+            ];
+            
+            const isEurope = euTimezones.some(tz => timezone.startsWith(tz));
             return isEurope ? 'EU' : 'US';
         } catch (e) {
             return 'US';
@@ -218,6 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     const userRegion = detectUserRegion();
+    console.log(`Detected region: ${userRegion}`);
     
     // Fetch server status
     function fetchServerStatus(server) {
@@ -261,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
     
-    // Select best server based on region and player count
+    // Select a random server that isn't full or empty, weighted by player count
     function selectBestServer(statuses) {
         const onlineServers = statuses.filter(s => s.online);
         
@@ -269,30 +281,42 @@ document.addEventListener('DOMContentLoaded', () => {
             return null;
         }
         
-        const regionServers = onlineServers.filter(s => s.server.region === userRegion);
-        const candidateServers = regionServers.length > 0 ? regionServers : onlineServers;
-        
-        const scoredServers = candidateServers.map(s => {
-            let score = 0;
+        // Filter out full servers (95%+ capacity) and dead/empty servers (0 players)
+        const validServers = onlineServers.filter(s => {
             const fillRatio = s.maxPlayers > 0 ? s.players / s.maxPlayers : 0;
-            
-            if (s.players > 0 && s.players < 5) score += 10;
-            else if (s.players >= 5 && s.players < 15) score += 30;
-            else if (s.players >= 15 && s.players < 25) score += 50;
-            else if (s.players >= 25) score += 40;
-            
-            if (fillRatio >= 0.95) score -= 50;
-            else if (fillRatio >= 0.9) score -= 20;
-            else if (fillRatio >= 0.8) score -= 5;
-            
-            if (s.server.region === userRegion) score += 20;
-            
-            return { ...s, score };
+            const isFull = fillRatio >= 0.95;
+            const isDead = s.players === 0;
+            return !isFull && !isDead;
         });
         
-        scoredServers.sort((a, b) => b.score - a.score);
+        // If no valid servers, fall back to any online server that isn't completely full
+        const candidatePool = validServers.length > 0 
+            ? validServers 
+            : onlineServers.filter(s => s.players < s.maxPlayers);
         
-        return scoredServers[0];
+        if (candidatePool.length === 0) {
+            return null;
+        }
+        
+        // Prefer servers in user's region if available
+        const regionServers = candidatePool.filter(s => s.server.region === userRegion);
+        const finalPool = regionServers.length > 0 ? regionServers : candidatePool;
+        
+        // Weighted random selection - prefer servers with more players
+        // Weight = player count + 5 (so empty servers still have some chance)
+        const weights = finalPool.map(s => s.players + 5);
+        const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+        
+        let random = Math.random() * totalWeight;
+        for (let i = 0; i < finalPool.length; i++) {
+            random -= weights[i];
+            if (random <= 0) {
+                return finalPool[i];
+            }
+        }
+        
+        // Fallback to last server (shouldn't normally reach here)
+        return finalPool[finalPool.length - 1];
     }
     
     // Create server card HTML
@@ -314,16 +338,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (fillRatio >= 0.95) playersClass = 'full';
         else if (fillRatio >= 0.8) playersClass = 'high';
         
-        const regionFlag = server.region === 'US' ? '🇺🇸' : '🇪🇺';
+        // SVG flags instead of emoji for better compatibility
+        const usFlag = `<svg class="flag-icon" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><path fill="#B22234" d="M35.445 7C34.752 5.809 33.477 5 32 5H18v2h17.445zM0 25h36v2H0zm18-8h18v2H18zm0-4h18v2H18zM0 21h36v2H0zm4 10h28c1.477 0 2.752-.809 3.445-2H.555c.693 1.191 1.968 2 3.445 2zM18 9h18v2H18z"/><path fill="#EEE" d="M.068 27.679c.017.093.036.186.059.277.026.101.058.198.092.296.089.259.197.509.328.743L.555 29h34.89l.008-.005c.13-.234.238-.484.328-.743.034-.098.066-.196.092-.296.023-.091.042-.184.059-.277.041-.22.068-.446.068-.679H0c0 .233.027.459.068.679zM0 23h36v2H0zm0-4v2h36v-2H18zm18-4h18v2H18zm0-4h18v2H18zM0 9c0-.233.027-.457.068-.679C.028 8.543.009 8.77 0 9zm.555-2l-.003.005L.555 7zM.128 8.044c.025-.102.055-.2.089-.3a3.56 3.56 0 0 1 .109-.282C.167 7.75.156 8.034.128 8.044zM18 7h17.445C34.752 5.809 33.477 5 32 5H18v2z"/><path fill="#3C3B6E" d="M18 5H4C1.791 5 0 6.791 0 9v10h18V5z"/><path fill="#FFF" d="M2.001 7.726l.618.449-.236.725L3 8.452l.618.448-.236-.725L4 7.726h-.764L3 7l-.235.726zm2 2l.618.449-.236.725.617-.448.618.448-.236-.725L6 9.726h-.764L5 9l-.235.726zm4 0l.618.449-.236.725.617-.448.618.448-.236-.725.618-.449h-.764L9 9l-.235.726zm4 0l.618.449-.236.725.617-.448.618.448-.236-.725.618-.449h-.764L13 9l-.235.726zm-8 4l.618.449-.236.725.617-.448.618.448-.236-.725.618-.449h-.764L5 13l-.235.726zm4 0l.618.449-.236.725.617-.448.618.448-.236-.725.618-.449h-.764L9 13l-.235.726zm4 0l.618.449-.236.725.617-.448.618.448-.236-.725.618-.449h-.764L13 13l-.235.726zm-6-6l.618.449-.236.725L7 8.452l.618.448-.236-.725L8 7.726h-.764L7 7l-.235.726zm4 0l.618.449-.236.725.617-.448.618.448-.236-.725.618-.449h-.764L11 7l-.235.726zm4 0l.618.449-.236.725.617-.448.618.448-.236-.725.618-.449h-.764L15 7l-.235.726zm-12 4l.618.449-.236.725.617-.448.618.448-.236-.725.618-.449h-.764L3 11l-.235.726zm4 0l.618.449-.236.725.617-.448.618.448-.236-.725.618-.449h-.764L7 11l-.235.726zm4 0l.618.449-.236.725.617-.448.618.448-.236-.725.618-.449h-.764L11 11l-.235.726zm4 0l.618.449-.236.725.617-.448.618.448-.236-.725.618-.449h-.764L15 11l-.235.726zm-12 4l.618.449-.236.725.617-.448.618.448-.236-.725.618-.449h-.764L3 15l-.235.726zm4 0l.618.449-.236.725.617-.448.618.448-.236-.725.618-.449h-.764L7 15l-.235.726zm4 0l.618.449-.236.725.617-.448.618.448-.236-.725.618-.449h-.764L11 15l-.235.726zm4 0l.618.449-.236.725.617-.448.618.448-.236-.725.618-.449h-.764L15 15l-.235.726zm-12 4l.618.449-.236.725.617-.448.618.448-.236-.725.618-.449h-.764L3 19l-.235.726h-.764zm4 0l.618.449-.236.725.617-.448.618.448-.236-.725.618-.449h-.764L7 19l-.235.726h-.764zm4 0l.618.449-.236.725.617-.448.618.448-.236-.725.618-.449h-.764L11 19l-.235.726h-.764zm4 0l.618.449-.236.725.617-.448.618.448-.236-.725.618-.449h-.764L15 19l-.235.726h-.764z"/></svg>`;
+        const euFlag = `<svg class="flag-icon" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><path fill="#039" d="M32 5H4a4 4 0 0 0-4 4v18a4 4 0 0 0 4 4h28a4 4 0 0 0 4-4V9a4 4 0 0 0-4-4z"/><path fill="#FC0" d="M18 8l.5 1.5H20l-1.25 1 .5 1.5L18 11l-1.25 1 .5-1.5-1.25-1h1.5zm0 18l.5 1.5H20l-1.25 1 .5 1.5L18 29l-1.25 1 .5-1.5-1.25-1h1.5zM10 12l.5 1.5H12l-1.25 1 .5 1.5L10 15l-1.25 1 .5-1.5-1.25-1h1.5zm16 0l.5 1.5H28l-1.25 1 .5 1.5L26 15l-1.25 1 .5-1.5-1.25-1h1.5zM7 18l.5 1.5H9l-1.25 1 .5 1.5L7 21l-1.25 1 .5-1.5-1.25-1h1.5zm22 0l.5 1.5H31l-1.25 1 .5 1.5L29 21l-1.25 1 .5-1.5-1.25-1h1.5zM10 24l.5 1.5H12l-1.25 1 .5 1.5L10 27l-1.25 1 .5-1.5-1.25-1h1.5zm16 0l.5 1.5H28l-1.25 1 .5 1.5L26 27l-1.25 1 .5-1.5-1.25-1h1.5z"/></svg>`;
+        const regionFlag = server.region === 'US' ? usFlag : euFlag;
         
         card.innerHTML = `
-            <div class="server-status ${isOnline ? 'online' : 'offline'}"></div>
             <div class="server-info">
-                <h3 class="server-name">${server.title} <span class="region-flag">${regionFlag}</span></h3>
+                <div class="server-header">
+                    <span class="region-flag">${regionFlag}</span>
+                    <h3 class="server-name">${server.title}</h3>
+                </div>
                 <p class="server-meta">${status.gamemode}</p>
             </div>
             <div class="server-players ${playersClass}">
-                ${isOnline ? `<span class="count">${playerCount}</span>/${maxPlayers}` : 'Offline'}
+                ${isOnline ? `<span class="count">${playerCount}</span><span class="max">/${maxPlayers}</span>` : '<span class="offline-text">Offline</span>'}
             </div>
             <svg class="server-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
@@ -341,7 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const onlineCount = statuses.filter(s => s.online).length;
         
         if (totalPlayersEl) totalPlayersEl.textContent = totalPlayers;
-        if (totalServersEl) totalServersEl.textContent = `${onlineCount}/${statuses.length}`;
+        if (totalServersEl) totalServersEl.textContent = onlineCount;
         
         bestServer = selectBestServer(statuses);
         
@@ -419,10 +448,6 @@ document.addEventListener('DOMContentLoaded', () => {
         btnFinishTutorial.addEventListener('click', hidePopup);
     }
     
-    if (btnShowTutorial) {
-        btnShowTutorial.addEventListener('click', showPopup);
-    }
-    
     // Tutorial navigation buttons
     if (welcomeTutorial) {
         welcomeTutorial.querySelectorAll('.nav-btn-next').forEach(btn => {
@@ -460,6 +485,48 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && welcomePopup?.classList.contains('hidden') && !quickPlayBtn?.disabled) {
             quickPlayBtn?.click();
+        }
+    });
+    
+    // =========================================
+    // JOIN GUIDE POPUP
+    // =========================================
+    
+    const joinGuidePopup = document.getElementById('joinGuidePopup');
+    const btnJoinGuide = document.getElementById('btnJoinGuide');
+    const popupClose = document.getElementById('popupClose');
+    const popupBackdrop = document.getElementById('popupBackdrop');
+    
+    function showJoinGuide() {
+        if (joinGuidePopup) {
+            joinGuidePopup.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+    
+    function hideJoinGuide() {
+        if (joinGuidePopup) {
+            joinGuidePopup.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+    }
+    
+    if (btnJoinGuide) {
+        btnJoinGuide.addEventListener('click', showJoinGuide);
+    }
+    
+    if (popupClose) {
+        popupClose.addEventListener('click', hideJoinGuide);
+    }
+    
+    if (popupBackdrop) {
+        popupBackdrop.addEventListener('click', hideJoinGuide);
+    }
+    
+    // ESC key to close join guide popup
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && joinGuidePopup?.classList.contains('show')) {
+            hideJoinGuide();
         }
     });
     
