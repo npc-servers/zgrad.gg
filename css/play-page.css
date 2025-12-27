@@ -202,12 +202,19 @@
     opacity: 1;
     visibility: visible;
     transition: opacity 0.5s ease, visibility 0.5s ease;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .welcome-experience.hidden {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
+}
+
+/* Prevent body scroll when welcome popup is visible */
+body:has(.welcome-experience:not(.hidden)) {
+    overflow: hidden;
 }
 
 /* Atmospheric Background Layers */
@@ -684,6 +691,14 @@
 }
 
 .slide-title .highlight.zgrad {
+    background: none;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: #ff0000;
+    background-clip: unset;
+    color: #ff0000;
+}
+
+.slide-title .highlight.need {
     background: none;
     -webkit-background-clip: unset;
     -webkit-text-fill-color: #ff0000;
@@ -1559,16 +1574,29 @@
    ============================================= */
 @media (max-width: 768px) {
     /* Welcome Experience Mobile */
+    .welcome-experience {
+        align-items: flex-start;
+        padding: 20px 0;
+    }
+    
     .welcome-screen {
         padding: 30px 20px;
     }
     
+    .welcome-choice {
+        padding-top: 10px;
+    }
+    
     .welcome-header {
-        margin-bottom: 32px;
+        margin-bottom: 24px;
     }
     
     .emblem-logo {
-        height: 60px;
+        height: 50px;
+    }
+    
+    .emblem-glow {
+        inset: -15px;
     }
     
     .tag-line {
@@ -1578,16 +1606,16 @@
     
     .path-selection {
         flex-direction: column;
-        gap: 16px;
+        gap: 12px;
     }
     
     .path-card {
-        padding: 40px 20px;
+        padding: 28px 20px;
     }
     
     .path-divider {
         flex-direction: row;
-        padding: 8px 0;
+        padding: 6px 0;
     }
     
     .divider-line {
@@ -1596,25 +1624,27 @@
     }
     
     .path-icon {
-        width: 54px;
-        height: 54px;
+        width: 48px;
+        height: 48px;
+        margin-bottom: 12px;
     }
     
     .path-icon svg {
-        width: 24px;
-        height: 24px;
+        width: 22px;
+        height: 22px;
     }
     
     .path-title {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
     }
     
     .path-desc {
         font-size: 0.8rem;
+        margin-bottom: 14px;
     }
     
     .welcome-footer {
-        margin-top: 24px;
+        margin-top: 20px;
     }
     
     /* Tutorial Mobile */
@@ -1770,16 +1800,28 @@
 
 @media (max-width: 480px) {
     /* Welcome Experience Small */
+    .welcome-experience {
+        padding: 15px 0;
+    }
+    
     .welcome-screen {
-        padding: 24px 16px;
+        padding: 20px 16px;
+    }
+    
+    .welcome-choice {
+        padding-top: 5px;
+    }
+    
+    .welcome-header {
+        margin-bottom: 18px;
     }
     
     .emblem-logo {
-        height: 50px;
+        height: 42px;
     }
     
     .emblem-glow {
-        inset: -20px;
+        inset: -12px;
     }
     
     .tag-line {
@@ -1787,18 +1829,27 @@
         letter-spacing: 2px;
     }
     
+    .path-selection {
+        gap: 10px;
+    }
+    
     .path-card {
-        padding: 32px 16px;
+        padding: 22px 16px;
+    }
+    
+    .path-divider {
+        padding: 4px 0;
     }
     
     .path-icon {
-        width: 48px;
-        height: 48px;
+        width: 42px;
+        height: 42px;
+        margin-bottom: 10px;
     }
     
     .path-icon svg {
-        width: 22px;
-        height: 22px;
+        width: 20px;
+        height: 20px;
     }
     
     .path-label {
@@ -1806,16 +1857,20 @@
     }
     
     .path-title {
-        font-size: 1rem;
+        font-size: 0.95rem;
     }
     
     .path-desc {
-        font-size: 0.75rem;
-        margin-bottom: 14px;
+        font-size: 0.72rem;
+        margin-bottom: 12px;
     }
     
     .path-cta {
         font-size: 0.7rem;
+    }
+    
+    .welcome-footer {
+        margin-top: 16px;
     }
     
     /* Tutorial Small */

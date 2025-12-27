@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function hidePopup() {
         if (welcomePopup) {
             welcomePopup.classList.add('hidden');
+            document.body.style.overflow = '';
         }
         markAsVisited();
     }
@@ -67,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function showPopup() {
         if (welcomePopup) {
             welcomePopup.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
         }
         if (welcomeChoice) {
             welcomeChoice.style.display = 'flex';
@@ -125,6 +127,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function initWelcomePopup() {
         if (hasVisitedBefore() && welcomePopup) {
             welcomePopup.classList.add('hidden');
+            document.body.style.overflow = '';
+        } else if (welcomePopup && !welcomePopup.classList.contains('hidden')) {
+            // Lock body scroll if welcome popup is visible
+            document.body.style.overflow = 'hidden';
         }
     }
     
@@ -591,12 +597,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // =========================================
-    // BACKGROUND PARALLAX EFFECT
+    // BACKGROUND PARALLAX EFFECT (desktop only)
     // =========================================
     
     const bgImage = document.querySelector('.play-bg-image');
+    const isMobile = window.matchMedia('(max-width: 768px)').matches || 'ontouchstart' in window;
     
-    if (bgImage) {
+    if (bgImage && !isMobile) {
         let targetX = 0;
         let targetY = 0;
         let currentX = 0;
