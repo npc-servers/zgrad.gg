@@ -348,7 +348,18 @@ body.gmod-client .rule-copy-button {
     width: 14px;
     height: 14px;
     filter: brightness(0) saturate(100%) invert(100%); /* White color */
-    transition: var(--transition);
+    transition: filter 0.15s ease;
+}
+
+/* Copied state - sync all transitions */
+.rule-copy-button.copied {
+    background: rgba(72, 187, 120, 0.2);
+    border-color: rgba(72, 187, 120, 0.5);
+    transition: all 0.15s ease;
+}
+
+.rule-copy-button.copied img {
+    filter: brightness(0) saturate(100%) invert(64%) sepia(88%) saturate(3207%) hue-rotate(90deg) brightness(96%) contrast(80%); /* Green color */
 }
 
 .rule-copy-button:hover {

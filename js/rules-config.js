@@ -251,13 +251,23 @@ function generateFooterHTML() {
 
 // Utility functions for clipboard functionality
 function showCopyFeedback(button) {
-    const originalContent = button.innerHTML;
-    button.innerHTML = '<img src="/images/icons/check.svg" alt="Copied">';
-    button.style.filter = 'brightness(0) saturate(100%) invert(64%) sepia(88%) saturate(3207%) hue-rotate(90deg) brightness(96%) contrast(80%)'; // Green filter
+    const img = button.querySelector('img');
+    const originalSrc = img ? img.src : '';
+    
+    // Change to check icon and add copied class simultaneously
+    if (img) {
+        img.src = '/images/icons/check.svg';
+        img.alt = 'Copied';
+    }
+    button.classList.add('copied');
     
     setTimeout(() => {
-        button.innerHTML = originalContent;
-        button.style.filter = '';
+        // Revert both at the same time
+        button.classList.remove('copied');
+        if (img) {
+            img.src = originalSrc;
+            img.alt = 'Copy link';
+        }
     }, 2000);
 }
 
