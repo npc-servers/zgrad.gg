@@ -15,6 +15,10 @@ export function MiniRichTextEditor({ content, onChange, placeholder }) {
     const [isReady, setIsReady] = useState(false);
     const [updateKey, setUpdateKey] = useState(0);
     const lastUpdateRef = useRef(0);
+    // Track when we're programmatically setting content to avoid infinite loops
+    const isSettingContent = useRef(false);
+    // Track the last content we received from props to detect external changes
+    const lastExternalContent = useRef(content);
 
     // Throttled update to prevent excessive re-renders
     const throttledUpdate = useCallback(() => {
@@ -55,8 +59,14 @@ export function MiniRichTextEditor({ content, onChange, placeholder }) {
                 },
             },
             onUpdate: ({ editor: ed }) => {
+                // Skip onChange if we're programmatically setting content
+                if (isSettingContent.current) return;
+                
                 if (onChange) {
-                    onChange(ed.getHTML());
+                    const html = ed.getHTML();
+                    // Update our tracking ref so we don't try to re-set this content
+                    lastExternalContent.current = html;
+                    onChange(html);
                 }
             },
             onSelectionUpdate: throttledUpdate,
@@ -71,11 +81,18 @@ export function MiniRichTextEditor({ content, onChange, placeholder }) {
         };
     }, []);
 
-    // Update content when prop changes externally
+    // Update content when prop changes from EXTERNAL source (e.g., loading different content)
     useEffect(() => {
         const editor = editorInstanceRef.current;
-        if (editor && content !== editor.getHTML()) {
+        if (!editor) return;
+        
+        // Only update if the content prop changed from an external source
+        // (not from our own onUpdate callback)
+        if (content !== lastExternalContent.current) {
+            lastExternalContent.current = content;
+            isSettingContent.current = true;
             editor.commands.setContent(content || '');
+            isSettingContent.current = false;
         }
     }, [content]);
 
