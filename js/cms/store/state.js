@@ -27,6 +27,8 @@ export const isLoadingContent = signal(false);
 export const editorInstance = signal(null);
 export const editorContent = signal('');
 export const isDirty = signal(false);
+export const lastAutosaveTime = signal(null);
+export const isAutosaving = signal(false);
 
 // UI state
 export const currentView = signal('list'); // 'list' | 'editor'

@@ -302,6 +302,51 @@ body {
     font-family: 'Oxanium', sans-serif;
 }
 
+/* Title with autosave indicator */
+.cms-title-with-autosave {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.cms-autosave-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--cms-text-tertiary);
+    font-weight: 500;
+    padding: 4px 10px;
+    background: rgba(46, 204, 113, 0.1);
+    border: 1px solid rgba(46, 204, 113, 0.2);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.cms-autosave-indicator svg {
+    color: var(--cms-success);
+}
+
+.cms-autosave-indicator.saving {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.cms-autosave-spinner {
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-top-color: var(--cms-text-secondary);
+    border-radius: 50%;
+    animation: autosave-spin 0.8s linear infinite;
+}
+
+@keyframes autosave-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 /* Buttons */
 .cms-btn {
     display: inline-flex;
@@ -2190,6 +2235,16 @@ input[type="datetime-local"].cms-input {
         flex-direction: column;
         align-items: flex-start;
         gap: 16px;
+    }
+
+    .cms-title-with-autosave {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .cms-autosave-indicator {
+        font-size: 0.75rem;
     }
 
     .cms-guide-card {

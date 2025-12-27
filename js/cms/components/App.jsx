@@ -21,6 +21,8 @@ import {
     currentLock,
     onLogout,
     isDirty,
+    lastAutosaveTime,
+    isAutosaving,
 } from '../store/state.js';
 import API from '../services/api.js';
 import ImageService from '../services/image.js';
@@ -34,12 +36,17 @@ import { Modal, ConfirmModal } from './ui/Modal.jsx';
 import { LoadingSpinner } from './ui/Loading.jsx';
 import { ImageUploadModal } from './ui/ImageUploadModal.jsx';
 
+// Autosave interval in milliseconds (10 seconds)
+const AUTOSAVE_INTERVAL = 10000;
+
 export function App() {
     const [isUploading, setIsUploading] = useState(false);
     const [confirmModal, setConfirmModal] = useState({ isOpen: false, message: '', onConfirm: null });
     const [imageUploadModal, setImageUploadModal] = useState({ isOpen: false, mode: null, fieldName: null });
     const heartbeatInterval = useRef(null);
     const lockPollInterval = useRef(null);
+    const autosaveInterval = useRef(null);
+    const lastAutosavedContent = useRef(null);
 
     useEffect(() => {
         initializeApp();
@@ -48,6 +55,7 @@ export function App() {
         const unsubscribe = onLogout(() => {
             stopHeartbeat();
             stopLockPolling();
+            stopAutosave();
         });
         
         // Cleanup on unmount
@@ -55,6 +63,7 @@ export function App() {
             unsubscribe();
             stopHeartbeat();
             stopLockPolling();
+            stopAutosave();
             releaseCurrentLock();
         };
     }, []);
@@ -67,6 +76,17 @@ export function App() {
         window.addEventListener('beforeunload', handleBeforeUnload);
         return () => window.removeEventListener('beforeunload', handleBeforeUnload);
     }, []);
+
+    // Start/stop autosave based on editor view
+    useEffect(() => {
+        if (currentView.value === 'editor') {
+            startAutosave();
+        } else {
+            stopAutosave();
+        }
+        
+        return () => stopAutosave();
+    }, [currentView.value]);
 
     const initializeApp = async () => {
         try {
@@ -167,6 +187,91 @@ export function App() {
             }
             currentLock.value = null;
             stopHeartbeat();
+        }
+    };
+
+    // Autosave functions
+    const startAutosave = () => {
+        stopAutosave();
+        autosaveInterval.current = setInterval(performAutosave, AUTOSAVE_INTERVAL);
+    };
+
+    const stopAutosave = () => {
+        if (autosaveInterval.current) {
+            clearInterval(autosaveInterval.current);
+            autosaveInterval.current = null;
+        }
+        lastAutosavedContent.current = null;
+        lastAutosaveTime.value = null;
+    };
+
+    const performAutosave = async () => {
+        const form = contentForm.value;
+        const type = activeContentType.value;
+        const editor = editorInstance.value;
+        
+        // Don't autosave if:
+        // - Not in editor view
+        // - No changes (not dirty)
+        // - Sales content type (uses enable/disable instead of drafts)
+        // - Currently autosaving
+        // - Form validation would fail
+        if (currentView.value !== 'editor') return;
+        if (!isDirty.value) return;
+        if (type === 'sales') return;
+        if (isAutosaving.value) return;
+        if (!form.title || !form.slug) return;
+        
+        // Get current content from editor
+        const currentContent = editor ? editor.getHTML() : form.content || '';
+        
+        // Create a hash of the form data to detect changes
+        const formSnapshot = JSON.stringify({
+            title: form.title,
+            slug: form.slug,
+            description: form.description,
+            content: currentContent,
+        });
+        
+        // Skip if content hasn't changed since last autosave
+        if (formSnapshot === lastAutosavedContent.current) return;
+        
+        try {
+            isAutosaving.value = true;
+            
+            const config = getContentTypeConfig(type);
+            
+            // Build save data
+            const saveData = {
+                ...form,
+                content: currentContent,
+                status: 'draft',
+            };
+            
+            if (form.id) {
+                // Update existing content as draft
+                await API.updateContent(type, form.id, saveData);
+            } else {
+                // Create new draft
+                const result = await API.createContent(type, saveData);
+                // Update form with new ID so subsequent autosaves update instead of create
+                if (result && result.id) {
+                    updateContentForm('id', result.id);
+                }
+            }
+            
+            // Update tracking
+            lastAutosavedContent.current = formSnapshot;
+            lastAutosaveTime.value = Date.now();
+            isDirty.value = false;
+            
+            // Silently refresh content list in background
+            loadContentForType(type);
+        } catch (error) {
+            console.error('Autosave failed:', error);
+            // Don't show error toast for autosave failures - it would be annoying
+        } finally {
+            isAutosaving.value = false;
         }
     };
 
@@ -552,6 +657,10 @@ export function App() {
                             onImageUpload={handleImageUpload}
                             onInsertImage={handleInsertImage}
                             onDiscardDraft={handleDiscardDraft}
+                            onManualSave={() => {
+                                // Reset autosave tracking when user manually saves
+                                lastAutosavedContent.current = null;
+                            }}
                         />
                     )}
                 </main>

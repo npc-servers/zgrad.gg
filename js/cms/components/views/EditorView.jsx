@@ -3,7 +3,7 @@
  */
 
 import { useState, useEffect } from 'preact/hooks';
-import { contentForm, currentContent, editorInstance, activeContentType, updateContentForm } from '../../store/state.js';
+import { contentForm, currentContent, editorInstance, activeContentType, updateContentForm, lastAutosaveTime, isAutosaving } from '../../store/state.js';
 import { ContentForm } from '../content/ContentForm.jsx';
 import { TipTapEditor } from '../editor/TipTapEditor.jsx';
 import { EditorToolbar } from '../editor/EditorToolbar.jsx';
@@ -22,11 +22,13 @@ export function EditorView({
     onImageUpload,
     onInsertImage,
     onDiscardDraft,
+    onManualSave,
     title 
 }) {
     const [linkPromptOpen, setLinkPromptOpen] = useState(false);
     const [iconPickerOpen, setIconPickerOpen] = useState(false);
     const [imageSettingsOpen, setImageSettingsOpen] = useState(false);
+    const [autosaveDisplay, setAutosaveDisplay] = useState(null);
     
     const contentType = activeContentType.value;
     const config = getContentTypeConfig(contentType);
@@ -34,6 +36,35 @@ export function EditorView({
     const form = contentForm.value;
     const editor = editorInstance.value;
     const editorFeatures = config?.editorFeatures || {};
+    const autosaveTime = lastAutosaveTime.value;
+    const saving = isAutosaving.value;
+
+    // Update autosave display when time changes
+    useEffect(() => {
+        if (!autosaveTime) {
+            setAutosaveDisplay(null);
+            return;
+        }
+        
+        const updateDisplay = () => {
+            const now = Date.now();
+            const diff = Math.floor((now - autosaveTime) / 1000);
+            
+            if (diff < 5) {
+                setAutosaveDisplay('just now');
+            } else if (diff < 60) {
+                setAutosaveDisplay(`${diff}s ago`);
+            } else {
+                const mins = Math.floor(diff / 60);
+                setAutosaveDisplay(`${mins}m ago`);
+            }
+        };
+        
+        updateDisplay();
+        const interval = setInterval(updateDisplay, 5000);
+        
+        return () => clearInterval(interval);
+    }, [autosaveTime]);
 
     // Add image edit button overlays when editor updates
     useEffect(() => {
@@ -149,6 +180,9 @@ export function EditorView({
             saveData.event_start_date = Date.now();
         }
 
+        // Reset autosave tracking when manually saving
+        if (onManualSave) onManualSave();
+        
         onSave(saveData);
     };
 
@@ -257,7 +291,26 @@ export function EditorView({
     return (
         <div className="cms-view" id="editorView">
             <div className="cms-content-header">
-                <h1 className="cms-content-title">{title}</h1>
+                <div className="cms-title-with-autosave">
+                    <h1 className="cms-content-title">{title}</h1>
+                    {!isSales && (saving || autosaveDisplay) && (
+                        <span className={`cms-autosave-indicator ${saving ? 'saving' : ''}`}>
+                            {saving ? (
+                                <>
+                                    <span className="cms-autosave-spinner"></span>
+                                    Autosaving...
+                                </>
+                            ) : (
+                                <>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    Autosaved {autosaveDisplay}
+                                </>
+                            )}
+                        </span>
+                    )}
+                </div>
                 <div className="cms-editor-actions">
                     <Button variant="secondary" onClick={onCancel}>Cancel</Button>
                     <Button variant="secondary" color="orange" onClick={() => handleSave('draft')}>
