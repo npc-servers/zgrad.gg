@@ -17,6 +17,10 @@ import { ExitLinkOnSpace } from '../../utils/tiptap-helpers.js';
 
 export function TipTapEditor({ content, onChange }) {
     const editorRef = useRef(null);
+    // Track when we're programmatically setting content to avoid infinite loops
+    const isSettingContent = useRef(false);
+    // Track the last content we received from props to detect external changes
+    const lastExternalContent = useRef(content);
 
     useEffect(() => {
         if (!editorRef.current) return;
@@ -30,27 +34,27 @@ export function TipTapEditor({ content, onChange }) {
                     },
                 }),
                 Image,
-            Link.configure({
-                openOnClick: false,
-                HTMLAttributes: {
-                    target: '_blank',
-                    rel: 'noopener noreferrer',
-                },
-                // Exit link mark when typing space at the end
-                autolink: false,
-            }),
+                Link.configure({
+                    openOnClick: false,
+                    HTMLAttributes: {
+                        target: '_blank',
+                        rel: 'noopener noreferrer',
+                    },
+                    // Exit link mark when typing space at the end
+                    autolink: false,
+                }),
                 Underline,
                 TextAlign.configure({
                     types: ['heading', 'paragraph'],
                 }),
                 TextStyle,
                 Color,
-            StepCard,
-            InfoBox,
-            GuideImage,
-            Icon,
-            ExitLinkOnSpace,
-        ],
+                StepCard,
+                InfoBox,
+                GuideImage,
+                Icon,
+                ExitLinkOnSpace,
+            ],
             content: content,
             editorProps: {
                 attributes: {
@@ -58,8 +62,14 @@ export function TipTapEditor({ content, onChange }) {
                 },
             },
             onUpdate: ({ editor: ed }) => {
+                // Skip onChange if we're programmatically setting content
+                if (isSettingContent.current) return;
+                
                 if (onChange) {
-                    onChange(ed.getHTML());
+                    const html = ed.getHTML();
+                    // Update our tracking ref so we don't try to re-set this content
+                    lastExternalContent.current = html;
+                    onChange(html);
                 }
             },
         });
@@ -72,10 +82,18 @@ export function TipTapEditor({ content, onChange }) {
         };
     }, []);
 
-    // Update content when prop changes
+    // Update content when prop changes from EXTERNAL source (e.g., loading a different guide)
     useEffect(() => {
-        if (editorInstance.value && content !== editorInstance.value.getHTML()) {
-            editorInstance.value.commands.setContent(content);
+        const editor = editorInstance.value;
+        if (!editor) return;
+        
+        // Only update if the content prop changed from an external source
+        // (not from our own onUpdate callback)
+        if (content !== lastExternalContent.current) {
+            lastExternalContent.current = content;
+            isSettingContent.current = true;
+            editor.commands.setContent(content);
+            isSettingContent.current = false;
         }
     }, [content]);
 
