@@ -26,8 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const quickPlayBtn = document.getElementById('quickPlayBtn');
     const quickPlaySubtitle = document.getElementById('quickPlaySubtitle');
     const serverGrid = document.getElementById('serverGrid');
-    const totalPlayersEl = document.getElementById('totalPlayers');
-    const totalServersEl = document.getElementById('totalServers');
+    const playStatsText = document.getElementById('playStatsText');
     
     // =========================================
     // CONSTANTS & STATE
@@ -40,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let splashSkipped = false;
     let serverStatuses = [];
     let bestServer = null;
+    let quickPlayShuffleInterval = null;
     
     // =========================================
     // WELCOME POPUP FUNCTIONS
@@ -273,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
     
-    // Select a random server that isn't full or empty, weighted by player count
+    // Select a random server that isn't full or empty
     function selectBestServer(statuses) {
         const onlineServers = statuses.filter(s => s.online);
         
@@ -302,21 +302,73 @@ document.addEventListener('DOMContentLoaded', () => {
         const regionServers = candidatePool.filter(s => s.server.region === userRegion);
         const finalPool = regionServers.length > 0 ? regionServers : candidatePool;
         
-        // Weighted random selection - prefer servers with more players
-        // Weight = player count + 5 (so empty servers still have some chance)
-        const weights = finalPool.map(s => s.players + 5);
-        const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+        // Pure random selection
+        return finalPool[Math.floor(Math.random() * finalPool.length)];
+    }
+    
+    // Select a random server excluding a specific one
+    function selectRandomServerExcluding(statuses, excludeId) {
+        const onlineServers = statuses.filter(s => s.online);
         
-        let random = Math.random() * totalWeight;
-        for (let i = 0; i < finalPool.length; i++) {
-            random -= weights[i];
-            if (random <= 0) {
-                return finalPool[i];
-            }
+        if (onlineServers.length === 0) {
+            return null;
         }
         
-        // Fallback to last server (shouldn't normally reach here)
-        return finalPool[finalPool.length - 1];
+        // Filter out full servers and dead servers, plus the excluded one
+        const validServers = onlineServers.filter(s => {
+            const fillRatio = s.maxPlayers > 0 ? s.players / s.maxPlayers : 0;
+            const isFull = fillRatio >= 0.95;
+            const isDead = s.players === 0;
+            const isExcluded = excludeId && s.server.id === excludeId;
+            return !isFull && !isDead && !isExcluded;
+        });
+        
+        // If only one valid server or none after excluding, include the excluded one
+        if (validServers.length === 0) {
+            return selectBestServer(statuses);
+        }
+        
+        // Prefer servers in user's region if available
+        const regionServers = validServers.filter(s => s.server.region === userRegion);
+        const finalPool = regionServers.length > 0 ? regionServers : validServers;
+        
+        // Pure random selection
+        return finalPool[Math.floor(Math.random() * finalPool.length)];
+    }
+    
+    // Shuffle quick play to a new random server with animation
+    function shuffleQuickPlay() {
+        if (serverStatuses.length === 0 || !quickPlaySubtitle) return;
+        
+        // Get a new server, excluding the current one
+        const currentId = bestServer ? bestServer.server.id : null;
+        const newServer = selectRandomServerExcluding(serverStatuses, currentId);
+        
+        // Don't update if no new server or if it's the same server
+        if (!newServer || (bestServer && newServer.server.id === bestServer.server.id)) return;
+        
+        bestServer = newServer;
+        
+        // Animate the text change
+        quickPlaySubtitle.classList.add('shuffling-out');
+        
+        setTimeout(() => {
+            quickPlaySubtitle.textContent = `Join ${bestServer.server.title} (${bestServer.players} players)`;
+            quickPlaySubtitle.classList.remove('shuffling-out');
+            quickPlaySubtitle.classList.add('shuffling-in');
+            
+            setTimeout(() => {
+                quickPlaySubtitle.classList.remove('shuffling-in');
+            }, 300);
+        }, 200);
+    }
+    
+    // Start the quick play shuffle interval
+    function startQuickPlayShuffle() {
+        if (quickPlayShuffleInterval) {
+            clearInterval(quickPlayShuffleInterval);
+        }
+        quickPlayShuffleInterval = setInterval(shuffleQuickPlay, 10000);
     }
     
     // Create server card HTML
@@ -369,8 +421,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalPlayers = statuses.reduce((sum, s) => sum + s.players, 0);
         const onlineCount = statuses.filter(s => s.online).length;
         
-        if (totalPlayersEl) totalPlayersEl.textContent = totalPlayers;
-        if (totalServersEl) totalServersEl.textContent = onlineCount;
+        if (playStatsText) {
+            playStatsText.className = 'total-playercount-text online';
+            playStatsText.innerHTML = `<span class="current-count">${totalPlayers}</span> players online across ${onlineCount} servers`;
+        }
         
         bestServer = selectBestServer(statuses);
         
@@ -412,6 +466,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return Promise.all(SERVER_GROUPS.map(server => fetchServerStatus(server)))
             .then(statuses => {
                 updateUI(statuses);
+                startQuickPlayShuffle();
             })
             .catch(error => {
                 console.error('Error loading servers:', error);
@@ -529,6 +584,45 @@ document.addEventListener('DOMContentLoaded', () => {
             hideJoinGuide();
         }
     });
+    
+    // =========================================
+    // BACKGROUND PARALLAX EFFECT
+    // =========================================
+    
+    const bgImage = document.querySelector('.play-bg-image');
+    
+    if (bgImage) {
+        let targetX = 0;
+        let targetY = 0;
+        let currentX = 0;
+        let currentY = 0;
+        
+        // Maximum movement in pixels
+        const maxMove = 20;
+        
+        document.addEventListener('mousemove', (e) => {
+            // Calculate mouse position relative to center (0-1 range, centered at 0.5)
+            const xPercent = e.clientX / window.innerWidth;
+            const yPercent = e.clientY / window.innerHeight;
+            
+            // Convert to -1 to 1 range (centered at 0)
+            targetX = (xPercent - 0.5) * 2 * maxMove;
+            targetY = (yPercent - 0.5) * 2 * maxMove;
+        });
+        
+        // Smooth animation loop
+        function animateBackground() {
+            // Lerp (linear interpolation) for smooth movement
+            currentX += (targetX - currentX) * 0.08;
+            currentY += (targetY - currentY) * 0.08;
+            
+            bgImage.style.transform = `scale(1.1) translate(${-currentX}px, ${-currentY}px)`;
+            
+            requestAnimationFrame(animateBackground);
+        }
+        
+        animateBackground();
+    }
     
     // =========================================
     // INITIALIZATION
