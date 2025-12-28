@@ -74,6 +74,18 @@ export const SERVER_GROUPS = [
         logo: '/images/logos/zgrad-logopiece-z.png'
     },
     {
+        id: 'zgrad7',
+        title: 'ZGRAD US7',
+        suffix: 'US7',
+        ip: '193.243.190.18',
+        port: 27028,
+        region: 'US',
+        gamemode: 'All Gamemodes',
+        link: 'connect/us7',
+        backgroundImage: '/images/loadingscreen/homigrad-essence.jpg',
+        logo: '/images/logos/zgrad-logopiece-z.png'
+    },
+    {
         id: 'zgradeu1',
         title: 'ZGRAD EU1',
         suffix: 'EU1',
