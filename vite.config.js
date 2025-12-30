@@ -72,16 +72,8 @@ export default defineConfig({
         credits: resolve(__dirname, 'credits.html'),
         discord: resolve(__dirname, 'discord.html'),
         store: resolve(__dirname, 'store.html'),
-        // Connect pages
-        connectUs1: resolve(__dirname, 'connect/us1.html'),
-        connectUs2: resolve(__dirname, 'connect/us2.html'),
-        connectUs3: resolve(__dirname, 'connect/us3.html'),
-        connectUs4: resolve(__dirname, 'connect/us4.html'),
-        connectUs5: resolve(__dirname, 'connect/us5.html'),
-        connectUs6: resolve(__dirname, 'connect/us6.html'),
-        connectUs7: resolve(__dirname, 'connect/us7.html'),
-        connectEu1: resolve(__dirname, 'connect/eu1.html'),
-        connectEu2: resolve(__dirname, 'connect/eu2.html'),
+        // Connect pages - single template, served dynamically by Express
+        connectTemplate: resolve(__dirname, 'connect/template.html'),
         // Guide pages
         guidesIndex: resolve(__dirname, 'guides/index.html'),
         guideTemplate: resolve(__dirname, 'guides/template.html'),

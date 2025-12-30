@@ -21,12 +21,14 @@ import updatesRoutes from './routes/updates.js';
 import imagesRoutes from './routes/images.js';
 import locksRoutes from './routes/locks.js';
 import salesRoutes from './routes/sales.js';
+import sitemapRoutes from './routes/sitemap.js';
 
 // Import middleware
 import { addSecurityHeaders } from './lib/security-utils.js';
 import { validateSession } from './middleware/auth.js';
 import { serveGuide } from './routes/guides-page.js';
 import { serveNews } from './routes/news-page.js';
+import { serveConnectPage } from './routes/connect-page.js';
 import { serveImage } from './routes/images-serve.js';
 import { serveAttachment } from './lib/attachment-cache.js';
 import { startDiscordBot, stopDiscordBot } from './lib/discord-bot.js';
@@ -84,6 +86,9 @@ app.use((req, res, next) => {
   next();
 });
 
+// Sitemap route (before API routes for proper routing)
+app.use('/', sitemapRoutes);
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/guides', guidesRoutes);
@@ -92,6 +97,9 @@ app.use('/api/updates', updatesRoutes);
 app.use('/api/images', imagesRoutes);
 app.use('/api/locks', locksRoutes);
 app.use('/api/sales', salesRoutes);
+
+// Dynamic connect pages - serve from template + serverConfig.js
+app.get('/connect/:serverId', serveConnectPage);
 
 // Dynamic guide pages - serve from database
 app.get('/guides/:slug', serveGuide);

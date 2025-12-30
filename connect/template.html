@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="origin-when-cross-origin">
+    
+    <!-- SEO Meta Tags -->
+    <title>Connect to {{SERVER_SUFFIX}} - ZGRAD</title>
+    <meta name="description" content="Connect to {{SERVER_TITLE}} on the ZGRAD Homigrad network. Join for intense Garry's Mod gameplay.">
+    <meta name="keywords" content="ZGRAD, {{SERVER_SUFFIX}}, Homigrad, Garry's Mod server, GMod, {{SERVER_REGION}} server">
+    <meta name="author" content="ZGRAD">
+    <link rel="canonical" href="https://zgrad.gg/connect/{{SERVER_ID}}">
+    <link rel="icon" href="/favicon.ico">
+    
+    <!-- Open Graph Meta Tags (Discord, Facebook, etc.) -->
+    <meta property="og:title" content="Connect to {{SERVER_TITLE}}">
+    <meta property="og:description" content="Join the ZGRAD Homigrad network for intense Garry's Mod gameplay.">
+    <meta property="og:image" content="https://zgrad.gg/images/embeds/zgrad-{{SERVER_REGION_LOWER}}.png">
+    <meta property="og:url" content="https://zgrad.gg/connect/{{SERVER_ID}}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="ZGRAD">
+    
+    <!-- Twitter Card Meta Tags (summary = small image) -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Connect to {{SERVER_TITLE}}">
+    <meta name="twitter:description" content="Join the ZGRAD Homigrad network for intense Garry's Mod gameplay.">
+    <meta name="twitter:image" content="https://zgrad.gg/images/embeds/zgrad-{{SERVER_REGION_LOWER}}.png">
+    
+    <!-- CSS and JS bundled via Vite in /src/connect.js -->
+</head>
+<body>
+    <div class="connect-page">
+        <div class="connect-title-splatter">
+            <img src="/images/textures/connect-title-splatter.png" alt="Connect Title Splatter">
+        </div>
+        
+        <div class="connect-content">
+            <h1 class="connect-server-title" data-text="{{SERVER_TITLE}}">{{SERVER_TITLE}}</h1>
+            <div class="connect-server-info">
+                <span class="loading">Loading server information...</span>
+            </div>
+            
+            <div class="connect-support-ad">
+                <div class="connect-support-ad-content">
+                    <span class="connect-support-ad-text">Enjoying our servers? <a href="https://store.zmod.gg" target="_blank" class="connect-support-link">Consider supporting us!</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main module entry point (Vite) -->
+    <script type="module" src="/src/connect.js"></script>
+</body>
+</html>
