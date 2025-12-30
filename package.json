@@ -30,7 +30,7 @@
     "@tiptap/extension-underline": "^3.13.0",
     "@tiptap/pm": "^3.13.0",
     "@tiptap/starter-kit": "^3.13.0",
-    "@aws-sdk/client-s3": "^3.952.0",
+    "@aws-sdk/client-s3": "^3.955.0",
     "discord.js": "^14.16.3",
     "better-sqlite3": "^12.5.0",
     "cookie-parser": "^1.4.7",
