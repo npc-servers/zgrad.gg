@@ -28,7 +28,7 @@
     "@tiptap/extension-text-align": "^3.13.0",
     "@tiptap/extension-text-style": "^3.13.0",
     "@tiptap/extension-underline": "^3.13.0",
-    "@tiptap/pm": "^3.13.0",
+    "@tiptap/pm": "^3.14.0",
     "@tiptap/starter-kit": "^3.13.0",
     "@aws-sdk/client-s3": "^3.952.0",
     "discord.js": "^14.16.3",
