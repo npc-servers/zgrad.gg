@@ -50,6 +50,9 @@ COPY --from=builder /app/dist ./dist
 # Copy server files
 COPY server ./server
 
+# Copy JS config files (needed by server for serverConfig.js)
+COPY js ./js
+
 # Copy other necessary files
 COPY loadingscreen ./loadingscreen
 COPY images ./images
