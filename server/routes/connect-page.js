@@ -66,13 +66,17 @@ export function serveConnectPage(req, res, next) {
     return res.status(500).send('Connect template not found');
   }
   
+  // Theme colors by region
+  const themeColor = server.region === 'EU' ? '#0066ff' : '#ff0000';
+  
   // Replace placeholders with server-specific values
   const html = template
     .replace(/\{\{SERVER_ID\}\}/g, serverId)
     .replace(/\{\{SERVER_SUFFIX\}\}/g, escapeHtml(server.suffix))
     .replace(/\{\{SERVER_TITLE\}\}/g, escapeHtml(server.title))
     .replace(/\{\{SERVER_REGION\}\}/g, escapeHtml(server.region))
-    .replace(/\{\{SERVER_REGION_LOWER\}\}/g, server.region.toLowerCase());
+    .replace(/\{\{SERVER_REGION_LOWER\}\}/g, server.region.toLowerCase())
+    .replace(/\{\{THEME_COLOR\}\}/g, themeColor);
   
   res.set('Content-Type', 'text/html');
   res.send(html);
