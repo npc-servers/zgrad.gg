@@ -11,7 +11,7 @@
     <meta name="description" content="Jump into ZGRAD's Homigrad servers instantly. Quick play with automatic server selection or choose your preferred server. Join thousands of players now!">
     <meta name="keywords" content="ZGRAD play, Homigrad, Garry's Mod servers, quick play, GMod multiplayer, join server, zmod, npcz">
     <meta name="author" content="ZGRAD">
-    <link rel="canonical" href="https://play.zgrad.gg">
+    <link rel="canonical" href="https://zgrad.gg/play">
     <link rel="icon" href="/favicon.ico">
     
     <!-- Preload Critical Resources -->
@@ -28,7 +28,7 @@
     <meta property="og:title" content="Play Now | ZGRAD">
     <meta property="og:description" content="Jump into ZGRAD's Homigrad servers instantly. Quick play with automatic server selection or choose your preferred server.">
     <meta property="og:image" content="https://zgrad.gg/images/logos/zgrad-logo.png">
-    <meta property="og:url" content="https://play.zgrad.gg">
+    <meta property="og:url" content="https://zgrad.gg/play">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="ZGRAD">
     
@@ -37,6 +37,65 @@
     <meta name="twitter:title" content="Play Now | ZGRAD">
     <meta name="twitter:description" content="Jump into ZGRAD's Homigrad servers instantly. Quick play with automatic server selection or choose your preferred server.">
     <meta name="twitter:image" content="https://zgrad.gg/images/logos/zgrad-logo.png">
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Play Now | ZGRAD",
+        "description": "Jump into ZGRAD's Homigrad servers instantly. Quick play with automatic server selection or choose your preferred server.",
+        "url": "https://zgrad.gg/play",
+        "mainEntity": {
+            "@type": "VideoGame",
+            "name": "ZGRAD Homigrad",
+            "gamePlatform": "Steam",
+            "applicationCategory": "Game",
+            "operatingSystem": "Windows",
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "ZGRAD",
+                "url": "https://zgrad.gg"
+            }
+        },
+        "breadcrumb": {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": "https://zgrad.gg"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Play",
+                    "item": "https://zgrad.gg/play"
+                }
+            ]
+        }
+    }
+    </script>
+    
+    <!-- Redirect play.html or play/index.html to /play to prevent duplicate content -->
+    <script>
+        if (window.location.pathname === '/play.html' || window.location.pathname === '/play/index.html') {
+            var isLocalhost = window.location.hostname === 'localhost' || 
+                            window.location.hostname === '127.0.0.1' ||
+                            window.location.hostname.startsWith('192.168.') ||
+                            window.location.hostname.endsWith('.local');
+            
+            if (!isLocalhost) {
+                window.location.replace(window.location.origin + '/play');
+            }
+        }
+    </script>
     
     <!-- CSS and JS bundled via Vite in /src/play.js -->
 </head>
@@ -300,11 +359,11 @@
         
         <!-- Header -->
         <header class="play-header">
-            <a href="https://zgrad.gg" class="play-logo-link">
+            <a href="/" class="play-logo-link">
                 <img src="/images/logos/zgrad-logo.png" alt="ZGRAD" class="play-logo">
             </a>
             <nav class="play-nav">
-                <a href="https://zgrad.gg" class="nav-link">Main Site</a>
+                <a href="/" class="nav-link">Main Site</a>
                 <a href="https://discord.gg/npc" target="_blank" rel="noopener" class="nav-link">Discord</a>
                 <a href="https://store.zmod.gg" target="_blank" rel="noopener" class="nav-link">Store</a>
             </nav>

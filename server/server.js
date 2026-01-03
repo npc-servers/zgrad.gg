@@ -47,7 +47,7 @@ app.set('trust proxy', 1);
 
 // Middleware
 app.use(cors({
-  origin: process.env.CORS_ORIGINS?.split(',') || ['http://localhost:3000', 'http://localhost:5173', 'https://play.zgrad.gg'],
+  origin: process.env.CORS_ORIGINS?.split(',') || ['http://localhost:3000', 'http://localhost:5173', 'https://zgrad.gg', 'https://play.zgrad.gg'],
   credentials: true,
 }));
 app.use(express.json({ limit: '10mb' }));
@@ -65,26 +65,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Subdomain routing for play.zgrad.gg
-app.use((req, res, next) => {
-  const host = req.hostname || req.headers.host?.split(':')[0] || '';
-  
-  // Handle play.zgrad.gg subdomain
-  if (host === 'play.zgrad.gg' || host.startsWith('play.')) {
-    const distPath = path.join(__dirname, '../dist');
-    
-    // Serve static assets (js, css, images, etc.)
-    if (req.path.startsWith('/assets/') || req.path.startsWith('/images/') || 
-        req.path === '/favicon.ico' || req.path.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2)$/)) {
-      return express.static(distPath)(req, res, next);
-    }
-    
-    // Serve the play page for all other routes
-    return res.sendFile(path.join(distPath, 'play/index.html'));
-  }
-  
-  next();
-});
 
 // Sitemap route (before API routes for proper routing)
 app.use('/', sitemapRoutes);

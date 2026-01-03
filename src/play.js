@@ -1,4 +1,4 @@
-// Entry point for play page (play.zgrad.gg / play/index.html)
+// Entry point for play page (zgrad.gg/play / play/index.html)
 import '../css/main.css';
 import '../css/play-page.css';
 

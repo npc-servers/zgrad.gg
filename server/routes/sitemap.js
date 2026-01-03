@@ -54,9 +54,9 @@ const STATIC_PAGES = [
     changefreq: 'daily',
     priority: '0.7'
   },
-  // Play subdomain
+  // Play page
   {
-    loc: 'https://play.zgrad.gg/',
+    loc: 'https://zgrad.gg/play',
     changefreq: 'daily',
     priority: '0.9'
   }
